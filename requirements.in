@@ -3,3 +3,5 @@ fastapi
 click
 pyconfig
 wget
+ruamel.yaml
+ruamel.yaml.cmd
