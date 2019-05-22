@@ -426,18 +426,21 @@ pip-compile-upgrade-all: pip-tools
 	pip-compile --output-file requirements.txt requirements.in --upgrade
 	pip-compile --output-file requirements-dev.txt requirements-dev.in --upgrade
 	pip-compile --output-file requirements-test.txt requirements-test.in --upgrade
+	pip-compile --output-file requirements-doc.txt requirements-doc.in --upgrade
 
 .PHONY: pip-compile
 pip-compile: pip-tools
 	pip-compile --output-file requirements.txt requirements.in
 	pip-compile --output-file requirements-dev.txt requirements-dev.in
 	pip-compile --output-file requirements-test.txt requirements-test.in
+	pip-compile --output-file requirements-doc.txt requirements-doc.in
 
 .PHONY: pip-compile-rebuild
 pip-compile-rebuild: pip-tools
 	pip-compile --rebuild --output-file requirements.txt requirements.in
 	pip-compile --rebuild --output-file requirements-dev.txt requirements-dev.in
 	pip-compile --rebuild --output-file requirements-test.txt requirements-test.in
+	pip-compile --rebuild --output-file requirements-doc.txt requirements-doc.in
 
 .PHONY: install-deps-all
 install-deps-all:

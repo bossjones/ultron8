@@ -1,0 +1,33 @@
+pathlib_mate
+twine
+isort
+coveralls
+pytest
+pytest-cov
+pytest-timeout
+pytest-benchmark[histogram]
+-e git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb
+pdbpp
+black
+
+pytest-sugar
+pytest-rerunfailures
+pytest-mock
+pytest-leaks
+
+# # tracing and debugging
+# hunter
+#
+# cython
+#
+# # trace python process
+# pystuck
+# objgraph
+# xdot
+#
+# # googles smarter autoformatter to conform to autopep8
+# yapf
+#
+# # Update packages in a requirements.txt file to latest versions.
+# pur
+# rope
