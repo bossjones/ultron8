@@ -71,3 +71,10 @@ To upgrade to latest version:
 .. code-block:: console
 
     $ pip install --upgrade ultron8
+
+
+.. code-block:: console
+      export PYENV_ROOT="$HOME/.pyenv"
+      export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
+      eval "$(pyenv init -)"
+      eval "$(pyenv virtualenv-init -)"
