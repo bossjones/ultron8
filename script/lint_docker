@@ -1,0 +1,13 @@
+#!/bin/sh
+# Execute lint in a docker container to spot code mistakes.
+
+# Stop on errors
+set -e
+
+cd "$(dirname "$0")/.."
+
+docker build -t bemoonbeam-cli-test .
+docker run --rm \
+    -v `pwd`/.tox/:/usr/src/app/.tox/ \
+    -t -i bemoonbeam-cli-test \
+    tox -e lint

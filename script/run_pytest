@@ -1,0 +1,9 @@
+#!/bin/sh
+# Execute lint in a docker container to spot code mistakes.
+
+# Stop on errors
+set -e
+
+cd "$(dirname "$0")/.."
+
+pytest -s --tb short --cov-config .coveragerc --cov moonbeam_cli tests --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate

@@ -1,0 +1,30 @@
+#!/bin/sh
+# Execute lint to spot code mistakes.
+# SOURCE: https://github.com/home-assistant/home-assistant/blob/4048ad36a85adebc543d5328dc9bb4e49f0309c9/script/lint
+# Use this whenever you want to lint all *.py files, regardless of if they were modified or not
+
+cd "$(dirname "$0")/.."
+
+export files="$(find `pwd`/moonbeam_cli -name \"*.py\" -print)"
+echo '================================================='
+echo '=                FILES CHANGED                  ='
+echo '================================================='
+if [ -z "$files" ] ; then
+  echo "No python file changed. Rather use: tox -e lint\n"
+  exit
+fi
+printf "%s\n" $files
+echo "================"
+echo "LINT with flake8"
+echo "================"
+flake8 --doctests $files
+echo "================"
+echo "LINT with pylint"
+echo "================"
+pylint_files=$(echo "$files" | grep -v '^tests.*')
+if [ -z "$pylint_files" ] ; then
+  echo "Only test files changed. Skipping\n"
+  exit
+fi
+pylint $pylint_files
+echo

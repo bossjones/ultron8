@@ -1,0 +1,4 @@
+# @SSH1="" ; SSH2="" ;\
+# 	if [ "x$$sha" = "x" ] ; then sha=`git rev-parse HEAD`; fi ;\
+#         if [ ! -z "$$SSH_AUTH_SOCK" ] ; then SSH1="-e SSH_AUTH_SOCK=/root/.foo -v $$SSH_AUTH_SOCK:/root/.foo" ; fi ; \
+#         if [ -e $$HOME/.ssh/id_rsa ]; then SSH2="-v $$HOME/.ssh/id_rsa:/root/.ssh/id_rsa" ; fi ; \

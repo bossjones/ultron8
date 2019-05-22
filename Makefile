@@ -47,8 +47,9 @@ __check_defined = \
 
 export PATH := ./bin:./bash:./venv/bin:$(PATH)
 
-mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
+MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
+CURRENT_FOLDER := $(notdir $(patsubst %/,%,$(dir $(MKFILE_PATH))))
+CURRENT_DIR := $(shell pwd)
 MAKE := make
 
 list_allowed_args := product ip command role tier cluster non_root_user host
@@ -394,7 +395,7 @@ list:
 install-virtualenv-osx:
 	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements.txt
 pre_commit_install:
-	cp git_hooks/pre-commit .git/hooks/pre-commit
+	-cp git_hooks/pre-commit .git/hooks/pre-commit
 
 travis:
 	tox
@@ -477,3 +478,9 @@ pipenv-test-cli: ## Run CLI with example Via JSON data
 
 help2:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+docker-pyenv-cli:
+	docker run --rm -it \
+	-w /mnt \
+	-v $(CURRENT_DIR):/mnt \
+	$(CI_PYENV_DOCKER_IMAGE) bash

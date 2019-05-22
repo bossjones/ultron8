@@ -1,0 +1,7 @@
+#!/bin/sh
+cd "$(dirname "$0")/.."
+
+echo "================"
+echo "LINT with flake8"
+echo "================"
+flake8 **/*.py --count --select=E901,E999,F821,F822,F823 --max-line-length=200 --show-source --statistics

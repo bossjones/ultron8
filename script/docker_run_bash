@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# NOTE: Fix issue Docker hides errors to stderr
+# SOURCE: https://stackoverflow.com/questions/3173131/redirect-copy-of-stdout-to-log-file-from-within-bash-script-itself
+# Without this, only stdout would be captured - i.e. your
+# log file would not contain any error messages.
+# SEE (and upvote) the answer by Adam Spiers, which keeps STDERR
+# as a separate stream - I did not want to steal from him by simply
+# adding his answer to mine.
+exec 2>&1
+
+_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+_UID=$(id -u)
+
+
+SSH1=""
+SSH2=""
+
+if [ ! -z "${SSH_AUTH_SOCK}" ] ; then SSH1="-e SSH_AUTH_SOCK=/home/developer/.foo -v $(greadlink -f ${SSH_AUTH_SOCK}):/home/developer/.foo" ; fi ;
+if [ -e ${HOME}/.ssh/id_rsa ]; then SSH2="-v ${HOME}/.ssh/rsa_corp_git:/home/developer/.ssh/id_rsa" ; fi ;
+
+PR_SHA=$(git rev-parse HEAD)
+REPO_NAME=behance/bemoonbeam-cli
+IMAGE_TAG=${REPO_NAME}:dev
+
+TAG="${IMAGE_TAG}"
+
+docker build --build-arg HOST_USER_ID="${_UID}" --tag "${TAG}" \
+    --file "Dockerfile" $(pwd)
+
+docker run --rm ${SSH1} ${SSH2} --security-opt label=disable \
+    --volume "$(pwd)/:/home/developer/app" --workdir "/home/developer/app" \
+    --tty --interactive "${TAG}" bash
