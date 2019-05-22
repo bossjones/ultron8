@@ -9,6 +9,7 @@ pytest-benchmark[histogram]
 -e git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb
 pdbpp
 black
+ipython
 
 pytest-sugar
 pytest-rerunfailures

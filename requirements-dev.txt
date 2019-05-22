@@ -24,7 +24,7 @@ fancycompleter==0.8       # via pdbpp
 idna==2.8                 # via requests
 ipdb==0.12
 ipython-genutils==0.2.0   # via traitlets
-ipython==7.5.0            # via ipdb
+ipython==7.5.0
 isort==4.3.20
 jedi==0.13.3              # via ipython
 more-itertools==7.0.0     # via pytest

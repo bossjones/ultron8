@@ -273,6 +273,9 @@ setup_pyenv: brew_install_pyenv enable_pyenv ## ** Do some pre-setup for pyenv a
 bootstrap_venv: pre_commit_install init_venv dev_dep show_venv_activate_cmd ## ** Create virtual environment, initialize it, install packages, and remind user to activate after make is done
 # bootstrap_venv: init_venv dev_dep ## ** Create virtual environment, initialize it, install packages, and remind user to activate after make is done
 
+.PHONY: bootstrap
+bootstrap: pip-tools bootstrap_venv
+
 .PHONY: init_venv
 init_venv: ## ** Initiate Virtual Environment
 ifeq (${USE_PYENV}, "Y")
@@ -297,6 +300,8 @@ ifeq (${USE_PYENV}, "Y")
 	# pyenv install ${PY_VERSION} -s
 	# pyenv rehash
 
+	@printf "=======================================\n"
+	@printf "$$GREEN Creating virtualenv ${VENV_NAME}:$$NC
 	-pyenv virtualenv ${PY_VERSION} ${VENV_NAME}
 	@printf "FINISHED:\n"
 	@printf "=======================================\n"
