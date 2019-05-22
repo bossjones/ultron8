@@ -8,3 +8,4 @@ include *.rst
 recursive-include ultron8 *.*
 recursive-exclude *.pyc
 recursive-exclude *.pyo
+recursive-exclude tests *

@@ -5,6 +5,8 @@ MAKEFLAGS += --warn-undefined-variables
 
 SHELL = /bin/bash
 
+CI_PYENV_DOCKER_IMAGE := bossjones/docker-pyenv:latest
+
 
 # SOURCE: https://github.com/wk8838299/bullcoin/blob/8182e2f19c1f93c9578a2b66de6a9cce0506d1a7/LMN/src/makefile.osx
 HAVE_BREW=$(shell brew --prefix >/dev/null 2>&1; echo $$? )
@@ -449,3 +451,29 @@ install-ip-cmd-osx:
 
 flush-cache:
 	@sudo killall -HUP mDNSResponder
+
+
+###############################
+
+# A Self-Documenting Makefile: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
+
+.PHONY: git-clean git-env pipenv-test pipenv-test-cover pipenv-test-cli help2
+
+git-clean: ## Remove files and directories ignored by git
+	git clean -d -X -f
+
+pipenv-env: ## Run `pipenv install --dev` to create dev environment
+	pipenv --python 3
+	pipenv install --dev
+
+pipenv-test: ## Run tests
+	pipenv run py.test
+
+pipenv-test-cover: ## Run tests - with coverage report
+	pipenv run py.test --cov=. --cov-report=term-missing
+
+pipenv-test-cli: ## Run CLI with example Via JSON data
+	pipenv run image-annotation-convert tests/annotation-data/via_example.json --output-format=sensei_csv
+
+help2:
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
