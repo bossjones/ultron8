@@ -350,13 +350,21 @@ ifeq ($(HAVE_BREW), 0)
 	( \
 		cd ${PROJECT_ROOT_DIR}; \
 		ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" ${BIN_PIP} install -r requirements.txt; \
+		ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" ${BIN_PIP} install -r requirements-dev.txt; \
+		ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" ${BIN_PIP} install -r requirements-doc.txt; \
+		ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" ${BIN_PIP} install -r requirements-test.txt; \
 	)
 else
 	( \
 		cd ${PROJECT_ROOT_DIR}; \
 		${BIN_PIP} install -r requirements.txt; \
+		${BIN_PIP} install -r requirements-dev.txt; \
+		${BIN_PIP} install -r requirements-test.txt; \
+		${BIN_PIP} install -r requirements-doc.txt; \
 	)
 endif
+
+install-dev: dev_dep ## ** Install Development Dependencies
 
 
 .PHONY: show_venv_activate_cmd
@@ -445,7 +453,9 @@ pip-compile-rebuild: pip-tools
 .PHONY: install-deps-all
 install-deps-all:
 	pip install -r requirements.txt
-	pip install -r requirements-dev.txt
+	-pip install -r requirements-dev.txt
+	-pip install -r requirements-test.txt
+	-pip install -r requirements-doc.txt
 
 yamllint-role:
 	bash -c "find .* -type f -name '*.y*ml' ! -name '*.venv' -print0 | xargs -I FILE -t -0 -n1 yamllint FILE"
