@@ -1,0 +1,24 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks.git
+    rev: v2.0.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+        exclude: CHANGELOG.md|cluster_itests/tron_framework_secret
+    -   id: check-json
+    -   id: check-yaml
+    -   id: flake8
+        exclude: testifycompat/
+-   repo: https://github.com/asottile/reorder_python_imports.git
+    rev: v1.3.2
+    hooks:
+    -   id: reorder-python-imports
+        language_version: python3.6
+-   repo: local
+    hooks:
+    -   id: patch-enforce-autospec
+        name: mock.patch enforce autospec
+        description: This hook ensures all mock.patch invocations specify an autospec
+        entry: contrib/mock_patch_checker.py
+        language: script
+        files: ^tests/.*\.py$
