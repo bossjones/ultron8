@@ -74,3 +74,11 @@ export PYENV_VERSION=3.6.8
 pip install -U pip setuptools --no-cache-dir && \
   pip install -U virtualenv pipenv --no-cache-dir && \
   pip install -U virtualenvwrapper --no-cache-dir
+
+
+# install stuff for vim
+# https://github.com/bossjones/python-vimrc
+
+sudo apt-get install -y build-essential cmake python3-dev
+
+# sh -c "$(curl -fsSL https://raw.githubusercontent.com/ets-labs/python-vimrc/master/setup.sh)"

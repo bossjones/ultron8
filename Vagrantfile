@@ -13,8 +13,12 @@ $configureBox = <<-SCRIPT
     apt-get update
     apt-get install -y apt-transport-https ca-certificates curl software-properties-common
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-    add-apt-repository "deb https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
+    add-apt-repository "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
     apt-get update
+    apt-get install -y docker-ce
+
+    docker info
+
     # && apt-get install -y docker-ce=$(apt-cache madison docker-ce | grep 17.03 | head -1 | awk '{print $3}')
     # apt-mark hold docker-ce
 
@@ -99,9 +103,10 @@ Vagrant.configure(2) do |config|
       vm_config.vbguest.auto_update = true
 
       vm_config.vm.box = settings[:box]
-      # vm_config.disksize.size = '20GB'
+      vm_config.disksize.size = '20GB'
       # vm_config.disksize.size = settings[:disk]
-      vm_config.disksize.size = "#{settings[:disk]}"
+      # vm_config.disksize.size = "#{settings[:disk]}"
+      # vm_config.disksize.size = '' + settings[:disk] + ''
 
       # config.vm.box_version = settings[:box_version]
       vm_config.vm.network 'private_network', ip: settings[:eth1]
