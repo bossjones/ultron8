@@ -21,3 +21,5 @@ echo "CPPFLAGS: ${CPPFLAGS}"
 echo "PKG_CONFIG_PATH: ${PKG_CONFIG_PATH}"
 echo "alias compile_pyenv_env: $(type compile_pyenv_env)"
 echo "----------------------"
+
+pyenv virtualenv 3.6.8 ultron8_venv
