@@ -5,3 +5,4 @@ pyconfig
 wget
 ruamel.yaml
 ruamel.yaml.cmd
+argcomplete

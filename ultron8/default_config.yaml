@@ -1,0 +1,116 @@
+---
+behance_pub:
+  token: ''
+  api_url: https://api.github.com
+  organization: behance
+  # NOTE: If you want, you can completely disable this whitelist by commenting the whole thing out like we did below. To enable, simply comment everything in. Same applies for blacklist.
+#  whitelist:
+#    - redpill
+#    - opensoc-vagrant
+#    - haystack2
+#    - deepnet
+#    - docker-python3
+#    - searchcnn
+#    - docker
+#    - deploy
+#    blacklist:
+#      - adobevpn
+
+adobe_search_pub:
+  token: ''
+  api_url: https://api.github.com
+  organization: adobe-search
+  # NOTE: If you want, you can completely disable this whitelist by commenting the whole thing out like we did below. To enable, simply comment everything in. Same applies for blacklist.
+#  whitelist:
+#    - redpill
+#    - opensoc-vagrant
+#    - haystack2
+#    - deepnet
+#    - docker-python3
+#    - searchcnn
+#    - docker
+#    - deploy
+#    blacklist:
+#      - adobevpn
+
+behanceops_pub:
+  token: ''
+  api_url: https://api.github.com
+  organization: behanceops
+  # NOTE: If you want, you can completely disable this whitelist by commenting the whole thing out like we did below. To enable, simply comment everything in. Same applies for blacklist.
+#  whitelist:
+#    - redpill
+#    - opensoc-vagrant
+#    - haystack2
+#    - deepnet
+#    - docker-python3
+#    - searchcnn
+#    - docker
+#    - deploy
+#    blacklist:
+#      - adobevpn
+behance_corp:
+  token: ''
+  api_url: https://git.corp.adobe.com/api/v3
+  organization: behance
+  # NOTE: If you want, you can completely disable this whitelist by commenting the whole thing out like we did below. To enable, simply comment everything in. Same applies for blacklist.
+#  whitelist:
+#    - redpill
+#    - opensoc-vagrant
+#    - haystack2
+#    - deepnet
+#    - docker-python3
+#    - searchcnn
+#    - docker
+#    - deploy
+#    blacklist:
+#      - adobevpn
+ap_corp:
+  token: ''
+  api_url: https://git.corp.adobe.com/api/v3
+  organization: adobe-platform
+  # NOTE: If you want, you can completely disable this whitelist by commenting the whole thing out like we did below. To enable, simply comment everything in. Same applies for blacklist.
+#  whitelist:
+#    - redpill
+#    - opensoc-vagrant
+#    - haystack2
+#    - deepnet
+#    - docker-python3
+#    - searchcnn
+#    - docker
+#    - deploy
+#    blacklist:
+#      - adobevpn
+testorg_ops:
+  token: ''
+  api_url: https://api.github.com
+  organization: testopsorg
+  # NOTE: If you want, you can completely disable this whitelist by commenting the whole thing out like we did below. To enable, simply comment everything in. Same applies for blacklist.
+#  whitelist:
+#    - redpill
+#    - opensoc-vagrant
+#    - haystack2
+#    - deepnet
+#    - docker-python3
+#    - searchcnn
+#    - docker
+#    - deploy
+#    blacklist:
+#      - adobevpn
+
+testorg_be:
+  token: ''
+  api_url: https://api.github.com
+  organization: testbeorg
+  # NOTE: If you want, you can completely disable this whitelist by commenting the whole thing out like we did below. To enable, simply comment everything in. Same applies for blacklist.
+#  whitelist:
+#    - redpill
+#    - opensoc-vagrant
+#    - haystack2
+#    - deepnet
+#    - docker-python3
+#    - searchcnn
+#    - docker
+#    - deploy
+#    blacklist:
+#      - adobevpn
