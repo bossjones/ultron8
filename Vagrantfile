@@ -100,7 +100,8 @@ Vagrant.configure(2) do |config|
 
       vm_config.vm.box = settings[:box]
       # vm_config.disksize.size = '20GB'
-      vm_config.disksize.size = settings[:disk]
+      # vm_config.disksize.size = settings[:disk]
+      vm_config.disksize.size = "#{settings[:disk]}"
 
       # config.vm.box_version = settings[:box_version]
       vm_config.vm.network 'private_network', ip: settings[:eth1]
