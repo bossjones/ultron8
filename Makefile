@@ -469,6 +469,9 @@ else
 	pip install -r requirements-doc.txt
 endif
 
+.PHONY: install-all
+install-all: install-deps-all
+
 yamllint-role:
 	bash -c "find .* -type f -name '*.y*ml' ! -name '*.venv' -print0 | xargs -I FILE -t -0 -n1 yamllint FILE"
 

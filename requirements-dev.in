@@ -4,15 +4,15 @@ isort
 coveralls
 pytest
 pytest-cov
-pytest-timeout
-pytest-benchmark[histogram]
+# pytest-timeout
+# pytest-benchmark[histogram]
 -e git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb
 pdbpp
 black
 ipython
 
 pytest-sugar
-pytest-rerunfailures
+# pytest-rerunfailures
 pytest-mock
 pytest-leaks
 
