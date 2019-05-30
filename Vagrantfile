@@ -111,6 +111,10 @@ Vagrant.configure(2) do |config|
       # config.vm.box_version = settings[:box_version]
       vm_config.vm.network 'private_network', ip: settings[:eth1]
 
+      # INFO: Docker ports
+      config.vm.network "forwarded_port", guest: 2375, host: 2375
+      config.vm.network "forwarded_port", guest: 2376, host: 2376
+
       vm_config.vm.hostname = settings[:hostname]
 
       config.vm.provider 'virtualbox' do |v|
