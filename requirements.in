@@ -6,3 +6,43 @@ wget
 ruamel.yaml
 ruamel.yaml.cmd
 argcomplete
+# apscheduler
+
+# SOURCE: https://github.com/aio-libs/aiojobs
+# Jobs scheduler for managing background task (asyncio) aiojobs.readthedocs.io
+aiojobs
+
+# SOURCE: https://github.com/aio-libs/aiodocker
+# NOTE: Python Docker API client based on asyncio and aiohttp
+aiodocker
+
+# SOURCE: https://github.com/aio-libs/janus
+# Thread-safe asyncio-aware queue for Python
+janus
+
+# https://github.com/aio-libs/aiohttp-session
+# https://github.com/aio-libs/aiohttp
+# https://github.com/aio-libs/aiomysql
+# https://github.com/aio-libs/aiobotocore
+# aiobotocore[awscli]
+
+# SOURCE: https://github.com/aio-libs/yarl
+# Yet another URL library yarl.readthedocs.io
+yarl
+
+# SOURCE: https://github.com/aio-libs/multidict
+# Multidict is dict-like collection of key-value pairs where key might be occurred more than once in the container.
+multidict
+
+# SOURCE: https://github.com/aio-libs/aiohttp-jinja2
+# jinja2 template renderer for aiohttp.web http://aiohttp_jinja2.readthedocs.org
+aiohttp-jinja2
+
+
+# SOURCE: https://github.com/aio-libs/async-timeout
+# asyncio-compatible timeout context
+async-timeout
+
+# SOURCE: https://github.com/aio-libs/aiorwlock
+# Synchronization primitive RWLock for asyncio (PEP 3156)
+aiorwlock
