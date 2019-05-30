@@ -144,3 +144,103 @@
        tags:
          - boss-ansible-role-journald
 
+- hosts: localhost
+  tags:
+    - pyenv
+  vars:
+    bossjones__user: vagrant
+    bossjones__group: vagrant
+  environment:
+    SHELL: /bin/bash
+    PYTHON_CONFIGURE_OPTS: "--enable-shared"
+  roles:
+    - role: avanov.pyenv
+      pyenv_path: "/.pyenv"
+      pyenv_owner: "{{ bossjones__user }}"
+      pyenv_update_git_install: no
+      pyenv_enable_autocompletion: yes
+      pyenv_python_versions:
+        - "3.6.8"
+        - "3.7.3"
+      pyenv_virtualenvs:
+        - venv_name: "env368"
+          py_version: "3.6.8"
+
+        - venv_name: "env373"
+          py_version: "3.7.3"
+  post_tasks:
+
+    # Install plugins for pyenv
+    - name: Clone pyenv-virtualenvwrapper
+      git:
+        repo: https://github.com/pyenv/pyenv-virtualenvwrapper
+        dest: "/.pyenv/plugins/pyenv-virtualenvwrapper"
+        version: "master"
+        update: "{{ pyenv_update_git_install }}"
+
+    - name: Clone pyenv-pip-rehash
+      git:
+        repo: https://github.com/pyenv/pyenv-pip-rehash
+        dest: "/.pyenv/plugins/pyenv-pip-rehash"
+        version: "master"
+        update: "{{ pyenv_update_git_install }}"
+
+    - name: Clone pyenv-pip-migrate
+      git:
+        repo: https://github.com/pyenv/pyenv-pip-migrate
+        dest: "/.pyenv/plugins/pyenv-pip-migrate"
+        version: "master"
+        update: "{{ pyenv_update_git_install }}"
+
+    - name: Clone pyenv-update
+      git:
+        repo: https://github.com/pyenv/pyenv-update
+        dest: "/.pyenv/plugins/pyenv-update"
+        version: "master"
+        update: "{{ pyenv_update_git_install }}"
+
+    - name: Clone pyenv-doctor
+      git:
+        repo: https://github.com/pyenv/pyenv-doctor
+        dest: "/.pyenv/plugins/pyenv-doctor"
+        version: "master"
+        update: "{{ pyenv_update_git_install }}"
+
+    - name: Clone pyenv-default-packages
+      git:
+        repo: https://github.com/jawshooah/pyenv-default-packages
+        dest: "/.pyenv/plugins/pyenv-default-packages"
+        version: "master"
+        update: "{{ pyenv_update_git_install }}"
+
+# Install pyenv module so we can use it
+- hosts: localhost
+  tags:
+    - pyenv_module
+  vars:
+    bossjones__user: vagrant
+    bossjones__group: vagrant
+    pyenv_root: "/.pyenv"
+  become: yes
+  become_user: vagrant
+  environment:
+    SHELL: /bin/bash
+  roles:
+    - role: suzuki-shunsuke.pyenv-module
+
+  post_tasks:
+    # use pip module with executable option
+    - name: install powerline-status
+      pip:
+        name: "{{item}}"
+        executable: "{{pyenv_root}}/versions/3.7.3/bin/pip"
+      with_items:
+        - cheat
+
+    # use pip module with executable option
+    - name: install powerline-status
+      pip:
+        name: "{{item}}"
+        executable: "{{pyenv_root}}/versions/3.6.8/bin/pip"
+      with_items:
+        - cheat

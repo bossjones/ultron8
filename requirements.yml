@@ -39,3 +39,11 @@
 - src: https://www.github.com/mrlesmithjr/ansible-timezone.git
 - src: https://www.github.com/mrlesmithjr/ansible-influxdb.git
 - src: rvm.ruby
+- src: https://github.com/bossjones/ansible-galaxy-pyenv
+  version: feature-support-dnf-on-fedora
+  name: avanov.pyenv
+
+# After you call this role, you can use this module.
+- src: https://github.com/suzuki-shunsuke/ansible-pyenv-module
+  version: ab05ad3fe39fdc1f9905abf429eded353b7c0fd7
+  name: suzuki-shunsuke.pyenv-module
