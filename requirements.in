@@ -46,3 +46,9 @@ async-timeout
 # SOURCE: https://github.com/aio-libs/aiorwlock
 # Synchronization primitive RWLock for asyncio (PEP 3156)
 aiorwlock
+
+
+
+# SOURCE: https://github.com/Yelp/task_processing
+# Interfaces and shared infrastructure for generic task processing at Yelp.
+# task_processing

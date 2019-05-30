@@ -36,3 +36,12 @@ pytest-leaks
 # SOURCE: https://github.com/aio-libs/aiomonitor
 # NOTE: aiomonitor is module that adds monitor and python REPL capabilities for asyncio application http://aiomonitor.readthedocs.io
 aiomonitor
+
+pre-commit
+
+mccabe
+
+
+# SOURCE: https://github.com/ionelmc/python-lazy-object-proxy
+# NOTE: from yelp/Tron originally
+lazy-object-proxy
