@@ -457,10 +457,17 @@ pip-compile-rebuild: pip-tools
 
 .PHONY: install-deps-all
 install-deps-all:
+ifeq (${DETECTED_OS}, Darwin)
+	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements.txt
+	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-dev.txt
+	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-test.txt
+	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-doc.txt
+else
 	pip install -r requirements.txt
-	-pip install -r requirements-dev.txt
-	-pip install -r requirements-test.txt
-	-pip install -r requirements-doc.txt
+	pip install -r requirements-dev.txt
+	pip install -r requirements-test.txt
+	pip install -r requirements-doc.txt
+endif
 
 yamllint-role:
 	bash -c "find .* -type f -name '*.y*ml' ! -name '*.venv' -print0 | xargs -I FILE -t -0 -n1 yamllint FILE"
