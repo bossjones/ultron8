@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# SOURCE: https://github.com/jiansoung/issues-list/issues/13
+# Fixes: zipimport.ZipImportError: can't decompress data; zlib not available
+export LDFLAGS="${LDFLAGS} -L/usr/local/opt/zlib/lib"
+export CPPFLAGS="${CPPFLAGS} -I/usr/local/opt/zlib/include"
+export LDFLAGS="${LDFLAGS} -L/usr/local/opt/sqlite/lib"
+export CPPFLAGS="${CPPFLAGS} -I/usr/local/opt/sqlite/include"
+export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/zlib/lib/pkgconfig"
+export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/sqlite/lib/pkgconfig"
+
+env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.6.8
+
+alias compile_pyenv_env='LDFLAGS="${LDFLAGS} -L/usr/local/opt/zlib/lib -L/usr/local/opt/sqlite/lib" CPPFLAGS="${CPPFLAGS} -I/usr/local/opt/zlib/include -I/usr/local/opt/sqlite/include" PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/zlib/lib/pkgconfig /usr/local/opt/sqlite/lib/pkgconfig" pyenv'
+
+echo "----------------------"
+echo "Verify pyenv compile env vars"
+echo "----------------------"
+echo "LDFLAGS: ${LDFLAGS}"
+echo "CPPFLAGS: ${CPPFLAGS}"
+echo "PKG_CONFIG_PATH: ${PKG_CONFIG_PATH}"
+echo "alias compile_pyenv_env: $(type compile_pyenv_env)"
+echo "----------------------"
