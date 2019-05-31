@@ -45,7 +45,7 @@ __check_defined = \
     $(if $(value $1),, \
       $(error Undefined $1$(if $(value 2), ($(strip $2)))))
 
-export PATH := ./bin:./bash:./venv/bin:$(PATH)
+export PATH := ./script:./bin:./bash:./venv/bin:$(PATH)
 
 MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_FOLDER := $(notdir $(patsubst %/,%,$(dir $(MKFILE_PATH))))
@@ -584,7 +584,11 @@ docker-version:
 pipenv-init: ## Run `pipenv install --dev` to create dev environment
 	pip install pipenv --upgrade
 	pipenv --python 3.6.8
+
+pipenv-dev: ## Run `pipenv install --dev` to create dev environment
 	pipenv install --dev
+
+pipenv-bootstrap: pipenv-init pipenv-dev
 
 pipenv-activate:
 	@echo "Run: pipenv shell"
@@ -605,4 +609,19 @@ coverage:
 lint-configs-subtree:
 	git subtree add --prefix lint-configs-python https://github.com/bossjones/lint-configs-python.git master --squash
 
-# --------------------------------------------------------------------------------------------------------------------
+docker-machine-create:
+	docker-machine create \
+	--driver generic \
+	--generic-ip-address=192.168.2.8 \
+	--generic-ssh-key ~/.ssh/vagrant_id_rsa \
+	ultron8
+
+
+docker-machine-env-print:
+	@printf "=======================================\n"
+	@printf "$$GREEN docker-machine ultron8 created:$$NC\n"
+	@printf "=======================================\n"
+	@printf "$$BLUE - POST STEPS:$$NC\n"
+	@printf "=======================================\n"
+	@printf "$$ORNG     [RUN] $$(print-dm-eval) $$NC\n"
+
