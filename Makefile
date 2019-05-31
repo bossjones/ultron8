@@ -7,6 +7,7 @@ SHELL = /bin/bash
 
 CI_PYENV_DOCKER_IMAGE := bossjones/docker-pyenv:latest
 
+VAGRANT_HOST_IP := 192.168.2.8
 
 # SOURCE: https://github.com/wk8838299/bullcoin/blob/8182e2f19c1f93c9578a2b66de6a9cce0506d1a7/LMN/src/makefile.osx
 HAVE_BREW=$(shell brew --prefix >/dev/null 2>&1; echo $$? )
@@ -601,10 +602,11 @@ ci:
 test-readme:
 	@pipenv run python setup.py check --restructuredtext --strict && ([ $$? -eq 0 ] && echo "README.rst and HISTORY.rst ok") || echo "Invalid markup in README.rst or HISTORY.rst!"
 flake8:
-	pipenv run flake8 --ignore=E501,F401,E128,E402,E731,F821 ultron8
+# pipenv run flake8 --config=$(CURRENT_DIR)/lint-configs-python/.flake8 --ignore=E501,F401,E128,E402,E731,F821 ultron8
+	pipenv run flake8 --config=$(CURRENT_DIR)/lint-configs-python/python/.flake8 $(PACKAGE_NAME)
 
 coverage:
-	pipenv run py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
+	pipenv run py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=$(PACKAGE_NAME) tests
 
 lint-configs-subtree:
 	git subtree add --prefix lint-configs-python https://github.com/bossjones/lint-configs-python.git master --squash
@@ -612,14 +614,14 @@ lint-configs-subtree:
 docker-machine-create:
 	docker-machine create \
 	--driver generic \
-	--generic-ip-address=192.168.2.8 \
+	--generic-ip-address=$(VAGRANT_HOST_IP) \
 	--generic-ssh-key ~/.ssh/vagrant_id_rsa \
-	ultron8
+	$(PACKAGE_NAME)
 
 
 docker-machine-env-print:
 	@printf "=======================================\n"
-	@printf "$$GREEN docker-machine ultron8 created:$$NC\n"
+	@printf "$$GREEN docker-machine $(PACKAGE_NAME) created:$$NC\n"
 	@printf "=======================================\n"
 	@printf "$$BLUE - POST STEPS:$$NC\n"
 	@printf "=======================================\n"

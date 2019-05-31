@@ -37,10 +37,10 @@ class PersistenceManagerFactory(object):
         if store_type == schema.StatePersistenceTypes.yaml:
             store = YamlStateStore(name)
 
-        if store_type == schema.StatePersistenceTypes.dynamodb:
-            table_name = persistence_config.table_name
-            dynamodb_region = persistence_config.dynamodb_region
-            store = DynamoDBStateStore(table_name, dynamodb_region)
+        # if store_type == schema.StatePersistenceTypes.dynamodb:
+        #     table_name = persistence_config.table_name
+        #     dynamodb_region = persistence_config.dynamodb_region
+        #     store = DynamoDBStateStore(table_name, dynamodb_region)
 
         buffer = StateSaveBuffer(buffer_size)
         return PersistentStateManager(store, buffer)
@@ -258,8 +258,8 @@ class StateChangeWatcher(observer.Observer):
         """Handle a state change in an observable by saving its state."""
         if isinstance(observable, job.Job):
             self.save_job(observable)
-        elif observable == MesosClusterRepository:
-            self.save_frameworks(observable)
+        # elif observable == MesosClusterRepository:
+        #     self.save_frameworks(observable)
 
     def save_job(self, job):
         self._save_object(runstate.JOB_STATE, job)
