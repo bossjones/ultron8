@@ -51,7 +51,6 @@ set -e
 sudo apt-get update && \
     sudo apt-get install -y --no-install-recommends git ca-certificates curl && \
     curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | sudo -i -u vagrant bash && \
-    sudo git clone https://github.com/yyuu/pyenv-pip-rehash.git /.pyenv/plugins/pyenv-pip-rehash && \
     sudo apt-get clean
 
 sudo chown -Rv vagrant:vagrant ${PYENV_ROOT}

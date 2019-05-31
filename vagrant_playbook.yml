@@ -171,6 +171,17 @@
 
         - venv_name: "env373"
           py_version: "3.7.3"
+
+  pre_tasks:
+    - name: debian | Installing Pre-Reqs
+      apt:
+        name: "{{ item }}"
+        state: present
+      become: True
+      with_items:
+        - libssl1.0-dev
+        - libssl1.0.0
+
   post_tasks:
 
     # Install plugins for pyenv
@@ -254,6 +265,46 @@
         - tox
         - docker-compose
 
+    # use pip module with executable option
+    - name: install tox
+      pip:
+        name: "{{item}}"
+        executable: "{{pyenv_root}}/versions/env373/bin/pip"
+      with_items:
+        - tox
+        - docker-compose
+        # - pylint
+
+    # use pip module with executable option
+    - name: install tox
+      pip:
+        name: "{{item}}"
+        executable: "{{pyenv_root}}/versions/env368/bin/pip"
+      with_items:
+        - tox
+        - docker-compose
+        # - pylint
+
+
+    - name: 'fix .pyenvrc to say export PATH="$PYENV_ROOT/bin:$PATH"'
+      lineinfile:
+        path: /home/{{ bossjones__user }}/.pyenv/.pyenvrc
+        regexp: '^export PATH="\$PYENV_ROOT/bin:\$PATH"$'
+        line: 'export PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"'
+
+    - name: 'fix .pyenvrc to say - eval "$(pyenv virtualenv-init -)"'
+      lineinfile:
+        path: /home/{{ bossjones__user }}/.pyenv/.pyenvrc
+        regexp: '^eval "$(pyenv virtualenv-init -)"$'
+        insertafter: '^eval "$(pyenv init -)"$'
+        line: 'eval "$(pyenv virtualenv-init -)"'
+
+# export PATH="/.pyenv/bin:/.pyenv/shims:$PATH"
+# # Include this file into your ~/.bashrc
+# # -------------------------------------
+# export PYENV_ROOT="/home/vagrant/.pyenv"
+# export PATH="$PYENV_ROOT/bin:$PATH"
+# eval "$(pyenv init -)"
 
 # sudo apt-get install -y bmon ; \
 # sudo apt-get install -y cmatrix ; \
@@ -281,3 +332,7 @@
 # sudo apt-get install -y top ; \
 # sudo apt-get install -y tiptop ; \
 # sudo apt-get install -y vnstat
+
+
+# libssl1.0-dev - Secure Sockets Layer toolkit - development files
+# libssl1.0.0 - Secure Sockets Layer toolkit - shared libraries

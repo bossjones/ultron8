@@ -52,3 +52,5 @@ aiorwlock
 # SOURCE: https://github.com/Yelp/task_processing
 # Interfaces and shared infrastructure for generic task processing at Yelp.
 # task_processing
+
+jinja2-cli[yaml]
