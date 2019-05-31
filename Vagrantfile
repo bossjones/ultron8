@@ -10,12 +10,12 @@ NON_ROOT_USER = 'vagrant'.freeze
 
 # This script to install k8s using kubeadm will get executed after a box is provisioned
 $configureBox = <<-SCRIPT
-    apt-get update
-    apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-    add-apt-repository "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
-    apt-get update
-    apt-get install -y docker-ce
+    sudo apt-get update
+    sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    sudo add-apt-repository "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
+    sudo apt-get update
+    sudo apt-get install -y docker-ce
 
     docker info
 
@@ -23,7 +23,7 @@ $configureBox = <<-SCRIPT
     # apt-mark hold docker-ce
 
     # run docker commands as vagrant user (sudo not required)
-    usermod -aG docker vagrant
+    sudo usermod -aG docker vagrant
 
     # install kubeadm
     apt-get install -y apt-transport-https curl
@@ -34,6 +34,15 @@ $configureBox = <<-SCRIPT
 
     # keep swap off after reboot
     # sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+    sudo fallocate -l 2G /swapfile
+    sudo dd if=/dev/zero of=/swapfile bs=2048 count=1048576
+    sudo chmod 600 /swapfile
+    sudo mkswap /swapfile
+    sudo swapon /swapfile
+    echo "/swapfile swap swap defaults 0 0" | sudo tee -a /etc/fstab
+    sudo swapon --show
+    sudo free -h
 
     # ip of this box
     IP_ADDR=`ifconfig enp0s8 | grep Mask | awk '{print $2}'| cut -f2 -d:`
@@ -75,15 +84,19 @@ EOF
 
     sudo sysctl -w vm.min_free_kbytes=1024000
     sudo sync; sudo sysctl -w vm.drop_caches=3; sudo sync
-    mkdir -p ~vagrant/dev
+    sudo mkdir -p ~vagrant/dev
+    sudo -i -u vagrant git clone https://github.com/viasite-ansible/ansible-role-zsh ~vagrant/dev/ansible-role-zsh
     sudo chown vagrant:vagrant -Rv ~vagrant
-    git clone https://github.com/viasite-ansible/ansible-role-zsh ~/dev/ansible-role-zsh
     sudo apt-get install software-properties-common -y
     sudo apt-add-repository ppa:ansible/ansible -y
     sudo apt-get update
     sudo apt-get install ansible -y
+    sudo mkdir -p /etc/ansible/roles
+    sudo chown vagrant:vagrant -Rv /etc/ansible/roles
 
     sudo -i -u vagrant git clone https://github.com/samoshkin/tmux-config.git ~vagrant/dev/tmux-config
+    echo "------------------Finished------------------"
+    echo "Now run ansible-galaxy"
 SCRIPT
 
 Vagrant.configure(2) do |config|
@@ -145,7 +158,7 @@ Vagrant.configure(2) do |config|
         vm_config.hostmanager.aliases = aliases
       end
 
-      # vm_config.vm.provision 'shell', inline: $configureBox
+      vm_config.vm.provision 'shell', inline: $configureBox
     end
   end
 end

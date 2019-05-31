@@ -128,15 +128,15 @@
        tags:
          - boss-ansible-role-debug
 
-     - role: boss-ansible-role-tools
-       task: tools
-       bossjones__user: vagrant
-       bossjones__group: vagrant
-       boss__tools__install_docker_tools: True
-       boss__tools__install_kube_tools: False
-       boss__tools__install_rust_tools: True
-       tags:
-         - boss-ansible-role-tools
+    #  - role: boss-ansible-role-tools
+    #    task: tools
+    #    bossjones__user: vagrant
+    #    bossjones__group: vagrant
+    #    boss__tools__install_docker_tools: True
+    #    boss__tools__install_kube_tools: False
+    #    boss__tools__install_rust_tools: True
+    #    tags:
+    #      - boss-ansible-role-tools
 
      - role: boss-ansible-role-journald
        bossjones__user: vagrant
@@ -150,13 +150,16 @@
   vars:
     bossjones__user: vagrant
     bossjones__group: vagrant
+  become: yes
+  become_method: sudo
   environment:
     SHELL: /bin/bash
     PYTHON_CONFIGURE_OPTS: "--enable-shared"
   roles:
     - role: avanov.pyenv
-      pyenv_path: "/.pyenv"
+      pyenv_path: "/home/{{ bossjones__user }}/.pyenv"
       pyenv_owner: "{{ bossjones__user }}"
+      pyenv_group: "{{ bossjones__user }}"
       pyenv_update_git_install: no
       pyenv_enable_autocompletion: yes
       pyenv_python_versions:
@@ -174,44 +177,48 @@
     - name: Clone pyenv-virtualenvwrapper
       git:
         repo: https://github.com/pyenv/pyenv-virtualenvwrapper
-        dest: "/.pyenv/plugins/pyenv-virtualenvwrapper"
+        dest: "/home/{{ bossjones__user }}/.pyenv/plugins/pyenv-virtualenvwrapper"
         version: "master"
         update: "{{ pyenv_update_git_install }}"
 
     - name: Clone pyenv-pip-rehash
       git:
         repo: https://github.com/pyenv/pyenv-pip-rehash
-        dest: "/.pyenv/plugins/pyenv-pip-rehash"
+        dest: "/home/{{ bossjones__user }}/.pyenv/plugins/pyenv-pip-rehash"
         version: "master"
         update: "{{ pyenv_update_git_install }}"
 
     - name: Clone pyenv-pip-migrate
       git:
         repo: https://github.com/pyenv/pyenv-pip-migrate
-        dest: "/.pyenv/plugins/pyenv-pip-migrate"
+        dest: "/home/{{ bossjones__user }}/.pyenv/plugins/pyenv-pip-migrate"
         version: "master"
         update: "{{ pyenv_update_git_install }}"
 
     - name: Clone pyenv-update
       git:
         repo: https://github.com/pyenv/pyenv-update
-        dest: "/.pyenv/plugins/pyenv-update"
+        dest: "/home/{{ bossjones__user }}/.pyenv/plugins/pyenv-update"
         version: "master"
         update: "{{ pyenv_update_git_install }}"
 
     - name: Clone pyenv-doctor
       git:
         repo: https://github.com/pyenv/pyenv-doctor
-        dest: "/.pyenv/plugins/pyenv-doctor"
+        dest: "/home/{{ bossjones__user }}/.pyenv/plugins/pyenv-doctor"
         version: "master"
         update: "{{ pyenv_update_git_install }}"
 
     - name: Clone pyenv-default-packages
       git:
         repo: https://github.com/jawshooah/pyenv-default-packages
-        dest: "/.pyenv/plugins/pyenv-default-packages"
+        dest: "/home/{{ bossjones__user }}/.pyenv/plugins/pyenv-default-packages"
         version: "master"
         update: "{{ pyenv_update_git_install }}"
+
+    # SOURCE: https://superuser.com/questions/1024677/ansible-how-to-recursively-set-directory-and-file-permissions
+    - name: chown pyenv dir
+      file: dest=/home/{{ bossjones__user }}/.pyenv owner="{{ bossjones__user }}" group="{{ bossjones__user }}" recurse=yes
 
 # Install pyenv module so we can use it
 - hosts: localhost
@@ -220,7 +227,7 @@
   vars:
     bossjones__user: vagrant
     bossjones__group: vagrant
-    pyenv_root: "/.pyenv"
+    pyenv_root: "/home/{{ bossjones__user }}/.pyenv"
   become: yes
   become_user: vagrant
   environment:
@@ -230,17 +237,47 @@
 
   post_tasks:
     # use pip module with executable option
-    - name: install powerline-status
+    - name: install tox
       pip:
         name: "{{item}}"
         executable: "{{pyenv_root}}/versions/3.7.3/bin/pip"
       with_items:
-        - cheat
+        - tox
+        - docker-compose
 
     # use pip module with executable option
-    - name: install powerline-status
+    - name: install tox
       pip:
         name: "{{item}}"
         executable: "{{pyenv_root}}/versions/3.6.8/bin/pip"
       with_items:
-        - cheat
+        - tox
+        - docker-compose
+
+
+# sudo apt-get install -y bmon ; \
+# sudo apt-get install -y cmatrix ; \
+# sudo apt-get install -y dnstop ; \
+# sudo apt-get install -y ethstatus ; \
+# sudo apt-get install -y glances ; \
+# sudo apt-get install -y htop ; \
+# sudo apt-get install -y ifstat ; \
+# sudo apt-get install -y iotop ; \
+# sudo apt-get install -y iptotal ; \
+# sudo apt-get install -y iptraf-ng ; \
+# sudo apt-get install -y itop ; \
+# sudo apt-get install -y jnettop ; \
+# sudo apt-get install -y kerneltop ; \
+# sudo apt-get install -y latencytop ; \
+# sudo apt-get install -y logtop ; \
+# sudo apt-get install -y netmrg ; \
+# sudo apt-get install -y nload ; \
+# sudo apt-get install -y nmon ; \
+# sudo apt-get install -y ntop ; \
+# sudo apt-get install -y powertop ; \
+# sudo apt-get install -y sagan ; \
+# sudo apt-get install -y slurm ; \
+# sudo apt-get install -y snetz ; \
+# sudo apt-get install -y top ; \
+# sudo apt-get install -y tiptop ; \
+# sudo apt-get install -y vnstat

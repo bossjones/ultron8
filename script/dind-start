@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+echo "Run: Docker in docker"
+# SOURCE: https://hub.docker.com/_/docker
+docker run --privileged --name ultron8-dind -v $(pwd)/var-lib-docker:/var/lib/docker -d docker:dind

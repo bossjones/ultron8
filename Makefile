@@ -512,3 +512,18 @@ docker-pyenv-cli:
 	-w /mnt \
 	-v $(CURRENT_DIR):/mnt \
 	$(CI_PYENV_DOCKER_IMAGE) bash
+
+download-roles: ## Download ansible roles in local directory ./roles/
+	ansible-galaxy install -r requirements.yml --roles-path ./roles/
+
+download-roles-force: ## FORCE: Download ansible roles in local directory ./roles/
+	ansible-galaxy --force install -r requirements.yml --roles-path ./roles/
+
+download-roles-global: ## Download ansible roles in global directory /etc/ansible/roles
+	ansible-galaxy install -r requirements.yml --roles-path=/etc/ansible/roles
+
+download-roles-global-force: ## FORCE: Download ansible roles in global directory /etc/ansible/roles
+	ansible-galaxy install --force -r requirements.yml --roles-path=/etc/ansible/roles
+
+vagrant-ansible-provision: download-roles-global
+	ansible-playbook -vv -c local -i inventory.ini vagrant_playbook.yml
