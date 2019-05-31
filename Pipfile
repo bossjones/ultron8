@@ -44,6 +44,7 @@ name = "pypi"
 # aiorwlock = "*"
 # 'jinja2-cli[yaml]' = "*"
 "e1839a8" = {path = ".", editable = true}
+ultron8 = {path = ".", extras = ["image-sizing", "http"], editable = true}
 
 
 [dev-packages]
@@ -63,6 +64,7 @@ isort = "*"
 coveralls = "*"
 # pipenv install --dev -e "git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb"
 # -e git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb
+pytest-ipdb = {git = "git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb"}
 pdbpp = "*"
 black = "*"
 ipython = "*"
