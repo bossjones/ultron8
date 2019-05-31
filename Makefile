@@ -419,11 +419,11 @@ travis:
 
 .PHONY: run-black-check
 run-black-check: ## CHECK MODE: sensible pylint ( Lots of press over this during pycon 2018 )
-	black --check --verbose .
+	black --check --exclude=ultron8_venv* --verbose .
 
 .PHONY: run-black
 run-black: ## sensible pylint ( Lots of press over this during pycon 2018 )
-	black --verbose .
+	black --verbose --exclude=ultron8_venv* .
 
 .PHONY: pip-tools
 pip-tools:

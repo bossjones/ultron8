@@ -24,3 +24,8 @@ repos:
         entry: contrib/mock_patch_checker.py
         language: script
         files: ^tests/.*\.py$
+-   repo: https://github.com/python/black
+    rev: stable
+    hooks:
+    - id: black
+      language_version: python3.6
