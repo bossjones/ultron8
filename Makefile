@@ -539,3 +539,38 @@ download-roles-global-force: ## FORCE: Download ansible roles in global director
 
 vagrant-ansible-provision: download-roles-global
 	ansible-playbook -vv -c local -i inventory.ini vagrant_playbook.yml
+
+
+docker-compose-build:
+	@docker-compose -f hacking/docker-compose.yml build
+
+docker-compose-build-playground:
+	@docker-compose -f hacking/docker-compose.yml build playground
+
+docker-compose-run-playground:
+	@docker-compose -f hacking/docker-compose.yml run --name ultron_playground --rm playground bash
+
+docker-compose-build-master:
+	@docker-compose -f hacking/docker-compose.yml build master
+
+docker-compose-run-master:
+	@docker-compose -f hacking/docker-compose.yml run --name ultron_master --rm master bash
+
+docker-compose-run-test:
+	@docker-compose -f hacking/docker-compose.yml run --name ultron_test --rm test bash python3 --version
+
+docker-compose-up:
+	@docker-compose -f hacking/docker-compose.yml up -d
+
+docker-compose-up-build:
+	@docker-compose -f hacking/docker-compose.yml up --build
+
+docker-compose-up-build-d:
+	@docker-compose -f hacking/docker-compose.yml up -d --build
+
+docker-compose-down:
+	@docker-compose -f hacking/docker-compose.yml down
+
+docker-version:
+	@docker --version
+	@docker-compose --version
