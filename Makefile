@@ -602,4 +602,7 @@ flake8:
 coverage:
 	pipenv run py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
 
+lint-configs-subtree:
+	git subtree add --prefix lint-configs-python https://github.com/bossjones/lint-configs-python.git master --squash
+
 # --------------------------------------------------------------------------------------------------------------------
