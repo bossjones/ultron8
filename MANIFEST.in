@@ -5,10 +5,14 @@
 
 include *.txt
 include *.rst
+include ultron8/default_config.yaml
+include ultron8/logging.conf
+include ultron8/named_config_template.yaml
 recursive-include ultron8 *.*
 recursive-exclude *.pyc
 recursive-exclude *.pyo
 recursive-exclude tests *
+
 
 
 # include README.md
