@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+CONTRIB_DIR=contrib
+
+# total 56
+# drwxr-xr-x 59 malcolm staff 1888 May 31 16:12 ..
+# -rwxr-xr-x  1 malcolm staff 2575 May 30 22:38 mock_patch_checker.py
+# drwxr-xr-x 14 malcolm staff  448 May 30 22:38 .
+# -rw-r--r--  1 malcolm staff  208 May 30 22:05 run_docker_cluster
+# -rwxr-xr-x  1 malcolm staff 3303 May 30 22:05 .setup_pyenv_ubuntu
+# -rw-r--r--  1 malcolm staff 1192 May 30 20:10 .deps_pyenv_bionic
+# -rw-r--r--  1 malcolm staff 1236 May 30 12:08 .pyenv_compile_env_brew
+# -rw-r--r--  1 malcolm staff 5316 Oct  1  2018 .ptpython_config.py
+# -rw-r--r--  1 malcolm staff 4462 Oct  1  2018 .pdbrc.py
+# -rw-r--r--  1 malcolm staff  151 Oct  1  2018 .fancycompleterrc.py
+# -rw-r--r--  1 malcolm staff 2487 Sep 24  2018 .pythonstart
+# -rw-r--r--  1 malcolm staff 2934 Sep 24  2018 .pdbrc
+# -rw-r--r--  1 malcolm staff  279 Sep 24  2018 .inputrc
+# -rw-r--r--  1 malcolm staff  171 Sep 24  2018 .pythonrc
+
+if_exists_backup() {
+    _file=$1
+
+    # If file exists and file is regular file
+    if [ -e ${_file} ] && [  -f ${_file} ]; then
+        _NOW_TIME=$(env LANG=us_US.UTF-8 date "+%b %d %H:%M:%S")
+        cp $_file $_file.bak.${_NOW_TIME}
+        echo "cp $_file --> $_file.bak.${_NOW_TIME}"
+        echo "file successfully backed up"
+    else
+        echo "file $_file does not exist, skipping ..."
+    fi
+}
+
+
+echo "Create symlinks for everything in ~/"
+# Bunch of symlinks
+if_exists_backup ~/.inputrc
+if_exists_backup ~/.inputrc
+if_exists_backup ~/.pdbrc
+if_exists_backup ~/.pdbrc.py
+if_exists_backup ~/.ptpython/config.py
+if_exists_backup ~/.pythonrc
+
+echo "Backing Up files  ~/"
+cp -av "$CONTRIB_DIR/.inputrc" ~
+cp -av "$CONTRIB_DIR/.pdbrc" ~
+cp -av "$CONTRIB_DIR/.pdbrc.py" ~
+mkdir -p ~/.ptpython/
+cp -av "$CONTRIB_DIR/.ptpython_config.py" ~/.ptpython/config.py
+cp -av "$CONTRIB_DIR/.pythonrc" ~

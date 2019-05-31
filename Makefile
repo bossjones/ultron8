@@ -655,3 +655,6 @@ pyroma:
 
 pipenv-lock:
 	pipenv lock
+
+copy-contrib:
+	copy-contrib
