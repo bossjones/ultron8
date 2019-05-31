@@ -1,6 +1,4 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 """Yaml Utility functions"""
 
 # pylint: disable=line-too-long
@@ -56,7 +54,7 @@ try:
 
 except Exception as e:
     EDITING_ENABLED = False
-    LOGGER.critical("shyaml: ruamel.yaml is not installed")
+    LOGGER.critical("ultron8.yaml: ruamel.yaml is not installed")
     exit(1)
 
 yaml_version = "1.2"
