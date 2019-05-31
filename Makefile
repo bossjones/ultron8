@@ -415,6 +415,16 @@ pre_commit_install:
 travis:
 	tox
 
+
+
+.PHONY: run-black-check
+run-black-check: ## CHECK MODE: sensible pylint ( Lots of press over this during pycon 2018 )
+	black --check --verbose .
+
+.PHONY: run-black
+run-black: ## sensible pylint ( Lots of press over this during pycon 2018 )
+	black --verbose .
+
 .PHONY: pip-tools
 pip-tools:
 ifeq (${DETECTED_OS}, Darwin)

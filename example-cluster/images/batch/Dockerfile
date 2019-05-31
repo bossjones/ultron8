@@ -20,9 +20,9 @@ RUN apt-get update > /dev/null && \
         rsyslog \
         && apt-get clean > /dev/null
 
-RUN useradd -ms /bin/bash tron && mkdir -p /home/tron/.ssh
-ADD example-cluster/images/batch/insecure_key.pub /home/tron
-RUN cat /home/tron/insecure_key.pub > /home/tron/.ssh/authorized_keys
+RUN useradd -ms /bin/bash ultron && mkdir -p /home/ultron/.ssh
+ADD example-cluster/images/batch/insecure_key.pub /home/ultron
+RUN cat /home/ultron/insecure_key.pub > /home/ultron/.ssh/authorized_keys
 
 RUN wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
 RUN python /tmp/get-pip.py
