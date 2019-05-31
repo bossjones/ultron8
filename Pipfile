@@ -75,5 +75,9 @@ mccabe = "*"
 lazy-object-proxy = "*"
 autopep8 = "*"
 
+[experimental-packages]
+bandit = "*"
+pyroma = "*"
+
 [pipenv]
 allow_prereleases = true

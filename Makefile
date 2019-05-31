@@ -453,6 +453,7 @@ pip-compile-upgrade-all: pip-tools
 	pip-compile --output-file requirements-dev.txt requirements-dev.in --upgrade
 	pip-compile --output-file requirements-test.txt requirements-test.in --upgrade
 	pip-compile --output-file requirements-doc.txt requirements-doc.in --upgrade
+	pip-compile --output-file requirements-experimental.txt requirements-experimental.in --upgrade
 
 .PHONY: pip-compile
 pip-compile: pip-tools
@@ -460,6 +461,7 @@ pip-compile: pip-tools
 	pip-compile --output-file requirements-dev.txt requirements-dev.in
 	pip-compile --output-file requirements-test.txt requirements-test.in
 	pip-compile --output-file requirements-doc.txt requirements-doc.in
+	pip-compile --output-file requirements-experimental.txt requirements-experimental.in
 
 .PHONY: pip-compile-rebuild
 pip-compile-rebuild: pip-tools
@@ -467,6 +469,7 @@ pip-compile-rebuild: pip-tools
 	pip-compile --rebuild --output-file requirements-dev.txt requirements-dev.in
 	pip-compile --rebuild --output-file requirements-test.txt requirements-test.in
 	pip-compile --rebuild --output-file requirements-doc.txt requirements-doc.in
+	pip-compile --rebuild --output-file requirements-experimental.txt requirements-experimental.in
 
 .PHONY: install-deps-all
 install-deps-all:
@@ -475,11 +478,13 @@ ifeq (${DETECTED_OS}, Darwin)
 	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-dev.txt
 	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-test.txt
 	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-doc.txt
+	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-experimental.txt
 else
 	pip install -r requirements.txt
 	pip install -r requirements-dev.txt
 	pip install -r requirements-test.txt
 	pip install -r requirements-doc.txt
+	pip install -r requirements-experimental.txt
 endif
 
 .PHONY: install-all
@@ -618,7 +623,6 @@ docker-machine-create:
 	--generic-ssh-key ~/.ssh/vagrant_id_rsa \
 	$(PACKAGE_NAME)
 
-
 docker-machine-env-print:
 	@printf "=======================================\n"
 	@printf "$$GREEN docker-machine $(PACKAGE_NAME) created:$$NC\n"
@@ -627,3 +631,23 @@ docker-machine-env-print:
 	@printf "=======================================\n"
 	@printf "$$ORNG     [RUN] $$(print-dm-eval) $$NC\n"
 
+install-poetry:
+	curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+
+install-debug-tools:
+	[ -d /usr/local/src/debug-tools ] || sudo git clone https://github.com/bossjones/debug-tools /usr/local/src/debug-tools
+	sudo chown -R vagrant:vagrant /usr/local/src/debug-tools
+	sudo /usr/local/src/debug-tools/update-bossjones-debug-tools
+
+
+bandit:
+	pipenv run bandit -r ./create_aio_app -x create_aio_app/template -s B101
+
+checkrst:
+	pipenv run python setup.py check --restructuredtext
+
+pyroma:
+	pipenv run pyroma -d .
+
+pipenv-lock:
+	pipenv lock
