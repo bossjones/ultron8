@@ -190,7 +190,9 @@ class MoonbeamServiceConfig(object):
         del self._service_config_path
 
     def check_folder_structure(self):
-        utils.mkdir_p(os.path.abspath(os.path.join(self.service_config_path, os.pardir)))
+        utils.mkdir_p(
+            os.path.abspath(os.path.join(self.service_config_path, os.pardir))
+        )
 
     # NOTE: Validation rules that involve multiple fields can be implemented as custom validators. It's recommended to use All() to do a two-pass validation - the first pass checking the basic structure of the data, and only after that, the second pass applying your cross-field validator:
     def validate(self):
@@ -262,17 +264,23 @@ class MoonbeamServiceConfig(object):
         if not os.path.exists(self.service_config_path):
             # no folder & no git
             # CLONE
-            utils.git_clone(self.git_repo, self.service_config_path, sha=self.git_branch)
+            utils.git_clone(
+                self.git_repo, self.service_config_path, sha=self.git_branch
+            )
         else:
             # check if it's actually a git repo
             if utils.scm(self.service_config_path) != "git":
                 # nuke it
                 # clone again
                 utils.remove(self.service_config_path)
-                utils.git_clone(self.git_repo, self.service_config_path, sha=self.git_branch)
+                utils.git_clone(
+                    self.git_repo, self.service_config_path, sha=self.git_branch
+                )
 
         # FIXME: This needs to be a runtime flag
-        utils.git_pull_rebase(self.git_repo, self.service_config_path, sha=self.git_branch)
+        utils.git_pull_rebase(
+            self.git_repo, self.service_config_path, sha=self.git_branch
+        )
         fname = "{}.yaml".format(service_name)
         self.service_definition = yaml_load(
             os.path.join(

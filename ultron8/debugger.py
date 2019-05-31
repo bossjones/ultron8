@@ -32,7 +32,7 @@ def dump_color(obj):
     # Module name actually exists, but pygments loads things in a strange manner
     from pygments.lexers import Python3Lexer  # pylint: disable=no-name-in-module
     from pygments.formatters.terminal256 import (
-        Terminal256Formatter
+        Terminal256Formatter,
     )  # pylint: disable=no-name-in-module
 
     for attr in dir(obj):
@@ -71,7 +71,7 @@ def pprint_color(obj):
     # Module name actually exists, but pygments loads things in a strange manner
     from pygments.lexers import PythonLexer  # pylint: disable=no-name-in-module
     from pygments.formatters.terminal256 import (
-        Terminal256Formatter
+        Terminal256Formatter,
     )  # pylint: disable=no-name-in-module
     from pprint import pformat
 

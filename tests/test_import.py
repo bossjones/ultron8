@@ -7,6 +7,7 @@ from pytest import raises, approx
 
 def test():
     import ultron8
+
     pass
 
 
