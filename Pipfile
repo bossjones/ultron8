@@ -3,22 +3,77 @@ url = "https://pypi.org/simple/"
 verify_ssl = true
 name = "pypi"
 
-[dev-packages]
-pytest = ">=2.8.0,<=3.10.1"
-codecov = "*"
-pytest-httpbin = ">=0.0.7,<1.0"
-pytest-mock = "*"
-pytest-cov = "*"
-pytest-xdist = "<=1.25"
-alabaster = "*"
-readme-renderer = "*"
-sphinx = "<=1.5.5"
-pysocks = "*"
-docutils = "*"
-"flake8" = "*"
-tox = "*"
-detox = "*"
-httpbin = ">=0.7.0"
-
 [packages]
-"e1839a8" = {path = ".", editable = true, extras = ["socks"]}
+# loggerFactory = "*"
+# fastapi = "*"
+# click = "*"
+# pyconfig = "*"
+# wget = "*"
+# "ruamel.yaml" = "*"
+# "ruamel.yaml.cmd" = "*"
+# argcomplete = "*"
+# # apscheduler
+# # SOURCE: https://github.com/aio-libs/aiojobs
+# # Jobs scheduler for managing background task (asyncio) aiojobs.readthedocs.io
+# aiojobs = "*"
+# # SOURCE: https://github.com/aio-libs/aiodocker
+# # NOTE: Python Docker API client based on asyncio and aiohttp
+# aiodocker = "*"
+# # SOURCE: https://github.com/aio-libs/janus
+# # Thread-safe asyncio-aware queue for Python
+# janus = "*"
+# # https://github.com/aio-libs/aiohttp-session
+# # https://github.com/aio-libs/aiohttp
+# # https://github.com/aio-libs/aiomysql
+# # https://github.com/aio-libs/aiobotocore
+# # aiobotocore[awscli]
+# # SOURCE: https://github.com/aio-libs/yarl
+# # Yet another URL library yarl.readthedocs.io
+# yarl = "*"
+# # SOURCE: https://github.com/aio-libs/multidict
+# # Multidict is dict-like collection of key-value pairs where key might be occurred more than once in the container.
+# multidict = "*"
+# # SOURCE: https://github.com/aio-libs/aiohttp-jinja2
+# # jinja2 template renderer for aiohttp.web http://aiohttp_jinja2.readthedocs.org
+# aiohttp-jinja2 = "*"
+# # SOURCE: https://github.com/aio-libs/async-timeout
+# # asyncio-compatible timeout context
+# async-timeout = "*"
+# # SOURCE: https://github.com/aio-libs/aiorwlock
+# # Synchronization primitive RWLock for asyncio (PEP 3156)
+# aiorwlock = "*"
+# 'jinja2-cli[yaml]' = "*"
+"e1839a8" = {path = ".", editable = true}
+
+
+[dev-packages]
+sphinx = "*"
+sphinx_rtd_theme = "*"
+sphinx-jinja = "*"
+sphinx-copybutton = "*"
+docfly     = "*"
+rstobj     = "*"
+pygments   = "*"
+pytest     = "*"
+pytest-cov     = "*"
+flake8     = "*"
+pathlib_mate = "*"
+twine = "*"
+isort = "*"
+coveralls = "*"
+# pipenv install --dev -e "git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb"
+# -e git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb
+pdbpp = "*"
+black = "*"
+ipython = "*"
+pytest-sugar = "*"
+pytest-mock = "*"
+pytest-leaks = "*"
+aiomonitor = "*"
+pre-commit = "*"
+mccabe = "*"
+lazy-object-proxy = "*"
+autopep8 = "*"
+
+[pipenv]
+allow_prereleases = true

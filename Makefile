@@ -574,3 +574,32 @@ docker-compose-down:
 docker-version:
 	@docker --version
 	@docker-compose --version
+
+
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# SOURCE: https://github.com/kennethreitz/requests
+# --------------------------------------------------------------------------------------------------------------------
+pipenv-init: ## Run `pipenv install --dev` to create dev environment
+	pip install pipenv --upgrade
+	pipenv --python 3.6.8
+	pipenv install --dev
+
+pipenv-activate:
+	@echo "Run: pipenv shell"
+
+test-coverage:
+	pytest --capture=no --cov-report html --cov=. tests
+
+ci:
+	pipenv run py.test -n 8 --boxed --junitxml=report.xml
+test-readme:
+	@pipenv run python setup.py check --restructuredtext --strict && ([ $$? -eq 0 ] && echo "README.rst and HISTORY.rst ok") || echo "Invalid markup in README.rst or HISTORY.rst!"
+flake8:
+	pipenv run flake8 --ignore=E501,F401,E128,E402,E731,F821 ultron8
+
+coverage:
+	pipenv run py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
+
+# --------------------------------------------------------------------------------------------------------------------
