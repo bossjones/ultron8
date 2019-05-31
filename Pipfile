@@ -43,8 +43,8 @@ name = "pypi"
 # # Synchronization primitive RWLock for asyncio (PEP 3156)
 # aiorwlock = "*"
 # 'jinja2-cli[yaml]' = "*"
-"e1839a8" = {path = ".", editable = true}
-ultron8 = {path = ".", extras = ["image-sizing", "http"], editable = true}
+# "e1839a8" = {path = ".", editable = true}
+ultron8 = {path = ".", editable = true}
 
 
 [dev-packages]

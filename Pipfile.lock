@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "55865f9fb0a48124909823a6e543cbac4e6478f4c70264262288c06a95811d87"
+            "sha256": "708d4b1b1fde2d8dc2c112ef3454663ba339f4324811573396a1bb934ba0ef86"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -124,10 +124,6 @@
             ],
             "markers": "python_version < '3.7'",
             "version": "==0.6"
-        },
-        "e1839a8": {
-            "editable": true,
-            "path": "."
         },
         "fastapi": {
             "hashes": [
@@ -374,6 +370,10 @@
             ],
             "markers": "python_version < '3.7'",
             "version": "==3.7.2"
+        },
+        "ultron8": {
+            "editable": true,
+            "path": "."
         },
         "wget": {
             "hashes": [
@@ -893,6 +893,10 @@
             ],
             "index": "pypi",
             "version": "==2.7.1"
+        },
+        "pytest-ipdb": {
+            "git": "https://github.com/mverteuil/pytest-ipdb",
+            "ref": "0643168f30f81b6096696d8b3c92f80921b35bbd"
         },
         "pytest-leaks": {
             "hashes": [

@@ -598,6 +598,9 @@ pipenv-init: ## Run `pipenv install --dev` to create dev environment
 pipenv-dev: ## Run `pipenv install --dev` to create dev environment
 	pipenv install --dev
 
+pipenv-install:
+	pipenv install
+
 pipenv-bootstrap: pipenv-init pipenv-dev
 
 pipenv-activate:
