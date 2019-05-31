@@ -185,9 +185,13 @@ RUN set -eux; \
 
 # RUN mkdir /var/task
 
+ENV PYTHONDONTWRITEBYTECODE 1
+
 RUN pip install -U pip setuptools --no-cache-dir && \
     pip install -U virtualenv pipenv --no-cache-dir && \
     pip install -U virtualenvwrapper --no-cache-dir
+
+RUN find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
 
 RUN git config --global user.name "Jarvis" && \
     git config --global user.email jarvis@theblacktonystark.com && \
