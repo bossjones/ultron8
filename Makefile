@@ -553,8 +553,12 @@ docker-compose-build:
 docker-compose-build-playground:
 	@docker-compose -f hacking/docker-compose.yml build playground
 
-docker-compose-run-playground:
+docker-compose-run-playground-bash:
 	@docker-compose -f hacking/docker-compose.yml run --name ultron_playground --rm playground bash
+
+docker-compose-run-playground:
+	-@docker-compose -f hacking/docker-compose.yml rm --force playground
+	@docker-compose -f hacking/docker-compose.yml run -d --name ultron_playground --rm playground
 
 docker-compose-build-master:
 	@docker-compose -f hacking/docker-compose.yml build master

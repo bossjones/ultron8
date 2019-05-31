@@ -4,6 +4,7 @@ services:
   # For debugging
   playground:
     tty: true
+    privileged: true
     build:
       # context: ../
       # dockerfile: yelp_package/xenial/Dockerfile
