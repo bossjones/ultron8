@@ -664,3 +664,24 @@ copy-contrib:
 
 generate-new-pipefile:
 	bash script/generate-new-pipefile
+
+
+##############################################################################################
+# python dev work
+##############################################################################################
+# SOURCE: https://pypi.org/project/pipenv-to-requirements/
+py-dev:
+    pipenv install --dev
+    pipenv run pip install -e .
+
+py-dists: requirements sdist bdist wheels
+
+py-sdist:
+    pipenv run python setup.py sdist
+
+py-bdist:
+    pipenv run python setup.py bdist
+
+py-wheels:
+    pipenv run python setup.py bdist_wheel
+##############################################################################################
