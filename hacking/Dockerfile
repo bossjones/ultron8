@@ -269,7 +269,8 @@ COPY vagrant_insecure_key.pub /home/${CONTAINER_USER}
 RUN cat /home/${CONTAINER_USER}/vagrant_insecure_key > /home/${CONTAINER_USER}/.ssh/id_rsa
 RUN cat /home/${CONTAINER_USER}/vagrant_insecure_key.pub > /home/${CONTAINER_USER}/.ssh/id_rsa.pub
 
-COPY python-versions.txt /
+# COPY python-versions.txt /
+COPY --chown=developer:developer python-versions.txt /
 RUN set -x; pyenv update && \
     xargs -P 4 -n 1 pyenv install < /python-versions.txt && \
     pyenv global $(pyenv versions --bare) && \
