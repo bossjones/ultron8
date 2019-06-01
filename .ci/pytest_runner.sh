@@ -5,7 +5,7 @@
 echo " [run] UID/GID map to unknown user/group, \$HOME=/ (the default when no home directory is defined)"
 echo -e "\n\n"
 
-eval $( fixuid )
+eval $( fixuid -q )
 
 echo " [run] UID/GID now match user/group, \$HOME has been set to user's home directory"
 echo -e "\n\n"

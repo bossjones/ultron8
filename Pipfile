@@ -8,6 +8,8 @@ test="py.test --cov-config .coveragerc --verbose --cov-report term --cov-report 
 test-pdb="py.test --cov-config .coveragerc --verbose  --pdb --showlocals --cov-report term --cov-report xml --cov=ultron8 tests"
 coverage-run="coverage run --source=ultron8/ setup.py tests; coverage report --show-missing; coverage html"
 setup-test="python setup.py test"
+# NOTE: This one taken from bemoonbeam_cli
+run-pytest="pytest -s --tb short --cov-config .coveragerc --cov ultron8 tests --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate"
 
 [packages]
 ultron8 = {path = ".", editable = true}

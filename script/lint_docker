@@ -6,8 +6,8 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-docker build -t bemoonbeam-cli-test .
+docker build -t ultron8-ci .
 docker run --rm \
     -v `pwd`/.tox/:/usr/src/app/.tox/ \
-    -t -i bemoonbeam-cli-test \
+    -t -i ultron8-ci \
     tox -e lint
