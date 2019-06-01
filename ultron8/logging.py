@@ -1,5 +1,5 @@
 import logging
-import logging.config
+# import logging.config
 from os import environ
 from logging import Logger
 from typing import List
