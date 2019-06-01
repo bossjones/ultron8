@@ -213,6 +213,7 @@ if __name__ == "__main__":
         maintainer_email=MAINTAINER_EMAIL,
         packages=PACKAGES,
         setup_requires=["pytest-runner"],
+        tests_require=EXTRA_REQUIRE["tests"],
         include_package_data=INCLUDE_PACKAGE_DATA,
         package_data=PACKAGE_DATA,
         py_modules=PY_MODULES,
