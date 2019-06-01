@@ -21,6 +21,8 @@ USER ${CONTAINER_USER}
 WORKDIR /home/${CONTAINER_USER}
 ENV LANG C.UTF-8
 
+# COPY --chown=developer:developer . /home/developer/app
+
 COPY --chown=developer:developer requirements.txt requirements.txt
 COPY --chown=developer:developer requirements-dev.txt requirements-dev.txt
 COPY --chown=developer:developer requirements-doc.txt requirements-doc.txt
@@ -28,6 +30,10 @@ COPY --chown=developer:developer requirements-test.txt requirements-test.txt
 COPY --chown=developer:developer Pipfile Pipfile
 COPY --chown=developer:developer Pipfile.lock Pipfile.lock
 
-RUN pyenv shell 3.6.8; pipenv --python 3.6.8 && pipenv install --dev
+# Copy over everything required to run tox
+COPY --chown=developer:developer setup.cfg setup.py tox.ini ./
+COPY --chown=developer:developer ultron8/__init__.py ultron8/__init__.py
+
+RUN pyenv shell 3.6.8; pipenv --python 3.6.8 && pipenv init --dev && pipenv install --dev --deploy
 
 ENV PATH="/home/${CONTAINER_USER}/.local/bin:${PATH}"
