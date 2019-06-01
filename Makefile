@@ -757,5 +757,8 @@ install-twine:
 docker-bash:
 	.ci/docker-bash.sh
 
-local-ci:
+local-ci: clean-test
 	pipenv run python setup.py test
+
+open-coverage-local:
+	./script/open-browser.py htmlcov/index.html
