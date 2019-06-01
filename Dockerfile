@@ -66,6 +66,27 @@ RUN USER=${CONTAINER_USER} && \
 
 USER ${CONTAINER_USER}:${CONTAINER_USER}
 
+# Set working directory.
+WORKDIR /home/${CONTAINER_USER}/app
+
+# SOURCE: https://www.reddit.com/r/godot/comments/9r72kv/godot_302_docker_image_for_automatic_exports/
+# # Install fixuid.
+# RUN curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.4-linux-amd64.tar.gz | tar -C /usr/local/bin -xzf - && \
+#     chown root:root /usr/local/bin/fixuid && \
+#     chmod 4755 /usr/local/bin/fixuid && \
+#     mkdir -p /etc/fixuid && \
+#     echo "user: docker" >> /etc/fixuid/config.yml && \
+#     echo "group: docker" >> /etc/fixuid/config.yml && \
+#     echo "paths:" >> /etc/fixuid/config.yml && \
+#     echo "  - /home/docker/.config" >> /etc/fixuid/config.yml && \
+#     echo "  - /home/docker/.cache" >> /etc/fixuid/config.yml
+
+# Author and Docker Image information.
+# LABEL maintainer="hrvoje.varga@gmail.com"
+# LABEL build="docker build --network host -t hvarga/godot-docker ."
+# LABEL run="docker run --rm --name godot-docker -v `pwd`:/home/docker/project -u $(id -u $USER):$(id -g $USER) hvarga/godot-docker make"
+
+
 # && echo '#!/bin/bash\n\neval $( fixuid -q )\neval $*' > docker_startup_script.sh \
 # && chmod a+x docker_startup_script.sh
 
