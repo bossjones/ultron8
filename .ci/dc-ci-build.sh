@@ -3,8 +3,8 @@
 set -e
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-_UID=$(id -u)
-_GID=$(id -g)
+CONTAINER_UID=$(id -u)
+CONTAINER_GID=$(id -g)
 
 PR_SHA=$(git rev-parse HEAD)
 REPO_NAME=bossjones/ultron8-ci
