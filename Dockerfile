@@ -63,3 +63,5 @@ RUN USER=${CONTAINER_USER} && \
     chmod 4755 /usr/local/bin/fixuid && \
     mkdir -p /etc/fixuid && \
     printf "user: $USER\ngroup: $GROUP\npaths:\n  - /home/developer\n  - /.pyenv\n" > /etc/fixuid/config.yml
+
+USER ${CONTAINER_USER}
