@@ -55,7 +55,7 @@ ULTRON-8
 ==============================================================================
 
 
-.. image:: ./images/ultron-8-by-George-Perez.jpgultron-8-by-George-Perez.jpg
+.. image:: ./images/ultron-8-by-George-Perez.jpg
 
 Welcome to ``ultron8`` Documentation
 ==============================================================================
