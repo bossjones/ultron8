@@ -15,6 +15,7 @@ from setuptools import setup, find_packages, Command
 from shutil import rmtree
 
 import pprint
+
 pp = pprint.PrettyPrinter(indent=4)
 
 # --- import your package ---
@@ -183,7 +184,6 @@ if __name__ == "__main__":
     except:
         print("'requirements-test.txt' not found!")
 
-
     try:
         EXTRA_REQUIRE["docs"] = read_requirements_file("requirements-doc.txt")
     except:
@@ -192,7 +192,9 @@ if __name__ == "__main__":
     # import pdb;pdb.set_trace()
 
     try:
-        EXTRA_REQUIRE["experimental"] = read_requirements_file("requirements-experimental.txt")
+        EXTRA_REQUIRE["experimental"] = read_requirements_file(
+            "requirements-experimental.txt"
+        )
     except:
         print("'requirements-experimental.txt' not found!")
 
@@ -203,17 +205,16 @@ if __name__ == "__main__":
     except:
         print("'requirements-test.txt' not found!")
 
-
     class UploadCommand(Command):
         """Support setup.py upload."""
 
-        description = 'Build and publish the package.'
+        description = "Build and publish the package."
         user_options = []
 
         @staticmethod
         def status(s):
             """Prints things in bold."""
-            print('\033[1m{0}\033[0m'.format(s))
+            print("\033[1m{0}\033[0m".format(s))
 
         def initialize_options(self):
             pass
@@ -223,48 +224,48 @@ if __name__ == "__main__":
 
         def run(self):
             try:
-                self.status('Removing previous builds…')
-                rmtree(os.path.join(here, 'dist'))
+                self.status("Removing previous builds…")
+                rmtree(os.path.join(here, "dist"))
             except OSError:
                 pass
 
-            self.status('Building Source and Wheel (universal) distribution…')
-            os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
+            self.status("Building Source and Wheel (universal) distribution…")
+            os.system(
+                "{0} setup.py sdist bdist_wheel --universal".format(sys.executable)
+            )
 
-            self.status('Uploading the package to PyPI via Twine…')
-            os.system('twine upload dist/*')
+            self.status("Uploading the package to PyPI via Twine…")
+            os.system("twine upload dist/*")
 
-            self.status('Pushing git tags…')
-            os.system('git tag v{0}'.format(VERSION))
-            os.system('git push --tags')
+            self.status("Pushing git tags…")
+            os.system("git tag v{0}".format(VERSION))
+            os.system("git push --tags")
 
             sys.exit()
 
-
-    if sys.argv[-1] == 'info':
-      print("name=" + PKG_NAME)
-      print("description=" + SHORT_DESCRIPTION)
-      print("long_description=" + LONG_DESCRIPTION)
-      print("version=" + VERSION)
-      print("author=" + AUTHOR)
-      print("author_email=" + AUTHOR_EMAIL)
-      print("maintainer=" + MAINTAINER)
-      print("maintainer_email=" + MAINTAINER_EMAIL)
-      print("packages=" + pp.pprint(PACKAGES))
-      print("setup_requires=" + ["pytest-runner"])
-      print("tests_require=" + pp.pprint(TESTS_REQUIRE))
-      print("include_package_data=" + INCLUDE_PACKAGE_DATA)
-      print("package_data=" + PACKAGE_DATA)
-      print("py_modules=" + PY_MODULES)
-      print("url=" + URL)
-      print("download_url=" + DOWNLOAD_URL)
-      print("classifiers=" + CLASSIFIERS)
-      print("platforms=" + PLATFORMS)
-      print("license=" + LICENSE)
-      print("install_requires=" + pp.pprint(REQUIRES))
-      print("extras_require=" + pp.pprint(EXTRA_REQUIRE))
-      sys.exit()
-
+    if sys.argv[-1] == "info":
+        print("name=" + PKG_NAME)
+        print("description=" + SHORT_DESCRIPTION)
+        print("long_description=" + LONG_DESCRIPTION)
+        print("version=" + VERSION)
+        print("author=" + AUTHOR)
+        print("author_email=" + AUTHOR_EMAIL)
+        print("maintainer=" + MAINTAINER)
+        print("maintainer_email=" + MAINTAINER_EMAIL)
+        print("packages=" + pp.pprint(PACKAGES))
+        print("setup_requires=" + ["pytest-runner"])
+        print("tests_require=" + pp.pprint(TESTS_REQUIRE))
+        print("include_package_data=" + INCLUDE_PACKAGE_DATA)
+        print("package_data=" + PACKAGE_DATA)
+        print("py_modules=" + PY_MODULES)
+        print("url=" + URL)
+        print("download_url=" + DOWNLOAD_URL)
+        print("classifiers=" + CLASSIFIERS)
+        print("platforms=" + PLATFORMS)
+        print("license=" + LICENSE)
+        print("install_requires=" + pp.pprint(REQUIRES))
+        print("extras_require=" + pp.pprint(EXTRA_REQUIRE))
+        sys.exit()
 
     setup(
         name=PKG_NAME,

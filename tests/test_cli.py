@@ -11,12 +11,12 @@ paths = Paths()
 
 
 @contextmanager
-def project_runner(fixture='simple'):
-    fixture_path = (fixtures_path / fixture)
+def project_runner(fixture="simple"):
+    fixture_path = fixtures_path / fixture
     runner = CliRunner()
     with runner.isolated_filesystem():
         # Copy the project fixture into the isolated filesystem dir.
-        shutil.copytree(fixture_path, '.ultron8')
+        shutil.copytree(fixture_path, ".ultron8")
 
         # Monkeypatch a helper method onto the runner to make running commands
         # easier.
@@ -25,6 +25,7 @@ def project_runner(fixture='simple'):
         # And another for checkout the text output by the command.
         runner.output_of = lambda command: runner.run(command).output
         yield runner
+
 
 # @pytest.fixture
 # def runner():
@@ -71,9 +72,11 @@ def project_runner(fixture='simple'):
 #     with project_runner() as runner:
 #         assert "Usage: ultronctl [OPTIONS] COMMAND [ARGS]..." in runner.output_of('info')
 
+
 def test_cli_dummp():
     with project_runner() as runner:
-        assert "Dummy command, doesn't do anything." in runner.output_of('dummy')
+        assert "Dummy command, doesn't do anything." in runner.output_of("dummy")
+
 
 # def in_file(string, test_file='simple-vanilla/README.md') -> bool:
 #     return (string in (paths.build_path_dir / test_file).open().read())

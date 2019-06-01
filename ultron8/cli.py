@@ -12,6 +12,7 @@ logger = getLogger(__name__)
 def cli():
     pass
 
+
 @cli.command()
 def dummy():
     """
@@ -19,6 +20,7 @@ def dummy():
     """
 
     click.echo("Dummy command, doesn't do anything.")
+
 
 @cli.command()
 @click.option("--fact", multiple=True, help="Set a fact, like --fact=color:blue.")
