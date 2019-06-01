@@ -15,7 +15,7 @@ services:
     entrypoint:
       - bash
     command: /home/developer/app/.ci/pytest_runner.sh
-    # user: ${FIXUID:-1000}:${FIXGID:-1000}
+    user: ${CONTAINER_UID:-1000}:${CONTAINER_GID:-1000}
     volumes:
       - .:/home/developer/app
     # ports:
