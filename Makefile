@@ -656,13 +656,17 @@ install-debug-tools:
 
 
 bandit:
-	pipenv run bandit -r ./create_aio_app -x create_aio_app/template -s B101
+# pipenv run bandit -r ./create_aio_app -x create_aio_app/template -s B101
+	pipenv run bandit -r ./ultron8 -s B101
 
 checkrst:
 	pipenv run python setup.py check --restructuredtext
 
 pyroma:
 	pipenv run pyroma -d .
+
+flake: checkrst bandit pyroma
+	pipenv run flake8 ultron8 setup.py
 
 pipenv-lock:
 	pipenv lock
