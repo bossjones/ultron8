@@ -54,6 +54,8 @@ RUN cd /tmp && \
   sudo chmod +x /usr/local/bin/gosu && \
   sudo chown developer:developer /usr/local/bin/gosu
 
+USER root
+
 RUN USER=${CONTAINER_USER} && \
     GROUP=${CONTAINER_USER} && \
     curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.4-linux-amd64.tar.gz | tar -C /usr/local/bin -xzf - && \
@@ -61,5 +63,3 @@ RUN USER=${CONTAINER_USER} && \
     chmod 4755 /usr/local/bin/fixuid && \
     mkdir -p /etc/fixuid && \
     printf "user: $USER\ngroup: $GROUP\npaths:\n  - /home/developer\n  - /.pyenv\n" > /etc/fixuid/config.yml
-
-USER root
