@@ -768,3 +768,6 @@ docker-dev-build:
 
 docker-dev-bash:
 	.ci/docker-dev-bash.sh
+
+vscode-settings:
+	cp -a contrib/settings.json .vscode/settings.json
