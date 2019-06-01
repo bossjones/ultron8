@@ -771,3 +771,6 @@ docker-dev-bash:
 
 vscode-settings:
 	cp -a contrib/settings.json .vscode/settings.json
+
+cp-vscode-settings:
+	bash script/cp-vscode-settings
