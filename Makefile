@@ -59,6 +59,13 @@ default: all
 
 all: info
 
+# # coverage flags, these all come from here
+# # SOURCE: https://media.readthedocs.org/pdf/pytest-cov/latest/pytest-cov.pdf
+# test_args_no_xml    := --cov-report=
+# test_args_with_xml  := --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --benchmark-skip
+# test_args           := --cov-report term-missing --cov-report xml --junitxml junit.xml
+# cover_args          := --cov-report html
+
 ##############################################################################
 # Auto generated from pygitrepo 0.0.27
 #

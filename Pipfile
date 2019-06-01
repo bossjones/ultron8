@@ -3,6 +3,11 @@ url = "https://pypi.org/simple/"
 verify_ssl = true
 name = "pypi"
 
+[scripts]
+test = "py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests"
+test-pdb = "py.test --cov-config .coveragerc --verbose  --pdb --showlocals --cov-report term --cov-report xml --cov=ultron8 tests"
+coverage-run = "coverage run --source=ultron8/ setup.py test; coverage report --show-missing; coverage html"
+
 [packages]
 ultron8 = {path = ".", editable = true}
 
