@@ -678,17 +678,17 @@ generate-new-pipefile:
 ##############################################################################################
 # SOURCE: https://pypi.org/project/pipenv-to-requirements/
 py-dev:
-  pipenv install --dev
-  pipenv run pip install -e .
+	pipenv install --dev
+	pipenv run pip install -e .
 
-py-dists: requirements sdist bdist wheels
+py-dists: py-sdist py-bdist py-wheels
 
 py-sdist:
-  pipenv run python setup.py sdist
+	pipenv run python setup.py sdist
 
 py-bdist:
-  pipenv run python setup.py bdist
+	pipenv run python setup.py bdist
 
 py-wheels:
-  pipenv run python setup.py bdist_wheel
+	pipenv run python setup.py bdist_wheel
 ##############################################################################################

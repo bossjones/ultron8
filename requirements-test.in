@@ -1,3 +1,10 @@
 # dependencies for test
 pytest
 pytest-cov
+coveralls
+pytest-sugar
+pytest-mock
+pytest-leaks
+pytest-mypy
+pytest-flake8
+-e git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb

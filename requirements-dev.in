@@ -1,22 +1,22 @@
 pathlib_mate
 twine
 isort
-coveralls
-pytest
-pytest-cov
+# coveralls
+# pytest
+# pytest-cov
 # pytest-timeout
 # pytest-benchmark[histogram]
--e git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb
+# -e git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb
 pdbpp
 black
 ipython
 
-pytest-sugar
-# pytest-rerunfailures
-pytest-mock
-pytest-leaks
-pytest-mypy
-pytest-flake8
+# pytest-sugar
+# # pytest-rerunfailures
+# pytest-mock
+# pytest-leaks
+# pytest-mypy
+# pytest-flake8
 
 # # tracing and debugging
 # hunter
