@@ -37,10 +37,10 @@ class PersistenceManagerFactory(object):
         if store_type == schema.StatePersistenceTypes.yaml:
             store = YamlStateStore(name)
 
-        if store_type == schema.StatePersistenceTypes.dynamodb:
-            table_name = persistence_config.table_name
-            dynamodb_region = persistence_config.dynamodb_region
-            store = DynamoDBStateStore(table_name, dynamodb_region)
+        # if store_type == schema.StatePersistenceTypes.dynamodb:
+        #     table_name = persistence_config.table_name
+        #     dynamodb_region = persistence_config.dynamodb_region
+        #     store = DynamoDBStateStore(table_name, dynamodb_region)
 
         buffer = StateSaveBuffer(buffer_size)
         return PersistentStateManager(store, buffer)
@@ -50,17 +50,15 @@ class StateMetadata(object):
     """A data object for saving state metadata. Conforms to the same
     RunState interface as Jobs and Services.
     """
-    name = 'StateMetadata'
+
+    name = "StateMetadata"
 
     # State schema version, only first component counts,
     # for backwards compatibility
     version = (0, 7, 0, 0)
 
     def __init__(self):
-        self.state_data = {
-            'version': self.version,
-            'create_time': time.time(),
-        }
+        self.state_data = {"version": self.version, "create_time": time.time()}
 
     @classmethod
     def validate_metadata(cls, metadata):
@@ -70,14 +68,9 @@ class StateMetadata(object):
         if not metadata:
             return
 
-        if metadata['version'][0] > cls.version[0]:
+        if metadata["version"][0] > cls.version[0]:
             msg = "State version %s, expected <= %s"
-            raise VersionMismatchError(
-                msg % (
-                    metadata['version'],
-                    cls.version,
-                ),
-            )
+            raise VersionMismatchError(msg % (metadata["version"], cls.version))
 
 
 class StateSaveBuffer(object):
@@ -130,10 +123,7 @@ class PersistentStateManager(object):
         self.enabled = True
         self._buffer = buffer
         self._impl = persistence_impl
-        self.metadata_key = self._impl.build_key(
-            runstate.MCP_STATE,
-            StateMetadata.name,
-        )
+        self.metadata_key = self._impl.build_key(runstate.MCP_STATE, StateMetadata.name)
 
     def restore(self, job_names, skip_validation=False):
         """Return the most recent serialized state."""
@@ -142,12 +132,9 @@ class PersistentStateManager(object):
             self._restore_metadata()
 
         jobs = self._restore_dicts(runstate.JOB_STATE, job_names)
-        frameworks = self._restore_dicts(runstate.MESOS_STATE, ['frameworks'])
+        frameworks = self._restore_dicts(runstate.MESOS_STATE, ["frameworks"])
 
-        state = {
-            runstate.JOB_STATE: jobs,
-            runstate.MESOS_STATE: frameworks,
-        }
+        state = {runstate.JOB_STATE: jobs, runstate.MESOS_STATE: frameworks}
         self._check_consistency(state)
         return state
 
@@ -184,7 +171,7 @@ class PersistentStateManager(object):
         if not key_state_pairs:
             return
 
-        keys = ','.join(str(key) for key, _ in key_state_pairs)
+        keys = ",".join(str(key) for key, _ in key_state_pairs)
         log.info("Saving state for %s" % keys)
 
         with self._timeit():
@@ -263,9 +250,7 @@ class StateChangeWatcher(observer.Observer):
             return False
 
         self.shutdown()
-        self.state_manager = PersistenceManagerFactory.from_config(
-            state_config,
-        )
+        self.state_manager = PersistenceManagerFactory.from_config(state_config)
         self.config = state_config
         return True
 
@@ -273,8 +258,8 @@ class StateChangeWatcher(observer.Observer):
         """Handle a state change in an observable by saving its state."""
         if isinstance(observable, job.Job):
             self.save_job(observable)
-        elif observable == MesosClusterRepository:
-            self.save_frameworks(observable)
+        # elif observable == MesosClusterRepository:
+        #     self.save_frameworks(observable)
 
     def save_job(self, job):
         self._save_object(runstate.JOB_STATE, job)

@@ -11,12 +11,9 @@ from collections import namedtuple
 from ultron8 import yaml
 from ultron8.serialize import runstate
 
-YamlKey = namedtuple('YamlKey', ['type', 'iden'])
+YamlKey = namedtuple("YamlKey", ["type", "iden"])
 
-TYPE_MAPPING = {
-    runstate.JOB_STATE: 'jobs',
-    runstate.MCP_STATE: runstate.MCP_STATE,
-}
+TYPE_MAPPING = {runstate.JOB_STATE: "jobs", runstate.MCP_STATE: runstate.MCP_STATE}
 
 
 class YamlStateStore(object):
@@ -31,7 +28,7 @@ class YamlStateStore(object):
         if not os.path.exists(self.filename):
             return {}
 
-        with open(self.filename, 'r') as fh:
+        with open(self.filename, "r") as fh:
             self.buffer = yaml.load(fh)
 
         items = (self.buffer.get(key.type, {}).get(key.iden) for key in keys)
@@ -44,7 +41,7 @@ class YamlStateStore(object):
         self._write_buffer()
 
     def _write_buffer(self):
-        with open(self.filename, 'w') as fh:
+        with open(self.filename, "w") as fh:
             yaml.dump(self.buffer, fh)
 
     def cleanup(self):

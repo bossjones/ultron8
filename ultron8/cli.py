@@ -14,10 +14,19 @@ def cli():
 
 
 @cli.command()
-@click.option('--fact', multiple=True, help='Set a fact, like --fact=color:blue.')
+def dummy():
+    """
+    Dummy command, doesn't do anything.
+    """
+
+    click.echo("Dummy command, doesn't do anything.")
+
+
+@cli.command()
+@click.option("--fact", multiple=True, help="Set a fact, like --fact=color:blue.")
 def info(fact: Tuple[str]):
     """Get info on running Ultron8 process."""
-    logger.debug('info subcommand called from cli')
+    logger.debug("info subcommand called from cli")
     set_fact_flags(fact)
     commands.info()
 
@@ -67,12 +76,12 @@ def info(fact: Tuple[str]):
 
 def set_flag(flag: str, value: Any) -> None:
     """Store a CLI flag in the config as "cli.flags.FLAG"."""
-    pyconfig.set(f'cli.flags.{flag}', value)
+    pyconfig.set(f"cli.flags.{flag}", value)
 
 
 def get_flag(flag: str, default: Any = None) -> Any:
     """Get a CLI flag from the config."""
-    return pyconfig.get(f'cli.flags.{flag}', default)
+    return pyconfig.get(f"cli.flags.{flag}", default)
 
 
 def set_fact_flags(flag_args: Tuple[str]) -> None:
@@ -80,12 +89,12 @@ def set_fact_flags(flag_args: Tuple[str]) -> None:
     facts = {}
 
     for arg in flag_args:
-        if ':' not in arg:
+        if ":" not in arg:
             logger.critical('Arguments to "--fact" must be colon seperated.')
             logger.critical('Like: "ultronctl --fact=temperature:hot')
             fail()
-        fact, value = arg.split(':', 1)
+        fact, value = arg.split(":", 1)
         logger.debug(f'Setting fact from cli: "{fact}" -> "{value}"')
         facts[fact] = value
 
-    set_flag('fact', facts)
+    set_flag("fact", facts)

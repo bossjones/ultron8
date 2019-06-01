@@ -25,6 +25,11 @@ insert_final_newline = ignore
 indent_style = space
 
 # The YML files contain newlines inconsistently
+[Makefile]
+indent_size = 2
+indent_style = tab
+
+# The YML files contain newlines inconsistently
 [*.yml]
 indent_size = 2
 insert_final_newline = ignore

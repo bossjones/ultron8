@@ -35,35 +35,35 @@ import ultron8
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.doctest',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.ifconfig',
-    'sphinx.ext.viewcode',
-    'sphinxcontrib.jinja',
-    'sphinx_copybutton',
-    'docfly.directives',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.doctest",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.todo",
+    "sphinx.ext.coverage",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.ifconfig",
+    "sphinx.ext.viewcode",
+    "sphinxcontrib.jinja",
+    "sphinx_copybutton",
+    "docfly.directives",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = 'ultron8'
-copyright = '%s, bossjones' % datetime.utcnow().year
-author = 'bossjones'
+project = "ultron8"
+copyright = "%s, bossjones" % datetime.utcnow().year
+author = "bossjones"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -87,7 +87,7 @@ language = None
 exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
@@ -97,7 +97,7 @@ todo_include_todos = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = "alabaster"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -108,7 +108,7 @@ html_theme = 'alabaster'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 html_logo = "./_static/ultron8-logo.png"
 html_favicon = "./_static/ultron8-favicon.ico"
 
@@ -118,19 +118,19 @@ html_favicon = "./_static/ultron8-favicon.ico"
 # This is required for the alabaster theme
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
 html_sidebars = {
-    '**': [
-        'about.html',
-        'navigation.html',
-        'relations.html',  # needs 'show_related': True theme option to display
-        'searchbox.html',
-        'donate.html',
+    "**": [
+        "about.html",
+        "navigation.html",
+        "relations.html",  # needs 'show_related': True theme option to display
+        "searchbox.html",
+        "donate.html",
     ]
 }
 
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'ultron8doc'
+htmlhelp_basename = "ultron8doc"
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -138,15 +138,12 @@ latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     #
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
-
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
@@ -156,18 +153,14 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'ultron8.tex', 'ultron8 Documentation',
-     u'bossjones', 'manual'),
+    (master_doc, "ultron8.tex", "ultron8 Documentation", "bossjones", "manual")
 ]
 
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'ultron8', 'ultron8 Documentation',
-     [author], 1)
-]
+man_pages = [(master_doc, "ultron8", "ultron8 Documentation", [author], 1)]
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -175,19 +168,27 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'ultron8', 'ultron8 Documentation',
-     author, 'ultron8', 'One line description of project.',
-     'Miscellaneous'),
+    (
+        master_doc,
+        "ultron8",
+        "ultron8 Documentation",
+        author,
+        "ultron8",
+        "One line description of project.",
+        "Miscellaneous",
+    )
 ]
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {"https://docs.python.org/": None}
 
-autodoc_member_order = 'bysource'
+autodoc_member_order = "bysource"
 
 # Enable custom css
 try:
-    custom_style_file_path = os.path.join(os.path.dirname(__file__), "_static", ".custom-style.rst")
+    custom_style_file_path = os.path.join(
+        os.path.dirname(__file__), "_static", ".custom-style.rst"
+    )
     with open(custom_style_file_path, "rb") as f:
         custom_style_file_content = f.read().decode("utf-8")
     rst_prolog = "\n" + custom_style_file_content + "\n"
@@ -200,11 +201,7 @@ try:
 except:
     doc_data = dict()
 
-jinja_contexts = {
-    "doc_data": {
-        "doc_data": doc_data,
-    },
-}
+jinja_contexts = {"doc_data": {"doc_data": doc_data}}
 
 # Api Reference Doc
 import docfly
@@ -217,10 +214,10 @@ docfly.ApiReferenceDoc(
         "%s.pkg" % package_name,
         "%s.docs" % package_name,
         "%s.tests" % package_name,
-    ]
+    ],
 ).fly()
 
 
 def setup(app):
-    app.add_stylesheet('css/custom-style.css')
-    app.add_javascript('js/sorttable.js')
+    app.add_stylesheet("css/custom-style.css")
+    app.add_javascript("js/sorttable.js")

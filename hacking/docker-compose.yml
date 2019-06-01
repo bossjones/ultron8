@@ -1,7 +1,10 @@
 version: "3"
+
 services:
   # For debugging
   playground:
+    tty: true
+    privileged: true
     build:
       # context: ../
       # dockerfile: yelp_package/xenial/Dockerfile
@@ -12,14 +15,19 @@ services:
       # - ./:/nail/tron
     ports:
       - "8089:8089"
+    environment:
+      # use in code
+      # - DEBUG=True
+      # - SETTINGS_FILE=api.dev.yml
+      - PYTHONUNBUFFERED=1
   # For itests only, `pip install -e .` won't work
   master:
-    build:
-      context: .
-      dockerfile: ubuntu:bionic
-    links:
-      - batch1
-  batch1:
-    build:
-      context: ../
-      dockerfile: example-cluster/images/batch/Dockerfile
+    # build:
+      # context: .
+    image: ubuntu:bionic
+  #   links:
+  #     - batch1
+  # batch1:
+  #   build:
+  #     context: ../
+  #     dockerfile: example-cluster/images/batch/Dockerfile

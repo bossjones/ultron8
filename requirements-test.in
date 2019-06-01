@@ -1,3 +1,9 @@
 # dependencies for test
 pytest
 pytest-cov
+coveralls
+pytest-sugar
+pytest-mock
+pytest-leaks
+pytest-mypy
+pytest-flake8

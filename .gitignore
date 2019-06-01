@@ -335,3 +335,5 @@ kube-prompt_v1.0.5_linux_amd64.zip
 kubespy-linux-amd64.tar.gz
 peco_linux_amd64.tar.gz
 peco_linux_amd64/
+
+cov.xml

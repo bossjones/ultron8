@@ -1,20 +1,22 @@
 pathlib_mate
 twine
 isort
-coveralls
-pytest
-pytest-cov
+# coveralls
+# pytest
+# pytest-cov
 # pytest-timeout
 # pytest-benchmark[histogram]
--e git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb
+# -e git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb
 pdbpp
 black
 ipython
 
-pytest-sugar
-# pytest-rerunfailures
-pytest-mock
-pytest-leaks
+# pytest-sugar
+# # pytest-rerunfailures
+# pytest-mock
+# pytest-leaks
+# pytest-mypy
+# pytest-flake8
 
 # # tracing and debugging
 # hunter
@@ -45,3 +47,4 @@ mccabe
 # SOURCE: https://github.com/ionelmc/python-lazy-object-proxy
 # NOTE: from yelp/Tron originally
 lazy-object-proxy
+autopep8

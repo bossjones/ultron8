@@ -48,9 +48,7 @@ def recover_action_run(action_run, action_runner):
         output_path=action_run.output_path,
     )
     recovery_action_command = recovery_run.build_action_command()
-    recovery_action_command.write_stdout(
-        f"Recovering action run {action_run.id}",
-    )
+    recovery_action_command.write_stdout(f"Recovering action run {action_run.id}")
     # Put action command in "running" state so if it fails to connect
     # and exits with no exit code, the real action run will not retry.
     recovery_action_command.started()
@@ -60,15 +58,15 @@ def recover_action_run(action_run, action_runner):
     # and updates its internal state according to its result.
     action_run.watch(recovery_action_command)
 
-    if not action_run.machine.check('running'):
+    if not action_run.machine.check("running"):
         log.error(
-            f'Unable to transition action run {action_run.id} '
-            f'from {action_run.machine.state} to start'
+            f"Unable to transition action run {action_run.id} "
+            f"from {action_run.machine.state} to start"
         )
     else:
         action_run.exit_status = None
         action_run.end_time = None
-        action_run.machine.transition('running')
+        action_run.machine.transition("running")
 
     log.info(
         f"Submitting recovery job with command {recovery_action_command.command} "
@@ -84,13 +82,17 @@ def recover_action_run(action_run, action_runner):
 def launch_recovery_actionruns_for_job_runs(job_runs, master_action_runner):
     for run in job_runs:
         if not run._action_runs:
-            log.info(f'Skipping recovery of {run} with no action runs (may have been cleaned up)')
+            log.info(
+                f"Skipping recovery of {run} with no action runs (may have been cleaned up)"
+            )
             continue
 
         ssh_runs, mesos_runs = filter_action_runs_needing_recovery(run._action_runs)
         for action_run in ssh_runs:
-            if type(action_run.action_runner) == NoActionRunnerFactory and \
-               type(master_action_runner) != NoActionRunnerFactory:
+            if (
+                type(action_run.action_runner) == NoActionRunnerFactory
+                and type(master_action_runner) != NoActionRunnerFactory
+            ):
                 action_runner = master_action_runner
             else:
                 action_runner = action_run.action_runner

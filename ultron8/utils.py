@@ -32,6 +32,7 @@ LOGGER = logging.getLogger(__name__)
 SEPARATOR_CHARACTER_DEFAULT = "-"
 SEPARATOR_LENGTH_DEFAULT = 40
 
+
 def mkdir_p(path):
     p = Path(path)
     p.mkdir(parents=True, exist_ok=True)
@@ -84,6 +85,7 @@ def _whoami():
 def callersname():
     sys = get_sys_module()
     return sys._getframe(2).f_code.co_name
+
 
 def print_line_seperator(
     value: str,

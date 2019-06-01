@@ -40,6 +40,7 @@ log = logging.getLogger(__name__)
 SEPARATOR_CHARACTER_DEFAULT = "-"
 SEPARATOR_LENGTH_DEFAULT = 40
 
+
 def maybe_decode(maybe_string):
     if type(maybe_string) is bytes:
         return maybe_string.decode()
@@ -63,7 +64,7 @@ def next_or_none(iterable):
 def flock(fd):
     close = False
     if isinstance(fd, str):
-        fd = open(fd, 'a')
+        fd = open(fd, "a")
         close = True
 
     try:
@@ -103,9 +104,7 @@ def signals(signal_map):
             signal.signal(signum, handler)
 
 
-
 # ------------------------------------------------
-
 
 
 def mkdir_p(path):
@@ -160,6 +159,7 @@ def _whoami():
 def callersname():
     sys = get_sys_module()
     return sys._getframe(2).f_code.co_name
+
 
 def print_line_seperator(
     value: str,

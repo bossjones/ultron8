@@ -6,37 +6,28 @@ from typing import List
 
 emitted_warnings: List[str] = []
 
-if 'ULTRON_DEBUG' in environ and environ['ULTRON_DEBUG'].lower() == 'true':
-    log_level = 'DEBUG'
-    log_format = 'verbose'
+if "ULTRON_DEBUG" in environ and environ["ULTRON_DEBUG"].lower() == "true":
+    log_level = "DEBUG"
+    log_format = "verbose"
 else:
-    log_level = 'INFO'
-    log_format = 'terse'
+    log_level = "INFO"
+    log_format = "terse"
 
 config = {
-    'version': 1,
-    'formatters': {
-        'terse': {
-            'format': '%(message)s'
-        },
-        'verbose': {
-            'format': '%(name)s:%(lineno)s %(levelname)s: %(message)s'
+    "version": 1,
+    "formatters": {
+        "terse": {"format": "%(message)s"},
+        "verbose": {"format": "%(name)s:%(lineno)s %(levelname)s: %(message)s"},
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": log_level,
+            "formatter": log_format,
+            "stream": "ext://sys.stdout",
         }
     },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'level': log_level,
-            'formatter': log_format,
-            'stream': 'ext://sys.stdout'
-        }
-    },
-    'loggers': {
-        'ultron': {
-            'level': log_level,
-            'handlers': ['console']
-        }
-    }
+    "loggers": {"ultron": {"level": log_level, "handlers": ["console"]}},
 }
 
 

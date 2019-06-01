@@ -7,6 +7,7 @@ SHELL = /bin/bash
 
 CI_PYENV_DOCKER_IMAGE := bossjones/docker-pyenv:latest
 
+VAGRANT_HOST_IP := 192.168.2.8
 
 # SOURCE: https://github.com/wk8838299/bullcoin/blob/8182e2f19c1f93c9578a2b66de6a9cce0506d1a7/LMN/src/makefile.osx
 HAVE_BREW=$(shell brew --prefix >/dev/null 2>&1; echo $$? )
@@ -45,7 +46,7 @@ __check_defined = \
     $(if $(value $1),, \
       $(error Undefined $1$(if $(value 2), ($(strip $2)))))
 
-export PATH := ./bin:./bash:./venv/bin:$(PATH)
+export PATH := ./script:./bin:./bash:./venv/bin:$(PATH)
 
 MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_FOLDER := $(notdir $(patsubst %/,%,$(dir $(MKFILE_PATH))))
@@ -57,6 +58,13 @@ list_allowed_args := product ip command role tier cluster non_root_user host
 default: all
 
 all: info
+
+# # coverage flags, these all come from here
+# # SOURCE: https://media.readthedocs.org/pdf/pytest-cov/latest/pytest-cov.pdf
+# test_args_no_xml    := --cov-report=
+# test_args_with_xml  := --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --benchmark-skip
+# test_args           := --cov-report term-missing --cov-report xml --junitxml junit.xml
+# cover_args          := --cov-report html
 
 ##############################################################################
 # Auto generated from pygitrepo 0.0.27
@@ -419,11 +427,11 @@ travis:
 
 .PHONY: run-black-check
 run-black-check: ## CHECK MODE: sensible pylint ( Lots of press over this during pycon 2018 )
-	black --check --verbose .
+	pipenv run black --check --exclude=ultron8_venv* --verbose .
 
 .PHONY: run-black
 run-black: ## sensible pylint ( Lots of press over this during pycon 2018 )
-	black --verbose .
+	pipenv run black --verbose --exclude=ultron8_venv* .
 
 .PHONY: pip-tools
 pip-tools:
@@ -452,6 +460,7 @@ pip-compile-upgrade-all: pip-tools
 	pip-compile --output-file requirements-dev.txt requirements-dev.in --upgrade
 	pip-compile --output-file requirements-test.txt requirements-test.in --upgrade
 	pip-compile --output-file requirements-doc.txt requirements-doc.in --upgrade
+	pip-compile --output-file requirements-experimental.txt requirements-experimental.in --upgrade
 
 .PHONY: pip-compile
 pip-compile: pip-tools
@@ -459,6 +468,7 @@ pip-compile: pip-tools
 	pip-compile --output-file requirements-dev.txt requirements-dev.in
 	pip-compile --output-file requirements-test.txt requirements-test.in
 	pip-compile --output-file requirements-doc.txt requirements-doc.in
+	pip-compile --output-file requirements-experimental.txt requirements-experimental.in
 
 .PHONY: pip-compile-rebuild
 pip-compile-rebuild: pip-tools
@@ -466,6 +476,7 @@ pip-compile-rebuild: pip-tools
 	pip-compile --rebuild --output-file requirements-dev.txt requirements-dev.in
 	pip-compile --rebuild --output-file requirements-test.txt requirements-test.in
 	pip-compile --rebuild --output-file requirements-doc.txt requirements-doc.in
+	pip-compile --rebuild --output-file requirements-experimental.txt requirements-experimental.in
 
 .PHONY: install-deps-all
 install-deps-all:
@@ -474,11 +485,13 @@ ifeq (${DETECTED_OS}, Darwin)
 	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-dev.txt
 	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-test.txt
 	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-doc.txt
+	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-experimental.txt
 else
 	pip install -r requirements.txt
 	pip install -r requirements-dev.txt
 	pip install -r requirements-test.txt
 	pip install -r requirements-doc.txt
+	pip install -r requirements-experimental.txt
 endif
 
 .PHONY: install-all
@@ -547,8 +560,12 @@ docker-compose-build:
 docker-compose-build-playground:
 	@docker-compose -f hacking/docker-compose.yml build playground
 
-docker-compose-run-playground:
+docker-compose-run-playground-bash:
 	@docker-compose -f hacking/docker-compose.yml run --name ultron_playground --rm playground bash
+
+docker-compose-run-playground:
+	-@docker-compose -f hacking/docker-compose.yml rm --force playground
+	@docker-compose -f hacking/docker-compose.yml run -d --name ultron_playground --rm playground
 
 docker-compose-build-master:
 	@docker-compose -f hacking/docker-compose.yml build master
@@ -574,3 +591,105 @@ docker-compose-down:
 docker-version:
 	@docker --version
 	@docker-compose --version
+
+
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# SOURCE: https://github.com/kennethreitz/requests
+# --------------------------------------------------------------------------------------------------------------------
+pipenv-init: ## Run `pipenv install --dev` to create dev environment
+	pip install pipenv --upgrade
+	pipenv --python 3.6.8
+
+pipenv-dev: ## Run `pipenv install --dev` to create dev environment
+	pipenv install --dev
+	pipenv install -e .
+
+pipenv-install:
+	pipenv install
+
+pipenv-bootstrap: pipenv-init pipenv-dev
+
+pipenv-activate:
+	@echo "Run: pipenv shell"
+
+test-coverage:
+	pytest --capture=no --cov-report html --cov=. tests
+
+ci:
+	pipenv run py.test -n 8 --boxed --junitxml=report.xml
+test-readme:
+	@pipenv run python setup.py check --restructuredtext --strict && ([ $$? -eq 0 ] && echo "README.rst and HISTORY.rst ok") || echo "Invalid markup in README.rst or HISTORY.rst!"
+flake8:
+# pipenv run flake8 --config=$(CURRENT_DIR)/lint-configs-python/.flake8 --ignore=E501,F401,E128,E402,E731,F821 ultron8
+	pipenv run flake8 --config=$(CURRENT_DIR)/lint-configs-python/python/.flake8 $(PACKAGE_NAME)
+
+coverage:
+	pipenv run py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=$(PACKAGE_NAME) tests
+
+lint-configs-subtree:
+	git subtree add --prefix lint-configs-python https://github.com/bossjones/lint-configs-python.git master --squash
+
+docker-machine-create:
+	docker-machine create \
+	--driver generic \
+	--generic-ip-address=$(VAGRANT_HOST_IP) \
+	--generic-ssh-key ~/.ssh/vagrant_id_rsa \
+	$(PACKAGE_NAME)
+
+docker-machine-env-print:
+	@printf "=======================================\n"
+	@printf "$$GREEN docker-machine $(PACKAGE_NAME) created:$$NC\n"
+	@printf "=======================================\n"
+	@printf "$$BLUE - POST STEPS:$$NC\n"
+	@printf "=======================================\n"
+	@printf "$$ORNG     [RUN] $$(print-dm-eval) $$NC\n"
+
+install-poetry:
+	curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+
+install-debug-tools:
+	[ -d /usr/local/src/debug-tools ] || sudo git clone https://github.com/bossjones/debug-tools /usr/local/src/debug-tools
+	sudo chown -R vagrant:vagrant /usr/local/src/debug-tools
+	sudo /usr/local/src/debug-tools/update-bossjones-debug-tools
+
+
+bandit:
+	pipenv run bandit -r ./create_aio_app -x create_aio_app/template -s B101
+
+checkrst:
+	pipenv run python setup.py check --restructuredtext
+
+pyroma:
+	pipenv run pyroma -d .
+
+pipenv-lock:
+	pipenv lock
+
+copy-contrib:
+	copy-contrib
+
+generate-new-pipefile:
+	bash script/generate-new-pipefile
+
+
+##############################################################################################
+# python dev work
+##############################################################################################
+# SOURCE: https://pypi.org/project/pipenv-to-requirements/
+py-dev:
+	pipenv install --dev
+	pipenv run pip install -e .
+
+py-dists: py-sdist py-bdist py-wheels
+
+py-sdist:
+	pipenv run python setup.py sdist
+
+py-bdist:
+	pipenv run python setup.py bdist
+
+py-wheels:
+	pipenv run python setup.py bdist_wheel
+##############################################################################################

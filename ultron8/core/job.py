@@ -37,26 +37,26 @@ class Job(Observable, Observer):
     STATUS_UNKNOWN = "unknown"
     STATUS_RUNNING = "running"
 
-    NOTIFY_STATE_CHANGE = 'notify_state_change'
-    NOTIFY_RUN_DONE = 'notify_run_done'
+    NOTIFY_STATE_CHANGE = "notify_state_change"
+    NOTIFY_RUN_DONE = "notify_run_done"
 
     context_class = command_context.JobContext
 
     # These attributes determine equality between two Job objects
     equality_attributes = [
-        'name',
-        'queueing',
-        'scheduler',
-        'node_pool',
-        'all_nodes',
-        'action_graph',
-        'output_path',
-        'action_runner',
-        'max_runtime',
-        'allow_overlap',
-        'monitoring',
-        'time_zone',
-        'expected_runtime',
+        "name",
+        "queueing",
+        "scheduler",
+        "node_pool",
+        "all_nodes",
+        "action_graph",
+        "output_path",
+        "action_runner",
+        "max_runtime",
+        "allow_overlap",
+        "monitoring",
+        "time_zone",
+        "expected_runtime",
     ]
 
     # TODO: use config object
@@ -77,7 +77,7 @@ class Job(Observable, Observer):
         action_runner=None,
         max_runtime=None,
         time_zone=None,
-        expected_runtime=None
+        expected_runtime=None,
     ):
         super(Job, self).__init__()
         self.name = maybe_decode(name)
@@ -98,7 +98,7 @@ class Job(Observable, Observer):
         self.output_path = output_path or filehandler.OutputPath()
         self.output_path.append(name)
         self.context = command_context.build_context(self, parent_context)
-        log.info(f'{self} created')
+        log.info(f"{self} created")
 
     @classmethod
     def from_config(
@@ -140,7 +140,7 @@ class Job(Observable, Observer):
         """
         for attr in self.equality_attributes:
             setattr(self, attr, getattr(job, attr))
-        log.info(f'{self} reconfigured')
+        log.info(f"{self} reconfigured")
 
     @property
     def status(self):
@@ -171,16 +171,13 @@ class Job(Observable, Observer):
     @property
     def state_data(self):
         """This data is used to serialize the state of this job."""
-        return {
-            'runs': self.runs.state_data,
-            'enabled': self.enabled,
-        }
+        return {"runs": self.runs.state_data, "enabled": self.enabled}
 
     def get_job_runs_from_state(self, state_data):
         """Apply a previous state to this Job."""
-        self.enabled = state_data['enabled']
+        self.enabled = state_data["enabled"]
         job_runs = jobrun.job_runs_from_state(
-            state_data['runs'],
+            state_data["runs"],
             self.action_graph,
             self.output_path.clone(),
             self.context,

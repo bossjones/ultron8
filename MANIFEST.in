@@ -3,19 +3,34 @@
 #
 # For more info: https://docs.python.org/2/distutils/sourcedist.html#manifest-related-options
 
+# include *.txt
+# include *.rst
+# include ultron8/default_config.yaml
+# include ultron8/logging.conf
+# include ultron8/named_config_template.yaml
+# recursive-include ultron8 *.*
+# recursive-exclude *.pyc
+# recursive-exclude *.pyo
+# recursive-exclude tests *
+
+
 include *.txt
+include *.md
 include *.rst
-include ultron8/default_config.yaml
-include ultron8/logging.conf
-include ultron8/named_config_template.yaml
-recursive-include ultron8 *.*
-recursive-exclude *.pyc
-recursive-exclude *.pyo
-recursive-exclude tests *
+include requirements.txt
+include requirements-dev.txt
+include requirements-doc.txt
+include requirements-test.txt
+include requirements-experimental.txt
+graft ultron8
+recursive-include tests *
+recursive-exclude tests *.pyc *.pyo
+recursive-include integration *
+recursive-exclude integration *.pyc *.pyo
 
 
-
-# include README.md
+# include *.md
+# include *.md
 # include requirements.txt
 # include dev-requirements.txt
 # graft moonbeam_cli

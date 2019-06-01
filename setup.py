@@ -9,13 +9,46 @@ See more: https://docs.python.org/2/distutils/setupscript.html
 
 from __future__ import print_function
 import os
+import sys
 from datetime import date
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Command
+from shutil import rmtree
+
+import pprint
+
+pp = pprint.PrettyPrinter(indent=4)
 
 # --- import your package ---
 import ultron8 as package
 
+# https://stackoverflow.com/questions/2632199/how-do-i-get-the-path-of-the-current-executed-file-in-python/18489147
+# def we_are_frozen():
+#     # All of the modules are built-in to the interpreter, e.g., by py2exe
+#     return hasattr(sys, "frozen")
+
+# def module_path():
+#     encoding = sys.getfilesystemencoding()
+#     if we_are_frozen():
+#         return os.path.dirname(unicode(sys.executable, encoding))
+#     return os.path.dirname(unicode(__file__, encoding))
+
+# here = None
+
+# try:
+#     module_file = __file__
+#     here = os.path.abspath(os.path.dirname(__file__))
+# except:
+#     from pathlib import Path
+#     mypath = Path().absolute()
+#     # print(mypath)
+
+#     here = mypath
+
+#     module_file = 'setup.py'
+here = os.path.abspath(os.path.dirname(__file__))
+
 if __name__ == "__main__":
+
     # --- Automatically generate setup parameters ---
     # Your package name
     PKG_NAME = package.__name__
@@ -30,8 +63,7 @@ if __name__ == "__main__":
     try:
         SHORT_DESCRIPTION = package.__short_description__  # GitHub Short Description
     except:
-        print(
-            "'__short_description__' not found in '%s.__init__.py'!" % PKG_NAME)
+        print("'__short_description__' not found in '%s.__init__.py'!" % PKG_NAME)
         SHORT_DESCRIPTION = "No short description!"
 
     # Long description will be the body of content on PyPI page
@@ -64,25 +96,22 @@ if __name__ == "__main__":
     except:
         MAINTAINER_EMAIL = None
 
-    PACKAGES, INCLUDE_PACKAGE_DATA, PACKAGE_DATA, PY_MODULES = (
-        None, None, None, None,
-    )
+    PACKAGES, INCLUDE_PACKAGE_DATA, PACKAGE_DATA, PY_MODULES = (None, None, None, None)
 
     # It's a directory style package
     if os.path.exists(__file__[:-8] + PKG_NAME):
         # Include all sub packages in package directory
-        PACKAGES = [PKG_NAME] + ["%s.%s" % (PKG_NAME, i)
-                                 for i in find_packages(PKG_NAME)]
+        PACKAGES = [PKG_NAME] + [
+            "%s.%s" % (PKG_NAME, i) for i in find_packages(PKG_NAME)
+        ]
 
         # Include everything in package directory
         INCLUDE_PACKAGE_DATA = True
-        PACKAGE_DATA = {
-            "": ["*.*"],
-        }
+        PACKAGE_DATA = {"": ["*.*"]}
 
     # It's a single script style package
     elif os.path.exists(__file__[:-8] + PKG_NAME + ".py"):
-        PY_MODULES = [PKG_NAME, ]
+        PY_MODULES = [PKG_NAME]
 
     # The project directory name is the GitHub repository name
     repository_name = os.path.basename(os.path.dirname(__file__))
@@ -95,7 +124,8 @@ if __name__ == "__main__":
 
     # Source code download url
     DOWNLOAD_URL = "https://pypi.python.org/pypi/{0}/{1}#downloads".format(
-        PKG_NAME, VERSION)
+        PKG_NAME, VERSION
+    )
 
     try:
         LICENSE = package.__license__
@@ -103,11 +133,7 @@ if __name__ == "__main__":
         print("'__license__' not found in '%s.__init__.py'!" % PKG_NAME)
         LICENSE = ""
 
-    PLATFORMS = [
-        "Windows",
-        "MacOS",
-        "Unix",
-    ]
+    PLATFORMS = ["Windows", "MacOS", "Unix"]
 
     CLASSIFIERS = [
         "Development Status :: 4 - Beta",
@@ -127,7 +153,7 @@ if __name__ == "__main__":
     Full list can be found at: https://pypi.python.org/pypi?%3Aaction=list_classifiers
     """
 
-    def read_requirements_file(path):
+    def read_requirements_file(path, removes_links=True):
         """
         Read requirements.txt, ignore comments
         """
@@ -136,11 +162,14 @@ if __name__ == "__main__":
         for line in f.read().decode("utf-8").split("\n"):
             line = line.strip()
             if "#" in line:
-                line = line[:line.find("#")].strip()
+                line = line[: line.find("#")].strip()
+            # skip if we are installing via scm repository
+            if "-e git+https" in line:
+                print("BAD LINE: {}".format(line))
+                continue
             if line:
                 requires.append(line)
         return requires
-
 
     try:
         REQUIRES = read_requirements_file("requirements.txt")
@@ -158,7 +187,85 @@ if __name__ == "__main__":
     try:
         EXTRA_REQUIRE["docs"] = read_requirements_file("requirements-doc.txt")
     except:
+        print("'requirements-doc.txt' not found!")
+
+    # import pdb;pdb.set_trace()
+
+    try:
+        EXTRA_REQUIRE["experimental"] = read_requirements_file(
+            "requirements-experimental.txt"
+        )
+    except:
+        print("'requirements-experimental.txt' not found!")
+
+    TESTS_REQUIRE = dict()
+
+    try:
+        TESTS_REQUIRE = read_requirements_file("requirements-test.txt")
+    except:
         print("'requirements-test.txt' not found!")
+
+    class UploadCommand(Command):
+        """Support setup.py upload."""
+
+        description = "Build and publish the package."
+        user_options = []
+
+        @staticmethod
+        def status(s):
+            """Prints things in bold."""
+            print("\033[1m{0}\033[0m".format(s))
+
+        def initialize_options(self):
+            pass
+
+        def finalize_options(self):
+            pass
+
+        def run(self):
+            try:
+                self.status("Removing previous builds…")
+                rmtree(os.path.join(here, "dist"))
+            except OSError:
+                pass
+
+            self.status("Building Source and Wheel (universal) distribution…")
+            os.system(
+                "{0} setup.py sdist bdist_wheel --universal".format(sys.executable)
+            )
+
+            self.status("Uploading the package to PyPI via Twine…")
+            os.system("twine upload dist/*")
+
+            self.status("Pushing git tags…")
+            os.system("git tag v{0}".format(VERSION))
+            os.system("git push --tags")
+
+            sys.exit()
+
+    if sys.argv[-1] == "info":
+        print("name=" + PKG_NAME)
+        print("description=" + SHORT_DESCRIPTION)
+        print("long_description=" + LONG_DESCRIPTION)
+        print("version=" + VERSION)
+        print("author=" + AUTHOR)
+        print("author_email=" + AUTHOR_EMAIL)
+        print("maintainer=" + MAINTAINER)
+        print("maintainer_email=" + MAINTAINER_EMAIL)
+        print("packages=" + pp.pprint(PACKAGES))
+        print("setup_requires=" + ["pytest-runner"])
+        print("tests_require=" + pp.pprint(TESTS_REQUIRE))
+        print("include_package_data=" + INCLUDE_PACKAGE_DATA)
+        print("package_data=" + PACKAGE_DATA)
+        print("py_modules=" + PY_MODULES)
+        print("url=" + URL)
+        print("download_url=" + DOWNLOAD_URL)
+        print("classifiers=" + CLASSIFIERS)
+        print("platforms=" + PLATFORMS)
+        print("license=" + LICENSE)
+        print("install_requires=" + pp.pprint(REQUIRES))
+        print("extras_require=" + pp.pprint(EXTRA_REQUIRE))
+        sys.exit()
 
     setup(
         name=PKG_NAME,
@@ -170,6 +277,8 @@ if __name__ == "__main__":
         maintainer=MAINTAINER,
         maintainer_email=MAINTAINER_EMAIL,
         packages=PACKAGES,
+        setup_requires=["pytest-runner"],
+        tests_require=TESTS_REQUIRE,
         include_package_data=INCLUDE_PACKAGE_DATA,
         package_data=PACKAGE_DATA,
         py_modules=PY_MODULES,
@@ -180,10 +289,10 @@ if __name__ == "__main__":
         license=LICENSE,
         install_requires=REQUIRES,
         extras_require=EXTRA_REQUIRE,
-        entry_points='''
+        entry_points="""
         [console_scripts]
         ultronctl=ultron8.cli:cli
-        '''
+        """,
     )
 
 """

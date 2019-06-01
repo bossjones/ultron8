@@ -6,11 +6,16 @@ sphinx_rtd_theme
 
 # Extensions
 
-sphinx-jinja        # allow jinja2 template
-sphinx-copybutton   # add copy to clipboard button for code block
-docfly      # auto API manual, auto Table of Content
-rstobj       # generate list table from data
+# allow jinja2 template
+sphinx-jinja
+# add copy to clipboard button for code block
+sphinx-copybutton
+# auto API manual, auto Table of Content
+docfly
+# generate list table from data
+rstobj
 
 # Other
 
-pygments            # live RestructuredText preview
+# live RestructuredText preview
+pygments
