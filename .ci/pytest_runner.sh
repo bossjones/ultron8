@@ -18,8 +18,12 @@ echo " [run] You are here"
 `pwd`
 echo -e "\n\n"
 
+pushd /home/developer/app
+
 pyenv shell 3.6.8
 
 pip install -e .
 
 py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
+
+popd
