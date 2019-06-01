@@ -4,12 +4,14 @@ FROM bossjones/ultron8-hacking:0.1.0
 ARG CONTAINER_GID=501
 ARG CONTAINER_UID=501
 ARG CONTAINER_USER=developer
+ARG PYENV_VERSION=3.6.8
 
 # host ip address
 ARG HOST_IP
 
 # set container user as environment variable
 ENV CONTAINER_USER=${CONTAINER_USER}
+ENV PYENV_VERSION=${PYENV_VERSION}
 
 # http://bugs.python.org/issue19846
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
