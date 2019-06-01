@@ -4,19 +4,19 @@ from click.testing import CliRunner
 from contextlib import contextmanager
 import pyconfig
 from ultron8.cli import cli, get_flag, set_flag, set_fact_flags
-# from . import Paths
-from conftest import fixtures_path
+from ultron8.paths import Paths
+from .conftest import fixtures_path
 
 paths = Paths()
 
 
 @contextmanager
 def project_runner(fixture='simple'):
-    fixture_path = (fixtures_path / 'projects' / fixture)
+    fixture_path = (fixtures_path / fixture)
     runner = CliRunner()
     with runner.isolated_filesystem():
         # Copy the project fixture into the isolated filesystem dir.
-        shutil.copytree(fixture_path, '.tedi')
+        shutil.copytree(fixture_path, '.ultron8')
 
         # Monkeypatch a helper method onto the runner to make running commands
         # easier.
@@ -28,11 +28,11 @@ def project_runner(fixture='simple'):
 
 
 def in_file(string, test_file='simple-vanilla/README.md') -> bool:
-    return (string in (paths.build_path / test_file).open().read())
+    return (string in (paths.build_path_dir / test_file).open().read())
 
 
 def assert_command_cleans_path(runner, path, command):
-    """Given a TEDI subcommand name, assert that it cleans up rendered files."""
+    """Given a Ultron subcommand name, assert that it cleans up rendered files."""
     path.mkdir(parents=True, exist_ok=True)
     canary = path / ('test-canary-%s' % uuid4())
     canary.touch()
@@ -53,12 +53,12 @@ def test_render_command_has_valid_help_text():
 
 def test_clean_command_removes_rendered_files():
     with project_runner() as runner:
-        assert_command_cleans_path(runner, paths.build_path, 'clean')
+        assert_command_cleans_path(runner, paths.build_path_dir, 'clean')
 
 
 def test_render_command_cleans_build_path():
     with project_runner() as runner:
-        assert_command_cleans_path(runner, paths.build_path, 'render')
+        assert_command_cleans_path(runner, paths.build_path_dir, 'render')
 
 
 def test_render_command_accepts_facts_as_cli_flags():
