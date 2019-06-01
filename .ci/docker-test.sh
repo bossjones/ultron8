@@ -12,11 +12,12 @@ IMAGE_TAG=${REPO_NAME}:${PR_SHA}
 TAG="${IMAGE_TAG}"
 
 # --security-opt label=disable \
-docker run --rm \
+docker run  -i -t \
+    --rm \
     --privileged \
     --volume "$(pwd)/:/home/developer/app:rw" \
     --workdir "/home/developer/app" \
     --entrypoint "bash" \
-    "${TAG}" gosu developer /home/developer/app/.ci/pytest_runner.sh
+    "${TAG}" /home/developer/app/.ci/pytest_runner.sh
 
 # /home/developer/app/.ci/tox_runner.sh
