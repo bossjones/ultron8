@@ -21,6 +21,8 @@ pyenv shell 3.6.8
 
 pip install -e .
 
+set -e
 py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
+set +e
 
 popd

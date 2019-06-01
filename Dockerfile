@@ -64,4 +64,9 @@ RUN USER=${CONTAINER_USER} && \
     mkdir -p /etc/fixuid && \
     printf "user: $USER\ngroup: $GROUP\npaths:\n  - /home/developer\n  - /.pyenv\n" > /etc/fixuid/config.yml
 
-USER ${CONTAINER_USER}
+USER ${CONTAINER_USER}:${CONTAINER_USER}
+
+# && echo '#!/bin/bash\n\neval $( fixuid -q )\neval $*' > docker_startup_script.sh \
+# && chmod a+x docker_startup_script.sh
+
+# test -f $HOME/.ssh/id_rsa || ( install -m 0700 -d $HOME/.ssh && ssh-keygen -b 2048 -t rsa -f $HOME/.ssh/id_rsa -q -N "" )
