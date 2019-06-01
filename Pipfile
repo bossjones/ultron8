@@ -30,12 +30,6 @@ sphinx-copybutton = "*"
 docfly = "*"
 rstobj = "*"
 pygments = "*"
-
-[experimental-packages]
-bandit = "*"
-pyroma = "*"
-
-[test-packages]
 pytest = "*"
 pytest-cov = "*"
 coveralls = "*"
@@ -45,6 +39,10 @@ pytest-leaks = "*"
 pytest-mypy = "*"
 pytest-flake8 = "*"
 pytest-ipdb = {git = "git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb"}
+
+[experimental-packages]
+bandit = "*"
+pyroma = "*"
 
 [pipenv]
 allow_prereleases = true

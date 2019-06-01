@@ -162,6 +162,13 @@ if __name__ == "__main__":
     except:
         print("'requirements-experimental.txt' not found!")
 
+    TESTS_REQUIRE = dict()
+
+    try:
+        TESTS_REQUIRE = read_requirements_file("requirements-test.txt")
+    except:
+        print("'requirements-test.txt' not found!")
+
 
     class UploadCommand(Command):
         """Support setup.py upload."""
@@ -213,7 +220,7 @@ if __name__ == "__main__":
         maintainer_email=MAINTAINER_EMAIL,
         packages=PACKAGES,
         setup_requires=["pytest-runner"],
-        tests_require=EXTRA_REQUIRE["tests"],
+        tests_require=TESTS_REQUIRE,
         include_package_data=INCLUDE_PACKAGE_DATA,
         package_data=PACKAGE_DATA,
         py_modules=PY_MODULES,

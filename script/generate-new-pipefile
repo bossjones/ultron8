@@ -22,13 +22,11 @@ ultron8 = {path = ".", editable = true}
 [dev-packages]
 $(grep -v "#" requirements-dev.in | grep -v "^$" | grep -v "pytest-ipdb" | sed 's,$, = "*",g')
 $(grep -v "#" requirements-doc.in | grep -v "^$" | grep -v "pytest-ipdb" | sed 's,$, = "*",g')
+$(grep -v "#" requirements-test.in | grep -v "^$" | grep -v "pytest-ipdb" | sed 's,$, = "*",g')
+pytest-ipdb = {git = "git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb"}
 
 [experimental-packages]
 $(grep -v "#" requirements-experimental.in | grep -v "^$" | grep -v "pytest-ipdb" | sed 's,$, = "*",g')
-
-[test-packages]
-$(grep -v "#" requirements-test.in | grep -v "^$" | grep -v "pytest-ipdb" | sed 's,$, = "*",g')
-pytest-ipdb = {git = "git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb"}
 
 [pipenv]
 allow_prereleases = true
