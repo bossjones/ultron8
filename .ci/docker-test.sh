@@ -15,6 +15,7 @@ TAG="${IMAGE_TAG}"
 docker run  -i -t \
     --rm \
     --privileged \
+    -e "PYENV_VERSION=3.6.8" \
     --volume "$(pwd)/:/home/developer/app:rw" \
     --workdir "/home/developer/app" \
     --entrypoint "bash" \
