@@ -17,4 +17,4 @@ docker run --rm \
     --volume "$(pwd)/:/home/developer/app" \
     --workdir "/home/developer/app" \
     --entrypoint "/bin/bash" \
-    "${TAG}" .ci/tox_runner.sh
+    "${TAG}" /home/developer/app/.ci/tox_runner.sh
