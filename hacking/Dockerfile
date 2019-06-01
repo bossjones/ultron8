@@ -195,20 +195,6 @@ ENV CI true
 ENV PYTHON_CONFIGURE_OPTS="--enable-shared"
 ENV PYTHONDONTWRITEBYTECODE 1
 
-COPY python-versions.txt /
-RUN set -x; pyenv update && \
-    xargs -P 4 -n 1 pyenv install < /python-versions.txt && \
-    pyenv global $(pyenv versions --bare) && \
-    find $PYENV_ROOT/versions -type d '(' -name '__pycache__' -o -name 'test' -o -name 'tests' ')' -exec rm -rfv '{}' + && \
-    find $PYENV_ROOT/versions -type f '(' -name '*.py[co]' -o -name '*.exe' ')' -exec rm -fv '{}' + && \
-    mv -v -- /python-versions.txt $PYENV_ROOT/version
-
-COPY pyenv-init.sh /pyenv-init.sh
-
-# COPY bin/startup.sh .
-# RUN "./startup.sh"
-
-# RUN mkdir /var/task
 
 # ----------------------------------------------------------------------------------------------
 # https://github.com/alpinelinux/aports/pull/6980/files
@@ -277,6 +263,28 @@ RUN apk add --no-cache --update tree shadow sudo bash linux-pam && \
     echo 'export PATH="/home/${CONTAINER_USER}/.local/bin:${PATH}"' >> /etc/profile.d/${CONTAINER_USER}.sh && \
     chown -R ${CONTAINER_USER}:${CONTAINER_USER} /home/${CONTAINER_USER}
 
+
+COPY vagrant_insecure_key /home/${CONTAINER_USER}
+COPY vagrant_insecure_key.pub /home/${CONTAINER_USER}
+RUN cat /home/${CONTAINER_USER}/vagrant_insecure_key > /home/${CONTAINER_USER}/.ssh/id_rsa
+RUN cat /home/${CONTAINER_USER}/vagrant_insecure_key.pub > /home/${CONTAINER_USER}/.ssh/id_rsa.pub
+
+COPY python-versions.txt /
+RUN set -x; pyenv update && \
+    xargs -P 4 -n 1 pyenv install < /python-versions.txt && \
+    pyenv global $(pyenv versions --bare) && \
+    find $PYENV_ROOT/versions -type d '(' -name '__pycache__' -o -name 'test' -o -name 'tests' ')' -exec rm -rfv '{}' + && \
+    find $PYENV_ROOT/versions -type f '(' -name '*.py[co]' -o -name '*.exe' ')' -exec rm -fv '{}' + && \
+    mv -v -- /python-versions.txt $PYENV_ROOT/version && \
+    chown -R ${CONTAINER_USER}:${CONTAINER_USER} ${PYENV_ROOT}
+
+COPY pyenv-init.sh /pyenv-init.sh
+
+# COPY bin/startup.sh .
+# RUN "./startup.sh"
+
+# RUN mkdir /var/task
+
 # RUN set -xe \
 #     && apk add --no-cache shadow sudo \
 #     && cat /etc/group \
@@ -296,36 +304,11 @@ RUN apk add --no-cache --update tree shadow sudo bash linux-pam && \
     #  \
     # && echo "password:password" | chpasswd
 
-COPY vagrant_insecure_key /home/${CONTAINER_USER}
-COPY vagrant_insecure_key.pub /home/${CONTAINER_USER}
-RUN cat /home/${CONTAINER_USER}/vagrant_insecure_key > /home/${CONTAINER_USER}/.ssh/id_rsa
-RUN cat /home/${CONTAINER_USER}/vagrant_insecure_key.pub > /home/${CONTAINER_USER}/.ssh/id_rsa.pub
-
 RUN pip install -U pip setuptools --no-cache-dir && \
     pip install -U virtualenv pipenv --no-cache-dir && \
     pip install -U virtualenvwrapper --no-cache-dir
 
 RUN find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
-
-# USER ${NON_ROOT_USER}
-# WORKDIR /home/${NON_ROOT_USER}
-# ENV LANG C.UTF-8
-# COPY --chown=developer:developer requirements.txt requirements.txt
-# COPY --chown=developer:developer requirements-dev.txt requirements-dev.txt
-
-# RUN pip3 install --no-cache-dir -r requirements.txt && \
-#     pip3 install --no-cache-dir -r requirements-dev.txt && \
-#     pip3 install --no-cache-dir tox && \
-#     pyenv rehash
-
-# # Copy over everything required to run tox
-# COPY --chown=developer:developer setup.cfg setup.py tox.ini ./
-# COPY --chown=developer:developer moonbeam_cli/__about__.py moonbeam_cli/__about__.py
-
-# RUN set -x; tree; tox -e py36 --notest; echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run."
-
-# ENV PATH="/home/${NON_ROOT_USER}/.local/bin:${PATH}"
-
 
 RUN git config --global user.name "Jarvis" && \
     git config --global user.email jarvis@theblacktonystark.com && \

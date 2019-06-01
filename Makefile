@@ -696,7 +696,6 @@ py-wheels:
 # must call pyenv local first in order to use tox-pyenv
 .PHONY: travis-ci
 travis-ci:
-	pyenv local 3.6.8 3.7.3
 	find . -name '*.pyc' -exec rm -fv {} +
 	find . -name '*.pyo' -exec rm -fv {} +
 	find . -name '__pycache__' -exec rm -frv {} +

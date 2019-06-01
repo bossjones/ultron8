@@ -16,4 +16,4 @@ docker run --rm \
     --privileged \
     --volume "$(pwd)/:/home/developer/app" \
     --workdir "/home/developer/app" \
-    "${TAG}" tox -e py36,lint,pylint,cov
+    "${TAG}" pyenv local 3.6.8;tox -e py36,lint,pylint,cov
