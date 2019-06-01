@@ -30,11 +30,11 @@ COPY --chown=developer:developer requirements-test.txt requirements-test.txt
 COPY --chown=developer:developer Pipfile Pipfile
 COPY --chown=developer:developer Pipfile.lock Pipfile.lock
 
-RUN pip3 install -U pip setuptools tox && \
-    pip3 install --no-cache-dir -r requirements.txt && \
-    pip3 install --no-cache-dir -r requirements-dev.txt && \
-    pip3 install --no-cache-dir -r requirements-test.txt && \
-    pip3 install --no-cache-dir -r requirements-doc.txt && \
+RUN pip3 install -q --no-cache-dir -U pip setuptools tox && \
+    pip3 install -q --no-cache-dir -r requirements.txt && \
+    pip3 install -q --no-cache-dir -r requirements-dev.txt && \
+    pip3 install -q --no-cache-dir -r requirements-test.txt && \
+    pip3 install -q --no-cache-dir -r requirements-doc.txt && \
     pyenv rehash
 
 # Copy over everything required to run tox
