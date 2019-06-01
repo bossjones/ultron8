@@ -49,6 +49,6 @@ ENV GOSU_VERSION=1.11
 RUN cd /tmp && \
   sudo curl -sSL https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64 -o /usr/local/bin/gosu && \
   sudo chmod +x /usr/local/bin/gosu && \
-  chown developer:developer /usr/local/bin/gosu
+  sudo chown developer:developer /usr/local/bin/gosu
 
 USER root
