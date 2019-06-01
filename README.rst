@@ -49,11 +49,8 @@
       :target: https://pypi.org/pypi/ultron8#files
 
 
-
-
-ULTRON-8
+Why ``ULTRON-8``?
 ==============================================================================
-
 
 .. image:: ./images/ultron-8-by-George-Perez.jpg
 

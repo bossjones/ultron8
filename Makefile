@@ -418,12 +418,10 @@ list:
 install-virtualenv-osx:
 	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements.txt
 pre_commit_install:
-	-cp git_hooks/pre-commit .git/hooks/pre-commit
+	-cp git_hooks/.pre-commit-config.yaml .git/hooks/pre-commit
 
 travis:
 	tox
-
-
 
 .PHONY: run-black-check
 run-black-check: ## CHECK MODE: sensible pylint ( Lots of press over this during pycon 2018 )
@@ -619,8 +617,10 @@ test-coverage:
 
 ci:
 	pipenv run py.test -n 8 --boxed --junitxml=report.xml
+
 test-readme:
 	@pipenv run python setup.py check --restructuredtext --strict && ([ $$? -eq 0 ] && echo "README.rst and HISTORY.rst ok") || echo "Invalid markup in README.rst or HISTORY.rst!"
+
 flake8:
 # pipenv run flake8 --config=$(CURRENT_DIR)/lint-configs-python/.flake8 --ignore=E501,F401,E128,E402,E731,F821 ultron8
 	pipenv run flake8 --config=$(CURRENT_DIR)/lint-configs-python/python/.flake8 $(PACKAGE_NAME)
@@ -738,9 +738,9 @@ clean-cache:
 	find . -name '__pycache__' | xargs rm -rf
 
 clean-coverge-files:
-	rm -rf htmlcov/
-	rm -rf cov_annotate/
-	rm -rf cov.xml
+	-rm -rf htmlcov/
+	-rm -rf cov_annotate/
+	-rm -rf cov.xml
 
 .PHONY: lint
 lint:
@@ -768,6 +768,15 @@ docker-dev-build:
 
 docker-dev-bash:
 	.ci/docker-dev-bash.sh
+
+docker-test-build:
+	.ci/docker-test-build.sh
+
+docker-test-bash:
+	.ci/docker-test-bash.sh
+
+docker-test: clean-test docker-test-build
+	.ci/docker-test.sh
 
 vscode-settings:
 	cp -a contrib/settings.json .vscode/settings.json

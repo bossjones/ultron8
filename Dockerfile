@@ -40,6 +40,6 @@ COPY --chown=developer:developer ultron8/__init__.py ultron8/__init__.py
 
 RUN set -x; tree; tox -e py36 --notest; echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run."
 
-ENV PATH="/home/${CONTAINER_USER}/.local/bin:${PATH}"
+# ENV PATH="/home/${CONTAINER_USER}/.local/bin:${PATH}"
 
-USER root
+# USER root

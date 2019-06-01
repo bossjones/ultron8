@@ -14,9 +14,9 @@ TAG="${IMAGE_TAG}"
 docker run --rm \
     --security-opt label=disable \
     --privileged \
-    --volume "$(pwd)/:/home/developer/app" \
+    --volume "$(pwd)/:/home/developer/app:rw" \
     --workdir "/home/developer/app" \
-    --entrypoint "/bin/bash" \
-    "${TAG}" tree
+    --entrypoint "bash" \
+    "${TAG}" /home/developer/app/.ci/pytest_runner.sh
 
 # /home/developer/app/.ci/tox_runner.sh
