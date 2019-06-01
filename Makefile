@@ -756,3 +756,6 @@ install-twine:
 
 docker-bash:
 	.ci/docker-bash.sh
+
+local-ci:
+	pipenv run python setup.py test
