@@ -781,6 +781,9 @@ docker-test: clean-test docker-test-build
 dc-ci-build: clean-test
 	.ci/dc-ci-build.sh
 
+dc-ci-run: dc-ci-build
+	.ci/dc-ci-run.sh
+
 vscode-settings:
 	cp -a contrib/settings.json .vscode/settings.json
 
