@@ -661,3 +661,6 @@ pipenv-lock:
 
 copy-contrib:
 	copy-contrib
+
+generate-new-pipefile:
+	bash script/generate-new-pipefile

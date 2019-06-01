@@ -4,8 +4,8 @@ from click.testing import CliRunner
 from contextlib import contextmanager
 import pyconfig
 from ultron8.cli import cli, get_flag, set_flag, set_fact_flags
-from .paths import Paths
-from .paths import fixtures_path
+# from . import Paths
+from . import fixtures_path
 
 paths = Paths()
 

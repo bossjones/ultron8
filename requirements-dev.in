@@ -15,6 +15,8 @@ pytest-sugar
 # pytest-rerunfailures
 pytest-mock
 pytest-leaks
+pytest-mypy
+pytest-flake8
 
 # # tracing and debugging
 # hunter

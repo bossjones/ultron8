@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+pushd "$(dirname "$0")/.."
+
+_TEMPDIR=`mktemp -t -d ultron8-pipenv.XXXXXXXXXX` || exit 1
+_FILE="$_TEMPDIR/ultron8-pipenv.txt"
+
+cat <<EOF > ${_FILE}
+[[source]]
+url = "https://pypi.org/simple/"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+ultron8 = {path = ".", editable = true}
+
+[dev-packages]
+$(grep -v "#" requirements-dev.in | grep -v "^$" | grep -v "pytest-ipdb" | sed 's,$, = "*",g')
+$(grep -v "#" requirements-doc.in | grep -v "^$" | grep -v "pytest-ipdb" | sed 's,$, = "*",g')
+pytest-ipdb = {git = "git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb"}
+
+[experimental-packages]
+$(grep -v "#" requirements-experimental.in | grep -v "^$" | grep -v "pytest-ipdb" | sed 's,$, = "*",g')
+
+[pipenv]
+allow_prereleases = true
+EOF
+
+\cat ${_FILE}
+
+\cat ${_FILE} | pbcopy
+
+
+echo "rm ${_TEMPDIR}"
+rm -rfv ${_TEMPDIR}
+
+popd
+
+
