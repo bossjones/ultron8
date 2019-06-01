@@ -34,6 +34,9 @@ COPY --chown=developer:developer Pipfile.lock Pipfile.lock
 COPY --chown=developer:developer setup.cfg setup.py tox.ini ./
 COPY --chown=developer:developer ultron8/__init__.py ultron8/__init__.py
 
-RUN pyenv shell 3.6.8; pipenv --python 3.6.8 && pipenv init --dev && pipenv install --dev --deploy
+COPY --chown=developer:developer dev-bashrc.sh .
+RUN "./dev-bashrc.sh"
+
+RUN pyenv shell 3.6.8; pipenv --python 3.6.8 && pipenv install --dev --deploy
 
 ENV PATH="/home/${CONTAINER_USER}/.local/bin:${PATH}"
