@@ -47,9 +47,9 @@ RUN set -x; tree; tox -e py36 --notest; echo "NOTE: This most likely produced a 
 ENV GOSU_VERSION=1.11
 
 RUN cd /tmp && \
-  curl -sSL https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64.asc -o gosu.asc && \
-  curl -sSL https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64 -o /usr/local/bin/gosu && \
-  chmod +x /usr/local/bin/gosu && \
-  rm gosu.asc
+  sudo curl -sSL https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64 -o /usr/local/bin/gosu && \
+  sudo chmod +x /usr/local/bin/gosu && \
+  rm gosu.asc && \
+  chown developer:developer /usr/local/bin/gosu
 
 USER root
