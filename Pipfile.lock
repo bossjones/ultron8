@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c23b4dc5aa8ffba2d0011ff7ee758b497c0b21a5ca8d28af3a6828b9c437781f"
+            "sha256": "c21e39632ae037ff245a8d89dd2ea7dae3500671747087ea198d0fb2d608b8d5"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -426,6 +426,14 @@
                 "sha256:d8b24664561d0d34ddfaec54636d502d7cea6e29c3eaf68f3df6180863e2166e"
             ],
             "version": "==1.4.3"
+        },
+        "appnope": {
+            "hashes": [
+                "sha256:5b26757dc6f79a3b7dc9fab95359328d5747fcb2409d331ea66d0272b90ab2a0",
+                "sha256:8b995ffe925347a2138d7ac0fe77155e4311a0ea6d6da4f5128fe4b3cbe5ed71"
+            ],
+            "markers": "sys_platform == 'darwin'",
+            "version": "==0.1.0"
         },
         "aspy.yaml": {
             "hashes": [
@@ -923,10 +931,6 @@
             ],
             "index": "pypi",
             "version": "==1.0.4"
-        },
-        "pytest-ipdb": {
-            "git": "https://github.com/mverteuil/pytest-ipdb",
-            "ref": "0643168f30f81b6096696d8b3c92f80921b35bbd"
         },
         "pytest-leaks": {
             "hashes": [

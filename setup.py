@@ -189,7 +189,7 @@ if __name__ == "__main__":
     except:
         print("'requirements-doc.txt' not found!")
 
-    import pdb;pdb.set_trace()
+    # import pdb;pdb.set_trace()
 
     try:
         EXTRA_REQUIRE["experimental"] = read_requirements_file("requirements-experimental.txt")
