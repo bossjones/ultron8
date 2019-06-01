@@ -191,6 +191,10 @@ COPY default-packages ${PYENV_ROOT}/default-packages
 #     xz-utils tk-dev libffi-dev liblzma-dev python-openssl git && \
 #     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+ENV CI true
+ENV PYTHON_CONFIGURE_OPTS="--enable-shared"
+ENV PYTHONDONTWRITEBYTECODE 1
+
 COPY python-versions.txt /
 RUN set -x; pyenv update && \
     xargs -P 4 -n 1 pyenv install < /python-versions.txt && \
@@ -222,7 +226,7 @@ COPY pyenv-init.sh /pyenv-init.sh
 # echo "password	include		base-password" | tee -a /etc/pam.d/login && \
 # echo "session		include		base-session" | tee -a /etc/pam.d/login && \
 
-RUN apk add --no-cache --update shadow sudo bash linux-pam && \
+RUN apk add --no-cache --update tree shadow sudo bash linux-pam && \
     echo -e "\n\n\n" && \
     cat /etc/pam.d/chpasswd && \
     echo -e "BEFORE" && \
@@ -246,7 +250,6 @@ RUN apk add --no-cache --update shadow sudo bash linux-pam && \
     cat /etc/pam.d/login && \
     echo -e "\n\n\n" && \
 
-
     echo -e "\n\n\n" && \
     echo -e "BEFORE - useradd" && \
     cat /etc/pam.d/useradd && \
@@ -254,9 +257,9 @@ RUN apk add --no-cache --update shadow sudo bash linux-pam && \
     sed -i "s,password	include		system-auth,password	include		base-password,g" /etc/pam.d/useradd && \
     echo -e "AFTER - useradd" && \
     cat /etc/pam.d/useradd && \
-    echo -e "\n\n\n"
-
-RUN if [ -z "`getent group $CONTAINER_GID`" ]; then \
+    echo -e "\n\n\n" && \
+    \
+    if [ -z "`getent group $CONTAINER_GID`" ]; then \
       addgroup -S -g $CONTAINER_GID $CONTAINER_USER; \
     else \
       groupmod -n $CONTAINER_USER `getent group $CONTAINER_GID | cut -d: -f1`; \
@@ -270,6 +273,8 @@ RUN if [ -z "`getent group $CONTAINER_GID`" ]; then \
     chmod 0440 /etc/sudoers.d/$CONTAINER_USER && \
     mkdir /home/${CONTAINER_USER}/.ssh && \
     chmod og-rwx /home/${CONTAINER_USER}/.ssh && \
+    echo 'export PATH="~/.local/bin:${PATH}"' >> /etc/profile.d/${CONTAINER_USER}.sh && \
+    echo 'export PATH="/home/${CONTAINER_USER}/.local/bin:${PATH}"' >> /etc/profile.d/${CONTAINER_USER}.sh && \
     chown -R ${CONTAINER_USER}:${CONTAINER_USER} /home/${CONTAINER_USER}
 
 # RUN set -xe \
@@ -296,13 +301,31 @@ COPY vagrant_insecure_key.pub /home/${CONTAINER_USER}
 RUN cat /home/${CONTAINER_USER}/vagrant_insecure_key > /home/${CONTAINER_USER}/.ssh/id_rsa
 RUN cat /home/${CONTAINER_USER}/vagrant_insecure_key.pub > /home/${CONTAINER_USER}/.ssh/id_rsa.pub
 
-ENV PYTHONDONTWRITEBYTECODE 1
-
 RUN pip install -U pip setuptools --no-cache-dir && \
     pip install -U virtualenv pipenv --no-cache-dir && \
     pip install -U virtualenvwrapper --no-cache-dir
 
 RUN find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
+
+# USER ${NON_ROOT_USER}
+# WORKDIR /home/${NON_ROOT_USER}
+# ENV LANG C.UTF-8
+# COPY --chown=developer:developer requirements.txt requirements.txt
+# COPY --chown=developer:developer requirements-dev.txt requirements-dev.txt
+
+# RUN pip3 install --no-cache-dir -r requirements.txt && \
+#     pip3 install --no-cache-dir -r requirements-dev.txt && \
+#     pip3 install --no-cache-dir tox && \
+#     pyenv rehash
+
+# # Copy over everything required to run tox
+# COPY --chown=developer:developer setup.cfg setup.py tox.ini ./
+# COPY --chown=developer:developer moonbeam_cli/__about__.py moonbeam_cli/__about__.py
+
+# RUN set -x; tree; tox -e py36 --notest; echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run."
+
+# ENV PATH="/home/${NON_ROOT_USER}/.local/bin:${PATH}"
+
 
 RUN git config --global user.name "Jarvis" && \
     git config --global user.email jarvis@theblacktonystark.com && \

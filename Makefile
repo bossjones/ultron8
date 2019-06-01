@@ -604,7 +604,7 @@ pipenv-init: ## Run `pipenv install --dev` to create dev environment
 
 pipenv-dev: ## Run `pipenv install --dev` to create dev environment
 	pipenv install --dev
-	pipenv install -e .
+# pipenv install -e .
 
 pipenv-install:
 	pipenv install
@@ -693,3 +693,60 @@ py-bdist:
 py-wheels:
 	pipenv run python setup.py bdist_wheel
 ##############################################################################################
+# must call pyenv local first in order to use tox-pyenv
+.PHONY: travis-ci
+travis-ci:
+	pyenv local 3.6.8 3.7.3
+	find . -name '*.pyc' -exec rm -fv {} +
+	find . -name '*.pyo' -exec rm -fv {} +
+	find . -name '__pycache__' -exec rm -frv {} +
+	.ci/docker-test-build.sh
+	.ci/docker-test.sh
+
+
+.PHONY: stubgen
+stubgen:
+	stubgen --recursive -o stubs/ ultron8
+
+
+# NUKE THE WORLD
+.PHONY: nuke
+nuke:
+	rm -rf build/
+	rm -rf dist/
+	rm -fr .eggs/
+	find . -name '*.egg-info' -exec rm -frv {} +
+	find . -name '*.egg' -exec rm -fv {} +
+	find . -name '*.pyc' -exec rm -fv {} +
+	find . -name '*.pyo' -exec rm -fv {} +
+	find . -name '*~' -print -exec rm -fv {} +
+	find . -name '__pycache__' -exec rm -frv {} +
+
+
+.PHONY: clean-test
+clean-test: ## remove test and coverage artifacts
+	rm -fr .tox/
+	rm -f .coverage
+	rm -fr htmlcov/
+
+travis-pdb:
+	tox -e py36 -- --pdb --showlocals
+
+
+.PHONY: clean-cache
+clean-cache:
+	find . -name '*.pyc' | xargs rm
+	find . -name '__pycache__' | xargs rm -rf
+
+clean-coverge-files:
+	rm -rf htmlcov/
+	rm -rf cov_annotate/
+	rm -rf cov.xml
+
+.PHONY: lint
+lint:
+	./script/lint
+
+.PHONY: test
+test:
+	./script/run_pytest
