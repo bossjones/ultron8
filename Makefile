@@ -762,3 +762,9 @@ local-ci: clean-test
 
 open-coverage-local:
 	./script/open-browser.py htmlcov/index.html
+
+docker-dev-build:
+	.ci/docker-dev-build.sh
+
+docker-dev-bash:
+	.ci/docker-dev-bash.sh
