@@ -5,7 +5,7 @@ from contextlib import contextmanager
 import pyconfig
 from ultron8.cli import cli, get_flag, set_flag, set_fact_flags
 from ultron8.paths import Paths
-from .conftest import fixtures_path
+from conftest import fixtures_path
 
 paths = Paths()
 
