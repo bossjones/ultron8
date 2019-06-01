@@ -11,8 +11,8 @@ IMAGE_TAG=${REPO_NAME}:${PR_SHA}
 
 TAG="${IMAGE_TAG}"
 
+# --security-opt label=disable \
 docker run --rm \
-    --security-opt label=disable \
     --privileged \
     --volume "$(pwd)/:/home/developer/app:rw" \
     --workdir "/home/developer/app" \
