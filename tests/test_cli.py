@@ -59,13 +59,21 @@ def project_runner(fixture='simple'):
 #     assert not result.exception
 #     assert "Usage: main_group [OPTIONS] COMMAND [ARGS]..." in result.output
 
-def test_cli_no_args():
-    with project_runner() as runner:
-        assert "Usage: main_group [OPTIONS] COMMAND [ARGS]..." in runner.output_of('render --help')
+# def test_cli_no_args():
+#     with project_runner() as runner:
+#         assert "Usage: main_group [OPTIONS] COMMAND [ARGS]..." in runner.output_of('render --help')
 
-def test_cli_dummy():
+# def test_cli_dummy():
+#     with project_runner() as runner:
+#         assert "Dummy command, doesn't do anything" in runner.output_of('dummy')
+
+# def test_cli_info():
+#     with project_runner() as runner:
+#         assert "Usage: ultronctl [OPTIONS] COMMAND [ARGS]..." in runner.output_of('info')
+
+def test_cli_dummp():
     with project_runner() as runner:
-        assert "Dummy command, doesn't do anything" in runner.output_of('dummy')
+        assert "Dummy command, doesn't do anything." in runner.output_of('dummy')
 
 # def in_file(string, test_file='simple-vanilla/README.md') -> bool:
 #     return (string in (paths.build_path_dir / test_file).open().read())

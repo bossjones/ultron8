@@ -12,7 +12,7 @@ logger = getLogger(__name__)
 def cli():
     pass
 
-@click.command()
+@cli.command()
 def dummy():
     """
     Dummy command, doesn't do anything.
