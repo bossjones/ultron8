@@ -2,6 +2,10 @@
 
 # set -x
 
+echo " [info] CONTAINER_UID=${CONTAINER_UID}"
+echo " [info] CONTAINER_GID=${CONTAINER_GID}"
+echo
+
 echo " [run] UID/GID map to unknown user/group, \$HOME=/ (the default when no home directory is defined)"
 echo -e "\n\n"
 
