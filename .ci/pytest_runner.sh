@@ -14,6 +14,10 @@ eval $( fixuid )
 
 # gosu developer py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
 
+echo " [run] You are here"
+`pwd`
+echo -e "\n\n"
+
 pyenv shell 3.6.8
 
 pip install -e .
