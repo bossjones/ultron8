@@ -778,6 +778,9 @@ docker-test-bash:
 docker-test: clean-test docker-test-build
 	.ci/docker-test.sh
 
+dc-ci-build: clean-test
+	.ci/dc-ci-build.sh
+
 vscode-settings:
 	cp -a contrib/settings.json .vscode/settings.json
 
