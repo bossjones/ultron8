@@ -4,6 +4,7 @@ services:
   # For debugging
   playground:
     tty: true
+    stdin_open: true
     privileged: true
     build:
       # context: ../
@@ -31,3 +32,20 @@ services:
   #   build:
   #     context: ../
   #     dockerfile: example-cluster/images/batch/Dockerfile
+
+
+# version: '3'
+# services:
+#   app:
+#     build:
+#       context: .
+#       args:
+#         UID: ${UID}
+#         GID: ${GID}
+#     command: sh
+#     tty: true
+#     stdin_open: true
+#     volumes:
+#       - .:/home/mobydick/app
+#     ports:
+#       - ${PORT}:3000

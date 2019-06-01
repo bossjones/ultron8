@@ -1,0 +1,9 @@
+pip
+pip-tools
+pipdeptree
+pipenv
+setuptools
+virtualenv
+virtualenvwrapper
+tox
+wheel

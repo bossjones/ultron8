@@ -50,3 +50,6 @@ ci:
 	docker run --rm -w /app \
 	-v "$(CURRENT_DIR):/app" \
 	$(docker_registry_url)/$(container_name):$(GIT_SHA) --version
+
+dc-build:
+	GID=$(shell id -g) UID=$(shell id -u) docker-compose
