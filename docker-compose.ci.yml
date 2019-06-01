@@ -6,11 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        # UID: ${UID}
-        # GID: ${GID}
         CONTAINER_GID: ${CONTAINER_GID:-1000}
         CONTAINER_UID: ${CONTAINER_UID:-1000}
-    # command: sh
     tty: true
     stdin_open: true
     entrypoint:
