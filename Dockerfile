@@ -62,7 +62,9 @@ RUN USER=${CONTAINER_USER} && \
     chown root:root /usr/local/bin/fixuid && \
     chmod 4755 /usr/local/bin/fixuid && \
     mkdir -p /etc/fixuid && \
-    printf "user: $USER\ngroup: $GROUP\npaths:\n  - /home/developer\n  - /.pyenv\n" > /etc/fixuid/config.yml
+    printf "user: $USER\ngroup: $GROUP\npaths:\n  - /home/developer\n  - /.pyenv\n" > /etc/fixuid/config.yml && \
+    echo "  - /home/developer/.config" >> /etc/fixuid/config.yml && \
+    echo "  - /home/developer/.cache" >> /etc/fixuid/config.yml
 
 USER ${CONTAINER_USER}:${CONTAINER_USER}
 
@@ -91,3 +93,8 @@ WORKDIR /home/${CONTAINER_USER}/app
 # && chmod a+x docker_startup_script.sh
 
 # test -f $HOME/.ssh/id_rsa || ( install -m 0700 -d $HOME/.ssh && ssh-keygen -b 2048 -t rsa -f $HOME/.ssh/id_rsa -q -N "" )
+
+
+# RUN mkdir ~/.cache && \
+# mkdir -p ~/.config/godot && \
+# mkdir -p ~/.local/share/godot/templates/3.0.6.stable
