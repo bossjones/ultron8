@@ -1,3 +1,15 @@
+#!/usr/bin/env bash
+
+pushd "$(dirname "$0")/.."
+
+_PATH_TO_PYENV_PYTHON=$(pipenv run which python)
+
+# "python.pythonPath": "/Users/malcolm/.virtualenvs/ultron8-cznMaMZB/bin/python",
+
+_TEMPDIR=`mktemp -t -d ultron8-vscode.XXXXXXXXXX` || exit 1
+_FILE="$_TEMPDIR/ultron8-vscode.txt"
+
+cat <<EOF > ${_FILE}
 {
     "files.exclude": {
         "**/.git": true,
@@ -9,7 +21,7 @@
         "**/__pycache__": true,
         "__pycache__/": true,
         "*.py[cod]": true,
-        "*$py.class": true,
+        "*\$py.class": true,
         "*.so": true,
         ".Python": true,
         "build/": true,
@@ -154,6 +166,37 @@
         "peco_linux_amd64/": true,
         "cov.xml": true
     },
-    "python.pythonPath": "/Users/malcolm/.virtualenvs/ultron8-cznMaMZB/bin/python",
-    "restructuredtext.confPath": "${workspaceFolder}",
+    "python.pythonPath": "${_PATH_TO_PYENV_PYTHON}",
+    "restructuredtext.confPath": "\${workspaceFolder}",
 }
+EOF
+
+echo -e "\n Here is the newly rendered settings.json file for you\n\n"
+\cat ${_FILE}
+
+\cat ${_FILE} | pbcopy
+
+echo -e "\n\n"
+
+echo -e "\n [Diff] of the two files. diff ${_FILE} .vscode/settings.json \n\n"
+diff ${_FILE} .vscode/settings.json
+echo -e "\n\n"
+
+echo "Would you like to continue copying over the old .vscode/settings.json file?"
+
+echo -n "Enter your answer and press [ENTER]: (y/n)"
+read -n 1 answer
+echo
+
+if  [ "$answer" == "y" ]; then
+  cp -avf ${_FILE} .vscode/settings.json
+elif [ "$answer" == "n" ]; then
+  echo "You chose not to overwrite .vscode/settings.json. Exiting gracefully ..."
+else
+  echo "Invalid choice, must pick between 'y' or 'n'"
+fi
+
+echo "rm ${_TEMPDIR}"
+rm -rfv ${_TEMPDIR}
+
+popd

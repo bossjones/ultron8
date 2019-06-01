@@ -418,12 +418,10 @@ list:
 install-virtualenv-osx:
 	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements.txt
 pre_commit_install:
-	-cp git_hooks/pre-commit .git/hooks/pre-commit
+	-cp git_hooks/.pre-commit-config.yaml .git/hooks/pre-commit
 
 travis:
 	tox
-
-
 
 .PHONY: run-black-check
 run-black-check: ## CHECK MODE: sensible pylint ( Lots of press over this during pycon 2018 )
@@ -604,7 +602,7 @@ pipenv-init: ## Run `pipenv install --dev` to create dev environment
 
 pipenv-dev: ## Run `pipenv install --dev` to create dev environment
 	pipenv install --dev
-	pipenv install -e .
+# pipenv install -e .
 
 pipenv-install:
 	pipenv install
@@ -619,8 +617,10 @@ test-coverage:
 
 ci:
 	pipenv run py.test -n 8 --boxed --junitxml=report.xml
+
 test-readme:
 	@pipenv run python setup.py check --restructuredtext --strict && ([ $$? -eq 0 ] && echo "README.rst and HISTORY.rst ok") || echo "Invalid markup in README.rst or HISTORY.rst!"
+
 flake8:
 # pipenv run flake8 --config=$(CURRENT_DIR)/lint-configs-python/.flake8 --ignore=E501,F401,E128,E402,E731,F821 ultron8
 	pipenv run flake8 --config=$(CURRENT_DIR)/lint-configs-python/python/.flake8 $(PACKAGE_NAME)
@@ -656,13 +656,17 @@ install-debug-tools:
 
 
 bandit:
-	pipenv run bandit -r ./create_aio_app -x create_aio_app/template -s B101
+# pipenv run bandit -r ./create_aio_app -x create_aio_app/template -s B101
+	pipenv run bandit -r ./ultron8 -s B101
 
 checkrst:
 	pipenv run python setup.py check --restructuredtext
 
 pyroma:
 	pipenv run pyroma -d .
+
+flake: checkrst bandit pyroma
+	pipenv run flake8 ultron8 setup.py
 
 pipenv-lock:
 	pipenv lock
@@ -693,3 +697,99 @@ py-bdist:
 py-wheels:
 	pipenv run python setup.py bdist_wheel
 ##############################################################################################
+# must call pyenv local first in order to use tox-pyenv
+.PHONY: travis-ci
+travis-ci:
+	find . -name '*.pyc' -exec rm -fv {} +
+	find . -name '*.pyo' -exec rm -fv {} +
+	find . -name '__pycache__' -exec rm -frv {} +
+	.ci/docker-test-build.sh
+	.ci/docker-test.sh
+
+
+.PHONY: stubgen
+stubgen:
+	stubgen --recursive -o stubs/ ultron8
+
+
+# NUKE THE WORLD
+.PHONY: nuke
+nuke:
+	rm -rf build/
+	rm -rf dist/
+	rm -fr .eggs/
+	find . -name '*.egg-info' -exec rm -frv {} +
+	find . -name '*.egg' -exec rm -fv {} +
+	find . -name '*.pyc' -exec rm -fv {} +
+	find . -name '*.pyo' -exec rm -fv {} +
+	find . -name '*~' -print -exec rm -fv {} +
+	find . -name '__pycache__' -exec rm -frv {} +
+
+
+.PHONY: clean-test
+clean-test: ## remove test and coverage artifacts
+	rm -fr .tox/
+	rm -f .coverage
+	rm -fr htmlcov/
+
+travis-pdb:
+	tox -e py36 -- --pdb --showlocals
+
+
+.PHONY: clean-cache
+clean-cache:
+	find . -name '*.pyc' | xargs rm
+	find . -name '__pycache__' | xargs rm -rf
+
+clean-coverge-files:
+	-rm -rf htmlcov/
+	-rm -rf cov_annotate/
+	-rm -rf cov.xml
+
+.PHONY: lint
+lint:
+	./script/lint
+
+.PHONY: test
+test:
+	./script/run_pytest
+
+.PHONY: install-twine
+install-twine:
+	pip install twine
+
+docker-bash:
+	.ci/docker-bash.sh
+
+local-ci: clean-test
+	pipenv run python setup.py test
+
+open-coverage-local:
+	./script/open-browser.py htmlcov/index.html
+
+docker-dev-build:
+	.ci/docker-dev-build.sh
+
+docker-dev-bash:
+	.ci/docker-dev-bash.sh
+
+docker-test-build:
+	.ci/docker-test-build.sh
+
+docker-test-bash:
+	.ci/docker-test-bash.sh
+
+docker-test: clean-test docker-test-build
+	.ci/docker-test.sh
+
+dc-ci-build: clean-test
+	.ci/dc-ci-build.sh
+
+dc-ci-run: dc-ci-build
+	.ci/dc-ci-run.sh
+
+vscode-settings:
+	cp -a contrib/settings.json .vscode/settings.json
+
+cp-vscode-settings:
+	bash script/cp-vscode-settings

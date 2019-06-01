@@ -9,6 +9,9 @@
 .. image:: https://codecov.io/gh/bossjones/ultron8/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/bossjones/ultron8
 
+.. image:: https://coveralls.io/repos/github/bossjones/ultron8/badge.svg?branch=master
+  :target: https://coveralls.io/github/bossjones/ultron8?branch=master
+
 .. image:: https://img.shields.io/pypi/v/ultron8.svg
     :target: https://pypi.python.org/pypi/ultron8
 
@@ -48,6 +51,11 @@
 .. image:: https://img.shields.io/badge/Link-Download-blue.svg
       :target: https://pypi.org/pypi/ultron8#files
 
+
+Why ``ULTRON-8``?
+==============================================================================
+
+.. image:: ./images/ultron-8-by-George-Perez.jpg
 
 Welcome to ``ultron8`` Documentation
 ==============================================================================

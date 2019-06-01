@@ -6,4 +6,4 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-pytest -s --tb short --cov-config .coveragerc --cov moonbeam_cli tests --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate
+pytest -s --tb short --cov-config .coveragerc --cov ultron8 tests --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate

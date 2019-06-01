@@ -1,5 +1,4 @@
 pathlib_mate
-twine
 isort
 # coveralls
 # pytest
@@ -48,3 +47,4 @@ mccabe
 # NOTE: from yelp/Tron originally
 lazy-object-proxy
 autopep8
+MonkeyType

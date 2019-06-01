@@ -7,3 +7,4 @@ pytest-mock
 pytest-leaks
 pytest-mypy
 pytest-flake8
+tox-pyenv

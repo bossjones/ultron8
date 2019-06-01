@@ -22,6 +22,7 @@ ENV LANG C.UTF-8
 # install ca-certificates so that HTTPS works consistently
 # other runtime dependencies for Python are installed later
 RUN apk add --no-cache ca-certificates
+RUN update-ca-certificates
 
 ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
 ENV PYTHON_VERSION 3.6.8
@@ -87,7 +88,6 @@ RUN set -ex \
 		| sort -u \
 		| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
 		| xargs -rt apk add --no-cache --virtual .python-rundeps \
-	&& apk del .build-deps \
 	\
 	&& find /usr/local -depth \
 		\( \
@@ -132,15 +132,27 @@ RUN set -ex; \
 
 # ENV LC_CTYPE en_US.UTF-8
 
-RUN set -eux; \
-    apk add --no-cache \
-    git \
-    vim \
-    zsh \
-    tmux \
-    curl \
-    unzip \
-    jq
+RUN apk add --no-cache --update \
+  bash \
+  build-base \
+  bzip2-dev \
+  ca-certificates \
+  curl \
+  git \
+  jq \
+  linux-headers \
+  ncurses-dev \
+  openssl \
+  openssl-dev \
+  patch \
+  readline-dev \
+  sqlite-dev \
+  tmux \
+  unzip \
+  vim \
+  zsh \
+    && \
+  rm -rf /var/cache/apk/*
 
 # # RUN zsh -c exit
 
@@ -153,13 +165,20 @@ RUN set -eux; \
 # # RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 # # RUN locale-gen
 
-# ENV PYENV_ROOT="/.pyenv" \
-#     PATH="/.pyenv/bin:/.pyenv/shims:$PATH"
+ENV PYENV_ROOT="/.pyenv" \
+    PATH="/.pyenv/bin:/.pyenv/shims:$PATH"
 
 # RUN apt-get update && \
 #     apt-get install -y --no-install-recommends git ca-certificates curl && \
 #     curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash && \
 #     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash && \
+    git clone https://github.com/pyenv/pyenv-virtualenvwrapper ${PYENV_ROOT}/plugins/pyenv-virtualenvwrapper && \
+    git clone https://github.com/pyenv/pyenv-pip-migrate ${PYENV_ROOT}/plugins/pyenv-pip-migrate && \
+    git clone https://github.com/jawshooah/pyenv-default-packages ${PYENV_ROOT}/plugins/pyenv-default-packages
+
+COPY default-packages ${PYENV_ROOT}/default-packages
 
 # RUN set -x; apt-get update && \
 #     apt-get install -y --no-install-recommends \
@@ -172,20 +191,119 @@ RUN set -eux; \
 #     xz-utils tk-dev libffi-dev liblzma-dev python-openssl git && \
 #     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+ENV CI true
+ENV PYTHON_CONFIGURE_OPTS="--enable-shared"
+ENV PYTHONDONTWRITEBYTECODE 1
+
+
+# ----------------------------------------------------------------------------------------------
+# https://github.com/alpinelinux/aports/pull/6980/files
+# https://bugs.alpinelinux.org/issues/10209
+# https://stackoverflow.com/questions/55475157/pam-authentication-failure-when-running-chpasswd-on-alpine-linux
+# FIXME: `PAM: Authentication failure` when running `chpasswd` on Alpine Linux
+# ----------------------------------------------------------------------------------------------
+# echo "auth     sufficient pam_rootok.so" | tee /etc/pam.d/chpasswd
+# echo "account  include    base-account" | tee -a /etc/pam.d/chpasswd
+# echo "password include    base-password" | tee -a /etc/pam.d/chpasswd
+# ----------------------------------------------------------------------------------------------
+
+# echo "auth		include		base-auth" | tee /etc/pam.d/login && \
+# echo "account		include		base-account" | tee -a /etc/pam.d/login && \
+# echo "password	include		base-password" | tee -a /etc/pam.d/login && \
+# echo "session		include		base-session" | tee -a /etc/pam.d/login && \
+
+RUN apk add --no-cache --update tree shadow sudo bash linux-pam && \
+    echo -e "\n\n\n" && \
+    cat /etc/pam.d/chpasswd && \
+    echo -e "BEFORE" && \
+    echo -e "\n\n\n" && \
+    ls -lta /etc/pam.d && \
+    echo -e "\n\n\n" && \
+    echo "auth     sufficient pam_rootok.so" > /etc/pam.d/chpasswd && \
+    echo "account  include    base-account" >> /etc/pam.d/chpasswd && \
+    echo "password include    base-password" >> /etc/pam.d/chpasswd && \
+    echo -e "\n\n\n" && \
+    echo -e "AFTER - chpasswd" && \
+    cat /etc/pam.d/chpasswd && \
+    echo -e "\n\n\n" && \
+    echo -e "BEFORE - login" && \
+    cat /etc/pam.d/login && \
+    echo "auth		include		base-auth" > /etc/pam.d/login && \
+    echo "account		include		base-account" >> /etc/pam.d/login && \
+    echo "password	include		base-password" >> /etc/pam.d/login && \
+    echo "session		include		base-session" >> /etc/pam.d/login && \
+    echo -e "AFTER - login" && \
+    cat /etc/pam.d/login && \
+    echo -e "\n\n\n" && \
+
+    echo -e "\n\n\n" && \
+    echo -e "BEFORE - useradd" && \
+    cat /etc/pam.d/useradd && \
+    sed -i "s,account		required	pam_permit.so,account		include		base-account,g" /etc/pam.d/useradd && \
+    sed -i "s,password	include		system-auth,password	include		base-password,g" /etc/pam.d/useradd && \
+    echo -e "AFTER - useradd" && \
+    cat /etc/pam.d/useradd && \
+    echo -e "\n\n\n" && \
+    \
+    if [ -z "`getent group $CONTAINER_GID`" ]; then \
+      addgroup -S -g $CONTAINER_GID $CONTAINER_USER; \
+    else \
+      groupmod -n $CONTAINER_USER `getent group $CONTAINER_GID | cut -d: -f1`; \
+    fi && \
+    if [ -z "`getent passwd $CONTAINER_UID`" ]; then \
+      adduser -S -h /home/${CONTAINER_USER} -u $CONTAINER_UID -G $CONTAINER_USER -s /bin/sh $CONTAINER_USER; \
+    else \
+      usermod -l $CONTAINER_USER -g $CONTAINER_GID -d /home/$CONTAINER_USER -m `getent passwd $CONTAINER_UID | cut -d: -f1`; \
+    fi && \
+    echo "${CONTAINER_USER} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$CONTAINER_USER && \
+    chmod 0440 /etc/sudoers.d/$CONTAINER_USER && \
+    mkdir /home/${CONTAINER_USER}/.ssh && \
+    chmod og-rwx /home/${CONTAINER_USER}/.ssh && \
+    echo 'export PATH="~/.local/bin:${PATH}"' >> /etc/profile.d/${CONTAINER_USER}.sh && \
+    echo 'export PATH="/home/${CONTAINER_USER}/.local/bin:${PATH}"' >> /etc/profile.d/${CONTAINER_USER}.sh && \
+    chown -R ${CONTAINER_USER}:${CONTAINER_USER} /home/${CONTAINER_USER}
+
+
+COPY vagrant_insecure_key /home/${CONTAINER_USER}
+COPY vagrant_insecure_key.pub /home/${CONTAINER_USER}
+RUN cat /home/${CONTAINER_USER}/vagrant_insecure_key > /home/${CONTAINER_USER}/.ssh/id_rsa
+RUN cat /home/${CONTAINER_USER}/vagrant_insecure_key.pub > /home/${CONTAINER_USER}/.ssh/id_rsa.pub
+
 # COPY python-versions.txt /
-# RUN set -x; pyenv update && \
-#     xargs -P 4 -n 1 pyenv install < /python-versions.txt && \
-#     pyenv global $(pyenv versions --bare) && \
-#     find $PYENV_ROOT/versions -type d '(' -name '__pycache__' -o -name 'test' -o -name 'tests' ')' -exec rm -rfv '{}' + && \
-#     find $PYENV_ROOT/versions -type f '(' -name '*.py[co]' -o -name '*.exe' ')' -exec rm -fv '{}' + && \
-#     mv -v -- /python-versions.txt $PYENV_ROOT/version
+COPY --chown=developer:developer python-versions.txt /
+RUN set -x; pyenv update && \
+    xargs -P 4 -n 1 pyenv install < /python-versions.txt && \
+    pyenv global $(pyenv versions --bare) && \
+    find $PYENV_ROOT/versions -type d '(' -name '__pycache__' -o -name 'test' -o -name 'tests' ')' -exec rm -rfv '{}' + && \
+    find $PYENV_ROOT/versions -type f '(' -name '*.py[co]' -o -name '*.exe' ')' -exec rm -fv '{}' + && \
+    mv -v -- /python-versions.txt $PYENV_ROOT/version && \
+    chown -R ${CONTAINER_USER}:${CONTAINER_USER} ${PYENV_ROOT}
+
+COPY pyenv-init.sh /pyenv-init.sh
 
 # COPY bin/startup.sh .
 # RUN "./startup.sh"
 
 # RUN mkdir /var/task
 
-ENV PYTHONDONTWRITEBYTECODE 1
+# RUN set -xe \
+#     && apk add --no-cache shadow sudo \
+#     && cat /etc/group \
+#     && addgroup -g ${CONTAINER_GID} ${CONTAINER_USER} \
+#     && adduser -s /bin/bash -h /home/${CONTAINER_USER} -G ${CONTAINER_USER} ${CONTAINER_USER} \
+#     && mkdir /home/${CONTAINER_USER}/.ssh \
+#     && chmod og-rwx /home/${CONTAINER_USER}/.ssh \
+#     && echo "${CONTAINER_USER}     ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/${CONTAINER_USER} \
+#     && echo "%${CONTAINER_USER}     ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/${CONTAINER_USER} \
+#     && cat /etc/sudoers
+
+
+    # && addgroup ${CONTAINER_USER} adm \
+    # && addgroup ${CONTAINER_USER} tty \
+    # && addgroup ${CONTAINER_USER} daemon \
+
+    #  \
+    # && echo "password:password" | chpasswd
 
 RUN pip install -U pip setuptools --no-cache-dir && \
     pip install -U virtualenv pipenv --no-cache-dir && \
