@@ -34,6 +34,7 @@ matrix:
       # DOCKER_DATA: "$HOME/docker_data"
       # DOCKER_VERSION: 18.09.1~3-0~ubuntu-xenial
       DOCKER_VERSION: 18.09
+      IS_CI_ENVIRONMENT: "true"
     sudo: required
     dist: xenial
     language: python
