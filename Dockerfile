@@ -12,6 +12,8 @@ ARG HOST_IP
 # set container user as environment variable
 ENV CONTAINER_USER=${CONTAINER_USER}
 ENV PYENV_VERSION=${PYENV_VERSION}
+ENV CONTAINER_GID=${CONTAINER_GID}
+ENV CONTAINER_UID=${CONTAINER_UID}
 
 # http://bugs.python.org/issue19846
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
@@ -52,5 +54,13 @@ RUN cd /tmp && \
   sudo curl -sSL https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64 -o /usr/local/bin/gosu && \
   sudo chmod +x /usr/local/bin/gosu && \
   sudo chown developer:developer /usr/local/bin/gosu
+
+RUN USER=${CONTAINER_USER} && \
+    GROUP=${CONTAINER_USER} && \
+    curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.4-linux-amd64.tar.gz | tar -C /usr/local/bin -xzf - && \
+    chown root:root /usr/local/bin/fixuid && \
+    chmod 4755 /usr/local/bin/fixuid && \
+    mkdir -p /etc/fixuid && \
+    printf "user: $USER\ngroup: $GROUP\npaths:\n  - /home/developer\n  - /.pyenv\n" > /etc/fixuid/config.yml
 
 USER root

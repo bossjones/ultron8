@@ -4,6 +4,7 @@ set -e
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 _UID=$(id -u)
+_GID=$(id -g)
 
 PR_SHA=$(git rev-parse HEAD)
 REPO_NAME=bossjones/ultron8-ci
@@ -15,6 +16,7 @@ TAG="${IMAGE_TAG}"
 docker run  -i -t \
     --rm \
     --privileged \
+    -u ${_UID}:${_GID} \
     -e "PYENV_VERSION=3.6.8" \
     --volume "$(pwd)/:/home/developer/app:rw" \
     --workdir "/home/developer/app" \
