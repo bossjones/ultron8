@@ -6,9 +6,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      environment:
+      args:
         CONTAINER_GID: ${CONTAINER_GID:-1000}
         CONTAINER_UID: ${CONTAINER_UID:-1000}
+    environment:
+      - CONTAINER_GID=${CONTAINER_GID:-1000}
+      - CONTAINER_UID=${CONTAINER_UID:-1000}
     tty: true
     stdin_open: true
     entrypoint:
