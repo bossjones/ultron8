@@ -14,7 +14,6 @@ ultron8 = {path = ".", editable = true}
 
 [dev-packages]
 pathlib_mate = "*"
-twine = "*"
 isort = "*"
 pdbpp = "*"
 black = "*"
@@ -24,6 +23,7 @@ pre-commit = "*"
 mccabe = "*"
 lazy-object-proxy = "*"
 autopep8 = "*"
+MonkeyType = "*"
 sphinx = "*"
 sphinx_rtd_theme = "*"
 sphinx-jinja = "*"
@@ -40,6 +40,7 @@ pytest-leaks = "*"
 pytest-mypy = "*"
 pytest-flake8 = "*"
 tox-pyenv = "*"
+# pytest-ipdb = {git = "git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb"}
 
 [experimental-packages]
 bandit = "*"

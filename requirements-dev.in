@@ -1,5 +1,4 @@
 pathlib_mate
-twine
 isort
 # coveralls
 # pytest
