@@ -1,6 +1,7 @@
 version: '3'
 services:
   ultron8_ci:
+    container_name: ultron8_ci
     build:
       context: .
       dockerfile: Dockerfile

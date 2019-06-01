@@ -1,19 +1,100 @@
-language: python
+# language: python
 
-python:
-  - "3.6"
-  - "3.7"
+# python:
+#   - "3.6"
+#   - "3.7"
+
+# install:
+#   - pip install --editable . # Install it self
+#   - pip install -r requirements-test.txt # Install test dependencies
+#   - pip install codecov # Install coveralls
+
+# script:
+#   - pytest tests --cov=ultron8 # Run unittest
+
+# notifications:
+#   email: false # Mute email notification
+
+# after_success:
+#   - codecov # travis-ci will transfer data to codecov after success
+
+
+# -*- coding: utf-8 -*-
+matrix:
+  fast_finish: true
+  include:
+  - python: '3.6'
+    env:
+      TOXENV: py36
+      PYTHON: "python3"
+      DOCKER_COMPOSE_VERSION: 1.17.1
+      # TEST_TARGET: default
+      # DOCKER_DATA: "$HOME/docker_data"
+      DOCKER_VERSION: 18.09.1~3-0~ubuntu-xenial
+    sudo: required
+    dist: xenial
+    language: python
+    group: edge
+  allow_failures:
+  - python: '3.6'
+    env:
+      TOXENV: typing
+
+services:
+  - docker
+
+before_install:
+  - sudo apt-get update
+  - travis_retry pip install coveralls
+  - sudo apt-cache search docker
+  # List available docker versions.
+  - apt-cache madison docker-ce
+  - sudo apt-get --allow-downgrades -y -o Dpkg::Options::="--force-confnew" install docker-ce=$DOCKER_VERSION
+  - sudo rm -f /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - docker-compose --version
 
 install:
-  - pip install --editable . # Install it self
-  - pip install -r requirements-test.txt # Install test dependencies
-  - pip install codecov # Install coveralls
+  - travis_retry pip install coveralls
+  - travis_retry pip install coverage
+  - travis_retry docker-compose pull
+  - travis_retry make dc-ci-build
 
 script:
-  - pytest tests --cov=ultron8 # Run unittest
+  - travis_retry make dc-ci-run
 
-notifications:
-  email: false # Mute email notification
+# source: https://github.com/inspirehep/inspire-next/blob/9700274c36074a3e43168bf48b8ba3e3bfa7bcdf/.travis.yml
+after_script:
+  # Killing via SIGTERM in order to trigger atexit and dump coverage information in WSGI
+  - "docker-compose -f docker-compose.ci.yml kill -s SIGTERM"
+  - "docker-compose -f docker-compose.ci.yml rm -f"
+  # - docker kill ultron8_ci
 
 after_success:
-  - codecov # travis-ci will transfer data to codecov after success
+  - _USER=$(ls -lta | awk '{print $3}')
+  - _GROUP=$(ls -lta | awk '{print $4}')
+  - docker ps -a
+  - 'ls -lta'
+  - 'sudo chown $_USER:$_GROUP -Rv *'
+  - sudo mv .coverage .coverage.tests
+  ################################################################################################
+  # NOTE: https://coverage.readthedocs.io/en/coverage-4.5.1/changes.html?highlight=clean
+  # Version 4.2b1 — 2016-07-04
+  # BACKWARD INCOMPATIBILITY: the coverage combine command now ignores an existing .coverage data file. It used to include that file in its combining. This caused confusing results, and extra tox “clean” steps. If you want the old behavior, use the new coverage combine --append option.
+  # ################################################################################################
+  # NOTE: Version 4.5 — 2018-02-03
+  # The coverage combine command used to always overwrite the data file, even when no data had been read from apparently combinable files. Now, an error is raised if we thought there were files to combine, but in fact none of them could be used. Fixes issue 629.
+  - coverage combine
+  # Coverage report contains Docker paths. We replace them, so that we can run Coveralls.
+  - sed -i 's@\"/home/developer/app/@'"\"$(pwd)/"'@g' .coverage
+  - coveralls
+
+notifications:
+  email:
+    recipients:
+      - bossjones@theblacktonystark.com
+    on_success: change # default: change
+    on_failure: change # default: always
+
