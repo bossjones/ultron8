@@ -793,3 +793,20 @@ vscode-settings:
 
 cp-vscode-settings:
 	bash script/cp-vscode-settings
+
+# -----------------------------------------------------------------------------
+# SOURCE: https://github.com/aio-libs/aioredis/blob/master/Makefile
+# -----------------------------------------------------------------------------
+ultron8.egg-info:
+	pip install -Ue .
+
+devel: ultron8.egg-info
+	pip install -U pip
+	pip install -U \
+		sphinx \
+		sphinx_rtd_theme \
+		bumpversion \
+		wheel
+certificate:
+	$(MAKE) -C tests/ssl
+# -----------------------------------------------------------------------------
