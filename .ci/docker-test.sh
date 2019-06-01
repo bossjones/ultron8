@@ -17,6 +17,6 @@ docker run --rm \
     --volume "$(pwd)/:/home/developer/app:rw" \
     --workdir "/home/developer/app" \
     --entrypoint "bash" \
-    "${TAG}" /home/developer/app/.ci/pytest_runner.sh
+    "${TAG}" gosu developer /home/developer/app/.ci/pytest_runner.sh
 
 # /home/developer/app/.ci/tox_runner.sh
