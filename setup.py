@@ -14,9 +14,36 @@ from datetime import date
 from setuptools import setup, find_packages, Command
 from shutil import rmtree
 
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
+
 # --- import your package ---
 import ultron8 as package
 
+# https://stackoverflow.com/questions/2632199/how-do-i-get-the-path-of-the-current-executed-file-in-python/18489147
+# def we_are_frozen():
+#     # All of the modules are built-in to the interpreter, e.g., by py2exe
+#     return hasattr(sys, "frozen")
+
+# def module_path():
+#     encoding = sys.getfilesystemencoding()
+#     if we_are_frozen():
+#         return os.path.dirname(unicode(sys.executable, encoding))
+#     return os.path.dirname(unicode(__file__, encoding))
+
+# here = None
+
+# try:
+#     module_file = __file__
+#     here = os.path.abspath(os.path.dirname(__file__))
+# except:
+#     from pathlib import Path
+#     mypath = Path().absolute()
+#     # print(mypath)
+
+#     here = mypath
+
+#     module_file = 'setup.py'
 here = os.path.abspath(os.path.dirname(__file__))
 
 if __name__ == "__main__":
@@ -125,7 +152,7 @@ if __name__ == "__main__":
     Full list can be found at: https://pypi.python.org/pypi?%3Aaction=list_classifiers
     """
 
-    def read_requirements_file(path):
+    def read_requirements_file(path, removes_links=True):
         """
         Read requirements.txt, ignore comments
         """
@@ -135,6 +162,10 @@ if __name__ == "__main__":
             line = line.strip()
             if "#" in line:
                 line = line[: line.find("#")].strip()
+            # skip if we are installing via scm repository
+            if "-e git+https" in line:
+                print("BAD LINE: {}".format(line))
+                continue
             if line:
                 requires.append(line)
         return requires
@@ -152,10 +183,13 @@ if __name__ == "__main__":
     except:
         print("'requirements-test.txt' not found!")
 
+
     try:
         EXTRA_REQUIRE["docs"] = read_requirements_file("requirements-doc.txt")
     except:
         print("'requirements-doc.txt' not found!")
+
+    import pdb;pdb.set_trace()
 
     try:
         EXTRA_REQUIRE["experimental"] = read_requirements_file("requirements-experimental.txt")
@@ -207,6 +241,29 @@ if __name__ == "__main__":
             sys.exit()
 
 
+    if sys.argv[-1] == 'info':
+      print("name=" + PKG_NAME)
+      print("description=" + SHORT_DESCRIPTION)
+      print("long_description=" + LONG_DESCRIPTION)
+      print("version=" + VERSION)
+      print("author=" + AUTHOR)
+      print("author_email=" + AUTHOR_EMAIL)
+      print("maintainer=" + MAINTAINER)
+      print("maintainer_email=" + MAINTAINER_EMAIL)
+      print("packages=" + pp.pprint(PACKAGES))
+      print("setup_requires=" + ["pytest-runner"])
+      print("tests_require=" + pp.pprint(TESTS_REQUIRE))
+      print("include_package_data=" + INCLUDE_PACKAGE_DATA)
+      print("package_data=" + PACKAGE_DATA)
+      print("py_modules=" + PY_MODULES)
+      print("url=" + URL)
+      print("download_url=" + DOWNLOAD_URL)
+      print("classifiers=" + CLASSIFIERS)
+      print("platforms=" + PLATFORMS)
+      print("license=" + LICENSE)
+      print("install_requires=" + pp.pprint(REQUIRES))
+      print("extras_require=" + pp.pprint(EXTRA_REQUIRE))
+      sys.exit()
 
 
     setup(

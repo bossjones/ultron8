@@ -38,7 +38,6 @@ pytest-mock = "*"
 pytest-leaks = "*"
 pytest-mypy = "*"
 pytest-flake8 = "*"
-pytest-ipdb = {git = "git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb"}
 
 [experimental-packages]
 bandit = "*"
