@@ -11,12 +11,12 @@ IMAGE_TAG=${REPO_NAME}:${PR_SHA}
 
 TAG="${IMAGE_TAG}"
 
-docker run --rm \
+docker run -i -t\
+    --rm \
     --security-opt label=disable \
     --privileged \
     --volume "$(pwd)/:/home/developer/app" \
     --workdir "/home/developer/app" \
     --entrypoint "/bin/bash" \
-    "${TAG}" tree
+    "${TAG}" -l
 
-# /home/developer/app/.ci/tox_runner.sh

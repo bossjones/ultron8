@@ -753,3 +753,6 @@ test:
 .PHONY: install-twine
 install-twine:
 	pip install twine
+
+docker-bash:
+	.ci/docker-bash.sh
