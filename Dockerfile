@@ -42,4 +42,6 @@ RUN set -x; tree; tox -e py36 --notest; echo "NOTE: This most likely produced a 
 
 # ENV PATH="/home/${CONTAINER_USER}/.local/bin:${PATH}"
 
-# USER root
+# COPY --chown=developer:developer . /home/${CONTAINER_USER}/app
+
+USER root
