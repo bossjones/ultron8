@@ -3,6 +3,14 @@
 pushd "$(dirname "$0")/.."
 
 _PATH_TO_PYENV_PYTHON=$(pipenv run which python)
+_BASE_PATH_PYENV_FOLDER=$(dirname -- "$_PATH_TO_PYENV_PYTHON")
+_PATH_TO_MYPY="${_BASE_PATH_PYENV_FOLDER}/mypy"
+_PATH_TO_PYLINT="${_BASE_PATH_PYENV_FOLDER}/pylint"
+_PATH_TO_FLAKE="${_BASE_PATH_PYENV_FOLDER}/flake8"
+# _PATH_TO_MONKEYTYPE="${_BASE_PATH_PYENV_FOLDER}/monkeytype"
+# _PATH_TO_RST="${_BASE_PATH_PYENV_FOLDER}/doc8"
+_PATH_TO_SPHINX_BUILD="${_BASE_PATH_PYENV_FOLDER}/sphinx-build"
+_PATH_TO_BLACK="${_BASE_PATH_PYENV_FOLDER}/black"
 
 # "python.pythonPath": "/Users/malcolm/.virtualenvs/ultron8-cznMaMZB/bin/python",
 
@@ -167,7 +175,12 @@ cat <<EOF > ${_FILE}
         "cov.xml": true
     },
     "python.pythonPath": "${_PATH_TO_PYENV_PYTHON}",
+    "python.linting.flake8Path": "${_PATH_TO_FLAKE}",
+    "python.linting.mypyPath": "${_PATH_TO_MYPY}",
+    "python.linting.pylintPath": "${_PATH_TO_PYLINT}",
     "restructuredtext.confPath": "\${workspaceFolder}",
+    "restructuredtext.sphinxBuildPath": "${_PATH_TO_SPHINX_BUILD}",
+    "python.formatting.blackPath": "${_PATH_TO_BLACK}",
 }
 EOF
 

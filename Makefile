@@ -818,6 +818,8 @@ local-black-check: ## CHECK MODE: sensible pylint ( Lots of press over this duri
 local-black: ## sensible pylint ( Lots of press over this during pycon 2018 )
 	pipenv run black --verbose --exclude="/\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|build|dist|ultron8_venv/" .
 
+local-dev: pipenv-dev ## Run `pipenv install --dev` to create dev environment
+
 overwrite-pipefile:
 	bash script/overwrite-pipefile
 

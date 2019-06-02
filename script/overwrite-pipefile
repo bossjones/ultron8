@@ -35,7 +35,7 @@ $(grep -v "#" requirements-experimental.in | grep -v "^$" | grep -v "pytest-ipdb
 allow_prereleases = true
 EOF
 
-echo -e "\n Here is the newly rendered settings.json file for you\n\n"
+echo -e "\n Here is the newly rendered Pipfile file for you\n\n"
 \cat ${_FILE}
 \cat ${_FILE} | pbcopy
 
