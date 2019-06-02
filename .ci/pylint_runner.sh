@@ -4,10 +4,6 @@
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $_DIR/utility.sh
 
-# set -x
-
-# trap "echo ERR trap fired!" ERR
-
 echo " [info] CONTAINER_UID=${CONTAINER_UID}"
 echo " [info] CONTAINER_GID=${CONTAINER_GID}"
 echo
@@ -20,19 +16,14 @@ eval $( fixuid -q )
 echo " [run] UID/GID now match user/group, \$HOME has been set to user's home directory"
 echo -e "\n\n"
 
-# FIXME: Add a flag to enable gosu when needed
-# gosu developer pyenv shell 3.6.8
-# gosu developer pip install -e .
-# gosu developer py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
-
 pushd /home/developer/app
 
 pyenv shell 3.6.8
 
 pip install -e .
 
+header " [run] Plint ultron8 starting now ..."
+
 set -eo pipefail
 
-exec py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
-
-# popd
+exec pylint --rcfile ./lint-configs-python/python/pylintrc ultron8/const.py
