@@ -25,30 +25,37 @@ from ultron8.utils import signals
 
 log = logging.getLogger(__name__)
 
+# SOURCE: https://docs.python.org/3.6/library/asyncio-dev.html#asyncio-dev
+# SOURCE: https://docs.python.org/3.6/library/asyncio.html
+# SOURCE: https://docs.python.org/3.6/library/asyncio-dev.html#asyncio-debug-mode
+# FIXME: NOTE, IF DEBUG ENVIRONMENT ENABLE ASYNCIO DEBUGGING
+# AbstractEventLoop.set_debug()
+
 
 def setup_logging(options):
     default = pkg_resources.resource_filename(ultron8.__name__, "logging.conf")
     logfile = options.log_conf or default
 
-    # level = twist_level = None
-    level = None
+    level = asyncio_level = None
+    # level = None
     if options.verbose > 0:
         level = logging.INFO
-        # twist_level = logging.WARNING
+        asyncio_level = logging.WARNING
     if options.verbose > 1:
         level = logging.DEBUG
-        # twist_level = logging.INFO
-    # if options.verbose > 2:
-    #     twist_level = logging.DEBUG
+        asyncio_level = logging.INFO
+    if options.verbose > 2:
+        asyncio_level = logging.DEBUG
 
     ultron8_logger = logging.getLogger("ultron8")
-    # twisted_logger = logging.getLogger('twisted')
+    asyncio_logger = logging.getLogger('asyncio')
+
 
     logging.config.fileConfig(logfile)
     if level is not None:
         ultron8_logger.setLevel(level)
-    # if twist_level is not None:
-    #     twisted_logger.setLevel(twist_level)
+    if asyncio_level is not None:
+        asyncio_logger.setLevel(asyncio_level)
 
     # Hookup twisted to standard logging
     # twisted_log.PythonLoggingObserver().start()
