@@ -14,9 +14,13 @@
 # recursive-exclude tests *
 
 
-include *.txt
-include *.md
-include *.rst
+
+include AUTHORS.rst
+include LICENSE
+include README.rst
+# include *.txt
+# include *.md
+# include *.rst
 include requirements.txt
 include requirements-dev.txt
 include requirements-doc.txt
@@ -26,8 +30,10 @@ graft ultron8
 recursive-include tests *
 recursive-exclude tests *.pyc *.pyo
 recursive-include integration *
-recursive-exclude integration *.pyc *.pyo
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
 
+# recursive-include docs *.rst conf.py Makefile make.bat *.jpg *.png *.gif
 
 # include *.md
 # include *.md

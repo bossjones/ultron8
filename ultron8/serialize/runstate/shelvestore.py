@@ -11,6 +11,21 @@ from ultron8.utils import maybe_decode
 
 log = logging.getLogger(__name__)
 
+# SOURCE: https://github.com/robertmrk/aiosfstream/blob/2f1407d17608f332340a47449813fbf9b93afce5/docs/source/advanced.rst
+# FIXME: FYI, We prob need to figure this out
+# with shelve.open("replay.db") as replay:
+
+#     async with SalesforceStreamingClient(
+#         consumer_key="<consumer key>",
+#         consumer_secret="<consumer secret>",
+#         username="<username>",
+#         password="<password>",
+#         replay=replay) as client:
+
+#         await client.subscribe("/topic/foo")
+
+#         async for message in client:
+#             # process message
 
 class Py2Shelf(shelve.Shelf):
     def __init__(self, filename, flag="c", protocol=2, writeback=False):

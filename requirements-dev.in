@@ -53,3 +53,7 @@ restructuredtext_lint
 when-changed
 pytest-watch
 notify-send
+
+# SOURCE: https://github.com/python-rope/rope
+# NOTE: a python refactoring library
+# rope

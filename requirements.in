@@ -61,3 +61,7 @@ jinja2-cli[yaml]
 uvicorn
 gunicorn
 cryptography
+
+# SOURCE: https://github.com/esnme/ultrajson
+# Ultra fast JSON decoder and encoder written in C with Python binding
+ujson
