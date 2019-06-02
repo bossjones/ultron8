@@ -13,10 +13,9 @@ logger = getLogger(__name__)
 
 
 @click.group()
-@click.option('--working-dir', envvar='ULTRON_WORKING_DIR', default='working_dir')
-@click.option('--config-dir', envvar='ULTRON_CONFIG_DIR', default='config')
-@click.option('--debug', is_flag=True,
-              envvar='ULTRON_DEBUG')
+@click.option("--working-dir", envvar="ULTRON_WORKING_DIR", default="working_dir")
+@click.option("--config-dir", envvar="ULTRON_CONFIG_DIR", default="config")
+@click.option("--debug", is_flag=True, envvar="ULTRON_DEBUG")
 @click.pass_context
 def cli(ctx, working_dir: str, config_dir: str, debug: bool):
     """
@@ -24,9 +23,9 @@ def cli(ctx, working_dir: str, config_dir: str, debug: bool):
     """
     click.echo(f"debug={debug}")
 
-    set_flag('working-dir', working_dir)
-    set_flag('config-dir', config_dir)
-    set_flag('debug', debug)
+    set_flag("working-dir", working_dir)
+    set_flag("config-dir", config_dir)
+    set_flag("debug", debug)
     # pass
 
 

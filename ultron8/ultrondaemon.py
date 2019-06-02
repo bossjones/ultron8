@@ -10,11 +10,13 @@ import time
 
 import ipdb
 import pkg_resources
+
 # from twisted.internet import defer
 # from twisted.internet import reactor
 # from twisted.python import log as twisted_log
 
 import ultron8
+
 # from ultron8.manhole import make_manhole
 # from ultron8.mesos import MesosClusterRepository
 from ultron8.utils import chdir
@@ -25,7 +27,7 @@ log = logging.getLogger(__name__)
 
 
 def setup_logging(options):
-    default = pkg_resources.resource_filename(ultron8.__name__, 'logging.conf')
+    default = pkg_resources.resource_filename(ultron8.__name__, "logging.conf")
     logfile = options.log_conf or default
 
     # level = twist_level = None
@@ -39,7 +41,7 @@ def setup_logging(options):
     # if options.verbose > 2:
     #     twist_level = logging.DEBUG
 
-    ultron8_logger = logging.getLogger('ultron8')
+    ultron8_logger = logging.getLogger("ultron8")
     # twisted_logger = logging.getLogger('twisted')
 
     logging.config.fileConfig(logfile)

@@ -10,12 +10,14 @@ import os
 from urllib.parse import urlparse
 
 import pytz
+
 # from task_processing.plugins.mesos.constraints import OPERATORS
 
 from ultron8 import command_context
 from ultron8.config import config_utils
 from ultron8.config import ConfigError
 from ultron8.config import schema
+
 # from ultron8.config.config_utils import build_dict_name_validator
 # from ultron8.config.config_utils import build_list_of_type_validator
 # from ultron8.config.config_utils import ConfigContext
@@ -845,9 +847,8 @@ class ConfigContainer(object):
     def get_jobs(self):
         return dict(
             itertools.chain.from_iterable(
-                config.jobs.items()
-                for _, config in self.configs.items()
-            ),
+                config.jobs.items() for _, config in self.configs.items()
+            )
         )
 
     def get_master(self):

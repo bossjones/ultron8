@@ -1,9 +1,11 @@
 import logging
 
 from ultron8 import actioncommand
+
 # from ultron8 import command_context
 # from ultron8 import node
 from ultron8.config import manager
+
 # from ultron8.core.job import Job
 # from ultron8.core.job_collection import JobCollection
 # from ultron8.core.job_scheduler import JobSchedulerFactory
@@ -153,6 +155,7 @@ class MasterControlProgram(object):
     def __str__(self):
         return "ULTRON_MCP"
 
+
 # SMOKE TESTS
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("mcp smoke tests")

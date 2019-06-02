@@ -38,7 +38,7 @@ def hash_digest(content):
 class ManifestFile(object):
     """Manage the manifest file, which tracks name to filename."""
 
-    MANIFEST_FILENAME = '_manifest.yaml'
+    MANIFEST_FILENAME = "_manifest.yaml"
 
     def __init__(self, path):
         self.filename = os.path.join(path, self.MANIFEST_FILENAME)
@@ -75,8 +75,10 @@ class ManifestFile(object):
     def __contains__(self, name):
         return name in self.get_file_mapping()
 
+
 class ConfigManager(object):
     """Read, load and write configuration."""
+
     # CONFIG_PATH = "/".join(
     #     (os.path.expanduser("~"), ".config", "ultron8", "config.yaml")
     # )
@@ -171,8 +173,10 @@ class ConfigManager(object):
     #             )
     #         )
 
+
 if __name__ == "__main__":
     import logging
+
     # from ultron8.loggers import setup_logger
     from ultron8.config import manager
     from ultron8.yaml import yaml
