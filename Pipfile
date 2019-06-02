@@ -12,7 +12,8 @@ setup-test="python setup.py test"
 run-pytest="pytest -s --tb short --cov-config .coveragerc --cov ultron8 tests --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate"
 
 [packages]
-ultron8 = {path = ".", editable = true}
+ultron8 = {path = ".",editable = true}
+pytest-ipdb = {editable = true,path = "."}
 
 [dev-packages]
 pathlib_mate = "*"
