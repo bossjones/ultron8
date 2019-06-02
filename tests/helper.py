@@ -1,8 +1,10 @@
 """Base classes and helpers for unit tests."""
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+# try:
+#     from unittest import mock
+# except ImportError:
+#     import mock
+
+from unittest import mock
 
 # from unittest.mock import patch, MagicMock, Mock
 import ultron8
