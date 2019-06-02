@@ -828,3 +828,8 @@ lock-pip-compile: pip-compile
 lock-pipfile: overwrite-pipefile
 
 lock: lock-pip-compile lock-pipfile
+
+.PHONY: local-install-jupyter
+local-install-jupyter:
+	pipenv install --skip-lock jupyter
+	pipenv run python -m ipykernel install --user
