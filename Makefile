@@ -831,5 +831,5 @@ lock: lock-pip-compile lock-pipfile
 
 .PHONY: local-install-jupyter
 local-install-jupyter:
-	pipenv install --skip-lock jupyter
+	pipenv run pip install jupyter
 	pipenv run python -m ipykernel install --user
