@@ -9,7 +9,6 @@ from conftest import fixtures_path
 
 paths = Paths()
 
-
 @contextmanager
 def project_runner(fixture="simple"):
     fixture_path = fixtures_path / fixture
@@ -25,7 +24,6 @@ def project_runner(fixture="simple"):
         # And another for checkout the text output by the command.
         runner.output_of = lambda command: runner.run(command).output
         yield runner
-
 
 # @pytest.fixture
 # def runner():
