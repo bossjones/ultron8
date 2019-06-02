@@ -21,6 +21,8 @@ colorama==0.4.1           # via loggerfactory
 configobj==5.0.6          # via ruamel.yaml.cmd
 dataclasses==0.6          # via pydantic
 fastapi==0.23.0
+h11==0.8.1                # via uvicorn
+httptools==0.0.13         # via uvicorn
 idna-ssl==1.1.0           # via aiohttp
 idna==2.8                 # via idna-ssl, yarl
 janus==0.4.0
@@ -45,5 +47,8 @@ six==1.12.0               # via configobj, pyconfig, python-dateutil, pytool
 starlette==0.12.0         # via fastapi
 typing-extensions==3.7.2  # via aiohttp
 typing==3.6.6             # via aiodns
+uvicorn==0.7.1
+uvloop==0.12.2            # via uvicorn
+websockets==7.0           # via uvicorn
 wget==3.2
 yarl==1.3.0

@@ -58,3 +58,4 @@ aiodns
 # task_processing
 
 jinja2-cli[yaml]
+uvicorn

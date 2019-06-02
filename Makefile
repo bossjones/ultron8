@@ -845,3 +845,7 @@ local-jupyter:
 	pipenv run jupyter notebook
 
 local-notebook: local-jupyter
+
+.PHONY: local-web
+local-web:
+	pyenv run uvicorn ultron8.web:app --reload
