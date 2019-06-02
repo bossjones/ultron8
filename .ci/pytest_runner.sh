@@ -2,6 +2,8 @@
 
 # set -x
 
+# trap "echo ERR trap fired!" ERR
+
 echo " [info] CONTAINER_UID=${CONTAINER_UID}"
 echo " [info] CONTAINER_GID=${CONTAINER_GID}"
 echo
@@ -25,8 +27,7 @@ pyenv shell 3.6.8
 
 pip install -e .
 
-set -e
+set -eo pipefail
 py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
-set +e
 
 popd
