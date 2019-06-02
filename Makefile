@@ -834,11 +834,14 @@ lock: lock-pip-compile lock-pipfile
 
 .PHONY: local-install-jupyter
 local-install-jupyter:
+	@printf "$$GREEN [important] Great guide to jupyter here: https://www.datacamp.com/community/tutorials/tutorial-jupyter-notebook$$NC\n"
 	pipenv run pip install jupyter
+	pipenv run pip install ipython-sql cython
 	pipenv run python -m ipykernel install --user
 
 .PHONY: local-jupyter
 local-jupyter:
+	@printf "$$GREEN [important] Great guide to jupyter here: https://www.datacamp.com/community/tutorials/tutorial-jupyter-notebook$$NC\n"
 	pipenv run jupyter notebook
 
 local-notebook: local-jupyter
