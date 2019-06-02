@@ -810,3 +810,10 @@ devel: ultron8.egg-info
 certificate:
 	$(MAKE) -C tests/ssl
 # -----------------------------------------------------------------------------
+.PHONY: local-black-check
+local-black-check: ## CHECK MODE: sensible pylint ( Lots of press over this during pycon 2018 )
+	pipenv run black --check --exclude=ultron8_venv* --verbose .
+
+.PHONY: local-black
+local-black: ## sensible pylint ( Lots of press over this during pycon 2018 )
+	pipenv run black --verbose --exclude=ultron8_venv* .
