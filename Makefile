@@ -818,8 +818,11 @@ local-black-check: ## CHECK MODE: sensible pylint ( Lots of press over this duri
 local-black: ## sensible pylint ( Lots of press over this during pycon 2018 )
 	pipenv run black --verbose --exclude="/\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|build|dist|ultron8_venv/" .
 
+overwrite-pipefile:
+	bash script/overwrite-pipefile
+
 lock-pip-compile: pip-compile
 
-lock-pipfile: generate-new-pipefile
+lock-pipfile: overwrite-pipefile
 
 lock: lock-pip-compile lock-pipfile
