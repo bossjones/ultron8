@@ -4,12 +4,12 @@ from ultron8 import actioncommand
 from ultron8 import command_context
 from ultron8 import node
 from ultron8.config import manager
-from ultron8.core.job import Job
-from ultron8.core.job_collection import JobCollection
-from ultron8.core.job_scheduler import JobSchedulerFactory
-from ultron8.core.jobgraph import JobGraph
-from ultron8.eventbus import EventBus
-from ultron8.mesos import MesosClusterRepository
+# from ultron8.core.job import Job
+# from ultron8.core.job_collection import JobCollection
+# from ultron8.core.job_scheduler import JobSchedulerFactory
+# from ultron8.core.jobgraph import JobGraph
+# from ultron8.eventbus import EventBus
+# from ultron8.mesos import MesosClusterRepository
 from ultron8.serialize.runstate import statemanager
 
 log = logging.getLogger(__name__)
@@ -25,20 +25,20 @@ def apply_master_configuration(mapping, master_config):
 
 
 class MasterControlProgram(object):
-    """Central state object for the Tron daemon."""
+    """Central state object for the Ultron daemon."""
 
     def __init__(self, working_dir, config_path):
         super(MasterControlProgram, self).__init__()
-        self.jobs = JobCollection()
+        # self.jobs = JobCollection()
         self.working_dir = working_dir
         self.config = manager.ConfigManager(config_path)
-        self.context = command_context.CommandContext()
-        self.state_watcher = statemanager.StateChangeWatcher()
+        # self.context = command_context.CommandContext()
+        # self.state_watcher = statemanager.StateChangeWatcher()
         log.info("initialized")
 
-    def shutdown(self):
-        EventBus.shutdown()
-        self.state_watcher.shutdown()
+    # def shutdown(self):
+    #     EventBus.shutdown()
+    #     self.state_watcher.shutdown()
 
     def reconfigure(self):
         """Reconfigure MCP while Tron is already running."""
@@ -51,8 +51,8 @@ class MasterControlProgram(object):
 
     def _load_config(self, reconfigure=False):
         """Read config data and apply it."""
-        with self.state_watcher.disabled():
-            self.apply_config(self.config.load(), reconfigure=reconfigure)
+        # with self.state_watcher.disabled():
+        #     self.apply_config(self.config.load(), reconfigure=reconfigure)
 
     def initial_setup(self):
         """When the MCP is initialized the config is applied before the state.
@@ -66,7 +66,7 @@ class MasterControlProgram(object):
         )
         # Any job with existing state would have been scheduled already. Jobs
         # without any state will be scheduled here.
-        self.jobs.run_queue_schedule()
+        # self.jobs.run_queue_schedule()
 
     def apply_config(self, config_container, reconfigure=False):
         """Apply a configuration."""
@@ -79,13 +79,12 @@ class MasterControlProgram(object):
                 "node_pools",
                 "ssh_options",
             ),
-            (MesosClusterRepository.configure, "mesos_options"),
             (self.configure_eventbus, "eventbus_enabled"),
         ]
         master_config = config_container.get_master()
         apply_master_configuration(master_config_directives, master_config)
 
-        self.state_watcher.watch(MesosClusterRepository)
+        # self.state_watcher.watch(MesosClusterRepository)
 
         # TODO: unify NOTIFY_STATE_CHANGE and simplify this
         self.job_graph = JobGraph(config_container)
@@ -152,4 +151,4 @@ class MasterControlProgram(object):
         self.state_watcher.save_metadata()
 
     def __str__(self):
-        return "MCP"
+        return "ULTRON_MCP"

@@ -18,10 +18,10 @@ import json as jsonlib
 
 LOGGER = logging.getLogger(__name__)
 
-from ultron8.validation import run_moonbeam_service_schema_validation
+# from ultron8.validation import run_moonbeam_service_schema_validation
 
 
-class Config(object):
+class ConfigManager(object):
     CONFIG_PATH = "/".join(
         (os.path.expanduser("~"), ".config", "ultron8", "config.yaml")
     )
