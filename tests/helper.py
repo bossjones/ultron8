@@ -354,6 +354,7 @@ def patch_yaml_files(files_dict, endswith=True):
 
     return mock.patch.object(yaml, "open", mock_open_f, create=True)
 
+
 if __name__ == "__main__":
     data_fixture = "standard_default_config"
     data = example_data_to_str(data_fixture)
