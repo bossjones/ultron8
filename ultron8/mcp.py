@@ -1,8 +1,8 @@
 import logging
 
 from ultron8 import actioncommand
-from ultron8 import command_context
-from ultron8 import node
+# from ultron8 import command_context
+# from ultron8 import node
 from ultron8.config import manager
 # from ultron8.core.job import Job
 # from ultron8.core.job_collection import JobCollection
@@ -59,96 +59,100 @@ class MasterControlProgram(object):
         In this case jobs shouldn't be scheduled until the state is applied.
         """
         self._load_config()
-        self.restore_state(
-            actioncommand.create_action_runner_factory_from_config(
-                self.config.load().get_master().action_runner
-            )
-        )
+        # self.restore_state(
+        #     actioncommand.create_action_runner_factory_from_config(
+        #         self.config.load().get_master().action_runner
+        #     )
+        # )
         # Any job with existing state would have been scheduled already. Jobs
         # without any state will be scheduled here.
         # self.jobs.run_queue_schedule()
 
-    def apply_config(self, config_container, reconfigure=False):
-        """Apply a configuration."""
-        master_config_directives = [
-            (self.update_state_watcher_config, "state_persistence"),
-            (self.set_context_base, "command_context"),
-            (
-                node.NodePoolRepository.update_from_config,
-                "nodes",
-                "node_pools",
-                "ssh_options",
-            ),
-            (self.configure_eventbus, "eventbus_enabled"),
-        ]
-        master_config = config_container.get_master()
-        apply_master_configuration(master_config_directives, master_config)
+    # def apply_config(self, config_container, reconfigure=False):
+    #     """Apply a configuration."""
+    #     master_config_directives = [
+    #         (self.update_state_watcher_config, "state_persistence"),
+    #         (self.set_context_base, "command_context"),
+    #         (
+    #             node.NodePoolRepository.update_from_config,
+    #             "nodes",
+    #             "node_pools",
+    #             "ssh_options",
+    #         ),
+    #         (self.configure_eventbus, "eventbus_enabled"),
+    #     ]
+    #     master_config = config_container.get_master()
+    #     apply_master_configuration(master_config_directives, master_config)
 
-        # self.state_watcher.watch(MesosClusterRepository)
+    #     # self.state_watcher.watch(MesosClusterRepository)
 
-        # TODO: unify NOTIFY_STATE_CHANGE and simplify this
-        self.job_graph = JobGraph(config_container)
-        factory = self.build_job_scheduler_factory(master_config, self.job_graph)
-        self.apply_collection_config(
-            config_container.get_jobs(),
-            self.jobs,
-            Job.NOTIFY_STATE_CHANGE,
-            factory,
-            reconfigure,
-        )
+    #     # TODO: unify NOTIFY_STATE_CHANGE and simplify this
+    #     self.job_graph = JobGraph(config_container)
+    #     factory = self.build_job_scheduler_factory(master_config, self.job_graph)
+    #     self.apply_collection_config(
+    #         config_container.get_jobs(),
+    #         self.jobs,
+    #         Job.NOTIFY_STATE_CHANGE,
+    #         factory,
+    #         reconfigure,
+    #     )
 
-    def apply_collection_config(self, config, collection, notify_type, *args):
-        items = collection.load_from_config(config, *args)
-        self.state_watcher.watch_all(items, notify_type)
+    # def apply_collection_config(self, config, collection, notify_type, *args):
+    #     items = collection.load_from_config(config, *args)
+    #     self.state_watcher.watch_all(items, notify_type)
 
-    def build_job_scheduler_factory(self, master_config, job_graph):
-        output_stream_dir = master_config.output_stream_dir or self.working_dir
-        action_runner = actioncommand.create_action_runner_factory_from_config(
-            master_config.action_runner
-        )
-        return JobSchedulerFactory(
-            self.context,
-            output_stream_dir,
-            master_config.time_zone,
-            action_runner,
-            job_graph,
-        )
+    # def build_job_scheduler_factory(self, master_config, job_graph):
+    #     output_stream_dir = master_config.output_stream_dir or self.working_dir
+    #     action_runner = actioncommand.create_action_runner_factory_from_config(
+    #         master_config.action_runner
+    #     )
+    #     return JobSchedulerFactory(
+    #         self.context,
+    #         output_stream_dir,
+    #         master_config.time_zone,
+    #         action_runner,
+    #         job_graph,
+    #     )
 
-    def update_state_watcher_config(self, state_config):
-        """Update the StateChangeWatcher, and save all state if the state config
-        changed.
-        """
-        if self.state_watcher.update_from_config(state_config):
-            for job_scheduler in self.jobs:
-                self.state_watcher.save_job(job_scheduler.get_job())
+    # def update_state_watcher_config(self, state_config):
+    #     """Update the StateChangeWatcher, and save all state if the state config
+    #     changed.
+    #     """
+    #     if self.state_watcher.update_from_config(state_config):
+    #         for job_scheduler in self.jobs:
+    #             self.state_watcher.save_job(job_scheduler.get_job())
 
-    def set_context_base(self, command_context):
-        self.context.base = command_context
+    # def set_context_base(self, command_context):
+    #     self.context.base = command_context
 
-    def configure_eventbus(self, enabled):
-        if enabled:
-            if not EventBus.instance:
-                EventBus.create(f"{self.working_dir}/_events")
-                EventBus.start()
-        else:
-            EventBus.shutdown()
+    # def configure_eventbus(self, enabled):
+    #     if enabled:
+    #         if not EventBus.instance:
+    #             EventBus.create(f"{self.working_dir}/_events")
+    #             EventBus.start()
+    #     else:
+    #         EventBus.shutdown()
 
-    def get_job_collection(self):
-        return self.jobs
+    # def get_job_collection(self):
+    #     return self.jobs
 
     def get_config_manager(self):
         return self.config
 
-    def restore_state(self, action_runner):
-        """Use the state manager to retrieve to persisted state and apply it
-        to the configured Jobs.
-        """
-        log.info("restoring")
-        states = self.state_watcher.restore(self.jobs.get_names())
-        MesosClusterRepository.restore_state(states.get("mesos_state", {}))
+    # def restore_state(self, action_runner):
+    #     """Use the state manager to retrieve to persisted state and apply it
+    #     to the configured Jobs.
+    #     """
+    #     log.info("restoring")
+    #     states = self.state_watcher.restore(self.jobs.get_names())
+    #     MesosClusterRepository.restore_state(states.get("mesos_state", {}))
 
-        self.jobs.restore_state(states.get("job_state", {}), action_runner)
-        self.state_watcher.save_metadata()
+    #     self.jobs.restore_state(states.get("job_state", {}), action_runner)
+    #     self.state_watcher.save_metadata()
 
     def __str__(self):
         return "ULTRON_MCP"
+
+# SMOKE TESTS
+if __name__ == '__main__':
+    print("mcp smoke tests")
