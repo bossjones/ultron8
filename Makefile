@@ -788,6 +788,9 @@ dc-ci-build: clean-test
 dc-ci-run: dc-ci-build
 	.ci/dc-ci-run.sh
 
+dc-ci-run-all: dc-ci-build
+	.ci/dc-ci-run-all.sh
+
 vscode-settings:
 	cp -a contrib/settings.json .vscode/settings.json
 
