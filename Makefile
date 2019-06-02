@@ -849,4 +849,4 @@ local-notebook: local-jupyter
 
 .PHONY: local-web
 local-web:
-	pyenv run uvicorn ultron8.web:app --reload
+	pipenv run uvicorn ultron8.web:app --reload
