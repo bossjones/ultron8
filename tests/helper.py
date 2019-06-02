@@ -267,10 +267,10 @@ def example_data_to_str(example_filename):
 #             func(*args, **kwargs)
 
 
-class UnitUltronObjectHelper(UnitHelper):
-    """Base class for UltronObject unit tests."""
+# class UnitUltronObjectHelper(UnitHelper):
+#     """Base class for UltronObject unit tests."""
 
-    pass
+#     pass
 
 
 is_py3 = (3, 0) <= sys.version_info < (4, 0)

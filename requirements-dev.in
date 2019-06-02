@@ -49,3 +49,4 @@ lazy-object-proxy
 autopep8
 MonkeyType
 pylint
+restructuredtext_lint
