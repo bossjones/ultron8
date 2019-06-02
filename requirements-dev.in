@@ -50,3 +50,5 @@ autopep8
 MonkeyType
 pylint
 restructuredtext_lint
+when-changed
+pytest-watch

@@ -12,15 +12,18 @@ aiohttp==3.5.4            # via aiodocker, aiohttp-jinja2, aiojobs
 aiojobs==0.2.2
 aiorwlock==0.6.0
 argcomplete==1.10.0
+asn1crypto==0.24.0        # via cryptography
 async-timeout==3.0.1
 attrs==19.1.0             # via aiohttp
-cffi==1.12.3              # via pycares
+cffi==1.12.3              # via cryptography, pycares
 chardet==3.0.4            # via aiohttp
 click==7.0
 colorama==0.4.1           # via loggerfactory
 configobj==5.0.6          # via ruamel.yaml.cmd
+cryptography==2.7
 dataclasses==0.6          # via pydantic
 fastapi==0.23.0
+gunicorn==19.9.0
 h11==0.8.1                # via uvicorn
 httptools==0.0.13         # via uvicorn
 idna-ssl==1.1.0           # via aiohttp
@@ -43,7 +46,7 @@ ruamel.yaml.cmd==0.5.3
 ruamel.yaml.convert==0.3.0  # via ruamel.yaml.cmd
 ruamel.yaml==0.15.96
 simplejson==3.16.0        # via pytool
-six==1.12.0               # via configobj, pyconfig, python-dateutil, pytool
+six==1.12.0               # via configobj, cryptography, pyconfig, python-dateutil, pytool
 starlette==0.12.0         # via fastapi
 typing-extensions==3.7.2  # via aiohttp
 typing==3.6.6             # via aiodns
