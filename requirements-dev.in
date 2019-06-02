@@ -52,3 +52,4 @@ pylint
 restructuredtext_lint
 when-changed
 pytest-watch
+notify-send
