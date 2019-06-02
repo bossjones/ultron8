@@ -181,6 +181,7 @@ cat <<EOF > ${_FILE}
     "restructuredtext.confPath": "\${workspaceFolder}",
     "restructuredtext.sphinxBuildPath": "${_PATH_TO_SPHINX_BUILD}",
     "python.formatting.blackPath": "${_PATH_TO_BLACK}",
+    "python.linting.enabled": true,
 }
 EOF
 

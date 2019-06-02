@@ -24,4 +24,4 @@ pip install -e .
 
 set -eo pipefail
 
-exec flake8 --verbose --max-line-length=200 --exclude=.venv,.git,.tox,docs,www_static,venv,bin,lib,deps,build --ignore=E302,E401,E501,E265,E713,E402,D204,D102,D400,D205,E402,D202,D103,D209,D105,D101,D401,D200,E127,D100 /home/developer/app/ultron8 /home/developer/app/tests
+exec flake8 --select=E --max-line-length=200 --exclude=.venv,.git,.tox,docs,www_static,venv,bin,lib,deps,build --ignore=E302,E401,E501,E265,E713,E402,D204,D102,D400,D205,E402,D202,D103,D209,D105,D101,D401,D200,E127,D100 /home/developer/app/ultron8 /home/developer/app/tests
