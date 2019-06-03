@@ -864,6 +864,9 @@ local-dev: pipenv-dev ## Run `pipenv install --dev` to create dev environment
 local-reformat: ## ** Pep8 Format Source Code
 	pipenv run ./fixcode.py
 
+.PHONY: local-autopep8
+local-autopep8: local-reformat ## ** Pep8 Format Source Code
+
 .PHONY: local-pycodestyle
 local-pycodestyle: ## **  Show the source code for each error, and even the relevant text from PEP 8
 	pipenv run  pycodestyle --show-source --show-pep8 ultron8/
