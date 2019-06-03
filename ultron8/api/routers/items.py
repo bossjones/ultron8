@@ -5,13 +5,13 @@ from fastapi import APIRouter, HTTPException
 router = APIRouter()
 
 
-@router.get("/items/{item_id}")
+@router.get("/v1/items/{item_id}")
 def read_item(item_id: int, q: str = None):
     return {"item_id": item_id, "q": q}
 
 
 @router.put(
-    "/items/{item_id}",
+    "/v1/items/{item_id}",
     tags=["custom"],
     responses={403: {"description": "Operation forbidden"}},
 )
