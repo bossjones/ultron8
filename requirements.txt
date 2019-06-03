@@ -15,42 +15,58 @@ argcomplete==1.10.0
 asn1crypto==0.24.0        # via cryptography
 async-timeout==3.0.1
 attrs==19.1.0             # via aiohttp
-cffi==1.12.3              # via cryptography, pycares
-chardet==3.0.4            # via aiohttp
+bcrypt==3.1.6             # via passlib
+cachetools==3.1.1         # via premailer
+certifi==2019.3.9         # via requests
+cffi==1.12.3              # via bcrypt, cryptography, pycares
+chardet==3.0.4            # via aiohttp, emails, requests
 click==7.0
 colorama==0.4.1           # via loggerfactory
 configobj==5.0.6          # via ruamel.yaml.cmd
 cryptography==2.7
+cssselect==1.0.3          # via premailer
+cssutils==1.0.2           # via emails, premailer
 dataclasses==0.6          # via pydantic
+dnspython==1.16.0         # via email-validator
+email-validator==1.0.4
+emails==0.5.15
 fastapi==0.23.0
 gunicorn==19.9.0
 h11==0.8.1                # via uvicorn
 httptools==0.0.13         # via uvicorn
 idna-ssl==1.1.0           # via aiohttp
-idna==2.8                 # via idna-ssl, yarl
+idna==2.8                 # via email-validator, idna-ssl, requests, yarl
 janus==0.4.0
 jinja2-cli[yaml]==0.7.0
 jinja2==2.10.1            # via aiohttp-jinja2, jinja2-cli
 loggerfactory==0.0.5
+lxml==4.3.3               # via emails, premailer
 markupsafe==1.1.1         # via jinja2
 multidict==4.5.2
+passlib[bcrypt]==1.7.1
+premailer==3.4.1          # via emails
 pycares==3.0.0            # via aiodns
 pyconfig==3.2.3
 pycparser==2.19           # via cffi
 pydantic==0.25            # via fastapi
-python-dateutil==2.8.0    # via ruamel.yaml.convert
+pyjwt==1.7.1
+python-dateutil==2.8.0    # via emails, ruamel.yaml.convert
+python-multipart==0.0.5
 pytool==3.15.0            # via pyconfig
 pyyaml==5.1               # via jinja2-cli
+requests==2.22.0          # via emails, premailer
 ruamel.std.argparse==0.8.1  # via ruamel.yaml.cmd
 ruamel.yaml.cmd==0.5.3
 ruamel.yaml.convert==0.3.0  # via ruamel.yaml.cmd
 ruamel.yaml==0.15.96
 simplejson==3.16.0        # via pytool
-six==1.12.0               # via configobj, cryptography, pyconfig, python-dateutil, pytool
+six==1.12.0               # via bcrypt, configobj, cryptography, pyconfig, python-dateutil, python-multipart, pytool, tenacity
 starlette==0.12.0         # via fastapi
+tenacity==5.0.4
 typing-extensions==3.7.2  # via aiohttp
 typing==3.6.6             # via aiodns
 ujson==1.35
+urllib3==1.25.3           # via requests
 uvicorn==0.7.1
 uvloop==0.12.2            # via uvicorn
 websockets==7.0           # via uvicorn

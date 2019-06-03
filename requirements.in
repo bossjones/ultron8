@@ -65,3 +65,17 @@ cryptography
 # SOURCE: https://github.com/esnme/ultrajson
 # Ultra fast JSON decoder and encoder written in C with Python binding
 ujson
+
+# Modern python library for emails
+# SOURCE: https://github.com/lavr/python-emails
+emails
+
+# Retrying library for Python
+tenacity
+
+
+pyjwt
+python-multipart
+email_validator
+
+passlib[bcrypt]
