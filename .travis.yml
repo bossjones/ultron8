@@ -88,21 +88,28 @@ jobs:
       script: mypy ultron8 tests
 
     # - name: Lint Dockerfile
+    #   python: '3.6'
+    #   sudo: required
+    #   dist: xenial
+    #   language: python
+    #   group: edge
+    #   env:
+    #     - PYTHON="python3"
     #   stage: pre-test
     #   install: skip
     #   script: .ci/ci_lint_dockerfile.sh
 
-    - name: Check docs
-      python: '3.6'
-      sudo: required
-      dist: xenial
-      language: python
-      group: edge
-      env:
-        - PYTHON="python3"
-      stage: pre-test
-      install: pip install -e .[docs]
-      script: make build_doc
+    # - name: Check docs
+    #   python: '3.6'
+    #   sudo: required
+    #   dist: xenial
+    #   language: python
+    #   group: edge
+    #   env:
+    #     - PYTHON="python3"
+    #   stage: pre-test
+    #   install: pip install -e .[docs]
+    #   script: make build_doc
 
     - name: Pylint
       python: '3.6'
@@ -114,7 +121,7 @@ jobs:
         - PYTHON="python3"
       stage: pre-test
       install: pip install $(grep "^pylint==" requirements-dev.txt | awk '{print $1}')
-      script: pylint --rcfile ./lint-configs-python/python/pylintrc ultron8/const.py
+      script: pylint --rcfile ./lint-configs-python/python/pylintrc ultron8/consts.py
       cache: false
 
     - name: Pytest
