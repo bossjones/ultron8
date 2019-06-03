@@ -56,10 +56,16 @@ stages:
 jobs:
   include:
     - name: Flake8
+      python: '3.6'
+      env:
+        - PYTHON="python3"
       stage: pre-test
       install: pip install $(grep "^flake8==" requirements-test.txt | awk '{print $1}')
       script: flake8
     - name: mypy
+      python: '3.6'
+      env:
+        - PYTHON="python3"
       stage: pre-test
       install: pip install $(grep "^mypy==" requirements-test.txt | awk '{print $1}')
       script: mypy ultron8 tests
@@ -68,10 +74,16 @@ jobs:
     #   install: skip
     #   script: .ci/ci_lint_dockerfile.sh
     - name: Check docs
+      python: '3.6'
+      env:
+        - PYTHON="python3"
       stage: pre-test
       install: pip install -e .[docs]
-      script: docs/build.sh
+      script: make build_doc
     - name: Pylint
+      python: '3.6'
+      env:
+        - PYTHON="python3"
       stage: pre-test
       install: pip install $(grep "^pylint==" requirements-dev.txt | awk '{print $1}')
       script: pylint --rcfile ./lint-configs-python/python/pylintrc ultron8/const.py

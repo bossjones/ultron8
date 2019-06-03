@@ -239,6 +239,14 @@ BIN_PYTHON="${BIN_DIR}/python"
 BIN_PIP="${BIN_DIR}/pip"
 BIN_ISORT="${BIN_DIR}/isort"
 BIN_JINJA="${BIN_DIR}/jinja2"
+BIN_SPHINX_START="${BIN_DIR}/sphinx-quickstart"
+BIN_TWINE="${BIN_DIR}/twine"
+BIN_TOX="${BIN_DIR}/tox"
+BIN_JUPYTER="${BIN_DIR}/jupyter"
+BIN_PYTEST="${BIN_DIR}/pytest"
+
+RTD_DOC_URL="https://ultron8.readthedocs.io/index.html"
+
 
 PY_VERSION="${PY_VER_MAJOR}.${PY_VER_MINOR}.${PY_VER_MICRO}"
 
@@ -939,3 +947,66 @@ dist: clean
 # -------------------------------------------------------------------------------------------
 # SOURCE: https://github.com/ethereum/lahja/blob/master/Makefile - END
 # -------------------------------------------------------------------------------------------
+
+
+# SOURCE: https://github.com/MacHu-GWU/pygitrepo-project/blob/d4eff888af6926cd3b0dde5c72cd42c23f941e02/pygitrepo/%7B%7B%20repo_name%20%7D%7D/make/python_env.mk
+
+#--- Install ---
+
+.PHONY: uninstall
+uninstall: ## ** Uninstall This Package
+	-${BIN_PIP} uninstall -y ${PACKAGE_NAME}
+
+.PHONY: dev_install
+dev_install: uninstall ## ** Install This Package in Editable Mode
+	${BIN_PIP} install --editable .
+
+.PHONY: doc_dep
+doc_dep: ## Install Doc Dependencies
+	( \
+		cd ${PROJECT_ROOT_DIR}; \
+		${BIN_PIP} install -r requirements-doc.txt; \
+	)
+
+#--- Sphinx Doc ---
+
+
+.PHONY: init_doc
+init_doc: doc_dep ## Initialize Sphinx Documentation Library
+	{ \
+		cd ${PROJECT_ROOT_DIR}/docs; \
+		${BIN_SPHINX_START}; \
+	}
+
+
+.PHONY: build_doc
+build_doc: doc_dep dev_install ## ** Build Documents, start over
+	-rm -r ${PROJECT_ROOT_DIR}/docs/build
+	-rm -r ${PROJECT_ROOT_DIR}/docs/source/${PACKAGE_NAME}
+	( \
+		cd ${PROJECT_ROOT_DIR}/docs; \
+		make html; \
+	)
+
+
+.PHONY: build_doc_again
+build_doc_again: ## Build Documents, skip re-install, skip cleanup-old-doc
+	-rm -r ${PROJECT_ROOT_DIR}/docs/source/${PACKAGE_NAME}
+	( \
+		cd ${PROJECT_ROOT_DIR}/docs; \
+		make html; \
+	)
+
+
+.PHONY: view_doc
+view_doc: ## ** Open Sphinx Documents
+	${OPEN_COMMAND} ${PROJECT_ROOT_DIR}/docs/build/html/index.html
+
+.PHONY: clean_doc
+clean_doc: ## Clean Existing Documents
+	-rm -r ${PROJECT_ROOT_DIR}/docs/build
+
+
+.PHONY: reformat
+reformat: dev_dep ## ** Pep8 Format Source Code
+	${BIN_PYTHON} ${PROJECT_ROOT_DIR}/fixcode.py
