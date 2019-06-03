@@ -63,17 +63,17 @@ stages:
 # SOURCE: https://github.com/apache/airflow/blob/669b026c0bed36572ff0c5ab2eaf3f6d2c845577/.travis.yml
 jobs:
   include:
-    - name: Flake8
-      python: '3.6'
-      sudo: required
-      dist: xenial
-      language: python
-      group: edge
-      env:
-        - PYTHON="python3"
-      stage: pre-test
-      install: pip install $(grep "^flake8==" requirements-test.txt | awk '{print $1}')
-      script: flake8
+    # - name: Flake8
+    #   python: '3.6'
+    #   sudo: required
+    #   dist: xenial
+    #   language: python
+    #   group: edge
+    #   env:
+    #     - PYTHON="python3"
+    #   stage: pre-test
+    #   install: pip install $(grep "^flake8==" requirements-test.txt | awk '{print $1}')
+    #   script: flake8
 
     - name: mypy
       python: '3.6'
@@ -122,6 +122,19 @@ jobs:
       stage: pre-test
       install: pip install $(grep "^pylint==" requirements-dev.txt | awk '{print $1}')
       script: pylint --rcfile ./lint-configs-python/python/pylintrc ultron8/consts.py
+      cache: false
+
+    - name: Black
+      python: '3.6'
+      sudo: required
+      dist: xenial
+      language: python
+      group: edge
+      env:
+        - PYTHON="python3"
+      stage: pre-test
+      install: pip install $(grep "^black==" requirements-dev.txt | awk '{print $1}')
+      script: black --check --exclude=ultron8_venv* --verbose ultron8
       cache: false
 
     - name: Pytest
