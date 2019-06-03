@@ -19,6 +19,12 @@ ENV CONTAINER_UID=${CONTAINER_UID}
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
 
+# SOURCE: https://phauer.com/2018/install-cairo-cairosvg-alpine-docker/
+RUN apk add --no-cache \
+    build-base cairo-dev cairo cairo-tools gobject-introspection-dev \
+    # pillow dependencies
+    jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev
+
 USER ${CONTAINER_USER}
 WORKDIR /home/${CONTAINER_USER}
 ENV LANG C.UTF-8
@@ -64,12 +70,26 @@ RUN USER=${CONTAINER_USER} && \
     mkdir -p /etc/fixuid && \
     printf "user: $USER\ngroup: $GROUP\npaths:\n  - /home/developer\n  - /.pyenv\n" > /etc/fixuid/config.yml && \
     echo "  - /home/developer/.config" >> /etc/fixuid/config.yml && \
-    echo "  - /home/developer/.cache" >> /etc/fixuid/config.yml
+    echo "  - /home/developer/.cache" >> /etc/fixuid/config.yml && \
+    echo "  - /start-gunicorn.sh" >> /etc/fixuid/config.yml && \
+    echo "  - /gunicorn_conf.py" >> /etc/fixuid/config.yml && \
+    echo "  - /start-reload-gunicorn.sh" >> /etc/fixuid/config.yml
 
 USER ${CONTAINER_USER}:${CONTAINER_USER}
 
 # Set working directory.
 WORKDIR /home/${CONTAINER_USER}/app
+
+COPY --chown=developer:developer ./start-gunicorn.sh /start-gunicorn.sh
+
+RUN sudo chmod +x /start-gunicorn.sh
+
+COPY --chown=developer:developer ./gunicorn_conf.py /gunicorn_conf.py
+
+COPY --chown=developer:developer ./start-reload-gunicorn.sh /start-reload-gunicorn.sh
+
+RUN sudo chmod +x /start-reload-gunicorn.sh
+
 
 # SOURCE: https://www.reddit.com/r/godot/comments/9r72kv/godot_302_docker_image_for_automatic_exports/
 # # Install fixuid.

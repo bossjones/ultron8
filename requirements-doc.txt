@@ -12,11 +12,13 @@ babel==2.6.0              # via sphinx
 certifi==2019.3.9         # via requests
 chardet==3.0.4            # via requests
 docfly==0.0.17
-docutils==0.14            # via sphinx
+docutils==0.14            # via m2r, sphinx
 idna==2.8                 # via requests
 imagesize==1.1.0          # via sphinx
 jinja2==2.10.1            # via docfly, rstobj, sphinx
+m2r==0.2.1
 markupsafe==1.1.1         # via jinja2
+mistune==0.8.4            # via m2r
 packaging==19.0           # via sphinx
 pathlib-mate==0.0.15      # via docfly
 pycodestyle==2.5.0        # via autopep8

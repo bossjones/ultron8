@@ -1,0 +1,62 @@
+---
+state_persistence:
+  name: "tron_state"
+  table_name: "-tmp-tron_state"
+  store_type: "shelve"
+  buffer_size: 10
+  dynamodb_region: us-west-1
+
+eventbus_enabled: True
+ssh_options:
+   agent: True
+
+nodes:
+  - hostname: localhost
+
+mesos_options:
+  master_address: mesos.paasta-mesosstage.yelp
+  master_port: 5050
+  role: '*'
+  enabled: True
+  dockercfg_location: file:///root/.dockercfg
+
+jobs:
+    - name: testjob0
+      node: localhost
+      schedule: "cron * * * * *"
+      actions:
+        - name: zeroth
+          command: "sleep 5"
+          trigger_downstreams:
+            minutely: "{ymdhm}"
+          cpus: 1
+          mem: 100
+
+    - name: "testjob1"
+      node: localhost
+      schedule: "cron * * * * *"
+      actions:
+        - name: "first"
+          command: "sleep 5"
+          cpus: 1
+          mem: 100
+        - name: "second"
+          command: "echo 'hello world'"
+          requires: [first]
+          triggered_by:
+            - "MASTER.testjob0.zeroth.minutely.{ymdhm}"
+          trigger_downstreams:
+            minutely: "{ymdhm}"
+          cpus: 1
+          mem: 100
+
+    - name: "testjob2"
+      node: localhost
+      schedule: "cron * * * * *"
+      actions:
+        - name: "first"
+          command: "echo 'goodbye, world'"
+          cpus: 1
+          mem: 100
+          triggered_by:
+            - "MASTER.testjob1.second.minutely.{ymdhm}"

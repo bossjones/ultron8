@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
+# Load utility bash functions
+_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $_DIR/utility.sh
+
 # set -x
+
+# trap "echo ERR trap fired!" ERR
 
 echo " [info] CONTAINER_UID=${CONTAINER_UID}"
 echo " [info] CONTAINER_GID=${CONTAINER_GID}"
@@ -25,8 +31,8 @@ pyenv shell 3.6.8
 
 pip install -e .
 
-set -e
-py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
-set +e
+set -eo pipefail
 
-popd
+exec py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
+
+# popd

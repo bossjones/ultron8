@@ -186,6 +186,7 @@ ifeq (${DETECTED_OS}, Darwin)
 
 ifeq ($(USE_PYENV), "Y")
     ARCHFLAGS="-arch x86_64"
+    PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig
     LDFLAGS="-L/usr/local/opt/openssl/lib"
     CFLAGS="-I/usr/local/opt/openssl/include"
     VENV_DIR_REAL="${HOME}/.pyenv/versions/${PY_VERSION}/envs/${VENV_NAME}"
@@ -195,6 +196,7 @@ ifeq ($(USE_PYENV), "Y")
     SITE_PACKAGES64="${VENV_DIR_REAL}/lib64/python${PY_VER_MAJOR}.${PY_VER_MINOR}/site-packages"
 else
     ARCHFLAGS="-arch x86_64"
+    PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig
     LDFLAGS="-L/usr/local/opt/openssl/lib"
     CFLAGS="-I/usr/local/opt/openssl/include"
     # VENV_DIR_REAL="${PROJECT_ROOT_DIR}/${VENV_NAME}"
@@ -206,6 +208,7 @@ else
     SITE_PACKAGES64="${VENV_DIR_REAL}/lib64/python${PY_VER_MAJOR}.${PY_VER_MINOR}/site-packages"
 endif
     ARCHFLAGS="-arch x86_64"
+    PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig
     LDFLAGS="-L/usr/local/opt/openssl/lib"
     CFLAGS="-I/usr/local/opt/openssl/include"
 
@@ -479,11 +482,11 @@ pip-compile-rebuild: pip-tools
 .PHONY: install-deps-all
 install-deps-all:
 ifeq (${DETECTED_OS}, Darwin)
-	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements.txt
-	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-dev.txt
-	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-test.txt
-	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-doc.txt
-	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-experimental.txt
+	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements.txt
+	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-dev.txt
+	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-test.txt
+	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-doc.txt
+	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements-experimental.txt
 else
 	pip install -r requirements.txt
 	pip install -r requirements-dev.txt
@@ -514,9 +517,15 @@ flush-cache:
 git-clean: ## Remove files and directories ignored by git
 	git clean -d -X -f
 
+.PHONY: pipenv-env
 pipenv-env: ## Run `pipenv install --dev` to create dev environment
+ifeq (${DETECTED_OS}, Darwin)
+	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pipenv --python 3
+	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pipenv install --dev
+else
 	pipenv --python 3
 	pipenv install --dev
+endif
 
 pipenv-test: ## Run tests
 	pipenv run py.test
@@ -596,16 +605,36 @@ docker-version:
 # --------------------------------------------------------------------------------------------------------------------
 # SOURCE: https://github.com/kennethreitz/requests
 # --------------------------------------------------------------------------------------------------------------------
+
+.PHONY: pipenv-init
 pipenv-init: ## Run `pipenv install --dev` to create dev environment
+ifeq (${DETECTED_OS}, Darwin)
+	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install pipenv --upgrade
+	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pipenv --python 3.6.8
+else
 	pip install pipenv --upgrade
 	pipenv --python 3.6.8
+endif
 
+.PHONY: pipenv-dev
 pipenv-dev: ## Run `pipenv install --dev` to create dev environment
+ifeq (${DETECTED_OS}, Darwin)
+	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pipenv install --dev
+	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pipenv install -e .
+else
 	pipenv install --dev
-# pipenv install -e .
+	pipenv install -e .
+endif
 
-pipenv-install:
+.PHONY: pipenv-install
+pipenv-install: ## Run `pipenv install --dev` to create dev environment
+ifeq (${DETECTED_OS}, Darwin)
+	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pipenv install
+	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pipenv install -e .
+else
 	pipenv install
+	pipenv install -e .
+endif
 
 pipenv-bootstrap: pipenv-init pipenv-dev
 
@@ -788,8 +817,125 @@ dc-ci-build: clean-test
 dc-ci-run: dc-ci-build
 	.ci/dc-ci-run.sh
 
+dc-ci-run-all: dc-ci-build
+	.ci/dc-ci-run-all.sh
+
 vscode-settings:
 	cp -a contrib/settings.json .vscode/settings.json
 
 cp-vscode-settings:
 	bash script/cp-vscode-settings
+
+# -----------------------------------------------------------------------------
+# SOURCE: https://github.com/aio-libs/aioredis/blob/master/Makefile
+# -----------------------------------------------------------------------------
+ultron8.egg-info:
+	pip install -Ue .
+
+devel: ultron8.egg-info
+	pip install -U pip
+	pip install -U \
+		sphinx \
+		sphinx_rtd_theme \
+		bumpversion \
+		wheel
+certificate:
+	$(MAKE) -C tests/ssl
+# -----------------------------------------------------------------------------
+.PHONY: local-black-check
+local-black-check: ## CHECK MODE: sensible pylint ( Lots of press over this during pycon 2018 )
+	pipenv run black --check --exclude="/\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|build|dist|ultron8_venv/" --verbose .
+
+.PHONY: local-black
+local-black: ## sensible pylint ( Lots of press over this during pycon 2018 )
+	pipenv run black --verbose --exclude="/\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|build|dist|ultron8_venv/" .
+
+local-dev: pipenv-dev ## Run `pipenv install --dev` to create dev environment
+
+overwrite-pipefile:
+	bash script/overwrite-pipefile
+
+lock-pip-compile: pip-compile
+
+lock-pipfile: overwrite-pipefile
+
+lock: lock-pip-compile lock-pipfile
+
+lock-and-load: lock pipenv-dev ## Run `make lock` then install all the new deps using `make pipenv-dev`
+
+.PHONY: local-install-jupyter
+local-install-jupyter:
+	@printf "$$GREEN [important] Great guide to jupyter here: https://www.datacamp.com/community/tutorials/tutorial-jupyter-notebook$$NC\n"
+	pipenv run pip install jupyter
+	pipenv run pip install ipython-sql cython
+	pipenv run python -m ipykernel install --user
+
+.PHONY: local-jupyter
+local-jupyter:
+	@printf "$$GREEN [important] Great guide to jupyter here: https://www.datacamp.com/community/tutorials/tutorial-jupyter-notebook$$NC\n"
+	pipenv run jupyter notebook
+
+local-notebook: local-jupyter
+
+.PHONY: local-web
+local-web:
+	pipenv run uvicorn ultron8.web:app --reload
+
+# SOURCE: https://github.com/ethereum/lahja
+.PHONY: local-when-changed
+local-when-changed:
+	@printf "$$GREENDuring development, you might like to have tests run on every file save.$$NC\n"
+	pipenv run when-changed -v -s -r -1 ultron8/ tests/ -c "clear; flake8 ultron8 tests && echo 'flake8 success' || echo 'error'"
+
+
+# SOURCE: https://github.com/ethereum/lahja
+.PHONY: local-pytest-watch
+local-pytest-watch:
+	@printf "$$GREENRun in one thread, with color and desktop notifications:$$NC\n"
+	ptw --onfail "notify-send -t 5000 'Test failure ⚠⚠⚠⚠⚠' 'python 3 test on ultron8 failed'" ../tests ../ultron8
+
+
+# -------------------------------------------------------------------------------------------
+# SOURCE: https://github.com/ethereum/lahja/blob/master/Makefile - START
+# -------------------------------------------------------------------------------------------
+# Whole bunch of python make tasks for updating and changing things like docs, tags for releases, publishes, etc
+clean-build: ## remove build artifacts
+	rm -fr build/
+	rm -fr dist/
+	rm -fr *.egg-info
+
+clean-pyc: ## remove Python file artifacts
+	find . -name '*.pyc' -exec rm -f {} +
+	find . -name '*.pyo' -exec rm -f {} +
+	find . -name '*~' -exec rm -f {} +
+
+clean: clean-build clean-pyc ## clean build artifacts and python file artifacts
+
+build-docs:
+	$(MAKE) -C docs clean
+	$(MAKE) -C docs html
+	$(MAKE) -C docs doctest
+
+docs: build-docs
+	open docs/_build/html/index.html
+
+release: clean
+# git config commit.gpgSign true
+	bumpversion $(bump)
+	git push upstream && git push upstream --tags
+	python setup.py sdist bdist_wheel
+	twine upload dist/*
+# git config commit.gpgSign "$(CURRENT_SIGN_SETTING)"
+
+publish: clean
+	git push upstream master && git push upstream --tags
+	python setup.py sdist bdist_wheel
+	twine upload dist/*
+
+dist: clean
+	python setup.py sdist bdist_wheel
+	ls -l dist
+
+# -------------------------------------------------------------------------------------------
+# SOURCE: https://github.com/ethereum/lahja/blob/master/Makefile - END
+# -------------------------------------------------------------------------------------------

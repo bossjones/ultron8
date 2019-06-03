@@ -7,10 +7,26 @@ from .process import fail
 
 logger = getLogger(__name__)
 
+# http://click.palletsprojects.com/en/5.x/options/
+# http://click.palletsprojects.com/en/5.x/complex/#complex-guide
+# http://click.palletsprojects.com/en/5.x/commands/
+
 
 @click.group()
-def cli():
-    pass
+@click.option("--working-dir", envvar="ULTRON_WORKING_DIR", default="working_dir")
+@click.option("--config-dir", envvar="ULTRON_CONFIG_DIR", default="config")
+@click.option("--debug", is_flag=True, envvar="ULTRON_DEBUG")
+@click.pass_context
+def cli(ctx, working_dir: str, config_dir: str, debug: bool):
+    """
+    Ultronctl - Client Side CLI tool to manage an Ultron8 Cluster.
+    """
+    click.echo(f"debug={debug}")
+
+    set_flag("working-dir", working_dir)
+    set_flag("config-dir", config_dir)
+    set_flag("debug", debug)
+    # pass
 
 
 @cli.command()
@@ -56,6 +72,22 @@ def info(fact: Tuple[str]):
 #     commands.render()
 #     commands.build()
 
+
+# @cli.command()
+# @click.option('--asset-set', default='default', help='Specify the asset set to acquire.')
+# @click.option('--fact', multiple=True, help='Set a fact, like --fact=color:blue.')
+# def acquire(asset_set: str, fact: Tuple[str]):
+#     """Acquire assets."""
+#     logger.debug('acquire subcommand called from cli')
+#     set_flag('asset-set', asset_set)
+#     set_fact_flags(fact)
+
+#     # Since the user explicitly called "acquire", make sure they get fresh assets
+#     # by cleaning the assets dir first.
+#     set_flag('clean-assets', True)
+#     commands.clean()
+
+#     commands.acquire()
 
 # @cli.command()
 # @click.option('--asset-set', default='default', help='Specify the asset set to acquire.')

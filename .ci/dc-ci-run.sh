@@ -18,4 +18,4 @@ IMAGE_TAG=${REPO_NAME}:${PR_SHA}
 
 TAG="${IMAGE_TAG}"
 
-docker-compose -f docker-compose.ci.yml up
+exec docker-compose -f docker-compose.ci.yml run ultron8_ci /home/developer/app/.ci/pytest_runner.sh

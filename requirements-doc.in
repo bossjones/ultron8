@@ -19,3 +19,7 @@ rstobj
 
 # live RestructuredText preview
 pygments
+
+# Markdown to reStructuredText converter
+# SOURCE: https://github.com/miyakogi/m2r
+m2r
