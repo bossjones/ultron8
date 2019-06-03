@@ -4,6 +4,9 @@ view current state, event history and send commands to trond.
 """
 
 import logging
+import ujson as json
+import datetime
+import collections
 
 log = logging.getLogger(__name__)
 
@@ -22,3 +25,19 @@ class LogAdapter(object):
 def UltronSite():
     """Web server"""
     pass
+
+
+class JSONEncoder(json.JSONEncoder):
+    """Custom JSON for certain objects"""
+
+    def default(self, o):
+        if isinstance(o, datetime.datetime):
+            return o.strftime("%Y-%m-%d %H:%M:%S")
+
+        if isinstance(o, datetime.date):
+            return o.isoformat()
+
+        if isinstance(o, collections.KeysView):
+            return list(o)
+
+        return super(JSONEncoder, self).default(o)

@@ -30,7 +30,7 @@ class ActionsModel(BaseModel):
     description: str = None
     enabled: bool
     entry_point: str  # eg. "checks/check_loadavg.py"
-    parameters: Dict[str, float, int, bool, List] = None
+    parameters: Dict[str, float, int, bool, List, dict] = None
     tags: List[str] = []
     created_at: datetime = None
     updated_at: datetime = None
