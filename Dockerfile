@@ -23,7 +23,7 @@ ENV LANG C.UTF-8
 RUN apk add --no-cache \
     build-base cairo-dev cairo cairo-tools gobject-introspection-dev \
     # pillow dependencies
-    jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev
+    jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev libxml2-dev
 
 USER ${CONTAINER_USER}
 WORKDIR /home/${CONTAINER_USER}
