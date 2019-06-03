@@ -1,0 +1,2 @@
+# https://marcobonzanini.com/2015/01/05/my-python-code-is-slow-tips-for-profiling/
+line_profiler

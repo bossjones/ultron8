@@ -73,7 +73,8 @@ RUN USER=${CONTAINER_USER} && \
     echo "  - /home/developer/.cache" >> /etc/fixuid/config.yml && \
     echo "  - /start-gunicorn.sh" >> /etc/fixuid/config.yml && \
     echo "  - /gunicorn_conf.py" >> /etc/fixuid/config.yml && \
-    echo "  - /start-reload-gunicorn.sh" >> /etc/fixuid/config.yml
+    echo "  - /start-reload-gunicorn.sh" >> /etc/fixuid/config.yml && \
+    echo "  - /home/developer/.wheelhouse" >> /etc/fixuid/config.yml
 
 USER ${CONTAINER_USER}:${CONTAINER_USER}
 

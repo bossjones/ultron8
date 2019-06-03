@@ -26,6 +26,7 @@ matrix:
   include:
   - python: '3.6'
     env:
+      # TOX_ENV: py36 # from airflowci
       TOXENV: py36
       PYTHON: "python3"
       # DOCKER_COMPOSE_VERSION: 1.17.1
@@ -47,6 +48,36 @@ matrix:
 services:
   - docker
 
+stages:
+  - pre-test
+  - test
+
+# SOURCE: https://github.com/apache/airflow/blob/669b026c0bed36572ff0c5ab2eaf3f6d2c845577/.travis.yml
+jobs:
+  include:
+    - name: Flake8
+      stage: pre-test
+      install: pip install $(grep "^flake8==" requirements-test.txt | awk '{print $1}')
+      script: flake8
+    - name: mypy
+      stage: pre-test
+      install: pip install $(grep "^mypy==" requirements-test.txt | awk '{print $1}')
+      script: mypy ultron8 tests
+    # - name: Lint Dockerfile
+    #   stage: pre-test
+    #   install: skip
+    #   script: .ci/ci_lint_dockerfile.sh
+    - name: Check docs
+      stage: pre-test
+      install: pip install -e .[docs]
+      script: docs/build.sh
+    - name: Pylint
+      stage: pre-test
+      install: pip install $(grep "^pylint==" requirements-dev.txt | awk '{print $1}')
+      script: pylint --rcfile ./lint-configs-python/python/pylintrc ultron8/const.py
+      cache: false
+
+
 before_install:
   - sudo apt-get update
   - travis_retry pip install coveralls
@@ -66,6 +97,7 @@ before_install:
   - docker-compose --version
 
 install:
+  - pip install --upgrade pip
   - travis_retry pip install coveralls
   - travis_retry pip install coverage
   - travis_retry docker-compose -f docker-compose.ci.yml pull
@@ -107,3 +139,14 @@ notifications:
     on_success: change # default: change
     on_failure: change # default: always
 
+
+before_cache:
+  - _USER=$(ls -lta | awk '{print $3}')
+  - _GROUP=$(ls -lta | awk '{print $4}')
+  - 'sudo chown $_USER:$_GROUP -Rv $HOME/.cache/pip $HOME/.wheelhouse/'
+
+cache:
+  directories:
+    - $HOME/.wheelhouse/
+    - $HOME/.cache/pip
+    - $HOME/.travis_cache/

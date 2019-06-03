@@ -12,6 +12,16 @@ services:
     environment:
       - CONTAINER_GID=${CONTAINER_GID:-1000}
       - CONTAINER_UID=${CONTAINER_UID:-1000}
+      - TRAVIS
+      - TRAVIS_BRANCH
+      - TRAVIS_BUILD_DIR
+      - TRAVIS_JOB_ID
+      - TRAVIS_JOB_NUMBER
+      - TRAVIS_PULL_REQUEST
+      - TRAVIS_COMMIT
+      - TRAVIS_REPO_SLUG
+      - TRAVIS_OS_NAME
+      - TRAVIS_TAG
     tty: true
     stdin_open: true
     entrypoint:
@@ -20,5 +30,7 @@ services:
     user: ${CONTAINER_UID:-1000}:${CONTAINER_GID:-1000}
     volumes:
       - .:/home/developer/app:rw
+      - ~/.cache/pip:/home/developer/.cache/pip
+      - ~/.wheelhouse/:/home/developer/.wheelhouse/
     # ports:
     #   - ${PORT}:3000
