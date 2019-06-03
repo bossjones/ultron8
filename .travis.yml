@@ -21,7 +21,12 @@
 #   - codecov # travis-ci will transfer data to codecov after success
 env:
   global:
-    - PYTHON: "python3"
+    - PYTHON="python3"
+    - TOXENV=py36
+    - PYTHON="python3"
+    - DOCKER_COMPOSE_VERSION=1.24.0
+    - DOCKER_VERSION=18.09
+    - IS_CI_ENVIRONMENT="true"
 
 matrix:
   fast_finish: true
