@@ -19,7 +19,9 @@
 
 # after_success:
 #   - codecov # travis-ci will transfer data to codecov after success
-
+env:
+  global:
+    - PYTHON: "python3"
 
 matrix:
   fast_finish: true
