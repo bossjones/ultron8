@@ -57,20 +57,20 @@ if __name__ == "__main__":  # noqa: C901
     # Your GitHub user name
     try:
         GITHUB_USERNAME = package.__github_username__
-    except: # noqa: E722
+    except:  # noqa: E722
         GITHUB_USERNAME = "Unknown-Github-Username"
 
     # Short description will be the description on PyPI
     try:
         SHORT_DESCRIPTION = package.__short_description__  # GitHub Short Description
-    except: # noqa: E722
+    except:  # noqa: E722
         print("'__short_description__' not found in '%s.__init__.py'!" % PKG_NAME)
         SHORT_DESCRIPTION = "No short description!"
 
     # Long description will be the body of content on PyPI page
     try:
         LONG_DESCRIPTION = open("README.rst", "rb").read().decode("utf-8")
-    except: # noqa: E722
+    except:  # noqa: E722
         LONG_DESCRIPTION = "No long description!"
 
     # Version number, VERY IMPORTANT!
@@ -79,22 +79,22 @@ if __name__ == "__main__":  # noqa: C901
     # Author and Maintainer
     try:
         AUTHOR = package.__author__
-    except: # noqa: E722
+    except:  # noqa: E722
         AUTHOR = "Unknown"
 
     try:
         AUTHOR_EMAIL = package.__author_email__
-    except: # noqa: E722
+    except:  # noqa: E722
         AUTHOR_EMAIL = None
 
     try:
         MAINTAINER = package.__maintainer__
-    except: # noqa: E722
+    except:  # noqa: E722
         MAINTAINER = "Unknown"
 
     try:
         MAINTAINER_EMAIL = package.__maintainer_email__
-    except: # noqa: E722
+    except:  # noqa: E722
         MAINTAINER_EMAIL = None
 
     PACKAGES, INCLUDE_PACKAGE_DATA, PACKAGE_DATA, PY_MODULES = (None, None, None, None)
@@ -130,7 +130,7 @@ if __name__ == "__main__":  # noqa: C901
 
     try:
         LICENSE = package.__license__
-    except: # noqa: E722
+    except:  # noqa: E722
         print("'__license__' not found in '%s.__init__.py'!" % PKG_NAME)
         LICENSE = ""
 
@@ -174,7 +174,7 @@ if __name__ == "__main__":  # noqa: C901
 
     try:
         REQUIRES = read_requirements_file("requirements.txt")
-    except: # noqa: E722
+    except:  # noqa: E722
         print("'requirements.txt' not found!")
         REQUIRES = list()
 
@@ -182,17 +182,17 @@ if __name__ == "__main__":  # noqa: C901
 
     try:
         EXTRA_REQUIRE["dev"] = read_requirements_file("requirements-dev.txt")
-    except: # noqa: E722
+    except:  # noqa: E722
         print("'requirements-dev.txt' not found!")
 
     try:
         EXTRA_REQUIRE["tests"] = read_requirements_file("requirements-test.txt")
-    except: # noqa: E722
+    except:  # noqa: E722
         print("'requirements-test.txt' not found!")
 
     try:
         EXTRA_REQUIRE["docs"] = read_requirements_file("requirements-doc.txt")
-    except: # noqa: E722
+    except:  # noqa: E722
         print("'requirements-doc.txt' not found!")
 
     # import pdb;pdb.set_trace()
@@ -201,14 +201,14 @@ if __name__ == "__main__":  # noqa: C901
         EXTRA_REQUIRE["experimental"] = read_requirements_file(
             "requirements-experimental.txt"
         )
-    except: # noqa: E722
+    except:  # noqa: E722
         print("'requirements-experimental.txt' not found!")
 
     TESTS_REQUIRE = dict()
 
     try:
         TESTS_REQUIRE = read_requirements_file("requirements-test.txt")
-    except: # noqa: E722
+    except:  # noqa: E722
         print("'requirements-test.txt' not found!")
 
     class UploadCommand(Command):
