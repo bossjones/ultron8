@@ -26,7 +26,8 @@ env:
 matrix:
   fast_finish: true
   include:
-  - python: '3.6'
+  - name: "Python 3.6 w/ Docker Compose 1.24.0 and Docker 18.09"
+    python: '3.6'
     env:
       # TOX_ENV: py36 # from airflowci
       TOXENV: py36
