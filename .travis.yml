@@ -57,13 +57,22 @@ jobs:
   include:
     - name: Flake8
       python: '3.6'
+      sudo: required
+      dist: xenial
+      language: python
+      group: edge
       env:
         - PYTHON="python3"
       stage: pre-test
       install: pip install $(grep "^flake8==" requirements-test.txt | awk '{print $1}')
       script: flake8
+
     - name: mypy
       python: '3.6'
+      sudo: required
+      dist: xenial
+      language: python
+      group: edge
       env:
         - PYTHON="python3"
       stage: pre-test
@@ -75,6 +84,10 @@ jobs:
     #   script: .ci/ci_lint_dockerfile.sh
     - name: Check docs
       python: '3.6'
+      sudo: required
+      dist: xenial
+      language: python
+      group: edge
       env:
         - PYTHON="python3"
       stage: pre-test
@@ -82,6 +95,10 @@ jobs:
       script: make build_doc
     - name: Pylint
       python: '3.6'
+      sudo: required
+      dist: xenial
+      language: python
+      group: edge
       env:
         - PYTHON="python3"
       stage: pre-test
