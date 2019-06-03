@@ -48,8 +48,7 @@ def setup_logging(options):
         asyncio_level = logging.DEBUG
 
     ultron8_logger = logging.getLogger("ultron8")
-    asyncio_logger = logging.getLogger('asyncio')
-
+    asyncio_logger = logging.getLogger("asyncio")
 
     logging.config.fileConfig(logfile)
     if level is not None:

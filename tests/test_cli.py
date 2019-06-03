@@ -5,10 +5,12 @@ from contextlib import contextmanager
 import pyconfig
 from ultron8.cli import cli, get_flag, set_flag, set_fact_flags
 from ultron8.paths import Paths
+
 # from .conftest import fixtures_path
 from tests.conftest import fixtures_path
 
 paths = Paths()
+
 
 @contextmanager
 def project_runner(fixture="simple"):
@@ -25,6 +27,7 @@ def project_runner(fixture="simple"):
         # And another for checkout the text output by the command.
         runner.output_of = lambda command: runner.run(command).output
         yield runner
+
 
 # @pytest.fixture
 # def runner():

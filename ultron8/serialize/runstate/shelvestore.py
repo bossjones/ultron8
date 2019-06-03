@@ -27,6 +27,7 @@ log = logging.getLogger(__name__)
 #         async for message in client:
 #             # process message
 
+
 class Py2Shelf(shelve.Shelf):
     def __init__(self, filename, flag="c", protocol=2, writeback=False):
         db = bsddb3.hashopen(filename, flag)
