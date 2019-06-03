@@ -86,10 +86,12 @@ jobs:
       stage: pre-test
       install: pip install $(grep "^mypy==" requirements-test.txt | awk '{print $1}')
       script: mypy ultron8 tests
+
     # - name: Lint Dockerfile
     #   stage: pre-test
     #   install: skip
     #   script: .ci/ci_lint_dockerfile.sh
+
     - name: Check docs
       python: '3.6'
       sudo: required
@@ -101,6 +103,7 @@ jobs:
       stage: pre-test
       install: pip install -e .[docs]
       script: make build_doc
+
     - name: Pylint
       python: '3.6'
       sudo: required
@@ -113,6 +116,25 @@ jobs:
       install: pip install $(grep "^pylint==" requirements-dev.txt | awk '{print $1}')
       script: pylint --rcfile ./lint-configs-python/python/pylintrc ultron8/const.py
       cache: false
+
+    - name: Pytest
+      python: '3.6'
+      sudo: required
+      dist: xenial
+      language: python
+      group: edge
+      env:
+        - PYTHON="python3"
+      stage: test
+      install:
+        - pip install --upgrade pip
+        - travis_retry pip install coveralls
+        - travis_retry pip install coverage
+        - travis_retry docker-compose -f docker-compose.ci.yml pull
+        - travis_retry make dc-ci-build
+      script:
+        - travis_retry make dc-ci-run
+
 
 
 before_install:
