@@ -860,6 +860,10 @@ local-black: ## sensible pylint ( Lots of press over this during pycon 2018 )
 
 local-dev: pipenv-dev ## Run `pipenv install --dev` to create dev environment
 
+.PHONY: local-reformat
+local-reformat: ## ** Pep8 Format Source Code
+	pipenv run ./fixcode.py
+
 overwrite-pipefile:
 	bash script/overwrite-pipefile
 
