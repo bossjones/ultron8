@@ -3,26 +3,6 @@ from enum import Enum, IntEnum
 from pydantic import BaseModel, Schema, EmailStr
 from datetime import datetime
 
-# == Schema Information
-# ---
-# name: "check_loadavg"
-# runner_type: "remote-shell-script"
-# description: "Check CPU Load Average on a Host"
-# enabled: true
-# entry_point: "checks/check_loadavg.py"
-# parameters:
-#   period:
-#     enum:
-#       - "1"
-#       - "5"
-#       - "15"
-#       - "all"
-#     type: "string"
-#     description: "Time period for load avg: 1,5,15 minutes, or 'all'"
-#     default: "all"
-#     position: 0
-
-
 class RunnerTypeModel(str, Enum):
     # This is the local runner. This runner executes a Linux command on the host where StackStorm is running.
     local_shell_cmd = "local-shell-cmd"
@@ -73,15 +53,14 @@ class ActionsModel(BaseModel):
     runner_type: RunnerTypeModel
     description: str = None
     enabled: bool
-    entry_point: str = ""  # eg. "checks/check_loadavg.py"
-    # parameters: Dict[str, float, int, bool, list, dict] = {}
+    entry_point: str = ""
     parameters: dict = {}
     tags: List[str] = []
     created_at: datetime = None
     updated_at: datetime = None
     deleted_at: datetime = None
 
-
+# smoke-tests
 if "__main__" == __name__:
     external_data = {
         "name": "local_ps_aux",
