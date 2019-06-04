@@ -972,9 +972,9 @@ dist: clean
 
 #--- Install ---
 
-.PHONY: uninstall
-uninstall: ## ** Uninstall This Package
-	-${BIN_PIP} uninstall -y ${PACKAGE_NAME}
+# .PHONY: uninstall
+# uninstall: ## ** Uninstall This Package
+# 	-${BIN_PIP} uninstall -y ${PACKAGE_NAME}
 
 .PHONY: dev_install
 dev_install: uninstall ## ** Install This Package in Editable Mode

@@ -1,34 +1,13 @@
-# ---------------------------------------------
-# EXAMPLE YAML
-# ---------------------------------------------
-# ---
-# name : linux
-# description : Generic Linux actions
-# keywords:
-#   - linux
-#   - nmap
-#   - lsof
-#   - traceroute
-#   - loadavg
-#   - cp
-#   - scp
-#   - dig
-#   - netstat
-#   - rsync
-#   - vmstat
-#   - open ports
-#   - processes
-#   - ps
-# version : 1.0.1
-# python_versions:
-#   - "3"
-# author : Jarvis
-# email : info@theblacktonystark.com
-
 from typing import List
 from enum import Enum
 from pydantic import BaseModel, Schema, EmailStr
 from datetime import datetime
+
+
+import logging
+
+
+log = logging.getLogger(__name__)
 
 # from pydantic import (DSN, UUID1, UUID3, UUID4, UUID5, BaseModel, DirectoryPath, EmailStr, FilePath, NameEmail,
 # NegativeFloat, NegativeInt, PositiveFloat, PositiveInt, PyObject, UrlStr, conbytes, condecimal,
@@ -62,6 +41,37 @@ from datetime import datetime
 
 
 class PacksModel(BaseModel):
+    """[summary]
+
+    === Schema example:
+
+    name : linux
+    description : Generic Linux actions
+    keywords:
+      - linux
+      - nmap
+      - lsof
+      - traceroute
+      - loadavg
+      - cp
+      - scp
+      - dig
+      - netstat
+      - rsync
+      - vmstat
+      - open ports
+      - processes
+      - ps
+    version : 1.0.1
+    python_versions:
+      - "3"
+    author : Jarvis
+    email : info@theblacktonystark.com
+
+    Arguments:
+        BaseModel {[type]} -- [description]
+    """
+
     id: int
     name: str
     description: str = None

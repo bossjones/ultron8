@@ -3,6 +3,12 @@ from enum import Enum, IntEnum
 from pydantic import BaseModel, Schema, EmailStr
 from datetime import datetime
 
+import logging
+
+
+log = logging.getLogger(__name__)
+
+
 class RunnerTypeModel(str, Enum):
     # This is the local runner. This runner executes a Linux command on the host where StackStorm is running.
     local_shell_cmd = "local-shell-cmd"
@@ -59,6 +65,7 @@ class ActionsModel(BaseModel):
     created_at: datetime = None
     updated_at: datetime = None
     deleted_at: datetime = None
+
 
 # smoke-tests
 if "__main__" == __name__:

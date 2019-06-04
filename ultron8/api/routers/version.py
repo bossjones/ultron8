@@ -7,6 +7,6 @@ router = APIRouter()
 
 
 @router.get("/version")
-def read_version():
+async def read_version():
     cur_version = f"{__version__}"
     return [{"version": cur_version}]

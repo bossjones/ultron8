@@ -67,3 +67,5 @@ autoflake
 # NOTE: Vulture finds unused code in Python programs. This is useful for cleaning up and finding errors in large code bases. If you run Vulture on both your library and test suite you can find untested code.
 vulture
 pytest-black
+
+sqlalchemy-utils

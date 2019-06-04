@@ -6,5 +6,5 @@ router = APIRouter()
 
 
 @router.get("/")
-def read_home():
+async def read_home():
     return [{"name": "Item Foo"}, {"name": "item Bar"}]
