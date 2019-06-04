@@ -6,6 +6,8 @@ from sqlalchemy import pool
 
 from alembic import context
 
+import logging
+
 from ultron8.web import app
 from ultron8.api import settings
 from ultron8.api.db.u_sqlite import metadata
@@ -18,7 +20,9 @@ config.set_main_option("sqlalchemy.url", str(settings.DATABASE_URL))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-fileConfig(config.config_file_name)
+# fileConfig(config.config_file_name)
+fileConfig(config.config_file_name, disable_existing_loggers=False)
+logger = logging.getLogger('alembic.env')
 
 # add your model's MetaData object here
 # for 'autogenerate' support
@@ -58,6 +62,17 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
+
+    # this callback is used to prevent an auto-migration from being generated
+    # when there are no changes to the schema
+    # reference: http://alembic.zzzcomputing.com/en/latest/cookbook.html
+    def process_revision_directives(context, revision, directives):
+        if getattr(config.cmd_opts, 'autogenerate', False):
+            script = directives[0]
+            if script.upgrade_ops.is_empty():
+                directives[:] = []
+                logger.info('No changes in schema detected.')
+
     connectable = engine_from_config(
         config.get_section(config.config_ini_section),
         prefix="sqlalchemy.",
@@ -65,10 +80,13 @@ def run_migrations_online():
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(connection=connection, target_metadata=target_metadata, process_revision_directives=process_revision_directives)
 
-        with context.begin_transaction():
-            context.run_migrations()
+        try:
+            with context.begin_transaction():
+                context.run_migrations()
+        finally:
+            connection.close()
 
 
 if context.is_offline_mode():

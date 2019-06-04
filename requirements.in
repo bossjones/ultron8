@@ -90,3 +90,4 @@ aiocache
 # SOURCE: https://github.com/msgpack/msgpack-python
 msgpack
 sqlalchemy
+sqlalchemy-utils
