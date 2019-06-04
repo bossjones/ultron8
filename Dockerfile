@@ -86,6 +86,7 @@ COPY --chown=developer:developer ./start-gunicorn.sh /start-gunicorn.sh
 RUN sudo chmod +x /start-gunicorn.sh
 
 COPY --chown=developer:developer ./gunicorn_conf.py /gunicorn_conf.py
+COPY --chown=developer:developer ./web-entrypoint.sh /web-entrypoint.sh
 
 COPY --chown=developer:developer ./start-reload-gunicorn.sh /start-reload-gunicorn.sh
 
