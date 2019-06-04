@@ -1,0 +1,12 @@
+---
+  name: "ps_aux"
+  runner_type: "remote-shell-cmd"
+  description: "Run ps aux"
+  enabled: true
+  entry_point: ""
+  parameters:
+    cmd:
+      immutable: true
+      default: "ps aux"
+    sudo:
+      default: false

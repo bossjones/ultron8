@@ -1,0 +1,12 @@
+---
+  name: "local_ps_aux"
+  runner_type: "local-shell-cmd"
+  description: "Run ps aux locally"
+  enabled: true
+  entry_point: ""
+  parameters:
+    cmd:
+      immutable: true
+      default: "ps aux"
+    sudo:
+      default: false

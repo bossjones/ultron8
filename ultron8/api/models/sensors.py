@@ -144,7 +144,37 @@ class TriggerTypeModel(BaseModel):
 
 
 class SensorsModel(BaseModel):
-    """Sensor Data Model
+    """Sensor Data Model.
+
+    class_name: "FileWatchSensor"
+    enabled: true
+    entry_point: "file_watch_sensor.py"
+    description: "Sensor which monitors files for new lines"
+    trigger_types:
+      -
+        name: "file_watch.line"
+        pack: "linux"
+        description: "Trigger which indicates a new line has been detected"
+        # This sensor can be supplied a path to a file to tail via a rule.
+        parameters_schema:
+          type: "object"
+          properties:
+            file_path:
+              description: "Path to the file to monitor"
+              type: "string"
+              required: true
+          additionalProperties: false
+        # This is the schema of the trigger payload the sensor generates
+        payload_schema:
+          type: "object"
+          properties:
+            file_path:
+              type: "string"
+            file_name:
+              type: "string"
+            line:
+              type: "string"
+
     Arguments:
         BaseModel {[type]} -- [description]
     """

@@ -882,6 +882,14 @@ lock: lock-pip-compile lock-pipfile
 
 lock-and-load: lock pipenv-dev ## Run `make lock` then install all the new deps using `make pipenv-dev`
 
+.PHONY: local-install-better_exceptions
+local-install-better_exceptions:
+	@printf "$$GREEN [info] Learn more https://github.com/Qix-/better-exceptions$$NC\n"
+	@printf "=======================================\n"
+	@printf "$$BLUE Run 'export BETTER_EXCEPTIONS=1' to enable$$NC\n"
+	@printf "=======================================\n"
+	pipenv run pip install better_exceptions
+
 .PHONY: local-install-jupyter
 local-install-jupyter:
 	@printf "$$GREEN [important] Great guide to jupyter here: https://www.datacamp.com/community/tutorials/tutorial-jupyter-notebook$$NC\n"
