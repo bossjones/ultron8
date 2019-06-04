@@ -89,3 +89,4 @@ aiocache
 # # NOTE: MessagePack is an efficient binary serialization format. It lets you exchange data among multiple languages like JSON. But it's faster and smaller. This package provides CPython bindings for reading and writing MessagePack data.
 # SOURCE: https://github.com/msgpack/msgpack-python
 msgpack
+sqlalchemy
