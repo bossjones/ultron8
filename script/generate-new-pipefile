@@ -22,7 +22,7 @@ serve = "uvicorn ultron8.web:app --reload"
 migrate = "alembic upgrade head"
 
 [packages]
-ultron8 = {path = ".", editable = true}
+ultron8 = {path = ".",editable = true}
 
 [dev-packages]
 $(grep -v "#" requirements-dev.in | grep -v "^$" | grep -v "pytest-ipdb" | sed 's,$, = "*",g')

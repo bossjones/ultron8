@@ -32,12 +32,9 @@ MonkeyType = "*"
 pylint = "*"
 restructuredtext_lint = "*"
 when-changed = "*"
-pytest-watch = "*"
 notify-send = "*"
 autoflake = "*"
 vulture = "*"
-pytest-black = "*"
-sqlalchemy-utils = "*"
 sphinx = "*"
 sphinx_rtd_theme = "*"
 sphinx-jinja = "*"
@@ -55,6 +52,8 @@ pytest-leaks = "*"
 pytest-mypy = "*"
 pytest-flake8 = "*"
 tox-pyenv = "*"
+pytest-black = "*"
+pytest-watch = "*"
 # pytest-ipdb = {git = "git+https://github.com/mverteuil/pytest-ipdb#egg=pytest-ipdb"}
 
 [experimental-packages]
@@ -63,3 +62,6 @@ pyroma = "*"
 
 [pipenv]
 allow_prereleases = true
+
+[requires]
+python_version = "3.6.8"
