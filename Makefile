@@ -1029,3 +1029,21 @@ clean_doc: ## Clean Existing Documents
 .PHONY: reformat
 reformat: dev_dep ## ** Pep8 Format Source Code
 	${BIN_PYTHON} ${PROJECT_ROOT_DIR}/fixcode.py
+
+.PHONY: local-mypy
+local-mypy:
+	pipenv run mypy ultron8 tests
+
+.PHONY: local-pylint
+local-pylint:
+	pipenv run pylint --rcfile ./lint-configs-python/python/pylintrc ultron8/consts.py
+
+.PHONY: local-black
+local-black:
+	pipenv run black --check --exclude=ultron8_venv* --verbose ultron8
+
+.PHONY: local-pytest
+local-pytest:
+	pipenv run py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
+
+local-lint: local-mypy local-pylint local-black local-pytest
