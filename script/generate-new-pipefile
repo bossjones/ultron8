@@ -35,15 +35,36 @@ $(grep -v "#" requirements-experimental.in | grep -v "^$" | grep -v "pytest-ipdb
 
 [pipenv]
 allow_prereleases = true
+
+[requires]
+python_version = "3.6.8"
 EOF
 
+echo -e "\n Here is the newly rendered Pipfile file for you\n\n"
 \cat ${_FILE}
-
 \cat ${_FILE} | pbcopy
 
+echo -e "\n\n"
+
+echo -e "\n [Diff] of the two files. diff ${_FILE} Pipfile \n\n"
+diff ${_FILE} Pipfile
+echo -e "\n\n"
+
+echo "Would you like to continue copying over the old Pipfile file?"
+
+echo -n "Enter your answer and press [ENTER]: (y/n)"
+read answer
+echo
+
+if  [ "$answer" == "y" ]; then
+  cp -avf ${_FILE} Pipfile
+elif [ "$answer" == "n" ]; then
+  echo "You chose not to overwrite Pipfile. Exiting gracefully ..."
+else
+  echo "Invalid choice, must pick between 'y' or 'n'"
+fi
 
 echo "rm ${_TEMPDIR}"
 rm -rfv ${_TEMPDIR}
 
 popd
-

@@ -525,6 +525,10 @@ flush-cache:
 git-clean: ## Remove files and directories ignored by git
 	git clean -d -X -f
 
+.PHONY: check-python
+check-python:
+	./script/check-python
+
 .PHONY: pipenv-env
 pipenv-env: ## Run `pipenv install --dev` to create dev environment
 ifeq (${DETECTED_OS}, Darwin)
@@ -878,7 +882,7 @@ lock-pip-compile: pip-compile
 
 lock-pipfile: overwrite-pipefile
 
-lock: lock-pip-compile lock-pipfile
+lock: check-python lock-pip-compile lock-pipfile
 
 lock-and-load: lock pipenv-dev ## Run `make lock` then install all the new deps using `make pipenv-dev`
 
