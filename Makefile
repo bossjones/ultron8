@@ -1038,12 +1038,8 @@ local-mypy:
 local-pylint:
 	pipenv run pylint --rcfile ./lint-configs-python/python/pylintrc ultron8/consts.py
 
-.PHONY: local-black
-local-black:
-	pipenv run black --check --exclude=ultron8_venv* --verbose ultron8
-
 .PHONY: local-pytest
 local-pytest:
 	pipenv run py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
 
-local-lint: local-mypy local-pylint local-black local-pytest
+local-lint: clean-test local-mypy local-pylint local-black local-pytest

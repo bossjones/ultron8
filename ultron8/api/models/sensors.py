@@ -40,6 +40,7 @@ class ProcessInfoModel(BaseModel):
     hostname: str = None
     pid: int
 
+
 class ParametersSchemaModel(BaseModel):
     # id: int
     type: str
@@ -60,6 +61,7 @@ class TriggerTypeModel(BaseModel):
     created_at: datetime = None
     updated_at: datetime = None
     deleted_at: datetime = None
+
 
 class SensorsModel(BaseModel):
     """Sensor Data Model.
