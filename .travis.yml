@@ -155,7 +155,7 @@ jobs:
         - pip install --upgrade pip
         - travis_retry pip install coveralls
         - travis_retry pip install coverage
-        - travis_retry docker-compose -f docker-compose.ci.yml pull
+        - travis_retry docker-compose -f docker-compose.ci.yml pull || true
         - travis_retry make dc-ci-build
       script:
         - travis_retry make dc-ci-run
