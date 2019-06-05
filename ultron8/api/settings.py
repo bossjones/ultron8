@@ -6,8 +6,9 @@ import logging
 
 log = logging.getLogger(__name__)
 
-
-config = Config(".env")
+# ORIGINALLY THIS!!!!!!!!!!!!!!!!!!!!! 6/4/2019
+# config = Config(".env")
+config = Config(".env.dist")
 
 # # Main Configs
 DEBUG = config("DEBUG", cast=bool, default=False)
