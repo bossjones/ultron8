@@ -49,7 +49,7 @@ COPY --chown=developer:developer ultron8/__init__.py ultron8/__init__.py
 
 ARG ENABLE_TOX='False'
 ENV ENABLE_TOX=${ENABLE_TOX}
-RUN bash -c "if [ $ENABLE_TOX == 'True' ] ; then set -x; tree; tox -e py36 --notest; echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run." ; fi"
+RUN bash -c "if [ $ENABLE_TOX == 'True' ] ; then tox -e py36 --notest; echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run." ; fi"
 
 # RUN set -x; tree; tox -e py36 --notest; echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run."
 
