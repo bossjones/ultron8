@@ -36,7 +36,7 @@ config.set_main_option("sqlalchemy.url", str(settings.DATABASE_URL))
 # This line sets up loggers basically.
 # fileConfig(config.config_file_name)
 fileConfig(config.config_file_name, disable_existing_loggers=False)
-logger = logging.getLogger('alembic.env')
+logger = logging.getLogger("alembic.env")
 
 # add your model's MetaData object here
 # for 'autogenerate' support
@@ -81,11 +81,11 @@ def run_migrations_online():
     # when there are no changes to the schema
     # reference: http://alembic.zzzcomputing.com/en/latest/cookbook.html
     def process_revision_directives(context, revision, directives):
-        if getattr(config.cmd_opts, 'autogenerate', False):
+        if getattr(config.cmd_opts, "autogenerate", False):
             script = directives[0]
             if script.upgrade_ops.is_empty():
                 directives[:] = []
-                logger.info('No changes in schema detected.')
+                logger.info("No changes in schema detected.")
 
     connectable = engine_from_config(
         config.get_section(config.config_ini_section),
@@ -94,7 +94,11 @@ def run_migrations_online():
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata, process_revision_directives=process_revision_directives)
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            process_revision_directives=process_revision_directives,
+        )
 
         try:
             with context.begin_transaction():
