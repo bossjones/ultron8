@@ -36,7 +36,8 @@ COPY --chown=developer:developer requirements-test.txt requirements-test.txt
 # COPY --chown=developer:developer Pipfile Pipfile
 # COPY --chown=developer:developer Pipfile.lock Pipfile.lock
 
-RUN pip3 install -q --no-cache-dir -U pip setuptools tox && \
+RUN set -x; pyenv global ${PYENV_VERSION} && \
+    pip3 install -q --no-cache-dir -U pip setuptools tox wheel && \
     pip3 install --no-cache-dir -r requirements.txt && \
     pip3 install --no-cache-dir -r requirements-dev.txt && \
     pip3 install -q --no-cache-dir -r requirements-test.txt && \

@@ -17,7 +17,7 @@ pip install -e .
 sleep 10;
 # Run migrations
 
-# PYTHONPATH=$(python -c "import sys; print(':'.join(x for x in sys.path if x))")
+PYTHONPATH=$(python -c "import sys; print(':'.join(x for x in sys.path if x))")
 export PYTHONPATH=${PYTHONPATH}:${ULTRON_WORKDIR}
 echo "PYTHONPATH = ${PYTHONPATH}"
 echo
@@ -27,4 +27,5 @@ if [ "$ULTRON_ENABLE_WEB" = true ]; then
     source .env.dist
 fi
 
-exec alembic upgrade head
+echo " [run] alembic upgrade head"
+alembic upgrade head

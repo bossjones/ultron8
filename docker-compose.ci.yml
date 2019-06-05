@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 services:
   ultron8_ci:
     container_name: ultron8_ci
@@ -6,9 +6,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      # target: runtime-image
+      # FIXME: https://github.com/docker/compose/issues/5090
+      # FIXME: https://github.com/docker/docker-py/issues/998
+      cache_from:
+        - bossjones/ultron8-ci:runtime-image
       args:
         CONTAINER_GID: ${CONTAINER_GID:-1000}
         CONTAINER_UID: ${CONTAINER_UID:-1000}
+    image: bossjones/ultron8-ci:runtime-image
     ports:
       - "11267:11267"
     environment:

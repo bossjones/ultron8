@@ -27,6 +27,11 @@ env:
     - DOCKER_COMPOSE_VERSION=1.24.0
     - DOCKER_VERSION=18.09
     - IS_CI_ENVIRONMENT="true"
+    - CACHE_IMAGE=bossjones/ultron8-ci
+    # REGISTRY_USER
+    - secure: l5zoavY8woQcKGa5UKwMeIHUbjFUxgBMG1UAfG683vTQv/19tIdqhpTwp20j5eLX4uOLGMLTHE6ldJhUP+qMZIn0OPepq0mSCJKEFvK48bpb7fdjlhpGxGwxKLi0X1xJNV8tblGoqQRMjKq/EMMreuBfAqIHbWe/a57+I5fvsgRAmNCD5AikBq7qbr+lZ6dDvPTSF/ssy46FSUTGzmnRwRUFHAmaKt5eHLpzRhpXAnZR74V0TfxABnu461mxvo8MFmLggRl/lNfQyoeKKDwmz8ls+ao+Q/Ljw2mLU2giCNiSattuPkGtAKU6IO7hyRtBzjP2Ufmeso2BrZoC4WpV5LdMMT4JioMktU7th39mzZ3YHDsu9kl9iU+eguNptilqzLTWrkUWSo3b3s/msNlX3l6nDBJ2EV1B328LrpMUdPBFfSxuVr2yjh3w0zQHYXqxsmSDaJBNwwsu6jas+lt6kggZ8o4pIjAwazBFJ0KeKjhQTi3k+kxaNIoAC6LV6G4A5lZuvsGs3Ru8wXFMyqqB73929iC8MxbVGdxAPxWBoWhMLifU6NRrjRi1zBVZjZHSdH2e10DCJ9HEZx3QwM0RfmRlGsdWYUHR+xgOW0/5ynBJbHmIzm9yxHPAm8KKa1WKdEOjLKvf4EgjKUpDxXXDhlg/T5+rZAQYV7YVrBS2AWM=
+    # REGISTRY_PASS
+    - secure: ePCBKvfKcZMhIXihNw0s3ZVpHoEId7Ig5uBtgQTNoJ7WqrtZY32Or52kNcJTSj0wQEwbXS+Miw5wGTqFPKxsmhMiPEE9IcTIh4expZ1oHjoh8ANHxZow2KfBj7bwjeNZkMUwGn/FcAZ/wDl4He7Xw/jtTI0k3N1f3l/dumIeCu49Ta7YUKDXnlfMVLvfovmXNlDlurYamHIeaxcaayUGSKB3mrPITEjib35m3I+mKw/DfXqt/jdWSuPGI6h2VmwYAjFWO0ZNri6zOt44IcUj3vJ+gaxTMAgmMii62NpXzSZpr8lAbBx4fSnZRisz1zIu3VuBLxw6cV+WN7cdwl42LGYkntZdmk1jRyGxEnint+yuU6kLKWKWwy1iW2ZXJBKXxP0ekhZ/KiTCw2qNxnv+86RjHhP905hw4kE6+iQdXCZrKl5frlH+4k1ngQF9UG+qFW94sAtI0WLaWf2PfhayKuwyvbc5m1fKlFFYZDHOZNM8S2gxsxUZo9DBiVowFzrKHullvpsbGJg9BXPtKAj5uj0qp4MoWI5uMqn4RxFL2sfNMSDEH7HEj7Lphqx1PEK5yzYRMgvKNswneGSKDT4TqtnYnYALi+g5Jly0pI4xd+VnJW5ds34smnas6pCYZH/fCAjf/Yjw8mlObEoFNGElzYWahgd6JINsjcrMuT5a3c8=
 
 matrix:
   fast_finish: true
@@ -204,6 +209,7 @@ install:
   - travis_retry pip install coveralls
   - travis_retry pip install coverage
   - travis_retry docker-compose -f docker-compose.ci.yml pull
+  - docker pull $CACHE_IMAGE:runtime-image || true
   - travis_retry make dc-ci-build
 
 script:
@@ -217,6 +223,9 @@ after_script:
   # - docker kill ultron8_ci
 
 after_success:
+  - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
+  - docker push $CACHE_IMAGE:runtime-image
+  # - docker push $CACHE_IMAGE:stage
   - _USER=$(ls -lta | awk '{print $3}')
   - _GROUP=$(ls -lta | awk '{print $4}')
   - docker ps -a
