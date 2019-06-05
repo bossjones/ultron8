@@ -17,7 +17,9 @@ pip install -e .
 sleep 10;
 # Run migrations
 
-PYTHONPATH=$(python -c "import sys; print(':'.join(x for x in sys.path if x))")
+# PYTHONPATH=$(python -c "import sys; print(':'.join(x for x in sys.path if x))")
+export PYTHONPATH=${PYTHONPATH}:${ULTRON_WORKDIR}
 echo "PYTHONPATH = ${PYTHONPATH}"
 echo
-PYTHONPATH=${PYTHONPATH}:ultron8 alembic upgrade head
+# PYTHONPATH=${PYTHONPATH}:ultron8
+alembic upgrade head

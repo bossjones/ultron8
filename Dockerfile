@@ -33,8 +33,8 @@ COPY --chown=developer:developer requirements.txt requirements.txt
 COPY --chown=developer:developer requirements-dev.txt requirements-dev.txt
 COPY --chown=developer:developer requirements-doc.txt requirements-doc.txt
 COPY --chown=developer:developer requirements-test.txt requirements-test.txt
-COPY --chown=developer:developer Pipfile Pipfile
-COPY --chown=developer:developer Pipfile.lock Pipfile.lock
+# COPY --chown=developer:developer Pipfile Pipfile
+# COPY --chown=developer:developer Pipfile.lock Pipfile.lock
 
 RUN pip3 install -q --no-cache-dir -U pip setuptools tox && \
     pip3 install --no-cache-dir -r requirements.txt && \
@@ -47,7 +47,11 @@ RUN pip3 install -q --no-cache-dir -U pip setuptools tox && \
 COPY --chown=developer:developer setup.cfg setup.py tox.ini ./
 COPY --chown=developer:developer ultron8/__init__.py ultron8/__init__.py
 
-RUN set -x; tree; tox -e py36 --notest; echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run."
+ARG ENABLE_TOX='False'
+ENV ENABLE_TOX=${ENABLE_TOX}
+RUN bash -c "if [ $ENABLE_TOX == 'True' ] ; then set -x; tree; tox -e py36 --notest; echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run." ; fi"
+
+# RUN set -x; tree; tox -e py36 --notest; echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run."
 
 # ENV PATH="/home/${CONTAINER_USER}/.local/bin:${PATH}"
 
@@ -78,8 +82,9 @@ RUN USER=${CONTAINER_USER} && \
 
 USER ${CONTAINER_USER}:${CONTAINER_USER}
 
+ENV ULTRON_WORKDIR=/home/${CONTAINER_USER}/app
 # Set working directory.
-WORKDIR /home/${CONTAINER_USER}/app
+WORKDIR ${ULTRON_WORKDIR}
 
 COPY --chown=developer:developer ./start-gunicorn.sh /start-gunicorn.sh
 

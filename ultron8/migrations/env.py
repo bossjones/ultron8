@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 # https://stackoverflow.com/questions/15648284/alembic-alembic-revision-says-import-error
 import os
 import sys
