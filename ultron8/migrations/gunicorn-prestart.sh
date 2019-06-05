@@ -22,4 +22,9 @@ export PYTHONPATH=${PYTHONPATH}:${ULTRON_WORKDIR}
 echo "PYTHONPATH = ${PYTHONPATH}"
 echo
 # PYTHONPATH=${PYTHONPATH}:ultron8
+
+if [ "$ULTRON_ENABLE_WEB" = true ]; then
+    source .env.dist
+fi
+
 alembic upgrade head
