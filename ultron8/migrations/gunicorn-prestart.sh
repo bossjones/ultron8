@@ -27,4 +27,4 @@ if [ "$ULTRON_ENABLE_WEB" = true ]; then
     source .env.dist
 fi
 
-alembic upgrade head
+exec alembic upgrade head
