@@ -33,6 +33,6 @@ log = logging.getLogger(__name__)
 # -------------------------------------------------------------------------------
 # # Main Configs
 DEBUG = os.environ.get("DEBUG", None)
-# TESTING = os.environ.get("TESTING", None)
+TESTING = os.environ.get("TESTING", None)
 DATABASE_URL = os.environ.get("DATABASE_URL", None)
-# TEST_DATABASE_URL = os.environ.get("TEST_DATABASE_URL", None)
+TEST_DATABASE_URL = os.environ.get("TEST_DATABASE_URL", None)
