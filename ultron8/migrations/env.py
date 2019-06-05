@@ -1,4 +1,16 @@
-from __future__ import with_statement
+# https://stackoverflow.com/questions/15648284/alembic-alembic-revision-says-import-error
+import os
+import sys
+
+# parent_dir = os.path.abspath(os.path.join(os.getcwd(), ".."))
+# here = os.path.abspath(os.path.dirname(__file__))
+# print(f"here: {here}")
+# parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+# print(f"parent_dir: {parent_dir}")
+# sys.path.append(parent_dir)
+
+import logging
+
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -6,12 +18,12 @@ from sqlalchemy import pool
 
 from alembic import context
 
-import logging
 
 from ultron8.web import app
 from ultron8.api import settings
 from ultron8.api.db.u_sqlite import metadata
 
+# pylint: disable=maybe-no-member
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
