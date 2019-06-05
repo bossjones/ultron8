@@ -21,6 +21,7 @@ asn1crypto==0.24.0        # via cryptography
 async-timeout==3.0.1
 attrs==19.1.0             # via aiohttp
 bcrypt==3.1.6             # via passlib
+better-exceptions==0.2.2
 cachetools==3.1.1         # via premailer
 certifi==2019.3.9         # via requests
 cffi==1.12.3              # via bcrypt, cryptography, pycares

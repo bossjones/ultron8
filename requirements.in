@@ -91,3 +91,4 @@ aiocache
 msgpack
 sqlalchemy
 sqlalchemy-utils
+better_exceptions

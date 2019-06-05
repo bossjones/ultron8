@@ -25,6 +25,7 @@ services:
       - TRAVIS_OS_NAME
       - TRAVIS_TAG
       - ULTRON_ENABLE_WEB=${ULTRON_ENABLE_WEB:-false}
+      - BETTER_EXCEPTIONS=1
     tty: true
     stdin_open: true
     entrypoint:
