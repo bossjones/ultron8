@@ -29,5 +29,9 @@ else
     echo "There is no script $PRE_START_PATH"
 fi
 
+if [ "$ULTRON_ENABLE_WEB" = true ]; then
+    source .env.dist
+fi
+
 # Start Gunicorn
 exec gunicorn -k uvicorn.workers.UvicornWorker -c "$GUNICORN_CONF" "$APP_MODULE"
