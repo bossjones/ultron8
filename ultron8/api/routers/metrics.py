@@ -9,5 +9,4 @@
 #     return UJSONResponse({"yes": ":)"})
 
 
-
 # app.add_route("/metrics/", metrics)

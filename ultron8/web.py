@@ -10,7 +10,10 @@ from starlette.staticfiles import StaticFiles
 from pathlib import Path
 from starlette.responses import PlainTextResponse, RedirectResponse, UJSONResponse
 from starlette.middleware.cors import CORSMiddleware
-from starlette_prometheus import metrics, PrometheusMiddleware
+import starlette_prometheus
+import logging
+
+logger = logging.getLogger(__name__)
 
 # @app.exception_handler(StarletteHTTPException)
 # async def custom_http_exception_handler(request, exc) -> Any:
@@ -34,7 +37,10 @@ app.mount(
 )
 
 app.add_middleware(
-    CORSMiddleware, allow_origins=[settings.BACKEND_CORS_ORIGINS], allow_methods=[settings.BACKEND_CORS_ORIGINS], allow_headers=[settings.BACKEND_CORS_ORIGINS]
+    CORSMiddleware,
+    allow_origins=[settings.BACKEND_CORS_ORIGINS],
+    allow_methods=[settings.BACKEND_CORS_ORIGINS],
+    allow_headers=[settings.BACKEND_CORS_ORIGINS],
 )
 
 app.add_middleware(PrometheusMiddleware)
@@ -48,6 +54,7 @@ app.add_event_handler("shutdown", close_database_connection_pool)
 async def get_token_header(x_token: str = Header(...)):
     if x_token != "fake-super-secret-token":
         raise HTTPException(status_code=400, detail="X-Token header invalid")
+
 
 app.add_route("/metrics/", metrics)
 
@@ -66,3 +73,50 @@ app.include_router(
 app.include_router(guid.router, prefix="/guid", tags=["guid"])
 
 # NOTE: from guid tracker
+
+
+# FIXME: Enable this
+# def creates_web_app():
+#     """Create the fastapi web application
+#     Returns:
+#         [fastapi.FastAPI]: the main application
+#     """
+
+#     logger.info(f"Create fastapi web application ...")
+
+
+#     app = FastAPI(title="Ultron-8 Web Server")
+#     app.debug = settings.DEBUG
+#     app.mount(
+#         "/static",
+#         StaticFiles(directory=str(Path(__file__).parent / "static")),
+#         name="static",
+#     )
+
+#     app.add_middleware(
+#         CORSMiddleware, allow_origins=[settings.BACKEND_CORS_ORIGINS], allow_methods=[settings.BACKEND_CORS_ORIGINS], allow_headers=[settings.BACKEND_CORS_ORIGINS]
+#     )
+#     app.add_middleware(starlette_prometheus.PrometheusMiddleware)
+
+#     app.add_event_handler("startup", open_database_connection_pool)
+#     app.add_event_handler("shutdown", close_database_connection_pool)
+
+
+#     app.add_route("/metrics/", starlette_prometheus.metrics)
+
+#     app.include_router(home.router)
+#     app.include_router(alive.router, tags=["alive"])
+#     app.include_router(version.router)
+#     app.include_router(users.router)
+#     app.include_router(
+#         items.router,
+#         prefix="/items",
+#         tags=["items"],
+#         dependencies=[Depends(get_token_header)],
+#         responses={404: {"description": "Not found"}},
+#     )
+
+#     app.include_router(guid.router, prefix="/guid", tags=["guid"])
+#     return app
+
+# app = creates_web_app()
