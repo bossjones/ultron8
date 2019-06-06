@@ -93,3 +93,6 @@ sqlalchemy
 sqlalchemy-utils
 better_exceptions
 starlette-prometheus
+daiquiri
+raven
+celery

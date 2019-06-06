@@ -1041,6 +1041,12 @@ local-mypy:
 .PHONY: local-pylint
 local-pylint:
 	pipenv run pylint --rcfile ./lint-configs-python/python/pylintrc ultron8/consts.py
+# pipenv run pylint --rcfile ./lint-configs-python/python/pylintrc --disable=R,C ultron8/
+
+.PHONY: local-pylint-unresolved
+local-pylint-unresolved:
+# pipenv run pylint --rcfile ./lint-configs-python/python/pylintrc ultron8/consts.py
+	pipenv run pylint --rcfile ./lint-configs-python/python/pylintrc --disable=all --enable=unresolved-import ultron8/
 
 .PHONY: local-pytest
 local-pytest:

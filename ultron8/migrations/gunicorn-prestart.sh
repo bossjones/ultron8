@@ -27,5 +27,8 @@ if [ "$ULTRON_ENABLE_WEB" = true ]; then
     source .env.dist
 fi
 
+# Let the DB start
+python /home/developer/app/ultron8/backend_pre_start.py
+
 echo " [run] alembic upgrade head"
 alembic upgrade head

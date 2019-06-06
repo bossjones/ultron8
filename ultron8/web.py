@@ -6,14 +6,21 @@ from ultron8.api import settings
 from fastapi import Depends, FastAPI, Header, HTTPException
 
 from ultron8.api.routers import items, users, home, version, guid, alive
+from ultron8.api.middleware.logging import log
 from starlette.staticfiles import StaticFiles
 from pathlib import Path
 from starlette.responses import PlainTextResponse, RedirectResponse, UJSONResponse
 from starlette.middleware.cors import CORSMiddleware
 import starlette_prometheus
 import logging
+from starlette.requests import Request
+
+from ultron8.api.db.u_sqlite.session import Session
 
 logger = logging.getLogger(__name__)
+
+# TODO: As soon as we merge web.py into the MCP, we will want to nuke this setup_logging line!!!
+log.setup_logging()
 
 # ---------------------------------------------------------------------
 # SOURCE: https://github.com/webrecorder/browsertrix/blob/f6152b780e054940fbd2d336869ebf0fa052147d/browsertrix/crawl.py
@@ -76,6 +83,7 @@ app.add_middleware(
     allow_origins=[settings.BACKEND_CORS_ORIGINS],
     allow_methods=[settings.BACKEND_CORS_ORIGINS],
     allow_headers=[settings.BACKEND_CORS_ORIGINS],
+    allow_credentials=True,
 )
 
 app.add_middleware(starlette_prometheus.PrometheusMiddleware)
@@ -106,6 +114,15 @@ app.include_router(
 )
 
 app.include_router(guid.router, prefix="/guid", tags=["guid"])
+
+
+@app.middleware("http")
+async def db_session_middleware(request: Request, call_next):
+    request.state.db = Session()
+    response = await call_next(request)
+    request.state.db.close()
+    return response
+
 
 # NOTE: from guid tracker
 
