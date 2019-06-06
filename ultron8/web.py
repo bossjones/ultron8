@@ -43,7 +43,7 @@ app.add_middleware(
     allow_headers=[settings.BACKEND_CORS_ORIGINS],
 )
 
-app.add_middleware(PrometheusMiddleware)
+app.add_middleware(starlette_prometheus.PrometheusMiddleware)
 
 app.add_event_handler("startup", open_database_connection_pool)
 app.add_event_handler("shutdown", close_database_connection_pool)
@@ -56,7 +56,7 @@ async def get_token_header(x_token: str = Header(...)):
         raise HTTPException(status_code=400, detail="X-Token header invalid")
 
 
-app.add_route("/metrics/", metrics)
+app.add_route("/metrics/", starlette_prometheus.metrics)
 
 app.include_router(home.router)
 app.include_router(alive.router, tags=["alive"])
