@@ -30,6 +30,11 @@ from ultron8.api.db.u_sqlite import metadata
 # access to the values within the .ini file in use.
 config = context.config
 
+if settings.DATABASE_URL is None:
+    raise ValueError(
+        "You are attempting to run a migration without having 'settings.DATABASE_URL' set, please set environment value and try again."
+    )
+
 config.set_main_option("sqlalchemy.url", str(settings.DATABASE_URL))
 
 # Interpret the config file for Python logging.
