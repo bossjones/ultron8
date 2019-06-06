@@ -1056,3 +1056,16 @@ dc-run-web: dc-ci-build
 
 dc-ci-tail-dev-null: dc-ci-build
 	.ci/dc-ci-tail-dev-null.sh
+
+# SOURCE: https://alembic.sqlalchemy.org/en/latest/autogenerate.html
+migration-revision:
+	pipenv run alembic revision --autogenerate -m "create account table"
+
+migration-run:
+	pipenv run alembic upgrade head
+
+migration-info:
+	pipenv run alembic current
+
+migration-history:
+	pipenv run alembic history --verbose

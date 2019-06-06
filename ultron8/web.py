@@ -15,6 +15,41 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# ---------------------------------------------------------------------
+# SOURCE: https://github.com/webrecorder/browsertrix/blob/f6152b780e054940fbd2d336869ebf0fa052147d/browsertrix/crawl.py
+# from asyncio import AbstractEventLoop, gather as aio_gather, get_event_loop
+
+
+# async def startup(self) -> None:
+#     """Initialize the crawler manager's redis connection and
+#     http session used to make requests to shepherd
+#     """
+#     self.loop = get_event_loop()
+#     self.redis = await init_redis(
+#         env('REDIS_URL', default=DEFAULT_REDIS_URL), self.loop
+#     )
+#     self.session = ClientSession(
+#         connector=TCPConnector(
+#             resolver=AsyncResolver(loop=self.loop), loop=self.loop
+#         ),
+#         json_serialize=partial(json.dumps, ensure_ascii=False),
+#         loop=self.loop,
+#     )
+
+# async def shutdown(self) -> None:
+#     """Closes the redis connection and http session"""
+#     try:
+#         self.redis.close()
+#         await self.redis.wait_closed()
+#     except Exception:
+#         pass
+
+#     try:
+#         await self.session.close()
+#     except Exception:
+#         pass
+# ---------------------------------------------------------------------
+
 # @app.exception_handler(StarletteHTTPException)
 # async def custom_http_exception_handler(request, exc) -> Any:
 #     logging.getLogger(__name__).exception(f"{request.method} {request.url} {exc}")
