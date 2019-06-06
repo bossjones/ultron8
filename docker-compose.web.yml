@@ -1,0 +1,5 @@
+version: '3.7'
+services:
+  ultron8_ci:
+    # Simply override this command
+    command: /home/developer/app/script/web_entrypoint.sh

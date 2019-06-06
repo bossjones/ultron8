@@ -101,6 +101,7 @@ COPY --chown=developer:developer ./start-reload-gunicorn.sh /start-reload-gunico
 
 RUN sudo chmod +x /start-reload-gunicorn.sh
 
+EXPOSE 11267
 
 # SOURCE: https://www.reddit.com/r/godot/comments/9r72kv/godot_302_docker_image_for_automatic_exports/
 # # Install fixuid.

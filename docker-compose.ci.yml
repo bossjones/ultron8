@@ -16,7 +16,7 @@ services:
         CONTAINER_UID: ${CONTAINER_UID:-1000}
     image: bossjones/ultron8-ci:runtime-image
     ports:
-      - "11267:11267"
+      - 11267:11267
     environment:
       - CONTAINER_GID=${CONTAINER_GID:-1000}
       - CONTAINER_UID=${CONTAINER_UID:-1000}

@@ -36,3 +36,8 @@ DEBUG = os.environ.get("DEBUG", None)
 TESTING = os.environ.get("TESTING", None)
 DATABASE_URL = os.environ.get("DATABASE_URL", None)
 TEST_DATABASE_URL = os.environ.get("TEST_DATABASE_URL", None)
+
+BACKEND_CORS_ORIGINS = os.getenv(
+    "BACKEND_CORS_ORIGINS", "*"
+) # a string of origins separated by commas, e.g: "http://localhost, http://localhost:4200, http://localhost:3000, http://localhost:8080, http://local.dockertoolbox.tiangolo.com"
+

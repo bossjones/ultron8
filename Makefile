@@ -1051,5 +1051,8 @@ local-lint: clean-test local-mypy local-pylint local-black local-pytest
 dc-up-web: dc-ci-build
 	bash script/dc-up-web
 
+dc-run-web: dc-ci-build
+	bash script/dc-run-web
+
 dc-ci-tail-dev-null: dc-ci-build
 	.ci/dc-ci-tail-dev-null.sh
