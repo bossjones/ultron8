@@ -23,7 +23,7 @@ from alembic import context
 
 from ultron8.web import app
 from ultron8.api import settings
-from ultron8.api.db.u_sqlite import metadata
+# from ultron8.api.db.u_sqlite import metadata
 
 # pylint: disable=no-name-in-module
 # from ultron8.api.db.base import Base  # noqa
@@ -51,7 +51,7 @@ logger = logging.getLogger("alembic.env")
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = metadata
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

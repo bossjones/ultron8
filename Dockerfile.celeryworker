@@ -1,6 +1,15 @@
-FROM python:3.7
+FROM python:3.6
 
-RUN pip install raven celery~=4.3 passlib[bcrypt] tenacity requests "fastapi>=0.16.0" emails pyjwt email_validator jinja2 psycopg2-binary alembic SQLAlchemy
+COPY requirements.txt requirements.txt
+COPY requirements-dev.txt requirements-dev.txt
+COPY requirements-doc.txt requirements-doc.txt
+COPY requirements-test.txt requirements-test.txt
+
+RUN set -x; \
+    pip install -q --no-cache-dir -U pip setuptools tox wheel && \
+    pip install --no-cache-dir -r requirements.txt
+
+# RUN pip install raven celery~=4.3 passlib[bcrypt] tenacity requests "fastapi>=0.16.0" emails pyjwt email_validator jinja2 psycopg2-binary alembic SQLAlchemy
 
 # For development, Jupyter remote kernel, Hydrogen
 # Using inside the container:
@@ -11,12 +20,12 @@ EXPOSE 8888
 
 ENV C_FORCE_ROOT=1
 
-COPY ./app /app
+COPY . /app
 WORKDIR /app
 
 ENV PYTHONPATH=/app
 
-COPY ./app/worker-start.sh /worker-start.sh
+COPY ./ultron8/worker-start.sh /worker-start.sh
 
 RUN chmod +x /worker-start.sh
 

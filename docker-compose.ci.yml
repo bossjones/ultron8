@@ -1,5 +1,32 @@
 version: '3.7'
 services:
+  # celeryworker:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.celeryworker
+  #   depends_on:
+  #   - queue
+  #   environment:
+  #     BACKEND_CORS_ORIGINS: '*'
+  #     EMAILS_FROM_EMAIL: 'info@ultron8.com'
+  #     FIRST_SUPERUSER: admin@ultron8.com
+  #     FIRST_SUPERUSER_PASSWORD: password
+  #     # POSTGRES_DB: app
+  #     # POSTGRES_PASSWORD: '{{cookiecutter.postgres_password}}'
+  #     # POSTGRES_SERVER: db
+  #     # POSTGRES_USER: postgres
+  #     PROJECT_NAME: 'ultron8'
+  #     SECRET_KEY: '43n080musdfjt54t-09sdgr'
+  #     # SENTRY_DSN: '{{cookiecutter.sentry_dsn}}'
+  #     SERVER_HOST: https://web
+  #     SMTP_HOST: '{{cookiecutter.smtp_host}}'
+  #     SMTP_PASSWORD: '587'
+  #     SMTP_PORT: '587'
+  #     SMTP_TLS: "True"
+  #     SMTP_USER: ''
+  #     USERS_OPEN_REGISTRATION: "False"
+  # queue:
+  #   image: rabbitmq:3
   ultron8_ci:
     container_name: ultron8_ci
     privileged: true
@@ -36,6 +63,21 @@ services:
       - DEBUG=True
       - TESTING=True
       - SECRET_KEY=43n080musdfjt54t-09sdgr
+      - SERVER_NAME=ultron8-ci
+      - SERVER_HOST=0.0.0.0
+      - PROJECT_NAME=ultron8
+      - DOMAIN_MAIN=ultron8.com
+      - FIRST_SUPERUSER=admin@ultron8.com
+      - FIRST_SUPERUSER_PASSWORD=password
+      - SMTP_TLS=True
+      - SMTP_PORT=587
+      - SMTP_HOST
+      - SMTP_USER
+      - SMTP_PASSWORD
+      - SMTP_EMAILS_FROM_EMAIL=info@ultron8.com
+      - FLOWER_AUTH=admin:password
+      - USERS_OPEN_REGISTRATION=False
+      - BACKEND_CORS_ORIGINS='*'
       # - REDIS_URL
       # - REDIS_ENDPOINT
       # - REDIS_PORT

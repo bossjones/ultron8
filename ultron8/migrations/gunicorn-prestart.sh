@@ -28,7 +28,7 @@ if [ "$ULTRON_ENABLE_WEB" = true ]; then
 fi
 
 # Let the DB start
-python /home/developer/app/ultron8/backend_pre_start.py
+python /home/developer/app/ultron8/api/backend_pre_start.py
 
 echo " [run] alembic upgrade head"
 alembic upgrade head

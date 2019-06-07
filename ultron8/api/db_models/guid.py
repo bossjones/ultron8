@@ -29,3 +29,6 @@ class Guid(Base):
 #     sqlalchemy.Column("name", sqlalchemy.String),
 #     sqlalchemy.Column("expire", sqlalchemy.DateTime),
 # )
+
+if "__main__" == __name__:
+    guid = Guid()
