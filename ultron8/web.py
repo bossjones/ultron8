@@ -79,9 +79,12 @@ app.mount(
     name="static",
 )
 
+# CORS
+origins = []
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.BACKEND_CORS_ORIGINS],
+    allow_origins=origins,
     allow_methods=[settings.BACKEND_CORS_ORIGINS],
     allow_headers=[settings.BACKEND_CORS_ORIGINS],
     allow_credentials=True,
@@ -89,8 +92,13 @@ app.add_middleware(
 
 app.add_middleware(starlette_prometheus.PrometheusMiddleware)
 
-app.add_event_handler("startup", open_database_connection_pool)
-app.add_event_handler("shutdown", close_database_connection_pool)
+
+# -----------------------------------------------------------------------
+# DISABLED: originally from guid_tracker
+# -----------------------------------------------------------------------
+# app.add_event_handler("startup", open_database_connection_pool)
+# app.add_event_handler("shutdown", close_database_connection_pool)
+# -----------------------------------------------------------------------
 
 # app = FastAPI()
 

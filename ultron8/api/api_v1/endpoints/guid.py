@@ -5,7 +5,7 @@ from typing import Type, List
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import and_
-from ultron8.api.db.u_sqlite import (
+from ultron8.api.crud.guid import (
     guid_tracker,
     database,
     create_guid_record,

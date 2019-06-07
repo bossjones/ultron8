@@ -7,6 +7,11 @@ from pydantic import BaseModel, validator
 log = logging.getLogger(__name__)
 
 
+# Properties to receive on item creation
+class GuidCreate(BaseModel):
+    name: str
+
+
 class GuidIn(BaseModel):
     """
     Serializer for creating a record.

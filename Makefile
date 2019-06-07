@@ -1048,6 +1048,10 @@ local-pylint-unresolved:
 # pipenv run pylint --rcfile ./lint-configs-python/python/pylintrc ultron8/consts.py
 	pipenv run pylint --rcfile ./lint-configs-python/python/pylintrc --disable=all --enable=unresolved-import ultron8/
 
+.PHONY: local-pylint-error
+local-pylint-error:
+	pipenv run pylint --rcfile ./lint-configs-python/python/pylintrc -E ultron8/
+
 .PHONY: local-pytest
 local-pytest:
 	pipenv run py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
