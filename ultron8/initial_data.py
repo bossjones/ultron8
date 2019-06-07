@@ -3,7 +3,7 @@ import logging
 from ultron8.api.db.u_sqlite.init_db import init_db
 from ultron8.api.db.u_sqlite.session import db_session
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 

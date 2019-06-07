@@ -1,4 +1,4 @@
-#! /usr/bin/env sh
+#!/usr/bin/env sh
 
 echo "Running inside /app/prestart.sh, you could add migrations to this file, e.g.:"
 
@@ -24,7 +24,10 @@ echo
 # PYTHONPATH=${PYTHONPATH}:ultron8
 
 if [ "$ULTRON_ENABLE_WEB" = true ]; then
-    source .env.dist
+    echo " [sourcing] .env.dist"
+    . .env.dist
+else
+    echo " [warning] ULTRON_ENABLE_WEB = false ... skipping sourcing of environment variables"
 fi
 
 # Let the DB start
@@ -32,3 +35,6 @@ python /home/developer/app/ultron8/api/backend_pre_start.py
 
 echo " [run] alembic upgrade head"
 alembic upgrade head
+
+echo " [run] Create initial data in DB"
+python /home/developer/app/ultron8/initial_data.py
