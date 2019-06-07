@@ -27,6 +27,28 @@ services:
   #     USERS_OPEN_REGISTRATION: "False"
   # queue:
   #   image: rabbitmq:3
+  # flower:
+  #   environment:
+  #     AMQP_ADMIN_HOST: queue
+  #     AMQP_HOST: queue
+  #     FLOWER_BASIC_AUTH: '{{cookiecutter.flower_auth}}'
+  #   image: totem/celery-flower-docker
+  #   ports:
+  #   - published: 5555
+  #     target: 5555
+  # proxy:
+  #   image: traefik:v1.7
+  #   labels:
+  #     traefik.enable: "true"
+  #     traefik.frontend.rule: Host:localhost
+  #     traefik.port: '80'
+  #   ports:
+  #   - published: 80
+  #     target: 80
+  #   - published: 8090
+  #     target: 8080
+  #   volumes:
+  #   - /var/run/docker.sock:/var/run/docker.sock:rw
   ultron8_ci:
     container_name: ultron8_ci
     privileged: true
@@ -107,3 +129,8 @@ services:
       - ~/.wheelhouse/:/home/developer/.wheelhouse/
     # ports:
     #   - ${PORT}:3000
+    # labels:
+    #   traefik.enable: "true"
+    #   traefik.frontend.rule: PathPrefix:/api,/docs,/redoc
+    #   traefik.port: '80'
+    #   traefik.tags: '{{cookiecutter.traefik_constraint_tag}}'

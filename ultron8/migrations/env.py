@@ -23,6 +23,7 @@ from alembic import context
 
 from ultron8.web import app
 from ultron8.api import settings
+
 # from ultron8.api.db.u_sqlite import metadata
 
 # pylint: disable=no-name-in-module
