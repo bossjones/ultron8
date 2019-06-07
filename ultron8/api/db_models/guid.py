@@ -32,3 +32,5 @@ class Guid(Base):
 
 if "__main__" == __name__:
     guid = Guid()
+
+    print(guid)

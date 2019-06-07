@@ -6,3 +6,17 @@ from ultron8.api.db_models.user import User  # noqa
 
 # from ultron8.api.db_models.item import Item  # noqa
 from ultron8.api.db_models.item import Item  # noqa
+
+# smoke tests
+if "__main__" == __name__:
+    guid = Guid()
+
+    print(guid)
+
+    user = User()
+
+    print(user)
+
+    item = Item()
+
+    print(item)

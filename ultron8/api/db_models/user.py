@@ -13,3 +13,9 @@ class User(Base):
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
     items = relationship("Item", back_populates="owner")
+
+
+if "__main__" == __name__:
+    user = User()
+
+    print(user)
