@@ -208,7 +208,7 @@ echo -e "\n\n"
 echo "Would you like to continue copying over the old .vscode/settings.json file?"
 
 echo -n "Enter your answer and press [ENTER]: (y/n)"
-read -n answer
+read answer
 echo
 
 if  [ "$answer" == "y" ]; then
