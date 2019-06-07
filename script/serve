@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 python ./ultron8/api/backend_pre_start.py
 
