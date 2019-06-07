@@ -112,8 +112,8 @@ app.add_route("/metrics/", starlette_prometheus.metrics)
 
 app.include_router(home.router)
 app.include_router(alive.router, tags=["alive"])
-app.include_router(version.router)
-app.include_router(users.router)
+app.include_router(version.router, tags=["version"])
+app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(
     items.router,
     prefix="/items",
@@ -122,7 +122,7 @@ app.include_router(
     responses={404: {"description": "Not found"}},
 )
 
-app.include_router(guid.router, prefix="/guid", tags=["guid"])
+# app.include_router(guid.router, prefix="/guid", tags=["guid"])
 
 
 @app.middleware("http")
