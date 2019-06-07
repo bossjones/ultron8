@@ -1,9 +1,9 @@
-from fastapi import APIRouter
-from starlette.responses import UJSONResponse
+# from fastapi import APIRouter
+# from starlette.responses import UJSONResponse
 
-router = APIRouter()
+# router = APIRouter()
 
 
-@router.get("/alive")
-async def alive() -> UJSONResponse:
-    return UJSONResponse({"yes": ":)"})
+# @router.get("/alive")
+# async def alive() -> UJSONResponse:
+#     return UJSONResponse({"yes": ":)"})

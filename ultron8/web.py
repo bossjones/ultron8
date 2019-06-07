@@ -5,7 +5,8 @@ from ultron8.api.db.u_sqlite import (
 from ultron8.api import settings
 from fastapi import Depends, FastAPI, Header, HTTPException
 
-from ultron8.api.routers import items, users, home, version, guid, alive
+# from ultron8.api.routers import items, users, home, version, guid, alive
+from ultron8.api.api_v1.endpoints import items, users, home, version, guid, alive
 from ultron8.api.middleware.logging import log
 from starlette.staticfiles import StaticFiles
 from pathlib import Path

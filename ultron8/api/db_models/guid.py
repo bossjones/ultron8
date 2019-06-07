@@ -1,10 +1,12 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 
-from ultron8.api.db import Base
+# from ultron8.api.db.base import Base
+from ultron8.api.db.u_sqlite.base_class import Base
 
 
 class Guid(Base):
+    __tablename__ = "guid_tracker"
     id = Column("id", String, primary_key=True)
     name = Column("name", String, index=True)
     expire = Column("expire", DateTime, index=True)

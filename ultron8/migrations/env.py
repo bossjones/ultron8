@@ -26,7 +26,8 @@ from ultron8.api import settings
 from ultron8.api.db.u_sqlite import metadata
 
 # pylint: disable=no-name-in-module
-from ultron8.api.db.base import Base  # noqa
+# from ultron8.api.db.base import Base  # noqa
+from ultron8.api.db.u_sqlite.base_class import Base
 
 # pylint: disable=maybe-no-member
 # this is the Alembic Config object, which provides

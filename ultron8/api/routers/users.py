@@ -1,20 +1,20 @@
-"""Temporary router for user objects. Taken directly from FastApi Tutorial"""
+# """Temporary router for user objects. Taken directly from FastApi Tutorial"""
 
-from fastapi import APIRouter
+# from fastapi import APIRouter
 
-router = APIRouter()
-
-
-@router.get("/v1/users/", tags=["users"])
-async def read_users():
-    return [{"username": "Foo"}, {"username": "Bar"}]
+# router = APIRouter()
 
 
-@router.get("/v1/users/me", tags=["users"])
-async def read_user_me():
-    return {"username": "fakecurrentuser"}
+# @router.get("/v1/users/", tags=["users"])
+# async def read_users():
+#     return [{"username": "Foo"}, {"username": "Bar"}]
 
 
-@router.get("/v1/users/{username}", tags=["users"])
-async def read_user(username: str):
-    return {"username": username}
+# @router.get("/v1/users/me", tags=["users"])
+# async def read_user_me():
+#     return {"username": "fakecurrentuser"}
+
+
+# @router.get("/v1/users/{username}", tags=["users"])
+# async def read_user(username: str):
+#     return {"username": username}

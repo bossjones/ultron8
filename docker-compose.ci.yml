@@ -32,6 +32,27 @@ services:
       - TRAVIS_TAG
       - ULTRON_ENABLE_WEB=${ULTRON_ENABLE_WEB:-false}
       - BETTER_EXCEPTIONS=1
+      # FOR WEB APPLICATION
+      - DEBUG=True
+      - TESTING=True
+      - SECRET_KEY=43n080musdfjt54t-09sdgr
+      # - REDIS_URL
+      # - REDIS_ENDPOINT
+      # - REDIS_PORT
+      # - REDIS_DB
+      - DATABASE_URL=sqlite:///dev.db
+      - TEST_DATABASE_URL=sqlite:///test.db
+      - DEFAULT_MODULE_NAME=ultron8.web
+      - VARIABLE_NAME=app
+      # - MODULE_NAME
+      # - VARIABLE_NAME
+      # - APP_MODULE
+      - DEFAULT_GUNICORN_CONF=/gunicorn_conf.py
+      - PRE_START_PATH=/home/developer/app/ultron8/migrations/gunicorn-prestart.sh
+      - HOST=0.0.0.0
+      - PORT=11267
+      - LOG_LEVEL=info
+
     tty: true
     stdin_open: true
     entrypoint:

@@ -339,3 +339,5 @@ peco_linux_amd64/
 cov.xml
 dev.db
 test.db
+.vscode
+!.vscode/launch.json
