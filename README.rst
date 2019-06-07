@@ -86,3 +86,10 @@ To upgrade to latest version:
       export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
       eval "$(pyenv init -)"
       eval "$(pyenv virtualenv-init -)"
+
+
+
+Resources
+------------------------------------------------------------------------------
+
+https://www.reddit.com/r/PhotoshopRequest/comments/a7fzua/specific_photoshop_this_picture_of_ultron/

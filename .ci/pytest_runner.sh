@@ -8,6 +8,10 @@ source $_DIR/utility.sh
 
 # trap "echo ERR trap fired!" ERR
 
+# FIXME: I think we need to add these guys to fixuid as well!!! [Jun 3 2019]
+# SOURCE: https://github.com/apache/airflow/blob/f153bf536783188bf1db210d30ae44e93a290611/scripts/ci/run-ci.sh
+# sudo chown -R airflow.airflow . $HOME/.cache $HOME/.wheelhouse/ $HOME/.cache/pip
+
 echo " [info] CONTAINER_UID=${CONTAINER_UID}"
 echo " [info] CONTAINER_GID=${CONTAINER_GID}"
 echo
@@ -20,7 +24,6 @@ eval $( fixuid -q )
 echo " [run] UID/GID now match user/group, \$HOME has been set to user's home directory"
 echo -e "\n\n"
 
-# FIXME: Add a flag to enable gosu when needed
 # gosu developer pyenv shell 3.6.8
 # gosu developer pip install -e .
 # gosu developer py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests

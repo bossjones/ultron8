@@ -51,9 +51,17 @@ MonkeyType
 pylint
 restructuredtext_lint
 when-changed
-pytest-watch
 notify-send
 
 # SOURCE: https://github.com/python-rope/rope
 # NOTE: a python refactoring library
 # rope
+
+# NOTE: autoflake removes unused imports and unused variables from Python code. It makes use of pyflakes to do this.
+# SOURCE: https://pypi.org/project/autoflake/
+autoflake
+
+
+# SOURCE: https://github.com/jendrikseipp/vulture
+# NOTE: Vulture finds unused code in Python programs. This is useful for cleaning up and finding errors in large code bases. If you run Vulture on both your library and test suite you can find untested code.
+vulture

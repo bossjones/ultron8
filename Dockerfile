@@ -23,7 +23,7 @@ ENV LANG C.UTF-8
 RUN apk add --no-cache \
     build-base cairo-dev cairo cairo-tools gobject-introspection-dev \
     # pillow dependencies
-    jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev
+    jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev libxml2-dev g++ gcc libxslt-dev
 
 USER ${CONTAINER_USER}
 WORKDIR /home/${CONTAINER_USER}
@@ -33,13 +33,14 @@ COPY --chown=developer:developer requirements.txt requirements.txt
 COPY --chown=developer:developer requirements-dev.txt requirements-dev.txt
 COPY --chown=developer:developer requirements-doc.txt requirements-doc.txt
 COPY --chown=developer:developer requirements-test.txt requirements-test.txt
-COPY --chown=developer:developer Pipfile Pipfile
-COPY --chown=developer:developer Pipfile.lock Pipfile.lock
+# COPY --chown=developer:developer Pipfile Pipfile
+# COPY --chown=developer:developer Pipfile.lock Pipfile.lock
 
-RUN pip3 install -q --no-cache-dir -U pip setuptools tox && \
-    pip3 install -q --no-cache-dir -r requirements.txt && \
-    pip3 install -q --no-cache-dir -r requirements-dev.txt && \
-    pip3 install --no-cache-dir -r requirements-test.txt && \
+RUN set -x; pyenv global ${PYENV_VERSION} && \
+    pip3 install -q --no-cache-dir -U pip setuptools tox wheel && \
+    pip3 install --no-cache-dir -r requirements.txt && \
+    pip3 install --no-cache-dir -r requirements-dev.txt && \
+    pip3 install -q --no-cache-dir -r requirements-test.txt && \
     pip3 install -q --no-cache-dir -r requirements-doc.txt && \
     pyenv rehash
 
@@ -47,7 +48,14 @@ RUN pip3 install -q --no-cache-dir -U pip setuptools tox && \
 COPY --chown=developer:developer setup.cfg setup.py tox.ini ./
 COPY --chown=developer:developer ultron8/__init__.py ultron8/__init__.py
 
-RUN set -x; tree; tox -e py36 --notest; echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run."
+ARG ENABLE_TOX='False'
+ENV ENABLE_TOX=${ENABLE_TOX}
+RUN if [ $ENABLE_TOX == 'True' ] ; then \
+    tox -e py36 --notest; \
+    echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run." \
+    ; fi
+
+# RUN set -x; tree; tox -e py36 --notest; echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run."
 
 # ENV PATH="/home/${CONTAINER_USER}/.local/bin:${PATH}"
 
@@ -73,23 +81,27 @@ RUN USER=${CONTAINER_USER} && \
     echo "  - /home/developer/.cache" >> /etc/fixuid/config.yml && \
     echo "  - /start-gunicorn.sh" >> /etc/fixuid/config.yml && \
     echo "  - /gunicorn_conf.py" >> /etc/fixuid/config.yml && \
-    echo "  - /start-reload-gunicorn.sh" >> /etc/fixuid/config.yml
+    echo "  - /start-reload-gunicorn.sh" >> /etc/fixuid/config.yml && \
+    echo "  - /home/developer/.wheelhouse" >> /etc/fixuid/config.yml
 
 USER ${CONTAINER_USER}:${CONTAINER_USER}
 
+ENV ULTRON_WORKDIR=/home/${CONTAINER_USER}/app
 # Set working directory.
-WORKDIR /home/${CONTAINER_USER}/app
+WORKDIR ${ULTRON_WORKDIR}
 
 COPY --chown=developer:developer ./start-gunicorn.sh /start-gunicorn.sh
 
 RUN sudo chmod +x /start-gunicorn.sh
 
 COPY --chown=developer:developer ./gunicorn_conf.py /gunicorn_conf.py
+COPY --chown=developer:developer ./script/web_entrypoint.sh /web_entrypoint.sh
 
 COPY --chown=developer:developer ./start-reload-gunicorn.sh /start-reload-gunicorn.sh
 
 RUN sudo chmod +x /start-reload-gunicorn.sh
 
+EXPOSE 11267
 
 # SOURCE: https://www.reddit.com/r/godot/comments/9r72kv/godot_302_docker_image_for_automatic_exports/
 # # Install fixuid.

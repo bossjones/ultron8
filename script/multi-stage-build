@@ -1,0 +1,21 @@
+#!/bin/bash
+set -euo pipefail
+# Pull the latest version of the image, in order to
+# populate the build cache:
+docker pull bossjones/ultron8-ci:compile-stage || true
+docker pull bossjones/ultron8-ci:latest        || true
+
+# Build the compile stage:
+docker build --target compile-image \
+       --cache-from=bossjones/ultron8-ci:compile-stage \
+       --tag bossjones/ultron8-ci:compile-stage .
+
+# Build the runtime stage, using cached compile stage:
+docker build --target runtime-image \
+       --cache-from=bossjones/ultron8-ci:compile-stage \
+       --cache-from=bossjones/ultron8-ci:latest \
+       --tag bossjones/ultron8-ci:latest .
+
+# Push the new versions:
+docker push bossjones/ultron8-ci:compile-stage
+docker push bossjones/ultron8-ci:latest

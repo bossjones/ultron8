@@ -37,7 +37,7 @@ import ultron8 as package
 # try:
 #     module_file = __file__
 #     here = os.path.abspath(os.path.dirname(__file__))
-# except:
+# except: # noqa: E722
 #     from pathlib import Path
 #     mypath = Path().absolute()
 #     # print(mypath)
@@ -47,7 +47,8 @@ import ultron8 as package
 #     module_file = 'setup.py'
 here = os.path.abspath(os.path.dirname(__file__))
 
-if __name__ == "__main__":
+
+if __name__ == "__main__":  # noqa: C901
 
     # --- Automatically generate setup parameters ---
     # Your package name
@@ -56,20 +57,20 @@ if __name__ == "__main__":
     # Your GitHub user name
     try:
         GITHUB_USERNAME = package.__github_username__
-    except:
+    except:  # noqa: E722
         GITHUB_USERNAME = "Unknown-Github-Username"
 
     # Short description will be the description on PyPI
     try:
         SHORT_DESCRIPTION = package.__short_description__  # GitHub Short Description
-    except:
+    except:  # noqa: E722
         print("'__short_description__' not found in '%s.__init__.py'!" % PKG_NAME)
         SHORT_DESCRIPTION = "No short description!"
 
     # Long description will be the body of content on PyPI page
     try:
         LONG_DESCRIPTION = open("README.rst", "rb").read().decode("utf-8")
-    except:
+    except:  # noqa: E722
         LONG_DESCRIPTION = "No long description!"
 
     # Version number, VERY IMPORTANT!
@@ -78,22 +79,22 @@ if __name__ == "__main__":
     # Author and Maintainer
     try:
         AUTHOR = package.__author__
-    except:
+    except:  # noqa: E722
         AUTHOR = "Unknown"
 
     try:
         AUTHOR_EMAIL = package.__author_email__
-    except:
+    except:  # noqa: E722
         AUTHOR_EMAIL = None
 
     try:
         MAINTAINER = package.__maintainer__
-    except:
+    except:  # noqa: E722
         MAINTAINER = "Unknown"
 
     try:
         MAINTAINER_EMAIL = package.__maintainer_email__
-    except:
+    except:  # noqa: E722
         MAINTAINER_EMAIL = None
 
     PACKAGES, INCLUDE_PACKAGE_DATA, PACKAGE_DATA, PY_MODULES = (None, None, None, None)
@@ -129,7 +130,7 @@ if __name__ == "__main__":
 
     try:
         LICENSE = package.__license__
-    except:
+    except:  # noqa: E722
         print("'__license__' not found in '%s.__init__.py'!" % PKG_NAME)
         LICENSE = ""
 
@@ -173,20 +174,25 @@ if __name__ == "__main__":
 
     try:
         REQUIRES = read_requirements_file("requirements.txt")
-    except:
+    except:  # noqa: E722
         print("'requirements.txt' not found!")
         REQUIRES = list()
 
     EXTRA_REQUIRE = dict()
 
     try:
+        EXTRA_REQUIRE["dev"] = read_requirements_file("requirements-dev.txt")
+    except:  # noqa: E722
+        print("'requirements-dev.txt' not found!")
+
+    try:
         EXTRA_REQUIRE["tests"] = read_requirements_file("requirements-test.txt")
-    except:
+    except:  # noqa: E722
         print("'requirements-test.txt' not found!")
 
     try:
         EXTRA_REQUIRE["docs"] = read_requirements_file("requirements-doc.txt")
-    except:
+    except:  # noqa: E722
         print("'requirements-doc.txt' not found!")
 
     # import pdb;pdb.set_trace()
@@ -195,14 +201,14 @@ if __name__ == "__main__":
         EXTRA_REQUIRE["experimental"] = read_requirements_file(
             "requirements-experimental.txt"
         )
-    except:
+    except:  # noqa: E722
         print("'requirements-experimental.txt' not found!")
 
     TESTS_REQUIRE = dict()
 
     try:
         TESTS_REQUIRE = read_requirements_file("requirements-test.txt")
-    except:
+    except:  # noqa: E722
         print("'requirements-test.txt' not found!")
 
     class UploadCommand(Command):

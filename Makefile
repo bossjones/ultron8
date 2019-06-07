@@ -239,6 +239,14 @@ BIN_PYTHON="${BIN_DIR}/python"
 BIN_PIP="${BIN_DIR}/pip"
 BIN_ISORT="${BIN_DIR}/isort"
 BIN_JINJA="${BIN_DIR}/jinja2"
+BIN_SPHINX_START="${BIN_DIR}/sphinx-quickstart"
+BIN_TWINE="${BIN_DIR}/twine"
+BIN_TOX="${BIN_DIR}/tox"
+BIN_JUPYTER="${BIN_DIR}/jupyter"
+BIN_PYTEST="${BIN_DIR}/pytest"
+
+RTD_DOC_URL="https://ultron8.readthedocs.io/index.html"
+
 
 PY_VERSION="${PY_VER_MAJOR}.${PY_VER_MINOR}.${PY_VER_MICRO}"
 
@@ -516,6 +524,10 @@ flush-cache:
 
 git-clean: ## Remove files and directories ignored by git
 	git clean -d -X -f
+
+.PHONY: check-python
+check-python:
+	./script/check-python
 
 .PHONY: pipenv-env
 pipenv-env: ## Run `pipenv install --dev` to create dev environment
@@ -852,6 +864,17 @@ local-black: ## sensible pylint ( Lots of press over this during pycon 2018 )
 
 local-dev: pipenv-dev ## Run `pipenv install --dev` to create dev environment
 
+.PHONY: local-reformat
+local-reformat: ## ** Pep8 Format Source Code
+	pipenv run ./fixcode.py
+
+.PHONY: local-autopep8
+local-autopep8: local-reformat ## ** Pep8 Format Source Code
+
+.PHONY: local-pycodestyle
+local-pycodestyle: ## **  Show the source code for each error, and even the relevant text from PEP 8
+	pipenv run  pycodestyle --show-source --show-pep8 ultron8/
+
 overwrite-pipefile:
 	bash script/overwrite-pipefile
 
@@ -859,9 +882,17 @@ lock-pip-compile: pip-compile
 
 lock-pipfile: overwrite-pipefile
 
-lock: lock-pip-compile lock-pipfile
+lock: check-python lock-pip-compile lock-pipfile
 
 lock-and-load: lock pipenv-dev ## Run `make lock` then install all the new deps using `make pipenv-dev`
+
+.PHONY: local-install-better_exceptions
+local-install-better_exceptions:
+	@printf "$$GREEN [info] Learn more https://github.com/Qix-/better-exceptions$$NC\n"
+	@printf "=======================================\n"
+	@printf "$$BLUE Run 'export BETTER_EXCEPTIONS=1' to enable$$NC\n"
+	@printf "=======================================\n"
+	pipenv run pip install better_exceptions
 
 .PHONY: local-install-jupyter
 local-install-jupyter:
@@ -939,3 +970,112 @@ dist: clean
 # -------------------------------------------------------------------------------------------
 # SOURCE: https://github.com/ethereum/lahja/blob/master/Makefile - END
 # -------------------------------------------------------------------------------------------
+
+
+# SOURCE: https://github.com/MacHu-GWU/pygitrepo-project/blob/d4eff888af6926cd3b0dde5c72cd42c23f941e02/pygitrepo/%7B%7B%20repo_name%20%7D%7D/make/python_env.mk
+
+#--- Install ---
+
+# .PHONY: uninstall
+# uninstall: ## ** Uninstall This Package
+# 	-${BIN_PIP} uninstall -y ${PACKAGE_NAME}
+
+.PHONY: dev_install
+dev_install: uninstall ## ** Install This Package in Editable Mode
+	${BIN_PIP} install --editable .
+
+.PHONY: doc_dep
+doc_dep: ## Install Doc Dependencies
+	( \
+		cd ${PROJECT_ROOT_DIR}; \
+		${BIN_PIP} install -r requirements-doc.txt; \
+	)
+
+#--- Sphinx Doc ---
+
+
+.PHONY: init_doc
+init_doc: doc_dep ## Initialize Sphinx Documentation Library
+	{ \
+		cd ${PROJECT_ROOT_DIR}/docs; \
+		${BIN_SPHINX_START}; \
+	}
+
+
+.PHONY: build_doc
+build_doc: doc_dep dev_install ## ** Build Documents, start over
+	-rm -r ${PROJECT_ROOT_DIR}/docs/build
+	-rm -r ${PROJECT_ROOT_DIR}/docs/source/${PACKAGE_NAME}
+	( \
+		cd ${PROJECT_ROOT_DIR}/docs; \
+		make html; \
+	)
+
+
+.PHONY: build_doc_again
+build_doc_again: ## Build Documents, skip re-install, skip cleanup-old-doc
+	-rm -r ${PROJECT_ROOT_DIR}/docs/source/${PACKAGE_NAME}
+	( \
+		cd ${PROJECT_ROOT_DIR}/docs; \
+		make html; \
+	)
+
+
+.PHONY: view_doc
+view_doc: ## ** Open Sphinx Documents
+	${OPEN_COMMAND} ${PROJECT_ROOT_DIR}/docs/build/html/index.html
+
+.PHONY: clean_doc
+clean_doc: ## Clean Existing Documents
+	-rm -r ${PROJECT_ROOT_DIR}/docs/build
+
+
+.PHONY: reformat
+reformat: dev_dep ## ** Pep8 Format Source Code
+	${BIN_PYTHON} ${PROJECT_ROOT_DIR}/fixcode.py
+
+.PHONY: local-mypy
+local-mypy:
+	pipenv run mypy ultron8 tests
+
+.PHONY: local-pylint
+local-pylint:
+	pipenv run pylint --rcfile ./lint-configs-python/python/pylintrc ultron8/consts.py
+# pipenv run pylint --rcfile ./lint-configs-python/python/pylintrc --disable=R,C ultron8/
+
+.PHONY: local-pylint-unresolved
+local-pylint-unresolved:
+# pipenv run pylint --rcfile ./lint-configs-python/python/pylintrc ultron8/consts.py
+	pipenv run pylint --rcfile ./lint-configs-python/python/pylintrc --disable=all --enable=unresolved-import ultron8/
+
+.PHONY: local-pylint-error
+local-pylint-error:
+	pipenv run pylint --rcfile ./lint-configs-python/python/pylintrc -E ultron8/
+
+.PHONY: local-pytest
+local-pytest:
+	pipenv run py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
+
+local-lint: clean-test local-mypy local-pylint local-black local-pytest
+
+dc-up-web: dc-ci-build
+	bash script/dc-up-web
+
+dc-run-web: dc-ci-build
+	bash script/dc-run-web
+
+dc-ci-tail-dev-null: dc-ci-build
+	.ci/dc-ci-tail-dev-null.sh
+
+# SOURCE: https://alembic.sqlalchemy.org/en/latest/autogenerate.html
+migration-revision:
+	pipenv run alembic revision --autogenerate -m "create account table"
+
+migration-run:
+	pipenv run alembic upgrade head
+
+migration-info:
+	pipenv run alembic current
+
+migration-history:
+	pipenv run alembic history --verbose

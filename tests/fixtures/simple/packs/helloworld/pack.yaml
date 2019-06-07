@@ -1,0 +1,11 @@
+---
+name : helloworld
+description : Generic dummy actions for test purposes
+keywords:
+  - helloworld
+  - ps
+version : 0.0.1
+python_versions:
+  - "3"
+author : Jarvis
+email : info@theblacktonystark.com

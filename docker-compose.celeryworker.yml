@@ -1,0 +1,7 @@
+version: '3.7'
+services:
+  celeryworker:
+    container_name: celeryworker
+    build:
+      context: .
+      dockerfile: Dockerfile.celeryworker

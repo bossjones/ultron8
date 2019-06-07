@@ -13,3 +13,10 @@ Package  | Description | Link
  qntln/aiodebug | a version of pythons unittest.Mock with async methods | https://github.com/qntln/aiodebug
  cjrh/aiorun | A "run" function for asyncio-based apps that does all the boilerplate. | https://github.com/cjrh/aiorun
  changyuheng/aioserial | a version of pythons unittest.Mock with async methods | https://github.com/changyuheng/aioserial
+
+
+# Api
+
+1. Create crud classes for all of the models
+2. Move everything from routes to entrypoint
+3. Make sure to update web.py w/ new paths to entrypoint

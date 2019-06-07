@@ -20,7 +20,7 @@ fi
 export GUNICORN_CONF=${GUNICORN_CONF:-$DEFAULT_GUNICORN_CONF}
 
 # If there's a prestart.sh script in the /app directory, run it before starting
-PRE_START_PATH=/app/prestart.sh
+PRE_START_PATH=${PRE_START_PATH:-/home/developer/app/ultron8/migrations/gunicorn-prestart.sh}
 echo "Checking for script in $PRE_START_PATH"
 if [ -f $PRE_START_PATH ] ; then
     echo "Running script $PRE_START_PATH"
@@ -28,6 +28,10 @@ if [ -f $PRE_START_PATH ] ; then
 else
     echo "There is no script $PRE_START_PATH"
 fi
+
+# if [ "$ULTRON_ENABLE_WEB" = true ]; then
+#     source .env.dist
+# fi
 
 # Start Gunicorn
 exec gunicorn -k uvicorn.workers.UvicornWorker -c "$GUNICORN_CONF" "$APP_MODULE"

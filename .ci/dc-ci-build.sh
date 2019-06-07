@@ -12,4 +12,12 @@ IMAGE_TAG=${REPO_NAME}:${PR_SHA}
 
 TAG="${IMAGE_TAG}"
 
+# docker build \
+#       --build-arg CONTAINER_UID="${CONTAINER_UID}" \
+#       --build-arg CONTAINER_GID="${CONTAINER_GID}" \
+#       --target base \
+#       --cache-from $REPO_NAME:base \
+#       --tag $REPO_NAME:base \
+#       --file "Dockerfile" $(pwd)
+
 docker-compose -f docker-compose.ci.yml build

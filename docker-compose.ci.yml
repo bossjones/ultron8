@@ -1,17 +1,122 @@
-version: '3'
+version: '3.7'
 services:
+  # celeryworker:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.celeryworker
+  #   depends_on:
+  #   - queue
+  #   environment:
+  #     BACKEND_CORS_ORIGINS: '*'
+  #     EMAILS_FROM_EMAIL: 'info@ultron8.com'
+  #     FIRST_SUPERUSER: admin@ultron8.com
+  #     FIRST_SUPERUSER_PASSWORD: password
+  #     # POSTGRES_DB: app
+  #     # POSTGRES_PASSWORD: '{{cookiecutter.postgres_password}}'
+  #     # POSTGRES_SERVER: db
+  #     # POSTGRES_USER: postgres
+  #     PROJECT_NAME: 'ultron8'
+  #     SECRET_KEY: '43n080musdfjt54t-09sdgr'
+  #     # SENTRY_DSN: '{{cookiecutter.sentry_dsn}}'
+  #     SERVER_HOST: https://web
+  #     SMTP_HOST: '{{cookiecutter.smtp_host}}'
+  #     SMTP_PASSWORD: '587'
+  #     SMTP_PORT: '587'
+  #     SMTP_TLS: "True"
+  #     SMTP_USER: ''
+  #     USERS_OPEN_REGISTRATION: "False"
+  # queue:
+  #   image: rabbitmq:3
+  # flower:
+  #   environment:
+  #     AMQP_ADMIN_HOST: queue
+  #     AMQP_HOST: queue
+  #     FLOWER_BASIC_AUTH: '{{cookiecutter.flower_auth}}'
+  #   image: totem/celery-flower-docker
+  #   ports:
+  #   - published: 5555
+  #     target: 5555
+  # proxy:
+  #   image: traefik:v1.7
+  #   labels:
+  #     traefik.enable: "true"
+  #     traefik.frontend.rule: Host:localhost
+  #     traefik.port: '80'
+  #   ports:
+  #   - published: 80
+  #     target: 80
+  #   - published: 8090
+  #     target: 8080
+  #   volumes:
+  #   - /var/run/docker.sock:/var/run/docker.sock:rw
   ultron8_ci:
     container_name: ultron8_ci
     privileged: true
     build:
       context: .
       dockerfile: Dockerfile
+      # target: runtime-image
+      # FIXME: https://github.com/docker/compose/issues/5090
+      # FIXME: https://github.com/docker/docker-py/issues/998
+      cache_from:
+        - bossjones/ultron8-ci:runtime-image
       args:
         CONTAINER_GID: ${CONTAINER_GID:-1000}
         CONTAINER_UID: ${CONTAINER_UID:-1000}
+    image: bossjones/ultron8-ci:runtime-image
+    ports:
+      - 11267:11267
     environment:
       - CONTAINER_GID=${CONTAINER_GID:-1000}
       - CONTAINER_UID=${CONTAINER_UID:-1000}
+      - TRAVIS
+      - TRAVIS_BRANCH
+      - TRAVIS_BUILD_DIR
+      - TRAVIS_JOB_ID
+      - TRAVIS_JOB_NUMBER
+      - TRAVIS_PULL_REQUEST
+      - TRAVIS_COMMIT
+      - TRAVIS_REPO_SLUG
+      - TRAVIS_OS_NAME
+      - TRAVIS_TAG
+      - ULTRON_ENABLE_WEB=${ULTRON_ENABLE_WEB:-false}
+      - BETTER_EXCEPTIONS=1
+      # FOR WEB APPLICATION
+      - DEBUG=True
+      - TESTING=True
+      - SECRET_KEY=43n080musdfjt54t-09sdgr
+      - SERVER_NAME=ultron8-ci
+      - SERVER_HOST=0.0.0.0
+      - PROJECT_NAME=ultron8
+      - DOMAIN_MAIN=ultron8.com
+      - FIRST_SUPERUSER=admin@ultron8.com
+      - FIRST_SUPERUSER_PASSWORD=password
+      - SMTP_TLS=True
+      - SMTP_PORT=587
+      - SMTP_HOST
+      - SMTP_USER
+      - SMTP_PASSWORD
+      - SMTP_EMAILS_FROM_EMAIL=info@ultron8.com
+      - FLOWER_AUTH=admin:password
+      - USERS_OPEN_REGISTRATION=False
+      - BACKEND_CORS_ORIGINS='*'
+      # - REDIS_URL
+      # - REDIS_ENDPOINT
+      # - REDIS_PORT
+      # - REDIS_DB
+      - DATABASE_URL=sqlite:///dev.db
+      - TEST_DATABASE_URL=sqlite:///test.db
+      - DEFAULT_MODULE_NAME=ultron8.web
+      - VARIABLE_NAME=app
+      # - MODULE_NAME
+      # - VARIABLE_NAME
+      # - APP_MODULE
+      - DEFAULT_GUNICORN_CONF=/gunicorn_conf.py
+      - PRE_START_PATH=/home/developer/app/ultron8/migrations/gunicorn-prestart.sh
+      - HOST=0.0.0.0
+      - PORT=11267
+      - LOG_LEVEL=info
+
     tty: true
     stdin_open: true
     entrypoint:
@@ -20,5 +125,12 @@ services:
     user: ${CONTAINER_UID:-1000}:${CONTAINER_GID:-1000}
     volumes:
       - .:/home/developer/app:rw
+      - ~/.cache/pip:/home/developer/.cache/pip
+      - ~/.wheelhouse/:/home/developer/.wheelhouse/
     # ports:
     #   - ${PORT}:3000
+    # labels:
+    #   traefik.enable: "true"
+    #   traefik.frontend.rule: PathPrefix:/api,/docs,/redoc
+    #   traefik.port: '80'
+    #   traefik.tags: '{{cookiecutter.traefik_constraint_tag}}'
