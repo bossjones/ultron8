@@ -74,7 +74,7 @@ USERS_OPEN_REGISTRATION = getenv_boolean("USERS_OPEN_REGISTRATION")
 # -------------------------------------------------------------------------------
 # # Main Configs
 DEBUG = os.environ.get("DEBUG", None)
-TESTING = os.environ.get("TESTING", None)
+TESTING = os.environ.get("TESTING", False)
 DATABASE_URL = os.environ.get("DATABASE_URL", None)
 TEST_DATABASE_URL = os.environ.get("TEST_DATABASE_URL", None)
 
