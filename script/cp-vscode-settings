@@ -11,7 +11,7 @@ _PATH_TO_FLAKE="${_BASE_PATH_PYENV_FOLDER}/flake8"
 # _PATH_TO_RST="${_BASE_PATH_PYENV_FOLDER}/doc8"
 _PATH_TO_SPHINX_BUILD="${_BASE_PATH_PYENV_FOLDER}/sphinx-build"
 _PATH_TO_BLACK="${_BASE_PATH_PYENV_FOLDER}/black"
-# _PATH_TO_AUTOPEP="${_BASE_PATH_PYENV_FOLDER}/autopep8"
+_PATH_TO_AUTOPEP="${_BASE_PATH_PYENV_FOLDER}/autopep8"
 _PATH_TO_RESTRUCTUREDTEXT_LINT="${_BASE_PATH_PYENV_FOLDER}/restructuredtext-lint"
 
 # "python.pythonPath": "/Users/malcolm/.virtualenvs/ultron8-cznMaMZB/bin/python",
@@ -176,6 +176,49 @@ cat <<EOF > ${_FILE}
         "peco_linux_amd64/": true,
         "cov.xml": true
     },
+
+    "coc.preferences.extensionUpdateCheck": "daily",
+
+    "python.autoComplete.addBrackets":true,
+    "python.autoComplete.extraPaths": [],
+    "python.autoComplete.showAdvancedMembers": true,
+    "python.autoComplete.typeshedPaths":[],
+    "python.autoUpdateLanguageServer":true,
+    "python.disableInstallationCheck":false,
+    "python.trace.server":"off",
+    "python.formatting.autopep8Args":[],
+    "python.formatting.autopep8Path":"${_PATH_TO_AUTOPEP}",
+    "python.globalModuleInstallation":false,
+    "python.jediEnabled":true,
+    "python.analysis.openFilesOnly":true,
+    "python.analysis.diagnosticPublishDelay": 10,
+    "python.analysis.typeshedPaths":[],
+    "python.analysis.errors":[],
+    "python.analysis.warnings":[],
+    "python.analysis.information":[],
+    "python.analysis.disabled":[],
+    "python.analysis.logLevel":"Error",
+    "python.analysis.symbolsHierarchyDepthLimit":10,
+    "python.linting.enabled":true,
+    "python.linting.lintOnSave": true,
+    "python.linting.maxNumberOfProblems":100,
+    "python.linting.pylintCategorySeverity.convention":"Information",
+    "python.linting.pylintCategorySeverity.error":"Error",
+    "python.linting.pylintCategorySeverity.fatal":"Error",
+    "python.linting.pylintCategorySeverity.refactor":"Hint",
+    "python.linting.pylintCategorySeverity.warning":"Warning",
+    "python.linting.pylintEnabled":true,
+    "python.linting.pylintUseMinimalCheckers": false,
+    "python.linting.pydocstyleEnabled":false,
+    "python.terminal.activateEnvironment":true,
+    "python.terminal.executeInFileDir":true,
+    "python.terminal.launchArgs":[],
+    "python.workspaceSymbols.ctagsPath":"/usr/local/bin/ctags",
+    "python.workspaceSymbols.enabled":true,
+    "python.workspaceSymbols.exclusionPatterns":["**/site-packages/**"],
+    "python.workspaceSymbols.rebuildOnFileSave":true,
+    "python.workspaceSymbols.rebuildOnStart":true,
+
     "python.pythonPath": "${_PATH_TO_PYENV_PYTHON}",
     "python.linting.flake8Path": "${_PATH_TO_FLAKE}",
     "python.linting.mypyPath": "${_PATH_TO_MYPY}",
@@ -184,7 +227,7 @@ cat <<EOF > ${_FILE}
     "restructuredtext.sphinxBuildPath": "${_PATH_TO_SPHINX_BUILD}",
     "python.formatting.blackPath": "${_PATH_TO_BLACK}",
      "restructuredtext.linter.executablePath": "${_PATH_TO_RESTRUCTUREDTEXT_LINT}",
-    "python.formatting.provider": "autopep8",
+    "python.formatting.provider": "black",
     "python.linting.ignorePatterns": [
       ".vscode/*.py",
       "**/site-packages/**/*.py"

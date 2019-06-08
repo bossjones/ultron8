@@ -1,3 +1,5 @@
+"""init_db"""
+
 from ultron8.api import crud
 from ultron8.api import settings
 from ultron8.api.models.user import UserCreate
