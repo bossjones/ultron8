@@ -34,6 +34,10 @@ pyenv shell 3.6.8
 
 pip install -e .
 
+
+echo " [run] kick off ultron8/api/tests_pre_start.py"
+python ultron8/api/tests_pre_start.py
+
 set -eo pipefail
 
 exec py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
