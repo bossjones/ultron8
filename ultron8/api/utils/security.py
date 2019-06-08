@@ -15,7 +15,7 @@ from ultron8.api.models.token import TokenPayload
 
 logger = logging.getLogger(__name__)
 
-reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/api/v1/login/access-token")
+reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/v1/login/access-token")
 
 
 def get_current_user(
