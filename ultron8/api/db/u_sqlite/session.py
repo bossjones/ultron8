@@ -4,7 +4,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from ultron8.api import settings
 import logging
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True)

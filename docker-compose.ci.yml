@@ -65,7 +65,7 @@ services:
         CONTAINER_UID: ${CONTAINER_UID:-1000}
     image: bossjones/ultron8-ci:runtime-image
     ports:
-      - 11267:11267
+      - 80:80
     environment:
       - CONTAINER_GID=${CONTAINER_GID:-1000}
       - CONTAINER_UID=${CONTAINER_UID:-1000}
@@ -114,7 +114,7 @@ services:
       - DEFAULT_GUNICORN_CONF=/gunicorn_conf.py
       - PRE_START_PATH=/home/developer/app/ultron8/migrations/gunicorn-prestart.sh
       - HOST=0.0.0.0
-      - PORT=11267
+      - PORT=80
       - LOG_LEVEL=info
 
     tty: true

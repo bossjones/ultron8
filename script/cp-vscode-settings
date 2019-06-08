@@ -199,7 +199,6 @@ cat <<EOF > ${_FILE}
     "python.analysis.disabled":[],
     "python.analysis.logLevel":"Error",
     "python.analysis.symbolsHierarchyDepthLimit":10,
-    "python.linting.enabled":true,
     "python.linting.lintOnSave": true,
     "python.linting.maxNumberOfProblems":100,
     "python.linting.pylintCategorySeverity.convention":"Information",
@@ -207,7 +206,6 @@ cat <<EOF > ${_FILE}
     "python.linting.pylintCategorySeverity.fatal":"Error",
     "python.linting.pylintCategorySeverity.refactor":"Hint",
     "python.linting.pylintCategorySeverity.warning":"Warning",
-    "python.linting.pylintEnabled":true,
     "python.linting.pylintUseMinimalCheckers": false,
     "python.linting.pydocstyleEnabled":false,
     "python.terminal.activateEnvironment":true,
@@ -233,7 +231,7 @@ cat <<EOF > ${_FILE}
       "**/site-packages/**/*.py"
     ],
     "python.linting.enabled": true,
-    "python.linting.pylintEnabled": true,
+    "python.linting.pylintEnabled": true
 }
 EOF
 
