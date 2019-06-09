@@ -213,7 +213,8 @@ install:
   - travis_retry make dc-ci-build
 
 script:
-  - travis_retry make dc-ci-run
+  # - travis_retry make dc-ci-run ( Original working 6/9/2019 )
+  - travis_retry make dc-ci-exec-test
 
 # source: https://github.com/inspirehep/inspire-next/blob/9700274c36074a3e43168bf48b8ba3e3bfa7bcdf/.travis.yml
 after_script:

@@ -32,6 +32,7 @@ pushd /home/developer/app
 
 pyenv shell 3.6.8
 
+set -x
 pip install -e .
 
 
