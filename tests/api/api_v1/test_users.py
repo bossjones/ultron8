@@ -1,4 +1,5 @@
 import requests
+import logging
 
 from ultron8.api import crud
 from ultron8.api import settings
@@ -7,9 +8,11 @@ from ultron8.api.models.user import UserCreate
 from tests.utils.user import user_authentication_headers
 from tests.utils.utils import get_server_api, random_lower_string
 
+logger = logging.getLogger(__name__)
 
 def test_get_users_superuser_me(superuser_token_headers):
     server_api = get_server_api()
+    logger.debug("server_api : %s", server_api)
     r = requests.get(
         f"{server_api}{settings.API_V1_STR}/users/me", headers=superuser_token_headers
     )
@@ -22,6 +25,7 @@ def test_get_users_superuser_me(superuser_token_headers):
 
 def test_create_user_new_email(superuser_token_headers):
     server_api = get_server_api()
+    logger.debug("server_api : %s", server_api)
     username = random_lower_string()
     password = random_lower_string()
     data = {"email": username, "password": password}
@@ -38,6 +42,7 @@ def test_create_user_new_email(superuser_token_headers):
 
 def test_get_existing_user(superuser_token_headers):
     server_api = get_server_api()
+    logger.debug("server_api : %s", server_api)
     username = random_lower_string()
     password = random_lower_string()
     user_in = UserCreate(email=username, password=password)
@@ -55,6 +60,7 @@ def test_get_existing_user(superuser_token_headers):
 
 def test_create_user_existing_username(superuser_token_headers):
     server_api = get_server_api()
+    logger.debug("server_api : %s", server_api)
     username = random_lower_string()
     # username = email
     password = random_lower_string()
@@ -73,6 +79,7 @@ def test_create_user_existing_username(superuser_token_headers):
 
 def test_create_user_by_normal_user():
     server_api = get_server_api()
+    logger.debug("server_api : %s", server_api)
     username = random_lower_string()
     password = random_lower_string()
     user_in = UserCreate(email=username, password=password)
@@ -89,6 +96,7 @@ def test_create_user_by_normal_user():
 
 def test_retrieve_users(superuser_token_headers):
     server_api = get_server_api()
+    logger.debug("server_api : %s", server_api)
     username = random_lower_string()
     password = random_lower_string()
     user_in = UserCreate(email=username, password=password)

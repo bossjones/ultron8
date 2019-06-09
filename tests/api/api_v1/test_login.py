@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 def test_get_access_token():
     server_api = get_server_api()
+    logger.debug("server_api : %s", server_api)
     login_data = {
         "username": settings.FIRST_SUPERUSER,
         "password": settings.FIRST_SUPERUSER_PASSWORD,
@@ -24,6 +25,7 @@ def test_get_access_token():
 
 def test_use_access_token(superuser_token_headers):
     server_api = get_server_api()
+    logger.debug("server_api : %s", server_api)
     logger.debug("r = {server_api}{settings.API_V1_STR}/login/test-token")
     r = requests.post(
         f"{server_api}{settings.API_V1_STR}/login/test-token",
