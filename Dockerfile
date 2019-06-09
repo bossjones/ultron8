@@ -41,7 +41,6 @@ RUN set -x; pyenv global ${PYENV_VERSION} && \
     pip3 install --no-cache-dir -r requirements.txt && \
     pip3 install --no-cache-dir -r requirements-dev.txt && \
     pip3 install -q --no-cache-dir -r requirements-test.txt && \
-    pip3 install -q --no-cache-dir -r requirements-doc.txt && \
     pyenv rehash
 
 # Copy over everything required to run tox
