@@ -72,6 +72,8 @@ log.setup_logging()
 # SOURCE: https://github.com/nwcell/guid_tracker/blob/aef948336ba268aa06df7cc9e7e6768b08d0f363/src/guid/main.py
 app = FastAPI(title="Ultron-8 Web Server")
 
+logger.info(f" [DEBUG] {settings.DEBUG}")
+
 app.debug = settings.DEBUG
 app.mount(
     "/static",
