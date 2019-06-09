@@ -35,6 +35,9 @@ pyenv shell 3.6.8
 
 pip install -e .
 
+echo " [run] alembic upgrade head"
+alembic upgrade head
+
 echo " [run] kick off ultron8/api/tests_pre_start.py"
 python ultron8/api/tests_pre_start.py
 
