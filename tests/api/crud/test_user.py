@@ -5,7 +5,6 @@ from ultron8.api.models.user import UserCreate
 from tests.utils.utils import random_lower_string
 
 
-
 def test_create_user():
     email = random_lower_string()
     password = random_lower_string()

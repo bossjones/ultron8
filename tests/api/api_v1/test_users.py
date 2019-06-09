@@ -80,7 +80,9 @@ def test_create_user_by_normal_user():
     user_token_headers = user_authentication_headers(server_api, username, password)
     data = {"email": username, "password": password}
     r = requests.post(
-        f"{server_api}{settings.API_V1_STR}/users/", headers=user_token_headers, json=data
+        f"{server_api}{settings.API_V1_STR}/users/",
+        headers=user_token_headers,
+        json=data,
     )
     assert r.status_code == 400
 
