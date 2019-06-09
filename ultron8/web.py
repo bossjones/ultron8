@@ -108,16 +108,16 @@ async def get_token_header(x_token: str = Header(...)):
         raise HTTPException(status_code=400, detail="X-Token header invalid")
 
 
-app.add_route(f"/{settings.API_V1_STR}/metrics", starlette_prometheus.metrics)
+app.add_route(f"{settings.API_V1_STR}/metrics", starlette_prometheus.metrics)
 
-app.include_router(home.router, tags=["home"], prefix=f"/{settings.API_V1_STR}")
-app.include_router(alive.router, tags=["alive"], prefix=f"/{settings.API_V1_STR}")
-app.include_router(version.router, tags=["version"], prefix=f"/{settings.API_V1_STR}")
-app.include_router(login.router, tags=["login"], prefix=f"/{settings.API_V1_STR}")
-app.include_router(users.router, tags=["users"], prefix=f"/{settings.API_V1_STR}/users")
+app.include_router(home.router, tags=["home"], prefix=f"{settings.API_V1_STR}")
+app.include_router(alive.router, tags=["alive"], prefix=f"{settings.API_V1_STR}")
+app.include_router(version.router, tags=["version"], prefix=f"{settings.API_V1_STR}")
+app.include_router(login.router, tags=["login"], prefix=f"{settings.API_V1_STR}")
+app.include_router(users.router, tags=["users"], prefix=f"{settings.API_V1_STR}/users")
 app.include_router(
     items.router,
-    prefix=f"/{settings.API_V1_STR}/items",
+    prefix=f"{settings.API_V1_STR}/items",
     tags=["items"],
     dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}},
