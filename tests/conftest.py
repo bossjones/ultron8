@@ -21,6 +21,7 @@ fixtures_path = Path("tests/fixtures").resolve()
 
 FAKE_TIME = datetime.datetime(2020, 12, 25, 17, 5, 55)
 
+
 @pytest.fixture(scope="module")
 def server_api():
     return get_server_api()
@@ -48,10 +49,9 @@ def superuser_token_headers():
 
 @pytest.fixture
 def patch_datetime_now(monkeypatch):
-
     class mydatetime:
         @classmethod
         def now(cls):
             return FAKE_TIME
 
-    monkeypatch.setattr(datetime, 'datetime', mydatetime)
+    monkeypatch.setattr(datetime, "datetime", mydatetime)

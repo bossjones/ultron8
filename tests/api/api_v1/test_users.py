@@ -10,6 +10,7 @@ from tests.utils.utils import get_server_api, random_lower_string
 
 logger = logging.getLogger(__name__)
 
+
 def test_get_users_superuser_me(superuser_token_headers):
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)
