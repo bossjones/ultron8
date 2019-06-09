@@ -6,7 +6,7 @@ from ultron8.api.db.u_sqlite.session import db_session
 from tests.api.api_v1.test_login import test_get_access_token
 
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 max_tries = 60 * 5  # 5 minutes
@@ -16,7 +16,7 @@ wait_seconds = 1
 @retry(
     stop=stop_after_attempt(max_tries),
     wait=wait_fixed(wait_seconds),
-    before=before_log(logger, logging.INFO),
+    before=before_log(logger, logging.DEBUG),
     after=after_log(logger, logging.WARN),
 )
 def init():

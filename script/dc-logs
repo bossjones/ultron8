@@ -18,7 +18,4 @@ IMAGE_TAG=${REPO_NAME}:${PR_SHA}
 
 TAG="${IMAGE_TAG}"
 
-echo " [run] Remove possibly previous broken stacks left hanging after an error"
-docker-compose -f docker-compose.ci.yml down -v --remove-orphans
-
-docker-compose -f docker-compose.ci.yml -f docker-compose.web.yml up -d
+docker-compose -f docker-compose.ci.yml -f docker-compose.web.yml logs -f

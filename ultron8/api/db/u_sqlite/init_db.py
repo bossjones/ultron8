@@ -1,3 +1,5 @@
+"""init_db"""
+
 from ultron8.api import crud
 from ultron8.api import settings
 from ultron8.api.models.user import UserCreate
@@ -12,7 +14,7 @@ def init_db(db_session):
     # Tables should be created with Alembic migrations
     # But if you don't want to use migrations, create
     # the tables un-commenting the next line
-    Base.metadata.create_all(bind=engine)
+    # Base.metadata.create_all(bind=engine)
 
     user = crud.user.get_by_email(db_session, email=settings.FIRST_SUPERUSER)
     if not user:

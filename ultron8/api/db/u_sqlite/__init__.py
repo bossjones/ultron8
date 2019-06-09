@@ -1,6 +1,6 @@
 """The u_sqlite DB module deals w/ anything sqlite3 db related."""
 # FIXME: This is left over from guid_tracker
-from ultron8.api.db.u_sqlite.models import metadata
+from ultron8.api.db.u_sqlite.base_class import metadata
 from ultron8.api.db.u_sqlite.pool import (
     database,
     open_database_connection_pool,

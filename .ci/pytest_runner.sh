@@ -28,14 +28,20 @@ echo -e "\n\n"
 # gosu developer pip install -e .
 # gosu developer py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
 
+set -x
 pushd /home/developer/app
 
 pyenv shell 3.6.8
 
 pip install -e .
 
+echo " [run] alembic upgrade head"
+alembic upgrade head
+
+echo " [run] kick off ultron8/api/tests_pre_start.py"
+python ultron8/api/tests_pre_start.py
+
 set -eo pipefail
 
-exec py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
-
-# popd
+# exec py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
+exec py.test --cov-config .coveragerc --verbose --cov-append --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests

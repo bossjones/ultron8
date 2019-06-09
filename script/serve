@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+python ./ultron8/api/backend_pre_start.py
+
+python ./ultron8/initial_data.py
+
+uvicorn ultron8.web:app --reload

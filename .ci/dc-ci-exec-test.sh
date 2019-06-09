@@ -18,7 +18,5 @@ IMAGE_TAG=${REPO_NAME}:${PR_SHA}
 
 TAG="${IMAGE_TAG}"
 
-echo " [run] Remove possibly previous broken stacks left hanging after an error"
-docker-compose -f docker-compose.ci.yml down -v --remove-orphans
-
-docker-compose -f docker-compose.ci.yml -f docker-compose.web.yml up -d
+# -T Disable pseudo-tty allocation. By default `docker-compose exec` allocates a TTY.
+docker-compose -f docker-compose.ci.yml exec -T ultron8_ci /home/developer/app/.ci/pytest_runner.sh

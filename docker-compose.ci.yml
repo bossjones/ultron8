@@ -52,6 +52,15 @@ services:
   ultron8_ci:
     container_name: ultron8_ci
     privileged: true
+    # labels:
+    #   traefik.enable: "true"
+    #   traefik.frontend.rule: PathPrefix:/api,/docs,/redoc
+    #   traefik.port: '80'
+    #   traefik.tags: '{{cookiecutter.traefik_constraint_tag}}'
+    networks:
+      default:
+        aliases:
+        - localhost
     build:
       context: .
       dockerfile: Dockerfile
@@ -64,8 +73,11 @@ services:
         CONTAINER_GID: ${CONTAINER_GID:-1000}
         CONTAINER_UID: ${CONTAINER_UID:-1000}
     image: bossjones/ultron8-ci:runtime-image
+    # ports:
+    #   - 11267:11267
     ports:
-      - 11267:11267
+    - published: 11267
+      target: 11267
     environment:
       - CONTAINER_GID=${CONTAINER_GID:-1000}
       - CONTAINER_UID=${CONTAINER_UID:-1000}
@@ -85,8 +97,10 @@ services:
       - DEBUG=True
       - TESTING=True
       - SECRET_KEY=43n080musdfjt54t-09sdgr
-      - SERVER_NAME=ultron8-ci
-      - SERVER_HOST=0.0.0.0
+      - JUPYTER=jupyter lab --ip=0.0.0.0 --allow-root --NotebookApp.custom_display_url=http://127.0.0.1:8888
+      - DOMAIN=localhost
+      - SERVER_NAME=localhost:11267
+      - SERVER_HOST=http://localhost:11267
       - PROJECT_NAME=ultron8
       - DOMAIN_MAIN=ultron8.com
       - FIRST_SUPERUSER=admin@ultron8.com
@@ -121,7 +135,8 @@ services:
     stdin_open: true
     entrypoint:
       - bash
-    command: /home/developer/app/.ci/pytest_runner.sh
+    # command: /home/developer/app/.ci/pytest_runner.sh
+    # command: /home/developer/app/script/
     user: ${CONTAINER_UID:-1000}:${CONTAINER_GID:-1000}
     volumes:
       - .:/home/developer/app:rw

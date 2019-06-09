@@ -1,7 +1,8 @@
+import logging
 import jwt
+from jwt import PyJWTError
 from fastapi import Depends, HTTPException, Security
 from fastapi.security import OAuth2PasswordBearer
-from jwt import PyJWTError
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_403_FORBIDDEN
 
@@ -12,7 +13,9 @@ from ultron8.api.core.jwt import ALGORITHM
 from ultron8.api.db_models.user import User
 from ultron8.api.models.token import TokenPayload
 
-reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/api/v1/login/access-token")
+logger = logging.getLogger(__name__)
+
+reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/v1/login/access-token")
 
 
 def get_current_user(

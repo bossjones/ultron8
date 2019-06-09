@@ -5,6 +5,10 @@ import requests
 
 from ultron8.api import settings
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def random_lower_string():
     return "".join(random.choices(string.ascii_lowercase, k=32))
@@ -12,6 +16,7 @@ def random_lower_string():
 
 def get_server_api():
     server_name = f"http://{settings.SERVER_NAME}"
+    logger.debug("server_name: '%s'", server_name)
     return server_name
 
 

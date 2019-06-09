@@ -1064,6 +1064,9 @@ dc-up-web: dc-ci-build
 dc-run-web: dc-ci-build
 	bash script/dc-run-web
 
+dc-ci-exec-test: dc-ci-build dc-up-web
+	.ci/dc-ci-exec-test.sh
+
 dc-ci-tail-dev-null: dc-ci-build
 	.ci/dc-ci-tail-dev-null.sh
 

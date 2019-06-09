@@ -1,3 +1,4 @@
+import uvicorn
 from ultron8.api.db.u_sqlite import (
     open_database_connection_pool,
     close_database_connection_pool,
@@ -6,7 +7,7 @@ from ultron8.api import settings
 from fastapi import Depends, FastAPI, Header, HTTPException
 
 # from ultron8.api.routers import items, users, home, version, guid, alive
-from ultron8.api.api_v1.endpoints import items, users, home, version, guid, alive
+from ultron8.api.api_v1.endpoints import items, users, home, version, guid, alive, login
 from ultron8.api.middleware.logging import log
 from starlette.staticfiles import StaticFiles
 from pathlib import Path
@@ -72,6 +73,8 @@ log.setup_logging()
 # SOURCE: https://github.com/nwcell/guid_tracker/blob/aef948336ba268aa06df7cc9e7e6768b08d0f363/src/guid/main.py
 app = FastAPI(title="Ultron-8 Web Server")
 
+logger.info(f" [DEBUG] {settings.DEBUG}")
+
 app.debug = settings.DEBUG
 app.mount(
     "/static",
@@ -108,21 +111,22 @@ async def get_token_header(x_token: str = Header(...)):
         raise HTTPException(status_code=400, detail="X-Token header invalid")
 
 
-app.add_route("/metrics/", starlette_prometheus.metrics)
+app.add_route(f"{settings.API_V1_STR}/metrics", starlette_prometheus.metrics)
 
-app.include_router(home.router)
-app.include_router(alive.router, tags=["alive"])
-app.include_router(version.router)
-app.include_router(users.router)
+app.include_router(home.router, tags=["home"], prefix=f"{settings.API_V1_STR}")
+app.include_router(alive.router, tags=["alive"], prefix=f"{settings.API_V1_STR}")
+app.include_router(version.router, tags=["version"], prefix=f"{settings.API_V1_STR}")
+app.include_router(login.router, tags=["login"], prefix=f"{settings.API_V1_STR}")
+app.include_router(users.router, tags=["users"], prefix=f"{settings.API_V1_STR}/users")
 app.include_router(
     items.router,
-    prefix="/items",
+    prefix=f"{settings.API_V1_STR}/items",
     tags=["items"],
     dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}},
 )
 
-app.include_router(guid.router, prefix="/guid", tags=["guid"])
+# app.include_router(guid.router, prefix="/guid", tags=["guid"])
 
 
 @app.middleware("http")
@@ -181,3 +185,9 @@ async def db_session_middleware(request: Request, call_next):
 #     return app
 
 # app = creates_web_app()
+if __name__ == "__main__":
+    import os
+
+    HOST = os.environ.get("HOST", "0.0.0.0")
+    PORT = os.environ.get("PORT", 11267)
+    uvicorn.run(app, host=HOST, port=PORT)
