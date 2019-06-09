@@ -1,3 +1,4 @@
+import uvicorn
 from ultron8.api.db.u_sqlite import (
     open_database_connection_pool,
     close_database_connection_pool,
@@ -184,3 +185,9 @@ async def db_session_middleware(request: Request, call_next):
 #     return app
 
 # app = creates_web_app()
+if __name__ == "__main__":
+    import os
+
+    HOST = os.environ.get("HOST", "0.0.0.0")
+    PORT = os.environ.get("PORT", 11267)
+    uvicorn.run(app, host=HOST, port=PORT)
