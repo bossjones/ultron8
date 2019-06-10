@@ -129,7 +129,7 @@ services:
       - PRE_START_PATH=/home/developer/app/ultron8/migrations/gunicorn-prestart.sh
       - HOST=0.0.0.0
       - PORT=11267
-      - LOG_LEVEL=info
+      - LOG_LEVEL=DEBUG
 
     tty: true
     stdin_open: true

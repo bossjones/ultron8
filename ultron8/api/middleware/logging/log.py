@@ -1,6 +1,6 @@
-import logging
-
 import daiquiri
+
+from ultron8.api import settings
 
 LOGSEVERITY = {
     "CRITICAL": 50,
@@ -16,4 +16,4 @@ LOGSEVERITY = {
 
 def setup_logging():
     """Configure logging."""
-    daiquiri.setup(level=logging.DEBUG, outputs=(daiquiri.output.STDOUT,))
+    daiquiri.setup(level=settings.LOG_LEVEL, outputs=(daiquiri.output.STDOUT,))

@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Sequence, Set, Tuple, Union
+from typing import Dict, List, Optional, Sequence, Set, Tuple, Union, Optional
 from enum import Enum, IntEnum
 from pydantic import BaseModel, Schema, EmailStr
 from datetime import datetime
@@ -28,7 +28,22 @@ class RunnerTypeModel(str, Enum):
     inquirer = "inquirer"
 
 
-class ActionsModel(BaseModel):
+class ActionBase(BaseModel):
+    # Pack reference. It can only contain letters, digits and underscores.
+    ref: str
+    name: str
+    runner_type: RunnerTypeModel
+    description: str = None
+    enabled: bool = True
+    entry_point: str = ""
+    pack: str = ""
+    parameters: dict = {}
+    # output_Schema : Optional[str]
+    # notify : Optional[str]
+    tags: List[str] = []
+
+
+class ActionBaseInDB(ActionBase):
     """Data Object describing Actions
 
     == Schema Information
@@ -54,17 +69,9 @@ class ActionsModel(BaseModel):
         BaseModel {[type]} -- [description]
     """
 
-    # id: int
-    name: str
-    runner_type: RunnerTypeModel
-    description: str = None
-    enabled: bool
-    entry_point: str = ""
-    parameters: dict = {}
-    tags: List[str] = []
+    id: int
     created_at: datetime = None
     updated_at: datetime = None
-    deleted_at: datetime = None
 
 
 # smoke-tests
@@ -81,7 +88,7 @@ if "__main__" == __name__:
         },
     }
 
-    action = ActionsModel(**external_data)
+    action = ActionBase(**external_data)
 
     print("----------- action ------------")
     print(action)

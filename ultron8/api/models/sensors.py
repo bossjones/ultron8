@@ -51,16 +51,15 @@ class ParametersSchemaModel(BaseModel):
     deleted_at: datetime = None
 
 
-class TriggerTypeModel(BaseModel):
+class TriggerTypeBase(BaseModel):
     # id: int
     name: str
-    pack: str
     description: str = None
     parameters_schema: ParametersSchemaModel = ...
     payload_schema: dict
-    created_at: datetime = None
-    updated_at: datetime = None
-    deleted_at: datetime = None
+    # created_at: datetime = None
+    # updated_at: datetime = None
+    # deleted_at: datetime = None
 
 
 class SensorsModel(BaseModel):
@@ -104,7 +103,7 @@ class SensorsModel(BaseModel):
     enabled: bool
     entry_point: str  # eg. "checks/check_loadavg.py"
     description: str = None
-    # trigger_types: List[TriggerTypeModel]
+    trigger_types: List[TriggerTypeBase] = []
     # created_at: datetime = None
     # updated_at: datetime = None
     # deleted_at: datetime = None

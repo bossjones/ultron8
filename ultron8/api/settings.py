@@ -84,3 +84,4 @@ BACKEND_CORS_ORIGINS = os.getenv(
 
 FIRST_SUPERUSER = os.getenv("FIRST_SUPERUSER", "admin")
 FIRST_SUPERUSER_PASSWORD = os.getenv("FIRST_SUPERUSER_PASSWORD", "password")
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")

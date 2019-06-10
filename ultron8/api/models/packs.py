@@ -39,8 +39,8 @@ log = logging.getLogger(__name__)
 #  index_projects_on_environment_id  (environment_id)
 #
 
-
-class PacksModel(BaseModel):
+# SOURCE: https://docs.stackstorm.com/reference/packs.html
+class PacksBase(BaseModel):
     """[summary]
 
     === Schema example:
@@ -72,14 +72,28 @@ class PacksModel(BaseModel):
         BaseModel {[type]} -- [description]
     """
 
-    id: int
+    # Pack reference. It can only contain letters, digits and underscores.
+    ref: str
+    # User-friendly pack name. If this attribute contains spaces or any other special characters, then
+    # the "ref" attribute must also be specified (see above).
     name: str
+    # User-friendly pack description.
     description: str = None
+    # Keywords which are used when searching for packs.
     keywords: List[str] = []  # List of strings, default to []
+    # Pack version which must follow semver format (<major>.<minor>.<patch> e.g. 1.0.0)
     version: float
+    # A list of major Python versions pack is tested with and works with.
     python_versions: List[str] = []
+    # Name of the pack author.
     author: str = None
+    # Email of the pack author.
     email: EmailStr = None
+    # contributors
+
+
+class PacksBaseDB(PacksBase):
+    id: int
     created_at: datetime = None
     updated_at: datetime = None
     deleted_at: datetime = None
@@ -101,3 +115,25 @@ class PacksModel(BaseModel):
 # print(MainModel.schema_json(indent=2))
 
 # print(m.dict())
+
+# smoke-tests
+# if "__main__" == __name__:
+# external_data = {
+#     "name": "local_ps_aux",
+#     "runner_type": "local-shell-cmd",
+#     "description": "Run ps aux locally",
+#     "enabled": True,
+#     "entry_point": "",
+#     "parameters": {
+#         "cmd": {"immutable": True, "default": "ps aux"},
+#         "sudo": {"default": False},
+#     },
+# }
+
+# action = ActionBase(**external_data)
+
+# print("----------- action ------------")
+# print(action)
+
+# print("----------- action.name ------------")
+# print(f"action.name = '{action.name}''")
