@@ -46,13 +46,13 @@ class RuleBase(BaseModel):
     action: dict = {}
 
 
-# SOURCE: https://docs.stackstorm.com/rules.html
-# NOTE: Example of a time based trigger
-# trigger:
-#   type: "core.st2.IntervalTimer"
-#   parameters:
-#       unit: "seconds"
-#       delta: 30
+## SOURCE: https://docs.stackstorm.com/rules.html
+## NOTE: Example of a time based trigger
+## trigger:
+##  type: "core.st2.IntervalTimer"
+##   parameters:
+##       unit: "seconds"
+##       delta: 30
 
 
 class RuleBaseDB(RuleBase):
