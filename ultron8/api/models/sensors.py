@@ -6,6 +6,7 @@ from typing import Dict, List, Optional, Sequence, Set, Tuple, Union
 from enum import Enum
 from pydantic import BaseModel, Schema, EmailStr
 from datetime import datetime
+from ultron8.api.models.trigger import TriggerTypeBase, TriggerTypeBaseDB
 
 # The ellipsis ... just means "Required" same as annotation only declarations above.
 
@@ -50,22 +51,6 @@ class ParametersSchemaBase(BaseModel):
 
 class ParametersSchemaBaseDB(ParametersSchemaBase):
     id: int
-    created_at: datetime = None
-    updated_at: datetime = None
-
-
-class TriggerTypeBase(BaseModel):
-    name: str
-    description: str = None
-    # parameters_schema: ParametersSchemaBase = ...
-    parameters_schema: dict = {}
-    payload_schema: dict = {}
-
-
-class TriggerTypeBaseDB(TriggerTypeBase):
-    id: int
-    ref: str
-    pack: str
     created_at: datetime = None
     updated_at: datetime = None
 

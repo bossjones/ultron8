@@ -1064,10 +1064,13 @@ dc-up-web: dc-ci-build
 dc-run-web: dc-ci-build
 	bash script/dc-run-web
 
-dc-ci-exec-test: dc-ci-build dc-up-web
+dc-logs: ## Tail docker-compose logs
+	bash script/dc-logs
+
+dc-ci-exec-test: dc-ci-build dc-up-web # Main entrypoint for running tests inside of docker-compose
 	.ci/dc-ci-exec-test.sh
 
-dc-ci-tail-dev-null: dc-ci-build
+dc-ci-tail-dev-null: dc-ci-build # Starts up docker container via docker-compose using tail -f /dev/null
 	.ci/dc-ci-tail-dev-null.sh
 
 # SOURCE: https://alembic.sqlalchemy.org/en/latest/autogenerate.html
