@@ -79,6 +79,25 @@ ENV LANG C.UTF-8
 
 COPY --from=base --chown=developer:developer /.pyenv /.pyenv
 
+COPY --chown=developer:developer requirements.txt requirements.txt
+COPY --chown=developer:developer requirements-dev.txt requirements-dev.txt
+COPY --chown=developer:developer requirements-test.txt requirements-test.txt
+
+RUN set -x; pyenv global ${PYENV_VERSION} && \
+    pip3 install -q --no-cache-dir -U pip setuptools tox wheel
+
+RUN set -x; pyenv global ${PYENV_VERSION} && \
+    pip3 install --no-cache-dir -r requirements.txt
+
+RUN set -x; pyenv global ${PYENV_VERSION} && \
+    pip3 install --no-cache-dir -r requirements-dev.txt
+
+RUN set -x; pyenv global ${PYENV_VERSION} && \
+    pip3 install --no-cache-dir -r requirements-test.txt
+
+RUN set -x; pyenv global ${PYENV_VERSION} && \
+    pyenv rehash
+
 # RUN set -x; tree; tox -e py36 --notest; echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run."
 
 # ENV PATH="/home/${CONTAINER_USER}/.local/bin:${PATH}"

@@ -96,7 +96,7 @@ class PacksBaseDB(PacksBase):
     id: int
     created_at: datetime = None
     updated_at: datetime = None
-    deleted_at: datetime = None
+    # deleted_at: datetime = None
 
 
 # class Item(BaseModel):

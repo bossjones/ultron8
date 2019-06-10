@@ -5,7 +5,6 @@ from datetime import datetime
 
 import logging
 
-
 log = logging.getLogger(__name__)
 
 
@@ -66,7 +65,7 @@ class ActionBaseInDB(ActionBase):
         position: 0
 
     Arguments:
-        BaseModel {[type]} -- [description]
+        ActionBaseInDB {[type]} -- [description]
     """
 
     id: int

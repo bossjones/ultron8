@@ -41,28 +41,36 @@ class ProcessInfoModel(BaseModel):
     pid: int
 
 
-class ParametersSchemaModel(BaseModel):
-    # id: int
+class ParametersSchemaBase(BaseModel):
     type: str
-    properties: Union[FilePathModel, HostInfoModel]
+    # properties: Union[FilePathModel, HostInfoModel]
+    properties: dict = {}
     additionalProperties: bool
+
+
+class ParametersSchemaBaseDB(ParametersSchemaBase):
+    id: int
     created_at: datetime = None
     updated_at: datetime = None
-    deleted_at: datetime = None
 
 
 class TriggerTypeBase(BaseModel):
-    # id: int
     name: str
     description: str = None
-    parameters_schema: ParametersSchemaModel = ...
-    payload_schema: dict
-    # created_at: datetime = None
-    # updated_at: datetime = None
-    # deleted_at: datetime = None
+    # parameters_schema: ParametersSchemaBase = ...
+    parameters_schema: dict = {}
+    payload_schema: dict = {}
 
 
-class SensorsModel(BaseModel):
+class TriggerTypeBaseDB(TriggerTypeBase):
+    id: int
+    ref: str
+    pack: str
+    created_at: datetime = None
+    updated_at: datetime = None
+
+
+class SensorsBase(BaseModel):
     """Sensor Data Model.
 
     class_name: "FileWatchSensor"
@@ -109,6 +117,12 @@ class SensorsModel(BaseModel):
     # deleted_at: datetime = None
 
 
+class SensorsBaseDB(SensorsBase):
+    id: int
+    created_at: datetime = None
+    updated_at: datetime = None
+
+
 if "__main__" == __name__:
     # Self-referencing Model
     # SensorsModel.update_forward_refs()
@@ -145,7 +159,7 @@ if "__main__" == __name__:
         ],
     }
 
-    sensor = SensorsModel(**external_data)
+    sensor = SensorsBase(**external_data)
     print(sensor)
 
     print(sensor.class_name)
