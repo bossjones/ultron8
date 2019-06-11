@@ -50,7 +50,7 @@ LOGGER = logging.getLogger(__name__)
 # T = TypeVar("T")
 
 
-# # NOTE: In typical Python code, many functions that can take a list or a dict as an argument only need their argument to be somehow “list-like” or “dict-like”. A specific meaning of “list-like” or “dict-like” (or something-else-like) is called a “duck type”, and several duck types that are common in idiomatic Python are standardized.
+# # NOTE: In typical Python code, many functions that can take a list or a dict as an argument only need their argument to be somehow "list-like" or "dict-like". A specific meaning of "list-like" or "dict-like" (or something-else-like) is called a "duck type", and several duck types that are common in idiomatic Python are standardized.
 # DUCK_TYPE = Union[T, Sequence[T]]  # pylint: disable=invalid-name
 # LIST_TYPE = Sequence[T]
 

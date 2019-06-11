@@ -1073,6 +1073,13 @@ dc-ci-exec-test: dc-ci-build dc-up-web # Main entrypoint for running tests insid
 dc-ci-tail-dev-null: dc-ci-build # Starts up docker container via docker-compose using tail -f /dev/null
 	.ci/dc-ci-tail-dev-null.sh
 
+dc-build-cache-base: # build docker cache base and send up to docker hub
+	.ci/dc-build-cache-base.sh
+
+ci-experimental: dc-build-cache-base # Testing out new build to see if faster than before
+	.ci/dc-ci-exec-test.sh
+
+
 # SOURCE: https://alembic.sqlalchemy.org/en/latest/autogenerate.html
 migration-revision:
 	pipenv run alembic revision --autogenerate -m "create account table"
