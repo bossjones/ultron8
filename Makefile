@@ -1078,6 +1078,9 @@ dc-build-cache-base: # build docker cache base and send up to docker hub
 
 ci-build: dc-build-cache-base dc-up-web # build docker cache base, send up to docker hub etc
 
+ci-gunzip:
+	.ci/dc-build-gunzip-travis.sh
+
 ci-test: # Testing out new build to see if faster than before
 	.ci/dc-ci-exec-test.sh
 
