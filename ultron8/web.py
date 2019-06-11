@@ -7,7 +7,16 @@ from ultron8.api import settings
 from fastapi import Depends, FastAPI, Header, HTTPException
 
 # from ultron8.api.routers import items, users, home, version, guid, alive
-from ultron8.api.api_v1.endpoints import items, users, home, version, guid, alive, login
+from ultron8.api.api_v1.endpoints import (
+    items,
+    users,
+    home,
+    version,
+    guid,
+    alive,
+    login,
+    token,
+)
 from ultron8.api.middleware.logging import log
 from starlette.staticfiles import StaticFiles
 from pathlib import Path
@@ -113,6 +122,7 @@ app.add_middleware(starlette_prometheus.PrometheusMiddleware)
 
 app.add_route(f"{settings.API_V1_STR}/metrics", starlette_prometheus.metrics)
 
+app.include_router(token.router, tags=["token"], prefix=f"{settings.API_V1_STR}")
 app.include_router(home.router, tags=["home"], prefix=f"{settings.API_V1_STR}")
 app.include_router(alive.router, tags=["alive"], prefix=f"{settings.API_V1_STR}")
 app.include_router(version.router, tags=["version"], prefix=f"{settings.API_V1_STR}")
