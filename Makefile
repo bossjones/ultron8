@@ -1081,7 +1081,7 @@ ci-build: dc-build-cache-base dc-up-web # build docker cache base, send up to do
 ci-gunzip:
 	.ci/dc-build-gunzip-travis.sh
 
-ci-bleeding: ci-build gi-gunzip cit-test
+ci-bleeding: ci-build ci-gunzip cit-test
 
 ci-test: # Testing out new build to see if faster than before
 	.ci/dc-ci-exec-test.sh
