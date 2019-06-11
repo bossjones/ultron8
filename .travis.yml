@@ -157,9 +157,11 @@ jobs:
         - travis_retry pip install coverage
         - travis_retry docker-compose -f docker-compose.ci.yml pull || true
         - docker pull $CACHE_IMAGE:runtime-image || true
-        - travis_retry make dc-ci-build
+        # - travis_retry make dc-ci-build
+        - travis_retry make ci-build
       script:
-        - travis_retry make dc-ci-exec-test
+        # - travis_retry make dc-ci-exec-test
+        - travis_retry make ci-test
       # source: https://github.com/inspirehep/inspire-next/blob/9700274c36074a3e43168bf48b8ba3e3bfa7bcdf/.travis.yml
       after_script:
         # Killing via SIGTERM in order to trigger atexit and dump coverage information in WSGI
