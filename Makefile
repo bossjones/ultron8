@@ -1076,7 +1076,7 @@ dc-ci-tail-dev-null: dc-ci-build # Starts up docker container via docker-compose
 dc-build-cache-base: # build docker cache base and send up to docker hub
 	.ci/dc-build-cache-base.sh
 
-ci-experimental: dc-build-cache-base # Testing out new build to see if faster than before
+ci-experimental: dc-build-cache-base dc-up-web # Testing out new build to see if faster than before
 	.ci/dc-ci-exec-test.sh
 
 
