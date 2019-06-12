@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from enum import Enum
 from pydantic import BaseModel, Schema, EmailStr
 from datetime import datetime
@@ -73,48 +73,75 @@ class PacksBase(BaseModel):
     """
 
     # Pack reference. It can only contain letters, digits and underscores.
-    ref: str
+    ref: Optional[str] = None
     # User-friendly pack name. If this attribute contains spaces or any other special characters, then
     # the "ref" attribute must also be specified (see above).
-    name: str
+    name: Optional[str] = None
     # User-friendly pack description.
-    description: str = None
+    description: Optional[str] = None
     # Keywords which are used when searching for packs.
-    keywords: List[str] = []  # List of strings, default to []
+    keywords: Optional[List[str]] = []  # List of strings, default to []
     # Pack version which must follow semver format (<major>.<minor>.<patch> e.g. 1.0.0)
-    version: float
+    version: Optional[float] = None
     # A list of major Python versions pack is tested with and works with.
-    python_versions: List[str] = []
+    python_versions: Optional[List[str]] = []
     # Name of the pack author.
-    author: str = None
+    author: Optional[str] = None
     # Email of the pack author.
-    email: EmailStr = None
+    email: Optional[EmailStr] = None
     # contributors
 
 
-class PacksBaseDB(PacksBase):
-    id: int
+class PacksBaseInDB(PacksBase):
+    id: int = None
     created_at: datetime = None
     updated_at: datetime = None
     # deleted_at: datetime = None
 
 
-# class Item(BaseModel):
-#     name: str
-#     price: float
-#     is_offer: bool = None
+# Properties to receive via API on creation
+class PacksCreate(PacksBaseInDB):
+    # Pack reference. It can only contain letters, digits and underscores.
+    ref: str
+    # User-friendly pack name. If this attribute contains spaces or any other special characters, then
+    # the "ref" attribute must also be specified (see above).
+    name: str
+    # User-friendly pack description.
+    description: str
+    # Keywords which are used when searching for packs.
+    keywords: List[str]
+    # Pack version which must follow semver format (<major>.<minor>.<patch> e.g. 1.0.0)
+    version: float
+    # A list of major Python versions pack is tested with and works with.
+    python_versions: List[str]
+    # Name of the pack author.
+    author: str
+    # Email of the pack author.
+    email: EmailStr
+    # contributors
 
 
-# print(MainModel.schema())
-# # > {
-# #       'type': 'object',
-# #       'title': 'Main',
-# #       'properties': {
-# #           'foo_bar': {
-# #           ...
-# print(MainModel.schema_json(indent=2))
+# Properties to receive via API on update
+class PacksUpdate(PacksBaseInDB):
+    # Pack reference. It can only contain letters, digits and underscores.
+    ref: str
+    # User-friendly pack name. If this attribute contains spaces or any other special characters, then
+    # the "ref" attribute must also be specified (see above).
+    name: str
+    # User-friendly pack description.
+    description: str
+    # Keywords which are used when searching for packs.
+    keywords: List[str]
+    # Pack version which must follow semver format (<major>.<minor>.<patch> e.g. 1.0.0)
+    version: float
+    # A list of major Python versions pack is tested with and works with.
+    python_versions: List[str]
+    # Name of the pack author.
+    author: str
+    # Email of the pack author.
+    email: EmailStr
+    # contributors
 
-# print(m.dict())
 
 # smoke-tests
 # if "__main__" == __name__:
