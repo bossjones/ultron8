@@ -92,20 +92,46 @@ class SensorsBase(BaseModel):
     """
 
     # id: int
-    class_name: str
-    enabled: bool
-    entry_point: str  # eg. "checks/check_loadavg.py"
-    description: str = None
-    trigger_types: List[TriggerTypeBase] = []
+    class_name: Optional[str] = None
+    enabled: Optional[bool] = True
+    entry_point: Optional[str] = None  # eg. "checks/check_loadavg.py"
+    description: Optional[str] = None
+    trigger_types: Optional[List[TriggerTypeBase]] = []
     # created_at: datetime = None
     # updated_at: datetime = None
     # deleted_at: datetime = None
 
 
-class SensorsBaseDB(SensorsBase):
+class SensorsBaseInDB(SensorsBase):
     id: int
+    ref: str
+    packs_id: int
     created_at: datetime = None
     updated_at: datetime = None
+
+
+class SensorsCreate(SensorsBaseInDB):
+    class_name: Optional[str] = None
+    enabled: Optional[bool] = None
+    entry_point: Optional[str] = None  # eg. "checks/check_loadavg.py"
+    description: Optional[str] = None
+    trigger_types: Optional[List[TriggerTypeBase]] = []
+
+
+class SensorsUpdate(SensorsBaseInDB):
+    class_name: Optional[str] = None
+    enabled: Optional[bool] = None
+    entry_point: Optional[str] = None  # eg. "checks/check_loadavg.py"
+    description: Optional[str] = None
+    trigger_types: Optional[List[TriggerTypeBase]] = []
+
+
+class Sensor(SensorsBaseInDB):
+    pass
+
+
+class SensorInDb(SensorsBaseInDB):
+    pass
 
 
 if "__main__" == __name__:

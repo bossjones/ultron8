@@ -10,11 +10,14 @@ class Sensors(Base):
 
     __tablename__ = "sensors"
     id = Column(Integer, primary_key=True, index=True)
-    class_name = Column(String, index=True)
-    enabled = Column(Boolean, index=True)
-    entry_point = Column(String, index=True)
-    description = Column(String, index=True)
-    trigger_types = Column(String, index=True)
+    class_name = Column(String)
+    ref = Column(String)
+    packs_id = Column(Integer, ForeignKey("packs.id"))
+    pack = relationship("Packs")
+    enabled = Column(Boolean)
+    entry_point = Column(String)
+    description = Column(String)
+    trigger_types = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.utcnow())
     updated_at = Column(DateTime(timezone=True), onupdate=func.utcnow())
 
