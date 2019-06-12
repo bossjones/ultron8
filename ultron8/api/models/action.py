@@ -29,17 +29,17 @@ class RunnerTypeModel(str, Enum):
 
 class ActionBase(BaseModel):
     # Pack reference. It can only contain letters, digits and underscores.
-    ref: str
-    name: str
-    runner_type: RunnerTypeModel
-    description: str = None
-    enabled: bool = True
-    entry_point: str = ""
-    pack: str = ""
-    parameters: dict = {}
-    # output_Schema : Optional[str]
-    # notify : Optional[str]
-    tags: List[str] = []
+    ref: Optional[str] = None
+    name: Optional[str] = None
+    runner_type: Optional[RunnerTypeModel] = None
+    description: Optional[str] = None
+    enabled: Optional[bool] = True
+    entry_point: Optional[str] = None
+    pack: Optional[str] = None
+    parameters: Optional[dict] = {}
+    # output_Schema : Optional[Optional[str]
+    # notify : Optional[Optional[str]
+    tags: Optional[List[str]] = []
 
 
 class ActionBaseInDB(ActionBase):
@@ -69,8 +69,41 @@ class ActionBaseInDB(ActionBase):
     """
 
     id: int
+    packs_id: int
+    pack: str
     created_at: datetime = None
     updated_at: datetime = None
+
+
+class ActionCreate(ActionBaseInDB):
+    ref: str
+    packs_id: int
+    name: str
+    runner_type: RunnerTypeModel
+    description: str = ""
+    enabled: bool = True
+    entry_point: str = ""
+    pack: str
+    parameters: dict = {}
+    # output_Schema :Optional[str]
+    # notify :Optional[str]
+    tags: List[str] = []
+
+
+# Properties to receive via API on update
+class ActionUpdate(ActionBaseInDB):
+    ref: str
+    packs_id: int
+    name: str
+    runner_type: RunnerTypeModel
+    description: str = ""
+    enabled: bool = True
+    entry_point: str = ""
+    pack: str
+    parameters: dict = {}
+    # output_Schema :Optional[str]
+    # notify :Optional[str]
+    tags: List[str] = []
 
 
 # smoke-tests

@@ -11,6 +11,8 @@ class Action(Base):
 
     __tablename__ = "action"
     id = Column(Integer, primary_key=True, index=True)
+    packs_id = Column(Integer, ForeignKey("packs.id"))
+    pack = relationship("Packs")
     name = Column(String, index=True)
     runner_type = Column(String, index=True)
     enabled = Column(String, index=True)
