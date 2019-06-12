@@ -729,6 +729,14 @@ py-dev:
 
 py-dists: py-sdist py-bdist py-wheels
 
+dist-build: clean ## setup.py - create source distribution (taken directly from twine docs)
+	python setup.py sdist bdist_wheel
+
+create-dist: py-dists  ## setup.py - create source distribution
+
+upload-twine: ## twine - upload to pypi
+	twine upload dist/*
+
 py-sdist:
 	pipenv run python setup.py sdist
 
