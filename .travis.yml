@@ -158,10 +158,10 @@ jobs:
         - travis_retry docker-compose -f docker-compose.ci.yml pull || true
         - docker pull $CACHE_IMAGE:runtime-image || true
         # - travis_retry make dc-ci-build
-        - travis_retry make ci-build
+        - travis_retry make ci-build | gnomon
       script:
         # - travis_retry make dc-ci-exec-test
-        - travis_retry make ci-test
+        - travis_retry make ci-test | gnomon
       # source: https://github.com/inspirehep/inspire-next/blob/9700274c36074a3e43168bf48b8ba3e3bfa7bcdf/.travis.yml
       after_script:
         # Killing via SIGTERM in order to trigger atexit and dump coverage information in WSGI
@@ -170,7 +170,7 @@ jobs:
         # - docker kill ultron8_ci
       after_success:
       - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
-      - docker push $CACHE_IMAGE:runtime-image
+      - docker push $CACHE_IMAGE:runtime-image | gnomon
       - _USER=$(ls -lta | awk '{print $3}')
       - _GROUP=$(ls -lta | awk '{print $4}')
       - docker ps -a
@@ -192,6 +192,7 @@ jobs:
 before_install:
   - sudo apt-get update
   - travis_retry pip install coveralls
+  - npm install -g gnomon
 
   - sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -206,6 +207,7 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
   - docker-compose --version
+  - make ci-before_install | gnomon
 
 # install:
 #   - pip install --upgrade pip

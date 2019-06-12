@@ -26,12 +26,3 @@ header " [run] travis 'before_install:' section"
 if [ -f ${CACHE_FILE_BASE} ]; then gunzip -c ${CACHE_FILE_BASE} | docker load || true; fi
 if [ -f ${CACHE_FILE_RUNTIME} ]; then gunzip -c ${CACHE_FILE_RUNTIME} | docker load || true; fi
 
-
-header " [run] travis 'install:' section"
-header " [run] pull docker cache from docker hub if available"
-mkdir -p $CACHE_DIR
-header " [run] docker save '$REPO_NAME:base | gzip > ${CACHE_FILE_BASE}'"
-if [ ! -f ${CACHE_FILE_BASE} ]; then docker save $REPO_NAME:base | gzip > ${CACHE_FILE_BASE} || true; fi
-header " [run] docker save '$REPO_NAME:runtime-image | gzip > ${CACHE_FILE_RUNTIME}'"
-if [ ! -f ${CACHE_FILE_RUNTIME} ]; then docker save $REPO_NAME:runtime-image | gzip > ${CACHE_FILE_RUNTIME} || true; fi
-
