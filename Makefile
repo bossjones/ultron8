@@ -1092,7 +1092,7 @@ ci-build: ci-before_install dc-build-cache-base dc-up-web ci-gunzip # build dock
 ci-gunzip: ## take contents of dockerfile and cache it locally into $HOME/.cache/docker
 	.ci/dc-build-gunzip-travis-stage-install.sh
 
-ci-bleeding: ci-build ci-gunzip cit-test
+ci-bleeding: ci-build ci-gunzip ci-test
 
 ci-test: # Testing out new build to see if faster than before
 	.ci/dc-ci-exec-test.sh
