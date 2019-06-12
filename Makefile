@@ -1076,10 +1076,13 @@ dc-ci-tail-dev-null: dc-ci-build # Starts up docker container via docker-compose
 dc-build-cache-base: # build docker cache base and send up to docker hub
 	.ci/dc-build-cache-base.sh
 
-ci-build: dc-build-cache-base dc-up-web # build docker cache base, send up to docker hub etc
+ci-before_install: ## ci: docker container/image from gnzip tar file in $HOME/.cache/docker
+	.ci/dc-build-gunzip-travis-stage-before_install.sh
 
-ci-gunzip:
-	.ci/dc-build-gunzip-travis.sh
+ci-build: ci-before_install dc-build-cache-base dc-up-web ci-gunzip # build docker cache base, cache it locally on machine and send up to docker hub etc
+
+ci-gunzip: ## take contents of dockerfile and cache it locally into $HOME/.cache/docker
+	.ci/dc-build-gunzip-travis-stage-install.sh
 
 ci-bleeding: ci-build ci-gunzip cit-test
 
