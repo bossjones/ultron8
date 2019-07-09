@@ -12,7 +12,7 @@ class Action(UIDFieldMixin, Base):
     """Db Schema for Action table."""
 
     RESOURCE_TYPE = ResourceType.ACTION
-    UID_FIELDS = ['pack', 'name']
+    UID_FIELDS = ["pack", "name"]
 
     __tablename__ = "action"
 

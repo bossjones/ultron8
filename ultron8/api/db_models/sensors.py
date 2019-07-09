@@ -22,7 +22,7 @@ class Sensors(UIDFieldMixin, Base):
     """
 
     RESOURCE_TYPE = ResourceType.SENSOR_TYPE
-    UID_FIELDS = ['pack', 'name']
+    UID_FIELDS = ["pack", "name"]
 
     __tablename__ = "sensors"
 
@@ -44,6 +44,7 @@ class Sensors(UIDFieldMixin, Base):
     def __init__(self, *args, **values):
         self.ref = self.get_reference().ref
         self.uid = self.get_uid()
+
 
 MODELS = [Sensors]
 

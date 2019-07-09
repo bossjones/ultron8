@@ -3,12 +3,14 @@ import abc
 import datetime
 
 import six
+
 # from ultron8.api.models.system.base import DictSerializableClassMixin
 from ultron8.api.db_models.utils import ProxiedDictMixin
 from ultron8.api.models.system.common import ResourceReference
 from ultron8.consts import ResourceType
 
 from sqlalchemy import Boolean, Column, Integer, String
+
 # from sqlalchemy.orm import relationship
 
 from ultron8.api.db.u_sqlite.base_class import Base
@@ -16,7 +18,8 @@ from ultron8.api.db.u_sqlite.base_class import Base
 from ultron8.api import settings
 from ultron8.api.db_models.utils import key_not_string
 
-JSON_UNFRIENDLY_TYPES = (datetime.datetime)
+JSON_UNFRIENDLY_TYPES = datetime.datetime
+
 
 class UltronFoundationDB(ProxiedDictMixin):
     """
@@ -54,7 +57,6 @@ class UltronFoundationDB(ProxiedDictMixin):
         :rtype: ``dict``
         """
         raise NotImplementedError()
-
 
     # def __str__(self):
     #     attrs = list()
@@ -136,7 +138,7 @@ class UIDFieldMixin(object):
     the system.
     """
 
-    UID_SEPARATOR = ':'  # TODO: Move to constants
+    UID_SEPARATOR = ":"  # TODO: Move to constants
 
     RESOURCE_TYPE = abc.abstractproperty
     UID_FIELDS = abc.abstractproperty
@@ -168,7 +170,7 @@ class UIDFieldMixin(object):
         parts.append(self.RESOURCE_TYPE)
 
         for field in self.UID_FIELDS:
-            value = getattr(self, field, None) or ''
+            value = getattr(self, field, None) or ""
             parts.append(value)
 
         uid = self.UID_SEPARATOR.join(parts)
@@ -220,7 +222,7 @@ class ContentPackResourceMixin(object):
 
         :rtype: :class:`ResourceReference`
         """
-        if getattr(self, 'ref', None):
+        if getattr(self, "ref", None):
             ref = ResourceReference.from_string_reference(ref=self.ref)
         else:
             ref = ResourceReference(pack=self.pack, name=self.name)

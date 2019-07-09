@@ -11,9 +11,8 @@ from ultron8.consts import ResourceType
 class Packs(UIDFieldMixin, Base):
     """Db Schema for Packs table."""
 
-
     RESOURCE_TYPE = ResourceType.PACK
-    UID_FIELDS = ['ref']
+    UID_FIELDS = ["ref"]
 
     __tablename__ = "packs"
 
@@ -38,7 +37,6 @@ class Packs(UIDFieldMixin, Base):
     def __init__(self, *args, **values):
         self.ref = self.get_reference().ref
         self.uid = self.get_uid()
-
 
 
 if "__main__" == __name__:

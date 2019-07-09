@@ -24,10 +24,9 @@ class TriggerType(UIDFieldMixin, Base):
     """
 
     RESOURCE_TYPE = ResourceType.TRIGGER_TYPE
-    UID_FIELDS = ['pack', 'name']
+    UID_FIELDS = ["pack", "name"]
 
     __tablename__ = "trigger_types"
-
 
     ref = Column(String)
     name = Column(String)
@@ -35,11 +34,11 @@ class TriggerType(UIDFieldMixin, Base):
     payload_schema = Column(JSON)
     parameters_schema = Column(JSON)
 
-
     def __init__(self, *args, **values):
         self.ref = self.get_reference().ref
         # pylint: disable=no-member
         self.uid = self.get_uid()
+
 
 class Trigger(UIDFieldMixin, Base):
     """
@@ -51,10 +50,9 @@ class Trigger(UIDFieldMixin, Base):
     """
 
     RESOURCE_TYPE = ResourceType.TRIGGER
-    UID_FIELDS = ['pack', 'name']
+    UID_FIELDS = ["pack", "name"]
 
     __tablename__ = "triggers"
-
 
     ref = Column(String)
     name = Column(String, nullable=False)
@@ -74,7 +72,7 @@ class Trigger(UIDFieldMixin, Base):
 
         # Note: We sort the resulting JSON object so that the same dictionary always results
         # in the same hash
-        parameters = getattr(self, 'parameters', {})
+        parameters = getattr(self, "parameters", {})
         parameters = json.dumps(parameters, sort_keys=True)
         parameters = hashlib.md5(parameters.encode()).hexdigest()
 
