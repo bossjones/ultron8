@@ -19,4 +19,3 @@ docker run -i -t\
     --workdir "/home/developer/app" \
     --entrypoint "/bin/bash" \
     "${TAG}" -l
-

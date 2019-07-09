@@ -25,6 +25,7 @@ insert_final_newline = ignore
 indent_style = space
 
 # The YML files contain newlines inconsistently
+# Makefiles always use tabs for indentation
 [Makefile]
 indent_size = 2
 indent_style = tab
@@ -49,10 +50,6 @@ indent_size = ignore
 [**.min.js]
 indent_style = ignore
 insert_final_newline = ignore
-
-# Makefiles always use tabs for indentation
-[Makefile]
-indent_style = tab
 
 # Batch files use tabs for indentation
 [*.bat]

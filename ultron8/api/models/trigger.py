@@ -1,7 +1,15 @@
-from typing import Dict, List, Optional, Sequence, Set, Tuple, Union
-from enum import Enum
-from pydantic import BaseModel, Schema
 from datetime import datetime
+from enum import Enum
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Set
+from typing import Tuple
+from typing import Union
+
+from pydantic import BaseModel
+from pydantic import Schema
 
 
 class TriggerTypeBase(BaseModel):

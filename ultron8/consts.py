@@ -5,7 +5,6 @@ ultron8.consts
 
 
 """
-
 import os
 from enum import Enum
 

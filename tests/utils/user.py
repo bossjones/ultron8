@@ -1,10 +1,10 @@
 import requests
 
+from tests.utils.utils import random_lower_string
 from ultron8.api import crud
 from ultron8.api import settings
 from ultron8.api.db.u_sqlite.session import db_session
 from ultron8.api.models.user import UserCreate
-from tests.utils.utils import random_lower_string
 
 
 def user_authentication_headers(server_api, email, password):

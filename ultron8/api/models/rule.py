@@ -1,11 +1,19 @@
 """
 Data Models for all things having to do with Rule.
 """
-
-from typing import Dict, List, Optional, Sequence, Set, Tuple, Union
-from enum import Enum
-from pydantic import BaseModel, Schema, EmailStr
 from datetime import datetime
+from enum import Enum
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Set
+from typing import Tuple
+from typing import Union
+
+from pydantic import BaseModel
+from pydantic import EmailStr
+from pydantic import Schema
 
 
 class RuleTypeDB(BaseModel):
@@ -46,13 +54,13 @@ class RuleBase(BaseModel):
     action: dict = {}
 
 
-## SOURCE: https://docs.stackstorm.com/rules.html
-## NOTE: Example of a time based trigger
-## trigger:
-##  type: "core.st2.IntervalTimer"
-##   parameters:
-##       unit: "seconds"
-##       delta: 30
+# SOURCE: https://docs.stackstorm.com/rules.html
+# NOTE: Example of a time based trigger
+# trigger:
+#  type: "core.st2.IntervalTimer"
+#   parameters:
+#       unit: "seconds"
+#       delta: 30
 
 
 class RuleBaseDB(RuleBase):

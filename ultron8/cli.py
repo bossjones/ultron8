@@ -1,6 +1,9 @@
+from typing import Any
+from typing import Tuple
+
 import click
 import pyconfig
-from typing import Any, Tuple
+
 from . import commands
 from .logging import getLogger
 from .process import fail

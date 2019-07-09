@@ -3,37 +3,28 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-import contextlib
-import fcntl
-import logging
-import os
-import signal
-
 import argparse
 import contextlib
 import copy
 import errno
+import fcntl
 import getpass
 import io
 import itertools
 import logging
 import math
 import os
-import os
 import re
 import select
 import shutil
+import signal
 import stat
 import subprocess
 import sys
-import sys
-import sys
 import time
 import traceback
-
-from urllib.parse import urlparse
-
 from pathlib import Path
+from urllib.parse import urlparse
 
 log = logging.getLogger(__name__)
 

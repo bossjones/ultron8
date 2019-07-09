@@ -1,6 +1,6 @@
 """Temporary router for user objects. Taken directly from FastApi Tutorial"""
-
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
+from fastapi import HTTPException
 
 router = APIRouter()
 

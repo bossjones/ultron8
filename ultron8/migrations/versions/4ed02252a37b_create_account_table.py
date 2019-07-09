@@ -1,13 +1,12 @@
 """create account table
 
 Revision ID: 4ed02252a37b
-Revises: 
+Revises:
 Create Date: 2019-06-05 20:49:59.416953
 
 """
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "4ed02252a37b"

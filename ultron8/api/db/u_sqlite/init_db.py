@@ -1,13 +1,12 @@
 """init_db"""
-
 from ultron8.api import crud
 from ultron8.api import settings
+from ultron8.api.db.u_sqlite.base import Base
 from ultron8.api.models.user import UserCreate
 
 # make sure all SQL Alchemy models are imported before initializing DB
 # otherwise, SQL Alchemy might fail to initialize properly relationships
 # for more details: https://github.com/tiangolo/full-stack-fastapi-postgresql/issues/28
-from ultron8.api.db.u_sqlite.base import Base
 
 
 def init_db(db_session):

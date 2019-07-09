@@ -1,8 +1,8 @@
+from tests.utils.user import create_random_user
+from tests.utils.utils import random_lower_string
 from ultron8.api import crud
 from ultron8.api.db.u_sqlite.session import db_session
 from ultron8.api.models.item import ItemCreate
-from tests.utils.user import create_random_user
-from tests.utils.utils import random_lower_string
 
 
 def create_random_item(owner_id: int = None):

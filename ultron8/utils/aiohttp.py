@@ -1,11 +1,13 @@
 """Utilities to help with aiohttp."""
 # SOURCE: https://github.com/home-assistant/home-assistant/blob/dev/homeassistant/util/aiohttp.py
-
 import json
+from typing import Any
+from typing import Dict
+from typing import Optional
 from urllib.parse import parse_qsl
-from typing import Any, Dict, Optional
 
-from multidict import CIMultiDict, MultiDict
+from multidict import CIMultiDict
+from multidict import MultiDict
 
 
 class MockRequest:

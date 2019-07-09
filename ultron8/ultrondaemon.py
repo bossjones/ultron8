@@ -8,20 +8,20 @@ import signal
 import threading
 import time
 
-import ipdb
 import pkg_resources
+
+import ultron8
+from ultron8.utils import chdir
+from ultron8.utils import flock
+from ultron8.utils import signals
+
+# import ipdb
 
 # from twisted.internet import defer
 # from twisted.internet import reactor
 # from twisted.python import log as twisted_log
-
-import ultron8
-
 # from ultron8.manhole import make_manhole
 # from ultron8.mesos import MesosClusterRepository
-from ultron8.utils import chdir
-from ultron8.utils import flock
-from ultron8.utils import signals
 
 log = logging.getLogger(__name__)
 

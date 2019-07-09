@@ -1,8 +1,9 @@
 """
 Data Models for all things having to do with Health.
 """
-from pydantic import BaseModel
 import logging
+
+from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
 

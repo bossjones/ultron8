@@ -33,4 +33,3 @@ function header {
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 export TERM='xterm-256color'
-

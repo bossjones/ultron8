@@ -1,11 +1,12 @@
-from typing import List, Optional
-from enum import Enum
-from pydantic import BaseModel, Schema, EmailStr
-from datetime import datetime
-
-
 import logging
+from datetime import datetime
+from enum import Enum
+from typing import List
+from typing import Optional
 
+from pydantic import BaseModel
+from pydantic import EmailStr
+from pydantic import Schema
 
 log = logging.getLogger(__name__)
 

@@ -29,4 +29,3 @@ header " [run] docker save '$REPO_NAME:base | gzip > ${CACHE_FILE_BASE}'"
 if [ ! -f ${CACHE_FILE_BASE} ]; then docker save $REPO_NAME:base | gzip > ${CACHE_FILE_BASE} || true; fi
 header " [run] docker save '$REPO_NAME:runtime-image | gzip > ${CACHE_FILE_RUNTIME}'"
 if [ ! -f ${CACHE_FILE_RUNTIME} ]; then docker save $REPO_NAME:runtime-image | gzip > ${CACHE_FILE_RUNTIME} || true; fi
-

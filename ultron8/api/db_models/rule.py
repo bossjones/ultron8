@@ -1,13 +1,19 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean
-from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship
-
-from sqlalchemy import Unicode, UnicodeText, and_, create_engine
-
-from sqlalchemy.orm import relationship, Session
-from sqlalchemy.orm.collections import attribute_mapped_collection
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import and_
+from sqlalchemy import Boolean
+from sqlalchemy import Column
+from sqlalchemy import create_engine
+from sqlalchemy import DateTime
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy import String
+from sqlalchemy import Unicode
+from sqlalchemy import UnicodeText
 from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Session
+from sqlalchemy.orm.collections import attribute_mapped_collection
+from sqlalchemy.sql import func
 
 from ultron8.api.db.u_sqlite.base_class import Base
 from ultron8.api.db_models.utils import ProxiedDictMixin

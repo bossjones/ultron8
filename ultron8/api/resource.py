@@ -2,11 +2,11 @@
 Web Services Interface used by command-line clients and web frontend to
 view current state, event history and send commands to trond.
 """
-
-import logging
-import ujson as json
-import datetime
 import collections
+import datetime
+import logging
+
+import ujson as json
 
 log = logging.getLogger(__name__)
 

@@ -11,39 +11,29 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 Common model related classes.
 """
-
 # __all__ = [
 #     'DictSerializableClassMixin'
 # ]
-
-
 # class DictSerializableClassMixin(object):
 #     """
 #     Mixin class which is to be used with classes which can be serialized as a dictionary,
 #     """
-
 #     def mask_secrets(self, value):
 #         """
 #         Process the object and mask secret values.
-
 #         :type value: ``dict``
 #         :param value: Document dictionary.
-
 #         :rtype: ``dict``
 #         """
 #         return value
-
 #     def to_serializable_dict(self, mask_secrets=False):
 #         """
 #         Serialize object to a dictionary which can be serialized as JSON.
-
 #         :param mask_secrets: True to mask secrets in the resulting dict.
 #         :type mask_secrets: ``boolean``
-
 #         :rtype: ``dict``
 #         """
 #         raise NotImplementedError()

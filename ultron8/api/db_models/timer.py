@@ -1,13 +1,19 @@
 from __future__ import absolute_import
-import json
-import hashlib
 
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, JSON
-from sqlalchemy.sql import func
+import hashlib
+import json
+
+from sqlalchemy import Boolean
+from sqlalchemy import Column
+from sqlalchemy import DateTime
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy import JSON
+from sqlalchemy import String
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 
 from ultron8.api.db.u_sqlite.base_class import Base
-
 from ultron8.api.db_models.ultronbase import UIDFieldMixin
 from ultron8.consts import ResourceType
 

@@ -1,8 +1,9 @@
 from fastapi.encoders import jsonable_encoder
+
+from tests.utils.utils import random_lower_string
 from ultron8.api import crud
 from ultron8.api.db.u_sqlite.session import db_session
 from ultron8.api.models.user import UserCreate
-from tests.utils.utils import random_lower_string
 
 
 def test_create_user():

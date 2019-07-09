@@ -1,10 +1,11 @@
 """Gathers environment settings and loads them into global attributes for Api service."""
-from starlette.config import Config
-from starlette.datastructures import CommaSeparatedStrings, Secret
-
+import logging
 import os
 import sys
-import logging
+
+from starlette.config import Config
+from starlette.datastructures import CommaSeparatedStrings
+from starlette.datastructures import Secret
 
 log = logging.getLogger(__name__)
 

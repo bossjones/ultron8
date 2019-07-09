@@ -1,8 +1,9 @@
 import logging
+
 import requests
 
-from ultron8.api import settings
 from tests.utils.utils import get_server_api
+from ultron8.api import settings
 
 logger = logging.getLogger(__name__)
 

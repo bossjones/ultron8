@@ -1,16 +1,18 @@
 # from ultron8.api.db.u_sqlite import database, guid_tracker
-from ultron8.api.db.u_sqlite import database
-from sqlalchemy import and_
+import logging
 from collections import namedtuple
 from datetime import datetime
-import logging
-from typing import List, Optional
+from typing import List
+from typing import Optional
 
 from fastapi.encoders import jsonable_encoder
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
+from ultron8.api.db.u_sqlite import database
 from ultron8.api.db_models.guid import Guid
-from ultron8.api.models.guid import GuidCreate, GuidUpdate
+from ultron8.api.models.guid import GuidCreate
+from ultron8.api.models.guid import GuidUpdate
 
 log = logging.getLogger(__name__)
 

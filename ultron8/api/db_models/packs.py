@@ -1,9 +1,12 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
-from sqlalchemy.sql import func
+from sqlalchemy import Column
+from sqlalchemy import DateTime
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy import String
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 
 from ultron8.api.db.u_sqlite.base_class import Base
-
 from ultron8.api.db_models.ultronbase import UIDFieldMixin
 from ultron8.consts import ResourceType
 

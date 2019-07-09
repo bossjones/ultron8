@@ -1,8 +1,10 @@
+import logging
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm import sessionmaker
 
 from ultron8.api import settings
-import logging
 
 logger = logging.getLogger(__name__)
 

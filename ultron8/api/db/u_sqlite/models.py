@@ -1,6 +1,8 @@
 """Define sqlite tables."""
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
+from datetime import timedelta
+
 import sqlalchemy
 
 log = logging.getLogger(__name__)

@@ -1,18 +1,17 @@
 import logging
 
 from ultron8 import actioncommand
+from ultron8.config import manager
+from ultron8.serialize.runstate import statemanager
 
 # from ultron8 import command_context
 # from ultron8 import node
-from ultron8.config import manager
-
 # from ultron8.core.job import Job
 # from ultron8.core.job_collection import JobCollection
 # from ultron8.core.job_scheduler import JobSchedulerFactory
 # from ultron8.core.jobgraph import JobGraph
 # from ultron8.eventbus import EventBus
 # from ultron8.mesos import MesosClusterRepository
-from ultron8.serialize.runstate import statemanager
 
 log = logging.getLogger(__name__)
 

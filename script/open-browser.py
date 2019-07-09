@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-
 # flake8: noqa
-
-import os, webbrowser, sys
+import os
+import sys
+import webbrowser
 
 try:
     from urllib import pathname2url

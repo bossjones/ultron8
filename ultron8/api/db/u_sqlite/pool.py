@@ -3,7 +3,9 @@
 Use the `database` attribute as your interface to the db.
 """
 import logging
+
 import databases
+
 from ultron8.api import settings
 
 log = logging.getLogger(__name__)

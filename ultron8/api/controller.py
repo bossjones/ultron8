@@ -1,11 +1,7 @@
 """
 Web Controllers for the API.
 """
-
-
 # """Router for gathering the views together."""
-
-
 # from fastapi import APIRouter
 # from guid import views
 # api_router = APIRouter()

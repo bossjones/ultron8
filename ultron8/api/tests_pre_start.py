@@ -1,10 +1,13 @@
 import logging
 
-from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
+from tenacity import after_log
+from tenacity import before_log
+from tenacity import retry
+from tenacity import stop_after_attempt
+from tenacity import wait_fixed
 
-from ultron8.api.db.u_sqlite.session import db_session
 from tests.api.api_v1.test_login import test_get_access_token
-
+from ultron8.api.db.u_sqlite.session import db_session
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

@@ -1,11 +1,12 @@
-from ultron8.api.utils.security import get_current_active_superuser
-from fastapi import APIRouter, Depends
+from app.utils import send_test_email
+from fastapi import APIRouter
+from fastapi import Depends
 from pydantic.types import EmailStr
 
 from ultron8.api.core.celery_app import celery_app
 from ultron8.api.models.msg import Msg
 from ultron8.api.models.user import UserInDB
-from app.utils import send_test_email
+from ultron8.api.utils.security import get_current_active_superuser
 
 router = APIRouter()
 

@@ -1,22 +1,23 @@
 from __future__ import absolute_import
+
 import abc
 import datetime
 
 import six
+from sqlalchemy import Boolean
+from sqlalchemy import Column
+from sqlalchemy import Integer
+from sqlalchemy import String
 
-# from ultron8.api.models.system.base import DictSerializableClassMixin
+from ultron8.api import settings
+from ultron8.api.db.u_sqlite.base_class import Base
+from ultron8.api.db_models.utils import key_not_string
 from ultron8.api.db_models.utils import ProxiedDictMixin
 from ultron8.api.models.system.common import ResourceReference
 from ultron8.consts import ResourceType
 
-from sqlalchemy import Boolean, Column, Integer, String
-
+# from ultron8.api.models.system.base import DictSerializableClassMixin
 # from sqlalchemy.orm import relationship
-
-from ultron8.api.db.u_sqlite.base_class import Base
-
-from ultron8.api import settings
-from ultron8.api.db_models.utils import key_not_string
 
 JSON_UNFRIENDLY_TYPES = datetime.datetime
 

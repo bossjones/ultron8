@@ -1,16 +1,13 @@
 #!/usr/bin/env python
-
 """ This script reverse engineers the protocols defined in pilight.
     It converts them to voloptuous schemes to allow protocol validation
     before sending data to the pilight daemon.
     'git' python package has to be installed.
     TODO: use regex for numbers
 """
-
 # SOURCE: https://github.com/DavidLP/pilight/blob/a319404034e761892a89c7205b6f1aff6ad8e205/scripts/create_validators.py
-
-import re
 import glob
+import re
 
 import voluptuous as vol
 

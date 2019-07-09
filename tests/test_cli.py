@@ -1,13 +1,18 @@
-from uuid import uuid4
 import shutil
-from click.testing import CliRunner
 from contextlib import contextmanager
+from uuid import uuid4
+
 import pyconfig
-from ultron8.cli import cli, get_flag, set_flag, set_fact_flags
+from click.testing import CliRunner
+
+from tests.conftest import fixtures_path
+from ultron8.cli import cli
+from ultron8.cli import get_flag
+from ultron8.cli import set_fact_flags
+from ultron8.cli import set_flag
 from ultron8.paths import Paths
 
 # from .conftest import fixtures_path
-from tests.conftest import fixtures_path
 
 paths = Paths()
 
