@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import six
 
 # SOURCE: https://docs.sqlalchemy.org/en/13/_modules/examples/vertical/dictlike.html
 
@@ -29,3 +30,14 @@ class ProxiedDictMixin(object):
 
     def __delitem__(self, key):
         del self._proxied[key]
+
+# SOURCE: https://github.com/MongoEngine/mongoengine/blob/82f0eb1cbc7b068b643df690680cd1dd5424f529/mongoengine/fields.py
+def key_not_string(d):
+    """Helper function to recursively determine if any key in a
+    dictionary is not a string.
+    """
+    for k, v in d.items():
+        if not isinstance(k, six.string_types) or (
+            isinstance(v, dict) and key_not_string(v)
+        ):
+            return True
