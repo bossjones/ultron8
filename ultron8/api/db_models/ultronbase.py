@@ -127,113 +127,113 @@ class UltronFoundationDB(ProxiedDictMixin):
 
 #     ref = me.StringField(required=True, unique=True)
 
+# SOURCE: https://docs.sqlalchemy.org/en/13/orm/inheritance.html ?
+class UIDFieldMixin(object):
+    """
+    Mixin class which adds "uid" field to the class inheriting from it.
 
-# class UIDFieldMixin(object):
-#     """
-#     Mixin class which adds "uid" field to the class inheriting from it.
+    UID field is a unique identifier which we can be used to unambiguously reference a resource in
+    the system.
+    """
 
-#     UID field is a unique identifier which we can be used to unambiguously reference a resource in
-#     the system.
-#     """
+    UID_SEPARATOR = ':'  # TODO: Move to constants
 
-#     UID_SEPARATOR = ':'  # TODO: Move to constants
+    RESOURCE_TYPE = abc.abstractproperty
+    UID_FIELDS = abc.abstractproperty
 
-#     RESOURCE_TYPE = abc.abstractproperty
-#     UID_FIELDS = abc.abstractproperty
+    # uid = me.StringField(required=True)
 
-#     uid = me.StringField(required=True)
+    # @classmethod
+    # def get_indexes(cls):
+    #     # Note: We use a special sparse index so we don't need to pre-populate "uid" for existing
+    #     # models in the database before ensure_indexes() is called.
+    #     # This field gets populated in the constructor which means it will be lazily assigned next
+    #     # time the model is saved (e.g. once register-content is ran).
+    #     indexes = [
+    #         {
+    #             'fields': ['uid'],
+    #             'unique': True,
+    #             'sparse': True
+    #         }
+    #     ]
+    #     return indexes
 
-#     @classmethod
-#     def get_indexes(cls):
-#         # Note: We use a special sparse index so we don't need to pre-populate "uid" for existing
-#         # models in the database before ensure_indexes() is called.
-#         # This field gets populated in the constructor which means it will be lazily assigned next
-#         # time the model is saved (e.g. once register-content is ran).
-#         indexes = [
-#             {
-#                 'fields': ['uid'],
-#                 'unique': True,
-#                 'sparse': True
-#             }
-#         ]
-#         return indexes
+    def get_uid(self):
+        """
+        Return an object UID constructed from the object properties / fields.
 
-#     def get_uid(self):
-#         """
-#         Return an object UID constructed from the object properties / fields.
+        :rtype: ``str``
+        """
+        parts = []
+        parts.append(self.RESOURCE_TYPE)
 
-#         :rtype: ``str``
-#         """
-#         parts = []
-#         parts.append(self.RESOURCE_TYPE)
+        for field in self.UID_FIELDS:
+            value = getattr(self, field, None) or ''
+            parts.append(value)
 
-#         for field in self.UID_FIELDS:
-#             value = getattr(self, field, None) or ''
-#             parts.append(value)
+        uid = self.UID_SEPARATOR.join(parts)
+        return uid
 
-#         uid = self.UID_SEPARATOR.join(parts)
-#         return uid
+    def get_uid_parts(self):
+        """
+        Return values for fields which make up the UID.
 
-#     def get_uid_parts(self):
-#         """
-#         Return values for fields which make up the UID.
+        :rtype: ``list``
+        """
+        parts = self.uid.split(self.UID_SEPARATOR)  # pylint: disable=no-member
+        parts = [part for part in parts if part.strip()]
+        return parts
 
-#         :rtype: ``list``
-#         """
-#         parts = self.uid.split(self.UID_SEPARATOR)  # pylint: disable=no-member
-#         parts = [part for part in parts if part.strip()]
-#         return parts
+    def has_valid_uid(self):
+        """
+        Return True if object contains a valid id (aka all parts contain a valid value).
 
-#     def has_valid_uid(self):
-#         """
-#         Return True if object contains a valid id (aka all parts contain a valid value).
-
-#         :rtype: ``bool``
-#         """
-#         parts = self.get_uid_parts()
-#         return len(parts) == len(self.UID_FIELDS) + 1
+        :rtype: ``bool``
+        """
+        parts = self.get_uid_parts()
+        return len(parts) == len(self.UID_FIELDS) + 1
 
 
-# class ContentPackResourceMixin(object):
-#     """
-#     Mixin class provides utility methods for models which belong to a pack.
-#     """
+class ContentPackResourceMixin(object):
+    """
+    Mixin class provides utility methods for models which belong to a pack.
+    """
 
-#     metadata_file = me.StringField(
-#         required=False,
-#         help_text=('Path to the metadata file (file on disk which contains resource definition) '
-#                    'relative to the pack directory.'))
+    # metadata_file = me.StringField(
+    #     required=False,
+    #     help_text=('Path to the metadata file (file on disk which contains resource definition) '
+    #                'relative to the pack directory.'))
 
-#     def get_pack_uid(self):
-#         """
-#         Return an UID of a pack this resource belongs to.
+    def get_pack_uid(self):
+        """
+        Return an UID of a pack this resource belongs to.
 
-#         :rtype ``str``
-#         """
-#         parts = [ResourceType.PACK, self.pack]
-#         uid = UIDFieldMixin.UID_SEPARATOR.join(parts)
-#         return uid
+        :rtype ``str``
+        """
+        parts = [ResourceType.PACK, self.pack]
+        uid = UIDFieldMixin.UID_SEPARATOR.join(parts)
+        return uid
 
-#     def get_reference(self):
-#         """
-#         Retrieve referene object for this model.
+    def get_reference(self):
+        """
+        Retrieve referene object for this model.
 
-#         :rtype: :class:`ResourceReference`
-#         """
-#         if getattr(self, 'ref', None):
-#             ref = ResourceReference.from_string_reference(ref=self.ref)
-#         else:
-#             ref = ResourceReference(pack=self.pack, name=self.name)
+        :rtype: :class:`ResourceReference`
+        """
+        if getattr(self, 'ref', None):
+            ref = ResourceReference.from_string_reference(ref=self.ref)
+        else:
+            ref = ResourceReference(pack=self.pack, name=self.name)
 
-#         return ref
+        return ref
 
-#     @classmethod
-#     def get_indexes(cls):
-#         return [
-#             {
-#                 'fields': ['metadata_file'],
-#             }
-#         ]
+    # @classmethod
+    # def get_indexes(cls):
+    #     return [
+    #         {
+    #             'fields': ['metadata_file'],
+    #         }
+    #     ]
 
 
 # class ChangeRevisionFieldMixin(object):

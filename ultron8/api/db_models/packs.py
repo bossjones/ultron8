@@ -4,22 +4,41 @@ from sqlalchemy.orm import relationship
 
 from ultron8.api.db.u_sqlite.base_class import Base
 
+from ultron8.api.db_models.ultronbase import UIDFieldMixin
+from ultron8.consts import ResourceType
 
-class Packs(Base):
+
+class Packs(UIDFieldMixin, Base):
     """Db Schema for Packs table."""
 
+
+    RESOURCE_TYPE = ResourceType.PACK
+    UID_FIELDS = ['ref']
+
     __tablename__ = "packs"
+
     id = Column(Integer, primary_key=True, index=True)
-    ref = Column(String, index=True)
-    name = Column(String, index=True)
-    description = Column(String, index=True)
-    keywords = Column(String, index=True)
-    version = Column(String, index=True)
-    python_versions = Column(String, index=True)
-    author = Column(String, index=True)
-    email = Column(String, index=True)
+    ref = Column(String)
+    name = Column(String)
+    description = Column(String)
+    keywords = Column(String)
+    version = Column(String)
+    python_versions = Column(String)
+    author = Column(String)
+    email = Column(String)
+
+    # contributors = me.ListField(field=me.StringField())
+    # files = me.ListField(field=me.StringField())
+    # path = Column(String, nullable=True)
+    # dependencies = me.ListField(field=me.StringField())
+    # system = me.DictField()
     created_at = Column(DateTime(timezone=True), server_default=func.utcnow())
     updated_at = Column(DateTime(timezone=True), onupdate=func.utcnow())
+
+    def __init__(self, *args, **values):
+        self.ref = self.get_reference().ref
+        self.uid = self.get_uid()
+
 
 
 if "__main__" == __name__:
