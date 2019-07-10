@@ -35,7 +35,7 @@ class Sensors(UIDFieldMixin, Base):
     name = Column("name", String(255))
     ref = Column("ref", String(255))
     uid = Column("uid", String(255), nullable=True)
-    # packs_id = Column("packs_id", Integer, ForeignKey("packs.id"))
+    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"))
     pack = relationship("Packs")
     artifact_uri = Column("artifact_uri", String(255))
     poll_interval = Column("poll_interval", Integer)

@@ -36,14 +36,15 @@ class Packs(UIDFieldMixin, Base):
     files = Column("files", String(255))
     # path = Column(String(255), nullable=True)
     path = Column("path", String(255), nullable=True)
-    dependencies = Column("dependencies", String(255))
+    dependencies = Column("dependencies", String(255), nullable=True)
     # dependencies = me.ListField(field=me.StringField())
-    system = Column("system", String(255))
+    system = Column("system", String(255), nullable=True)
     # system = me.DictField()
     created_at = Column(DateTime(timezone=True), server_default=func.utcnow())
     updated_at = Column(DateTime(timezone=True), onupdate=func.utcnow())
 
     def __init__(self, *args, **values):
+        super(Packs, self).__init__(*args, **values)
         self.ref = self.get_reference().ref
         self.uid = self.get_uid()
 
