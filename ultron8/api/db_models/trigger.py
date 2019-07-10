@@ -3,12 +3,10 @@ from __future__ import absolute_import
 import hashlib
 import json
 
-from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
-from sqlalchemy import JSON
 from sqlalchemy import String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -34,10 +32,12 @@ class TriggerType(UIDFieldMixin, Base):
 
     __tablename__ = "trigger_types"
 
+    id = Column("id", Integer, primary_key=True, index=True)
     ref = Column("ref", String(255))
     uid = Column("uid", String(255), nullable=True)
     name = Column("name", String(255))
     pack = relationship("Packs")
+    description = Column("description", String(255))
     payload_schema = Column("payload_schema", String(255))
     parameters_schema = Column("parameters_schema", String(255))
 
@@ -61,10 +61,11 @@ class Trigger(UIDFieldMixin, Base):
 
     __tablename__ = "triggers"
 
+    id = Column("id", Integer, primary_key=True, index=True)
     ref = Column("ref", String(255))
     uid = Column("uid", String(255), nullable=True)
     name = Column("name", String, nullable=False)
-    pack = relationship("Packs", nullable=False)
+    pack = relationship("Packs", nullable=False, back_populates="triggers")
     type = Column("type", String(255))
     parameters = Column("parameters", String(255))
     ref_count = Column("ref_count", Integer)
@@ -93,7 +94,7 @@ class Trigger(UIDFieldMixin, Base):
         return len(parts) == len(self.UID_FIELDS) + 1 + 1
 
 
-class TriggerInstanceDB(UIDFieldMixin, Base):
+class TriggerInstanceDB(Base):
     """An instance or occurrence of a type of Trigger.
     Attribute:
         trigger: Reference to the Trigger object.
@@ -101,6 +102,9 @@ class TriggerInstanceDB(UIDFieldMixin, Base):
         occurrence_time (datetime): time of occurrence of the trigger.
     """
 
+    __tablename__ = "trigger_instances"
+
+    id = Column("id", Integer, primary_key=True, index=True)
     trigger = Column("trigger", String(255))
     payload = Column("payload", String(255))
     occurrence_time = Column(DateTime(timezone=True), onupdate=func.utcnow())

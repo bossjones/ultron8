@@ -31,10 +31,10 @@ class TimerDB(UIDFieldMixin, Base):
     UID_FIELDS = ["pack", "name"]
 
     name = Column("name", String(255))
+    uid = Column("uid", String(255), nullable=True)
     pack = relationship("Packs")
     type = Column("type", String(255))
     parameters = Column("parameters", String(255))
-    uid = Column("uid", String(255), nullable=True)
 
     def __init__(self, *args, **values):
         super(TimerDB, self).__init__(*args, **values)

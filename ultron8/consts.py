@@ -53,7 +53,6 @@ class ResourceType(str, Enum):
     TIMER = "timer"
     API_KEY = "api_key"
     TRACE = "trace"
-    TIMER = "timer"
 
     # Special resource type for stream related stuff
     STREAM = "stream"
