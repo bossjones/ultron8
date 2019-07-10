@@ -34,11 +34,12 @@ class TriggerType(UIDFieldMixin, Base):
 
     __tablename__ = "trigger_types"
 
-    ref = Column(String)
-    name = Column(String)
+    ref = Column("ref", String(255))
+    uid = Column("uid", String(255), nullable=True)
+    name = Column("name", String(255))
     pack = relationship("Packs")
-    payload_schema = Column(JSON)
-    parameters_schema = Column(JSON)
+    payload_schema = Column("payload_schema", String(255))
+    parameters_schema = Column("parameters_schema", String(255))
 
     def __init__(self, *args, **values):
         self.ref = self.get_reference().ref
@@ -60,12 +61,13 @@ class Trigger(UIDFieldMixin, Base):
 
     __tablename__ = "triggers"
 
-    ref = Column(String)
-    name = Column(String, nullable=False)
+    ref = Column("ref", String(255))
+    uid = Column("uid", String(255), nullable=True)
+    name = Column("name", String, nullable=False)
     pack = relationship("Packs", nullable=False)
-    type = Column(String)
-    parameters = Column(JSON)
-    parameters = Column(Integer)
+    type = Column("type", String(255))
+    parameters = Column("parameters", String(255))
+    ref_count = Column("ref_count", Integer)
 
     def __init__(self, *args, **values):
         self.ref = self.get_reference().ref
@@ -99,18 +101,17 @@ class TriggerInstanceDB(UIDFieldMixin, Base):
         occurrence_time (datetime): time of occurrence of the trigger.
     """
 
-    trigger = Column(String, index=True)
-    payload = Column(JSON, index=True)
-    occurrence_time = Column(JSON, index=True)
+    trigger = Column("trigger", String(255))
+    payload = Column("payload", String(255))
     occurrence_time = Column(DateTime(timezone=True), onupdate=func.utcnow())
 
-    status = Column(String, index=True, nullable=False)
+    status = Column("status", String(255), nullable=False)
 
 
 MODELS = [TriggerType, Trigger, TriggerInstanceDB]
 
 
 if "__main__" == __name__:
-    sensors = TriggerType()
+    trigger = TriggerType()
 
-    print(sensors)
+    print(trigger)

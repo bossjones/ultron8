@@ -24,19 +24,19 @@ class RuleTypeParameter(Base):
 
     __tablename__ = "rule_type_parameter"
 
-    rule_id = Column(ForeignKey("rule_type.id"), primary_key=True)
-    key = Column(Unicode(64), primary_key=True)
-    value = Column(UnicodeText)
+    rule_id = Column("rule_id", Integer, ForeignKey("rule_type.id"), primary_key=True)
+    key = Column("key", Unicode(64), primary_key=True)
+    value = Column("value", UnicodeText)
 
 
 class RuleType(ProxiedDictMixin, Base):
     """A rule type."""
 
     __tablename__ = "rule_type"
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(Unicode(100))
-    ref_key = Column(String)
-    ref_value = Column(String)
+    id = Column("id", Integer, primary_key=True, index=True)
+    name = Column("name", Unicode(100))
+    ref_key = Column("ref_key", String(255))
+    ref_value = Column("ref_value", String(255))
     # parameters = dictonary of RuleTypeParameter, w/ key,val
     parameters = relationship(
         "RuleTypeParameter", collection_class=attribute_mapped_collection("key")
@@ -82,16 +82,17 @@ class Rules(ProxiedDictMixin, Base):
     """
 
     __tablename__ = "rules"
-    id = Column(Integer, primary_key=True, index=True)
-    # trigger_type = Column(String)
-    name = Column(String)
-    pack = Column(String)
-    description = Column(String)
-    enabled = Column(Boolean)
-    trigger = Column(String)
-    action = Column(String)
-    ref = Column(String)
-    type = Column(String)
+
+    id = Column("id", Integer, primary_key=True, index=True)
+    # trigger_type = Column(String(255))
+    name = Column("name", String(255))
+    pack = Column("pack", String(255))
+    description = Column("description", String(255))
+    enabled = Column("enabled", Boolean)
+    trigger = Column("trigger", String(255))
+    action = Column("action", String(255))
+    ref = Column("ref", String(255))
+    type = Column("type", String(255))
     # type = relationship(
     #     "RuleType", collection_class=attribute_mapped_collection("ref_key")
     # )
@@ -100,8 +101,8 @@ class Rules(ProxiedDictMixin, Base):
     #     "ref_value",
     #     creator=lambda key, value: RuleType(key=key, value=value),
     # )
-    criteria = Column(String)
-    context = Column(String)
+    criteria = Column("criteria", String(255))
+    context = Column("context", String(255))
     created_at = Column(DateTime(timezone=True), server_default=func.utcnow())
     updated_at = Column(DateTime(timezone=True), onupdate=func.utcnow())
 
