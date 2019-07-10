@@ -65,7 +65,7 @@ class Trigger(UIDFieldMixin, Base):
     ref = Column("ref", String(255))
     uid = Column("uid", String(255), nullable=True)
     name = Column("name", String, nullable=False)
-    pack = relationship("Packs", nullable=False, back_populates="triggers")
+    pack = relationship("Packs", back_populates="triggers")
     type = Column("type", String(255))
     parameters = Column("parameters", String(255))
     ref_count = Column("ref_count", Integer)
