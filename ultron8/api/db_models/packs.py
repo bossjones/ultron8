@@ -7,11 +7,11 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from ultron8.api.db.u_sqlite.base_class import Base
-from ultron8.api.db_models.ultronbase import UIDFieldMixin
+from ultron8.api.db_models.ultronbase import ContentPackResourceMixin, UIDFieldMixin
 from ultron8.consts import ResourceType
 
 
-class Packs(UIDFieldMixin, Base):
+class Packs(ContentPackResourceMixin, UIDFieldMixin, Base):
     """Db Schema for Packs table."""
 
     RESOURCE_TYPE = ResourceType.PACK
@@ -45,7 +45,7 @@ class Packs(UIDFieldMixin, Base):
 
     def __init__(self, *args, **values):
         super(Packs, self).__init__(*args, **values)
-        self.ref = self.get_reference().ref
+        # self.ref = self.get_reference().ref
         self.uid = self.get_uid()
 
 
