@@ -60,6 +60,8 @@ mako==1.0.11              # via alembic
 markupsafe==1.1.1         # via jinja2, mako
 msgpack==0.6.1
 multidict==4.5.2
+numpy==1.16.4             # via pandas
+pandas==0.24.2
 passlib[bcrypt]==1.7.1
 premailer==3.4.1          # via emails
 prometheus-client==0.5.0  # via starlette-prometheus
@@ -68,11 +70,11 @@ pyconfig==3.2.3
 pycparser==2.19           # via cffi
 pydantic==0.25            # via fastapi
 pyjwt==1.7.1
-python-dateutil==2.8.0    # via alembic, emails, ruamel.yaml.convert
+python-dateutil==2.8.0    # via alembic, emails, pandas, ruamel.yaml.convert
 python-editor==1.0.4      # via alembic
 python-multipart==0.0.5
 pytool==3.15.0            # via pyconfig
-pytz==2019.1              # via celery
+pytz==2019.1              # via celery, pandas
 pyyaml==5.1               # via jinja2-cli
 raven==6.10.0
 requests==2.22.0          # via emails, premailer

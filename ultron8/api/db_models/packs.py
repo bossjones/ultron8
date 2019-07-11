@@ -3,12 +3,20 @@ from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
+from sqlalchemy import Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from ultron8.api.db.u_sqlite.base_class import Base
 from ultron8.api.db_models.ultronbase import ContentPackResourceMixin, UIDFieldMixin
 from ultron8.consts import ResourceType
+
+PACKS_ACTIONS_ASSOCIATION = Table(
+    "packs_actions",
+    Base.metadata,
+    Column("pack_id", Integer, ForeignKey("packs.id")),
+    Column("action_id", Integer, ForeignKey("actions.id")),
+)
 
 
 class Packs(ContentPackResourceMixin, UIDFieldMixin, Base):
@@ -43,10 +51,26 @@ class Packs(ContentPackResourceMixin, UIDFieldMixin, Base):
     created_at = Column(DateTime(timezone=True), server_default=func.utcnow())
     updated_at = Column(DateTime(timezone=True), onupdate=func.utcnow())
 
+    # Relationship: One To Many
+    # actions = relationship("Action")
+    # actions = relationship("Action", back_populates="packs", cascade="all, delete-orphan")
+    # NOTE: Borrow this shit below
+    # employees = relationship(
+    #     "Person", back_populates="company", cascade="all, delete-orphan"
+    # )
+
+    # Inspired by: https://auth0.com/blog/sqlalchemy-orm-tutorial-for-python-developers/
+    # # and we added the actions property to Packs and configured the
+    # packs_actions_association as the intermediary table.
+    actions = relationship("Action", secondary=PACKS_ACTIONS_ASSOCIATION)
+
     def __init__(self, *args, **values):
         super(Packs, self).__init__(*args, **values)
-        # self.ref = self.get_reference().ref
+        self.ref = self.get_reference().ref
         self.uid = self.get_uid()
+
+    def __repr__(self):
+        return "Packs(name=%s)" % (self.name)
 
 
 if "__main__" == __name__:
