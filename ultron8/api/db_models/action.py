@@ -48,6 +48,7 @@ class Action(UIDFieldMixin, Base):
     )
 
     def __init__(self, *args, **values):
+        super(Action, self).__init__(*args, **values)
         self.ref = self.get_reference().ref
         self.uid = self.get_uid()
 
@@ -65,14 +66,131 @@ class Action(UIDFieldMixin, Base):
         return ref
 
 
+# smoke tests
 if "__main__" == __name__:
-    action = Action(
+    # Initial - Setup environment vars before testing anything
+    import os
+    from sqlalchemy import inspect
+
+    # import better_exceptions; better_exceptions.hook()
+
+    import sys
+
+    from IPython.core.debugger import Tracer  # noqa
+    from IPython.core import ultratb
+
+    sys.excepthook = ultratb.FormattedTB(
+        mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
+    )
+
+    os.environ["DEBUG"] = "1"
+    os.environ["TESTING"] = "0"
+    os.environ["BETTER_EXCEPTIONS"] = "1"
+
+    # os.environ["DATABASE_URL"] = "sqlite:///:memory:"
+    # os.environ["TEST_DATABASE_URL"] = "sqlite:///:memory:"
+
+    os.environ["DATABASE_URL"] = "sqlite:///test.db"
+    os.environ["TEST_DATABASE_URL"] = "sqlite:///test.db"
+
+    def debug_dump(obj):
+        for attr in dir(obj):
+            if hasattr(obj, attr):
+                print("obj.%s = %s" % (attr, getattr(obj, attr)))
+
+    import logging
+
+    from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
+
+    from ultron8.api.db.u_sqlite.session import db_session
+
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
+
+    max_tries = 60 * 5  # 5 minutes
+    wait_seconds = 1
+
+    @retry(
+        stop=stop_after_attempt(max_tries),
+        wait=wait_fixed(wait_seconds),
+        before=before_log(logger, logging.INFO),
+        after=after_log(logger, logging.WARN),
+    )
+    def init():
+        try:
+            # Try to create session to check if DB is awake
+            # pylint: disable=no-member
+            db_session.execute("SELECT 1")
+        except Exception as e:
+            logger.error(e)
+            raise e
+
+    # Get sqlalchemy classes/objects
+
+    from ultron8.api.db.u_sqlite.init_db import init_db
+    from ultron8.api.db.u_sqlite.session import db_session, engine, Session
+
+    # make sure all SQL Alchemy models are imported before initializing DB
+    # otherwise, SQL Alchemy might fail to initialize properly relationships
+    # for more details: https://github.com/tiangolo/full-stack-fastapi-postgresql/issues/28
+    from ultron8.api.db.u_sqlite.base import Base
+
+    import pandas as pd
+
+    from ultron8.api.db_models.packs import Packs
+    from ultron8.api.db_models.action import Action
+
+    # Tables should be created with Alembic migrations
+    # But if you don't want to use migrations, create
+    # the tables un-commenting the next line
+    # 2 - generate database schema
+    Base.metadata.create_all(bind=engine)
+
+    # 3 - create a new session
+    session = Session()
+
+    # Try initializing everything now
+    logger.info("Initializing service")
+    init()
+    logger.info("Service finished initializing")
+
+    logger.info("Creating initial data")
+    init_db(db_session)
+    logger.info("Initial data created")
+
+    ##########################################
+    # packs
+    ##########################################
+
+    # p = Packs(name='linux', description='Generic Linux actions', keywords='linux', version='0.1.0', python_versions='3', author='Jarvis', email='info@theblacktonystark.com', contributors='bossjones', files='./tests/fixtures/simple/packs/linux', path="./tests/fixtures/simple/packs/linux", actions=[
+    #     Action(name="check_loadavg", runner_type="remote-shell-script", description="Check CPU Load Average on a Host", enabled=True, entry_point="checks/check_loadavg.py", parameters='{"period": {"enum": ["1","5","15","all"], "type": "string", "description": "Time period for load avg: 1,5,15 minutes, or \'all\'", "default": "all", "position": 0}}')
+    # ])
+
+    # Create - packs
+    pack_linux = Packs(
+        name="linux",
+        description="Generic Linux actions",
+        keywords="linux",
+        version="0.1.0",
+        python_versions="3",
+        author="Jarvis",
+        email="info@theblacktonystark.com",
+        contributors="bossjones",
+        files="./tests/fixtures/simple/packs/linux",
+        path="./tests/fixtures/simple/packs/linux",
+        ref="linux",
+    )
+
+    print(pack_linux)
+
+    action_check_loadavg = Action(
         name="check_loadavg",
         runner_type="remote-shell-script",
         description="Check CPU Load Average on a Host",
         enabled=True,
         entry_point="checks/check_loadavg.py",
         parameters='{"period": {"enum": ["1","5","15","all"], "type": "string", "description": "Time period for load avg: 1,5,15 minutes, or \'all\'", "default": "all", "position": 0}}',
+        pack=pack_linux,
     )
 
-    print(action)
+    # print(action)

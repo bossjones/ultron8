@@ -8,10 +8,9 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from ultron8.api.db.u_sqlite.base_class import Base
-from ultron8.api.db_models.ultronbase import ContentPackResourceMixin, UIDFieldMixin
+from ultron8.api.db_models.ultronbase import UIDFieldMixin
 from ultron8.consts import ResourceType
 
-from ultron8.api.models.system.common import ResourceReference
 
 PACKS_ACTIONS_ASSOCIATION = Table(
     "packs_actions",
@@ -31,7 +30,7 @@ class Packs(UIDFieldMixin, Base):
     __tablename__ = "packs"
 
     id = Column("id", Integer, primary_key=True, index=True)
-    ref = Column("ref", String(255), nullable=True)
+    ref = Column("ref", String(255), nullable=False)
     uid = Column("uid", String(255), nullable=True)
     name = Column("name", String(255), nullable=False)
     description = Column("description", String(255), nullable=False)
@@ -69,27 +68,24 @@ class Packs(UIDFieldMixin, Base):
 
     def __init__(self, *args, **values):
         super(Packs, self).__init__(*args, **values)
-        self.ref = self.get_reference().ref
         self.uid = self.get_uid()
-
-    def get_reference(self):
-        """
-        Retrieve referene object for this model.
-
-        :rtype: :class:`ResourceReference`
-        """
-        if getattr(self, "ref", None):
-            ref = ResourceReference.from_string_reference(ref=self.ref)
-        else:
-            ref = ResourceReference(pack=self.pack, name=self.name)
-
-        return ref
 
     def __repr__(self):
         return "Packs(name=%s)" % (self.name)
 
 
 if "__main__" == __name__:
-    packs = Packs()
-
-    print(packs)
+    pack_linux = Packs(
+        name="linux",
+        description="Generic Linux actions",
+        keywords="linux",
+        version="0.1.0",
+        python_versions="3",
+        author="Jarvis",
+        email="info@theblacktonystark.com",
+        contributors="bossjones",
+        files="./tests/fixtures/simple/packs/linux",
+        path="./tests/fixtures/simple/packs/linux",
+        ref="linux",
+    )
+    print(pack_linux)

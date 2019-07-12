@@ -909,6 +909,11 @@ local-install-jupyter:
 	pipenv run pip install ipython-sql cython
 	pipenv run python -m ipykernel install --user
 
+	# SOURCE: https://ndres.me/post/best-jupyter-notebook-extensions/
+	pipenv run pip install jupyter_nbextensions_configurator jupyter_contrib_nbextensions
+	pipenv run jupyter contrib nbextension install --user
+	pipenv run jupyter nbextensions_configurator enable --user
+
 .PHONY: local-jupyter
 local-jupyter:
 	@printf "$$GREEN [important] Great guide to jupyter here: https://www.datacamp.com/community/tutorials/tutorial-jupyter-notebook$$NC\n"
