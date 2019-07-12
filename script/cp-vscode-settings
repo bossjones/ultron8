@@ -231,7 +231,10 @@ cat <<EOF > ${_FILE}
       "**/site-packages/**/*.py"
     ],
     "python.linting.enabled": true,
-    "python.linting.pylintEnabled": true
+    "python.linting.pylintEnabled": true,
+    "[python]": {
+        "editor.formatOnPaste": false
+    }
 }
 EOF
 

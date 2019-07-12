@@ -11,6 +11,8 @@ from ultron8.api.db.u_sqlite.base_class import Base
 from ultron8.api.db_models.ultronbase import ContentPackResourceMixin, UIDFieldMixin
 from ultron8.consts import ResourceType
 
+from ultron8.api.models.system.common import ResourceReference
+
 PACKS_ACTIONS_ASSOCIATION = Table(
     "packs_actions",
     Base.metadata,
@@ -19,7 +21,8 @@ PACKS_ACTIONS_ASSOCIATION = Table(
 )
 
 
-class Packs(ContentPackResourceMixin, UIDFieldMixin, Base):
+# class Packs(ContentPackResourceMixin, UIDFieldMixin, Base):
+class Packs(UIDFieldMixin, Base):
     """Db Schema for Packs table."""
 
     RESOURCE_TYPE = ResourceType.PACK
@@ -68,6 +71,19 @@ class Packs(ContentPackResourceMixin, UIDFieldMixin, Base):
         super(Packs, self).__init__(*args, **values)
         self.ref = self.get_reference().ref
         self.uid = self.get_uid()
+
+    def get_reference(self):
+        """
+        Retrieve referene object for this model.
+
+        :rtype: :class:`ResourceReference`
+        """
+        if getattr(self, "ref", None):
+            ref = ResourceReference.from_string_reference(ref=self.ref)
+        else:
+            ref = ResourceReference(pack=self.pack, name=self.name)
+
+        return ref
 
     def __repr__(self):
         return "Packs(name=%s)" % (self.name)
