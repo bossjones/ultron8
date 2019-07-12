@@ -1,10 +1,18 @@
-from typing import Dict, List, Optional, Sequence, Set, Tuple, Union
-from enum import Enum, IntEnum
-from pydantic import BaseModel, Schema, EmailStr
-from datetime import datetime
-
 import logging
+from datetime import datetime
+from enum import Enum
+from enum import IntEnum
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Set
+from typing import Tuple
+from typing import Union
 
+from pydantic import BaseModel
+from pydantic import EmailStr
+from pydantic import Schema
 
 log = logging.getLogger(__name__)
 
@@ -28,7 +36,22 @@ class RunnerTypeModel(str, Enum):
     inquirer = "inquirer"
 
 
-class ActionsModel(BaseModel):
+class ActionBase(BaseModel):
+    # Pack reference. It can only contain letters, digits and underscores.
+    ref: Optional[str] = None
+    name: Optional[str] = None
+    runner_type: Optional[RunnerTypeModel] = None
+    description: Optional[str] = None
+    enabled: Optional[bool] = True
+    entry_point: Optional[str] = None
+    pack: Optional[str] = None
+    parameters: Optional[dict] = {}
+    # output_Schema : Optional[Optional[str]
+    # notify : Optional[Optional[str]
+    tags: Optional[List[str]] = []
+
+
+class ActionBaseInDB(ActionBase):
     """Data Object describing Actions
 
     == Schema Information
@@ -51,20 +74,45 @@ class ActionsModel(BaseModel):
         position: 0
 
     Arguments:
-        BaseModel {[type]} -- [description]
+        ActionBaseInDB {[type]} -- [description]
     """
 
-    # id: int
-    name: str
-    runner_type: RunnerTypeModel
-    description: str = None
-    enabled: bool
-    entry_point: str = ""
-    parameters: dict = {}
-    tags: List[str] = []
+    id: int
+    packs_id: int
+    pack: str
     created_at: datetime = None
     updated_at: datetime = None
-    deleted_at: datetime = None
+
+
+class ActionCreate(ActionBaseInDB):
+    ref: str
+    packs_id: int
+    name: str
+    runner_type: RunnerTypeModel
+    description: str = ""
+    enabled: bool = True
+    entry_point: str = ""
+    pack: str
+    parameters: dict = {}
+    # output_Schema :Optional[str]
+    # notify :Optional[str]
+    tags: List[str] = []
+
+
+# Properties to receive via API on update
+class ActionUpdate(ActionBaseInDB):
+    ref: str
+    packs_id: int
+    name: str
+    runner_type: RunnerTypeModel
+    description: str = ""
+    enabled: bool = True
+    entry_point: str = ""
+    pack: str
+    parameters: dict = {}
+    # output_Schema :Optional[str]
+    # notify :Optional[str]
+    tags: List[str] = []
 
 
 # smoke-tests
@@ -81,7 +129,7 @@ if "__main__" == __name__:
         },
     }
 
-    action = ActionsModel(**external_data)
+    action = ActionBase(**external_data)
 
     print("----------- action ------------")
     print(action)

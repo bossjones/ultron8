@@ -18,4 +18,3 @@ docker build \
     --build-arg CONTAINER_UID="${_UID}" \
     --tag "${TAG}" \
     --file "Dockerfile" $(pwd)
-

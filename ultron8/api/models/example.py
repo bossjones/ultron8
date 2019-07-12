@@ -3,45 +3,33 @@
 # from ipaddress import IPv4Address, IPv6Address, IPv4Interface, IPv6Interface, IPv4Network, IPv6Network
 # from pathlib import Path
 # from uuid import UUID
-
 # from pydantic import (DSN, UUID1, UUID3, UUID4, UUID5, BaseModel, DirectoryPath, EmailStr, FilePath, NameEmail,
 #                       NegativeFloat, NegativeInt, PositiveFloat, PositiveInt, PyObject, UrlStr, conbytes, condecimal,
 #                       confloat, conint, constr, IPvAnyAddress, IPvAnyInterface, IPvAnyNetwork, SecretStr, SecretBytes)
-
-
 # class Model(BaseModel):
 #     cos_function: PyObject = None
-
 #     path_to_something: Path = None
 #     path_to_file: FilePath = None
 #     path_to_directory: DirectoryPath = None
-
 #     short_bytes: conbytes(min_length=2, max_length=10) = None
 #     strip_bytes: conbytes(strip_whitespace=True)
-
 #     short_str: constr(min_length=2, max_length=10) = None
 #     regex_str: constr(regex='apple (pie|tart|sandwich)') = None
 #     strip_str: constr(strip_whitespace=True)
-
 #     big_int: conint(gt=1000, lt=1024) = None
 #     mod_int: conint(multiple_of=5) = None
 #     pos_int: PositiveInt = None
 #     neg_int: NegativeInt = None
-
 #     big_float: confloat(gt=1000, lt=1024) = None
 #     unit_interval: confloat(ge=0, le=1) = None
 #     mod_float: confloat(multiple_of=0.5) = None
 #     pos_float: PositiveFloat = None
 #     neg_float: NegativeFloat = None
-
 #     email_address: EmailStr = None
 #     email_and_name: NameEmail = None
-
 #     url: UrlStr = None
-
 #     password: SecretStr = None
 #     password_bytes: SecretBytes = None
-
 #     db_name = 'foobar'
 #     db_user = 'postgres'
 #     db_password: str = None
@@ -69,7 +57,6 @@
 #     ip_vany_interface: IPvAnyInterface = None
 #     ip_v4_interface: IPv4Interface = None
 #     ip_v6_interface: IPv6Interface = None
-
 # m = Model(
 #     cos_function='math.cos',
 #     path_to_something='/home',

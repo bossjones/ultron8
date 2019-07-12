@@ -1,17 +1,20 @@
 """Logging utilities."""
-from typing import Any, Callable, Coroutine, Optional
-import traceback
-import threading
-import inspect
-from functools import partial, wraps
-from asyncio.events import AbstractEventLoop
-from asyncio import run_coroutine_threadsafe
 import asyncio
-import logging
+import inspect
 import logging.config
-from os import environ
+import threading
+import traceback
+from asyncio import run_coroutine_threadsafe
+from asyncio.events import AbstractEventLoop
+from functools import partial
+from functools import wraps
 from logging import Logger
+from os import environ
+from typing import Any
+from typing import Callable
+from typing import Coroutine
 from typing import List
+from typing import Optional
 
 emitted_warnings: List[str] = []
 

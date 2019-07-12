@@ -1,12 +1,14 @@
-import requests
 import logging
 
+import requests
+
+from tests.utils.user import user_authentication_headers
+from tests.utils.utils import get_server_api
+from tests.utils.utils import random_lower_string
 from ultron8.api import crud
 from ultron8.api import settings
 from ultron8.api.db.u_sqlite.session import db_session
 from ultron8.api.models.user import UserCreate
-from tests.utils.user import user_authentication_headers
-from tests.utils.utils import get_server_api, random_lower_string
 
 logger = logging.getLogger(__name__)
 

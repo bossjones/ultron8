@@ -1,9 +1,9 @@
 """Basic utility module for Api service."""
-from datetime import datetime, timedelta
-from starlette.exceptions import HTTPException
-
 import logging
+from datetime import datetime
+from datetime import timedelta
 
+from starlette.exceptions import HTTPException
 
 log = logging.getLogger(__name__)
 

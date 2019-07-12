@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 """Yaml Utility functions"""
-
 # pylint: disable=line-too-long
 # pylint: disable=W1202
-
 # flake8: noqa
-
+import collections
+import functools
+import keyword
 import logging
 import os
 import shutil
-import functools
 import sys
 from collections import OrderedDict
 
-from ultron8.consts import YAML_FILE, DEBUG_MODE_FLAG, CONF_FILE
+from ultron8.consts import CONF_FILE
+from ultron8.consts import DEBUG_MODE_FLAG
+from ultron8.consts import YAML_FILE
 
 LOGGER = logging.getLogger(__name__)
 
@@ -781,11 +782,6 @@ class yamlfile:
 # Begin of config
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
-
-import logging
-import collections
-import keyword
-import os
 
 # import lib.shyaml as shyaml
 # LOGGER = logging.getLogger(__name__)

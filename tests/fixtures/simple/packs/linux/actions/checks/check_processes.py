@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-
 # flake8: noqa
-
-import os
-import sys
-import re
 import json
+import os
+import re
+import sys
 
 
 class CheckProcs(object):

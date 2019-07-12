@@ -1,5 +1,4 @@
 """Temporary router for Action objects. Taken directly from FastApi Tutorial"""
-
 from fastapi import APIRouter
 
 router = APIRouter()

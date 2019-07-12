@@ -1,9 +1,7 @@
 #!/usr/bin/env python
-
 # flake8: noqa
-
-import sys
 import json
+import sys
 
 if len(sys.argv) >= 2:
     time = sys.argv[1]

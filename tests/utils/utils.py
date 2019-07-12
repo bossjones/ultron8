@@ -1,11 +1,10 @@
+import logging
 import random
 import string
 
 import requests
 
 from ultron8.api import settings
-
-import logging
 
 logger = logging.getLogger(__name__)
 

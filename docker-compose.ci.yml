@@ -64,11 +64,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      # target: runtime-image
+      target: runtime-image
       # FIXME: https://github.com/docker/compose/issues/5090
       # FIXME: https://github.com/docker/docker-py/issues/998
       cache_from:
-        - bossjones/ultron8-ci:runtime-image
+        - bossjones/ultron8-ci:base
       args:
         CONTAINER_GID: ${CONTAINER_GID:-1000}
         CONTAINER_UID: ${CONTAINER_UID:-1000}
@@ -129,7 +129,7 @@ services:
       - PRE_START_PATH=/home/developer/app/ultron8/migrations/gunicorn-prestart.sh
       - HOST=0.0.0.0
       - PORT=11267
-      - LOG_LEVEL=info
+      - LOG_LEVEL=DEBUG
 
     tty: true
     stdin_open: true

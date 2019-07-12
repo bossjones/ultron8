@@ -729,6 +729,14 @@ py-dev:
 
 py-dists: py-sdist py-bdist py-wheels
 
+dist-build: clean ## setup.py - create source distribution (taken directly from twine docs)
+	python setup.py sdist bdist_wheel
+
+create-dist: py-dists  ## setup.py - create source distribution
+
+upload-twine: ## twine - upload to pypi
+	twine upload dist/*
+
 py-sdist:
 	pipenv run python setup.py sdist
 
@@ -1064,11 +1072,32 @@ dc-up-web: dc-ci-build
 dc-run-web: dc-ci-build
 	bash script/dc-run-web
 
-dc-ci-exec-test: dc-ci-build dc-up-web
+dc-logs: ## Tail docker-compose logs
+	bash script/dc-logs
+
+dc-ci-exec-test: dc-ci-build dc-up-web # Main entrypoint for running tests inside of docker-compose
 	.ci/dc-ci-exec-test.sh
 
-dc-ci-tail-dev-null: dc-ci-build
+dc-ci-tail-dev-null: dc-ci-build # Starts up docker container via docker-compose using tail -f /dev/null
 	.ci/dc-ci-tail-dev-null.sh
+
+dc-build-cache-base: # build docker cache base and send up to docker hub
+	.ci/dc-build-cache-base.sh
+
+ci-before_install: ## ci: docker container/image from gnzip tar file in $HOME/.cache/docker
+	.ci/dc-build-gunzip-travis-stage-before_install.sh
+
+ci-build: ci-before_install dc-build-cache-base dc-up-web ci-gunzip # build docker cache base, cache it locally on machine and send up to docker hub etc
+
+ci-gunzip: ## take contents of dockerfile and cache it locally into $HOME/.cache/docker
+	.ci/dc-build-gunzip-travis-stage-install.sh
+
+ci-bleeding: ci-build ci-gunzip ci-test
+
+ci-test: # Testing out new build to see if faster than before
+	.ci/dc-ci-exec-test.sh
+
+ci-experimental: ci-build ci-test # Testing out new build to see if faster than before
 
 # SOURCE: https://alembic.sqlalchemy.org/en/latest/autogenerate.html
 migration-revision:

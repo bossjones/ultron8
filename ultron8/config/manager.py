@@ -1,30 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 """Config, yaml based config object using the ruamel python module"""
-
 # pylint: disable=line-too-long
 # pylint: disable=W1202
-import sys
 import codecs
-import os
-import logging
 import hashlib
-
-# import ultron8.utils as utils
+import json as jsonlib
+import logging
+import os
+import sys
 
 from ultron8.config import config_parse
 from ultron8.config import ConfigError
 from ultron8.config import schema
-
 from ultron8.utils import maybe_decode
 from ultron8.utils import maybe_encode
 from ultron8.utils import mkdir_if_does_not_exist
 from ultron8.utils import mkdir_p
+from ultron8.yaml import yaml
+from ultron8.yaml import yaml_load
+from ultron8.yaml import yaml_save
+from ultron8.yaml import YAMLError
 
-from ultron8.yaml import yaml, YAMLError, yaml_load, yaml_save
-
-import json as jsonlib
+# import ultron8.utils as utils
 
 log = logging.getLogger(__name__)
 

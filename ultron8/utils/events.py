@@ -1,5 +1,6 @@
 import asyncio
 
+
 # SOURCE: aioredis
 class CloseEvent:
     def __init__(self, on_close, loop=None):

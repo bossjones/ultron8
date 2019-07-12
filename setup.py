@@ -1,25 +1,28 @@
 # -*- coding: utf-8 -*-
-
 """
 The setup script is the centre of all activity in building, distributing,
 and installing modules using the Distutils. It is required for ``pip install``.
 
 See more: https://docs.python.org/2/distutils/setupscript.html
 """
-
 from __future__ import print_function
+
 import os
+import pprint
 import sys
 from datetime import date
-from setuptools import setup, find_packages, Command
 from shutil import rmtree
 
-import pprint
+from setuptools import Command
+from setuptools import find_packages
+from setuptools import setup
+
+import ultron8 as package
+
+# --- import your package ---
 
 pp = pprint.PrettyPrinter(indent=4)
 
-# --- import your package ---
-import ultron8 as package
 
 # https://stackoverflow.com/questions/2632199/how-do-i-get-the-path-of-the-current-executed-file-in-python/18489147
 # def we_are_frozen():

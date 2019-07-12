@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Ultron8 utils. Deals with all things at the file system level."""
-
 import argparse
 import contextlib
 import copy
@@ -11,21 +10,16 @@ import itertools
 import logging
 import math
 import os
-import os
 import re
 import select
 import shutil
 import stat
 import subprocess
 import sys
-import sys
-import sys
 import time
 import traceback
-
-from urllib.parse import urlparse
-
 from pathlib import Path
+from urllib.parse import urlparse
 
 LOGGER = logging.getLogger(__name__)
 

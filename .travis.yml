@@ -157,9 +157,11 @@ jobs:
         - travis_retry pip install coverage
         - travis_retry docker-compose -f docker-compose.ci.yml pull || true
         - docker pull $CACHE_IMAGE:runtime-image || true
-        - travis_retry make dc-ci-build
+        # - travis_retry make dc-ci-build
+        - travis_retry make ci-build | gnomon
       script:
-        - travis_retry make dc-ci-exec-test
+        # - travis_retry make dc-ci-exec-test
+        - travis_retry make ci-test | gnomon
       # source: https://github.com/inspirehep/inspire-next/blob/9700274c36074a3e43168bf48b8ba3e3bfa7bcdf/.travis.yml
       after_script:
         # Killing via SIGTERM in order to trigger atexit and dump coverage information in WSGI
@@ -168,7 +170,7 @@ jobs:
         # - docker kill ultron8_ci
       after_success:
       - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
-      - docker push $CACHE_IMAGE:runtime-image
+      - docker push $CACHE_IMAGE:runtime-image | gnomon
       - _USER=$(ls -lta | awk '{print $3}')
       - _GROUP=$(ls -lta | awk '{print $4}')
       - docker ps -a
@@ -177,10 +179,10 @@ jobs:
       - sudo mv .coverage .coverage.tests
       ################################################################################################
       # NOTE: https://coverage.readthedocs.io/en/coverage-4.5.1/changes.html?highlight=clean
-      # Version 4.2b1 — 2016-07-04
-      # BACKWARD INCOMPATIBILITY: the coverage combine command now ignores an existing .coverage data file. It used to include that file in its combining. This caused confusing results, and extra tox “clean” steps. If you want the old behavior, use the new coverage combine --append option.
+      # Version 4.2b1 - 2016-07-04
+      # BACKWARD INCOMPATIBILITY: the coverage combine command now ignores an existing .coverage data file. It used to include that file in its combining. This caused confusing results, and extra tox "clean" steps. If you want the old behavior, use the new coverage combine --append option.
       # ################################################################################################
-      # NOTE: Version 4.5 — 2018-02-03
+      # NOTE: Version 4.5 - 2018-02-03
       # The coverage combine command used to always overwrite the data file, even when no data had been read from apparently combinable files. Now, an error is raised if we thought there were files to combine, but in fact none of them could be used. Fixes issue 629.
       - coverage combine
       # Coverage report contains Docker paths. We replace them, so that we can run Coveralls.
@@ -190,6 +192,7 @@ jobs:
 before_install:
   - sudo apt-get update
   - travis_retry pip install coveralls
+  - npm install -g gnomon
 
   - sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -204,6 +207,7 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
   - docker-compose --version
+  - make ci-before_install | gnomon
 
 # install:
 #   - pip install --upgrade pip
@@ -236,10 +240,10 @@ before_install:
 #   - sudo mv .coverage .coverage.tests
 #   ################################################################################################
 #   # NOTE: https://coverage.readthedocs.io/en/coverage-4.5.1/changes.html?highlight=clean
-#   # Version 4.2b1 — 2016-07-04
-#   # BACKWARD INCOMPATIBILITY: the coverage combine command now ignores an existing .coverage data file. It used to include that file in its combining. This caused confusing results, and extra tox “clean” steps. If you want the old behavior, use the new coverage combine --append option.
+#   # Version 4.2b1 - 2016-07-04
+#   # BACKWARD INCOMPATIBILITY: the coverage combine command now ignores an existing .coverage data file. It used to include that file in its combining. This caused confusing results, and extra tox "clean" steps. If you want the old behavior, use the new coverage combine --append option.
 #   # ################################################################################################
-#   # NOTE: Version 4.5 — 2018-02-03
+#   # NOTE: Version 4.5 - 2018-02-03
 #   # The coverage combine command used to always overwrite the data file, even when no data had been read from apparently combinable files. Now, an error is raised if we thought there were files to combine, but in fact none of them could be used. Fixes issue 629.
 #   - coverage combine
 #   # Coverage report contains Docker paths. We replace them, so that we can run Coveralls.

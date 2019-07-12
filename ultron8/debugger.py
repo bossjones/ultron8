@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Debugging module. Import these functions in pdb or jupyter notebooks to figure step through code execution."""
-
 import logging
 
 LOGGER = logging.getLogger(__name__)

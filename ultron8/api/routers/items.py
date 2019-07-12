@@ -1,15 +1,9 @@
 # """Temporary router for user objects. Taken directly from FastApi Tutorial"""
-
 # from fastapi import APIRouter, HTTPException
-
 # router = APIRouter()
-
-
 # @router.get("/v1/items/{item_id}")
 # async def read_item(item_id: int, q: str = None):
 #     return {"item_id": item_id, "q": q}
-
-
 # @router.put(
 #     "/v1/items/{item_id}",
 #     tags=["custom"],

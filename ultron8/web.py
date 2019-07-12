@@ -1,23 +1,34 @@
+import logging
+from pathlib import Path
+
+import starlette_prometheus
 import uvicorn
-from ultron8.api.db.u_sqlite import (
-    open_database_connection_pool,
-    close_database_connection_pool,
-)
+from fastapi import Depends
+from fastapi import FastAPI
+from fastapi import Header
+from fastapi import HTTPException
+from starlette.middleware.cors import CORSMiddleware
+from starlette.requests import Request
+from starlette.responses import PlainTextResponse
+from starlette.responses import RedirectResponse
+from starlette.responses import UJSONResponse
+from starlette.staticfiles import StaticFiles
+
 from ultron8.api import settings
-from fastapi import Depends, FastAPI, Header, HTTPException
+from ultron8.api.api_v1.endpoints import alive
+from ultron8.api.api_v1.endpoints import guid
+from ultron8.api.api_v1.endpoints import home
+from ultron8.api.api_v1.endpoints import items
+from ultron8.api.api_v1.endpoints import login
+from ultron8.api.api_v1.endpoints import token
+from ultron8.api.api_v1.endpoints import users
+from ultron8.api.api_v1.endpoints import version
+from ultron8.api.db.u_sqlite import close_database_connection_pool
+from ultron8.api.db.u_sqlite import open_database_connection_pool
+from ultron8.api.db.u_sqlite.session import Session
+from ultron8.api.middleware.logging import log
 
 # from ultron8.api.routers import items, users, home, version, guid, alive
-from ultron8.api.api_v1.endpoints import items, users, home, version, guid, alive, login
-from ultron8.api.middleware.logging import log
-from starlette.staticfiles import StaticFiles
-from pathlib import Path
-from starlette.responses import PlainTextResponse, RedirectResponse, UJSONResponse
-from starlette.middleware.cors import CORSMiddleware
-import starlette_prometheus
-import logging
-from starlette.requests import Request
-
-from ultron8.api.db.u_sqlite.session import Session
 
 logger = logging.getLogger(__name__)
 
@@ -106,13 +117,14 @@ app.add_middleware(starlette_prometheus.PrometheusMiddleware)
 # app = FastAPI()
 
 
-async def get_token_header(x_token: str = Header(...)):
-    if x_token != "fake-super-secret-token":
-        raise HTTPException(status_code=400, detail="X-Token header invalid")
+# async def get_token_header(x_token: str = Header(...)):
+#     if x_token != "fake-super-secret-token":
+#         raise HTTPException(status_code=400, detail="X-Token header invalid")
 
 
 app.add_route(f"{settings.API_V1_STR}/metrics", starlette_prometheus.metrics)
 
+app.include_router(token.router, tags=["token"], prefix=f"{settings.API_V1_STR}")
 app.include_router(home.router, tags=["home"], prefix=f"{settings.API_V1_STR}")
 app.include_router(alive.router, tags=["alive"], prefix=f"{settings.API_V1_STR}")
 app.include_router(version.router, tags=["version"], prefix=f"{settings.API_V1_STR}")
@@ -122,8 +134,8 @@ app.include_router(
     items.router,
     prefix=f"{settings.API_V1_STR}/items",
     tags=["items"],
-    dependencies=[Depends(get_token_header)],
-    responses={404: {"description": "Not found"}},
+    # dependencies=[Depends(get_token_header)],
+    # responses={404: {"description": "Not found"}},
 )
 
 # app.include_router(guid.router, prefix="/guid", tags=["guid"])

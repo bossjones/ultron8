@@ -1,12 +1,13 @@
 from datetime import timedelta
 
-from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi import APIRouter
+from fastapi import Body
+from fastapi import Depends
+from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from ultron8.api import crud
-from ultron8.api.utils.db import get_db
-from ultron8.api.utils.security import get_current_user
 from ultron8.api import settings
 from ultron8.api.core.jwt import create_access_token
 from ultron8.api.core.security import get_password_hash
@@ -14,13 +15,13 @@ from ultron8.api.db_models.user import User as DBUser
 from ultron8.api.models.msg import Msg
 from ultron8.api.models.token import Token
 from ultron8.api.models.user import User
+from ultron8.api.utils import generate_password_reset_token
+from ultron8.api.utils import send_reset_password_email
+from ultron8.api.utils import verify_password_reset_token
+from ultron8.api.utils.db import get_db
+from ultron8.api.utils.security import get_current_user
 
 # from ultron8.api.utils.security import get_current_active_user
-from ultron8.api.utils import (
-    generate_password_reset_token,
-    send_reset_password_email,
-    verify_password_reset_token,
-)
 
 router = APIRouter()
 

@@ -1,8 +1,8 @@
 import pytest
 import requests
 
-from ultron8.api import settings
 from tests.utils.utils import get_server_api
+from ultron8.api import settings
 
 
 @pytest.mark.skip(reason="Celery is not fully implemented yet")

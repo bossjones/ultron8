@@ -3,21 +3,24 @@
 #     from unittest import mock
 # except ImportError:
 #     import mock
-
-from unittest import mock
-
-# from unittest.mock import patch, MagicMock, Mock
-import ultron8
 import json as jsonlib
+import logging
 import os.path
 import sys
-import pytest
 import unittest
-import logging
-from ultron8.consts import YAML_FILE
-from ultron8.yaml import yaml, yaml_load, yaml_save, yaml_dump_roundtrip
-
 from io import StringIO
+from unittest import mock
+
+import pytest
+
+import ultron8
+from ultron8.consts import YAML_FILE
+from ultron8.yaml import yaml
+from ultron8.yaml import yaml_dump_roundtrip
+from ultron8.yaml import yaml_load
+from ultron8.yaml import yaml_save
+
+# from unittest.mock import patch, MagicMock, Mock
 
 LOGGER = logging.getLogger(__name__)
 

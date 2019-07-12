@@ -1,10 +1,11 @@
 """Gathers environment settings and loads them into global attributes for Api service."""
-from starlette.config import Config
-from starlette.datastructures import CommaSeparatedStrings, Secret
-
+import logging
 import os
 import sys
-import logging
+
+from starlette.config import Config
+from starlette.datastructures import CommaSeparatedStrings
+from starlette.datastructures import Secret
 
 log = logging.getLogger(__name__)
 
@@ -84,3 +85,5 @@ BACKEND_CORS_ORIGINS = os.getenv(
 
 FIRST_SUPERUSER = os.getenv("FIRST_SUPERUSER", "admin")
 FIRST_SUPERUSER_PASSWORD = os.getenv("FIRST_SUPERUSER_PASSWORD", "password")
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+MASK_SECRETS = os.getenv("MASK_SECRETS", True)

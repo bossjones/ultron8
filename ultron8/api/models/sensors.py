@@ -1,11 +1,22 @@
 """
 Data Models for all things having to do with Sensors.
 """
-
-from typing import Dict, List, Optional, Sequence, Set, Tuple, Union
-from enum import Enum
-from pydantic import BaseModel, Schema, EmailStr
 from datetime import datetime
+from enum import Enum
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Sequence
+from typing import Set
+from typing import Tuple
+from typing import Union
+
+from pydantic import BaseModel
+from pydantic import EmailStr
+from pydantic import Schema
+
+from ultron8.api.models.trigger import TriggerTypeBase
+from ultron8.api.models.trigger import TriggerTypeBaseDB
 
 # The ellipsis ... just means "Required" same as annotation only declarations above.
 
@@ -41,29 +52,20 @@ class ProcessInfoModel(BaseModel):
     pid: int
 
 
-class ParametersSchemaModel(BaseModel):
-    # id: int
+class ParametersSchemaBase(BaseModel):
     type: str
-    properties: Union[FilePathModel, HostInfoModel]
+    # properties: Union[FilePathModel, HostInfoModel]
+    properties: dict = {}
     additionalProperties: bool
+
+
+class ParametersSchemaBaseDB(ParametersSchemaBase):
+    id: int
     created_at: datetime = None
     updated_at: datetime = None
-    deleted_at: datetime = None
 
 
-class TriggerTypeModel(BaseModel):
-    # id: int
-    name: str
-    pack: str
-    description: str = None
-    parameters_schema: ParametersSchemaModel = ...
-    payload_schema: dict
-    created_at: datetime = None
-    updated_at: datetime = None
-    deleted_at: datetime = None
-
-
-class SensorsModel(BaseModel):
+class SensorsBase(BaseModel):
     """Sensor Data Model.
 
     class_name: "FileWatchSensor"
@@ -100,14 +102,46 @@ class SensorsModel(BaseModel):
     """
 
     # id: int
-    class_name: str
-    enabled: bool
-    entry_point: str  # eg. "checks/check_loadavg.py"
-    description: str = None
-    # trigger_types: List[TriggerTypeModel]
+    class_name: Optional[str] = None
+    enabled: Optional[bool] = True
+    entry_point: Optional[str] = None  # eg. "checks/check_loadavg.py"
+    description: Optional[str] = None
+    trigger_types: Optional[List[TriggerTypeBase]] = []
     # created_at: datetime = None
     # updated_at: datetime = None
     # deleted_at: datetime = None
+
+
+class SensorsBaseInDB(SensorsBase):
+    id: int
+    ref: str
+    packs_id: int
+    created_at: datetime = None
+    updated_at: datetime = None
+
+
+class SensorsCreate(SensorsBaseInDB):
+    class_name: Optional[str] = None
+    enabled: Optional[bool] = None
+    entry_point: Optional[str] = None  # eg. "checks/check_loadavg.py"
+    description: Optional[str] = None
+    trigger_types: Optional[List[TriggerTypeBase]] = []
+
+
+class SensorsUpdate(SensorsBaseInDB):
+    class_name: Optional[str] = None
+    enabled: Optional[bool] = None
+    entry_point: Optional[str] = None  # eg. "checks/check_loadavg.py"
+    description: Optional[str] = None
+    trigger_types: Optional[List[TriggerTypeBase]] = []
+
+
+class Sensor(SensorsBaseInDB):
+    pass
+
+
+class SensorInDb(SensorsBaseInDB):
+    pass
 
 
 if "__main__" == __name__:
@@ -146,7 +180,7 @@ if "__main__" == __name__:
         ],
     }
 
-    sensor = SensorsModel(**external_data)
+    sensor = SensorsBase(**external_data)
     print(sensor)
 
     print(sensor.class_name)

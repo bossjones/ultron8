@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import pytest
-from pytest import raises, approx
+from pytest import approx
+from pytest import raises
 
 
 def test():
