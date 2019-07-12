@@ -913,6 +913,9 @@ local-install-jupyter:
 	pipenv run pip install jupyter_nbextensions_configurator jupyter_contrib_nbextensions
 	pipenv run jupyter contrib nbextension install --user
 	pipenv run jupyter nbextensions_configurator enable --user
+	# SOURCE: https://ipywidgets.readthedocs.io/en/latest/user_install.html
+	pipenv run pip install ipywidgets
+	pipenv run jupyter nbextension enable --py widgetsnbextension --sys-prefix
 
 .PHONY: local-jupyter
 local-jupyter:

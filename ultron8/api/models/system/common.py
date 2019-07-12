@@ -79,10 +79,10 @@ class ResourceReference(object):
 
     @staticmethod
     def validate_pack_name(pack):
-        if PACK_SEPARATOR in pack:
+        if PACK_SEPARATOR in pack.name:
             raise ValueError('Pack name should not contain "%s"' % (PACK_SEPARATOR))
 
-        return pack
+        return pack.name
 
     @staticmethod
     def get_pack(ref):

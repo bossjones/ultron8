@@ -21,7 +21,8 @@ class Action(UIDFieldMixin, Base):
     """Db Schema for Action table."""
 
     RESOURCE_TYPE = ResourceType.ACTION
-    UID_FIELDS = ["pack", "name"]
+    # UID_FIELDS = ["pack", "name"]
+    UID_FIELDS = ["packs_name", "name"]
 
     __tablename__ = "actions"
 
@@ -41,6 +42,7 @@ class Action(UIDFieldMixin, Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.utcnow())
 
     packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
+    packs_name = Column("packs_name", Integer, ForeignKey("packs.name"), nullable=True)
     # FIX: sqlalchemy Error creating backref on relationship
     # https://stackoverflow.com/questions/26693041/sqlalchemy-error-creating-backref-on-relationship
     pack = relationship(
