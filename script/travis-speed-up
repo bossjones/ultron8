@@ -38,6 +38,7 @@ echo " [run] pull docker cache from docker hub if available"
 time docker pull $REPO_NAME:base || true
 time docker pull $REPO_NAME:runtime-image || true
 echo " [run] docker-compose build 'base'"
+# FIXME: This needs to be fixed plz!!!!! I'm not sure if we want to be using base!
 time docker-compose -f docker-compose.base.yml build
 echo " [run] docker-compose push '$REPO_NAME:base'"
 time docker push $REPO_NAME:base || true
