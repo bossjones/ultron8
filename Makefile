@@ -1130,3 +1130,9 @@ pipenv_activate: ## Activate pipenv shell
 	pipenv shell
 
 pipenv_shell: pipenv_activate ## (alias) Activate pipenv shell
+
+pre-commit-run: ## run pre-commit hooks across all files
+	pre-commit run --all-files
+
+pre-commit-install: ## install all pre-commit hooks
+	pre-commit install -f --install-hooks
