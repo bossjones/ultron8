@@ -71,7 +71,7 @@ class Packs(UIDFieldMixin, Base):
         self.uid = self.get_uid()
 
     def __repr__(self):
-        return "Packs(name=%s)" % (self.name)
+        return "Packs<name=%s,ref=%s>" % (self.name, self.ref)
 
 
 if "__main__" == __name__:

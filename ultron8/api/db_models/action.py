@@ -67,6 +67,14 @@ class Action(UIDFieldMixin, Base):
 
         return ref
 
+    def __repr__(self):
+        return "Action<name=%s,ref=%s,runner_type=%s,entry_point=%s>" % (
+            self.name,
+            self.ref,
+            self.runner_type,
+            self.entry_point,
+        )
+
 
 # smoke tests
 if "__main__" == __name__:
