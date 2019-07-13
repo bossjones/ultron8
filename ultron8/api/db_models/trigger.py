@@ -43,6 +43,7 @@ class TriggerType(UIDFieldMixin, Base):
     parameters_schema = Column("parameters_schema", String(255))
 
     def __init__(self, *args, **values):
+        super(TriggerType, self).__init__(*args, **values)
         self.ref = self.get_reference().ref
         # pylint: disable=no-member
         self.uid = self.get_uid()

@@ -1122,3 +1122,11 @@ migration-info:
 
 migration-history:
 	pipenv run alembic history --verbose
+
+build-cached: ## docker-compose build wheelhouse version
+	docker-compose -f docker-compose.cached.yml build | gnomon
+
+pipenv_activate: ## Activate pipenv shell
+	pipenv shell
+
+pipenv_shell: pipenv_activate ## (alias) Activate pipenv shell
