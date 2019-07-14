@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+
+set -e
+
+_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export CONTAINER_UID=$(id -u)
+export CONTAINER_GID=$(id -g)
+
+PR_SHA=$(git rev-parse HEAD)
+REPO_NAME=bossjones/ultron8-ci
+IMAGE_TAG=${REPO_NAME}:${PR_SHA}
+TAG="${IMAGE_TAG}"
+
+export CACHE_IMAGE=bossjones/ultron8-ci
+export PYTHON="python3"
+export TOXENV=py36
+export IS_CI_ENVIRONMENT="true"
+
+# BEFORE INSTALL
+npm install -g gnomon
+make ci-before_install | gnomon
+
+# INSTALL
+pip install --upgrade pip
+pip install coveralls
+pip install coverage
+docker-compose -f docker-compose.cached.yml pull || true
+docker pull $CACHE_IMAGE:runtime-image || true
+
+###################################################################
+# make ci-build | gnomon ( broken into indiviual parts )
+###################################################################
+make ci-before_install
+###################################################################
+# make dc-build-cache-base
+###################################################################
+echo " [run] pull docker cache from docker hub if available"
+time docker pull $REPO_NAME:base || true
+time docker pull $REPO_NAME:runtime-image || true
+echo " [run] docker-compose build 'base'"
+# FIXME: This needs to be fixed plz!!!!! I'm not sure if we want to be using base!
+time docker-compose -f docker-compose.base.yml build
+echo " [run] docker-compose push '$REPO_NAME:base'"
+time docker push $REPO_NAME:base || true
+
+echo " [run] docker-compose pull '$REPO_NAME:runtime-image'"
+time docker pull $REPO_NAME:runtime-image || true
+echo " [run] docker-compose build '$REPO_NAME:runtime-image'"
+time docker-compose -f docker-compose.cached.yml build
+echo " [run] docker-compose push '$REPO_NAME:runtime-image'"
+time docker push $REPO_NAME:runtime-image || true
+###################################################################
+# make dc-up-web
+###################################################################
+echo " [run] Remove possibly previous broken stacks left hanging after an error"
+docker-compose -f docker-compose.cached.yml down -v --remove-orphans
+docker-compose -f docker-compose.cached.yml -f docker-compose.web.yml up -d
+
+###################################################################
+# make ci-gunzip
+###################################################################
+export CACHE_DIR=$HOME/.cache/docker
+export CACHE_FILE_BASE=$CACHE_DIR/base.tar.gz
+export CACHE_FILE_RUNTIME=$CACHE_DIR/runtime-image.tar.gz
+
+export CONTAINER_UID=$(id -u)
+export CONTAINER_GID=$(id -g)
+
+PR_SHA=$(git rev-parse HEAD)
+REPO_NAME=bossjones/ultron8-ci
+IMAGE_TAG=${REPO_NAME}:${PR_SHA}
+
+TAG="${IMAGE_TAG}"
+
+echo " [run] travis 'install:' section"
+echo " [run] pull docker cache from docker hub if available"
+mkdir -p $CACHE_DIR
+echo " [run] docker save '$REPO_NAME:base | gzip > ${CACHE_FILE_BASE}'"
+if [ ! -f ${CACHE_FILE_BASE} ]; then docker save $REPO_NAME:base | gzip > ${CACHE_FILE_BASE} || true; fi
+echo " [run] docker save '$REPO_NAME:runtime-image | gzip > ${CACHE_FILE_RUNTIME}'"
+if [ ! -f ${CACHE_FILE_RUNTIME} ]; then docker save $REPO_NAME:runtime-image | gzip > ${CACHE_FILE_RUNTIME} || true; fi
+
+docker-compose -f docker-compose.cached.yml build | gnomon
+
+# SCRIPT
+# make ci-test | gnomon
+docker-compose -f docker-compose.cached.yml exec -T ultron8_ci /home/developer/app/.ci/pytest_runner.sh | gnomon
+
+
+# after_script
+# Killing via SIGTERM in order to trigger atexit and dump coverage information in WSGI
+docker-compose -f docker-compose.cached.yml kill -s SIGTERM
+docker-compose -f docker-compose.cached.yml rm -f
+
+# after_success:
+
+docker push $CACHE_IMAGE:runtime-image | gnomon
+_USER=$(ls -lta | awk '{print $3}')
+_GROUP=$(ls -lta | awk '{print $4}')
+docker ps -a
+ls -lta
+sudo chown ${_USER}:${_GROUP} -Rv *
+sudo mv .coverage .coverage.tests
+################################################################################################
+# NOTE: https://coverage.readthedocs.io/en/coverage-4.5.1/changes.html?highlight=clean
+# Version 4.2b1 - 2016-07-04
+# BACKWARD INCOMPATIBILITY: the coverage combine command now ignores an existing .coverage data file. It used to include that file in its combining. This caused confusing results, and extra tox "clean" steps. If you want the old behavior, use the new coverage combine --append option.
+# ################################################################################################
+# NOTE: Version 4.5 - 2018-02-03
+# The coverage combine command used to always overwrite the data file, even when no data had been read from apparently combinable files. Now, an error is raised if we thought there were files to combine, but in fact none of them could be used. Fixes issue 629.
+coverage combine
+# Coverage report contains Docker paths. We replace them, so that we can run Coveralls.
+sed -i 's@\"/home/developer/app/@'"\"$(pwd)/"'@g' .coverage
+coveralls

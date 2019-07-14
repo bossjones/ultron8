@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Yaml Utility functions"""
 # pylint: disable=line-too-long
 # pylint: disable=W1202

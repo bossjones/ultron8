@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Ultron8 utils. Deals with all things at the file system level."""
 import argparse
 import contextlib

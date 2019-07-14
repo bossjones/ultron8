@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # ultron8 documentation build configuration file, created by
 # sphinx-quickstart on Mon Jul 1 00:00:00 2017.

@@ -58,7 +58,8 @@ class RuleType(ProxiedDictMixin, Base):
         creator=lambda key, value: RuleTypeParameter(key=key, value=value),
     )
 
-    def __init__(self, name):
+    def __init__(self, name, *args, **values):
+        super(RuleType, self).__init__(*args, **values)
         self.name = name
 
     def __repr__(self):

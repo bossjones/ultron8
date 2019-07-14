@@ -1,0 +1,78 @@
+version: '3.7'
+services:
+  ultron8_ci:
+    container_name: ultron8_ci
+    privileged: true
+    networks:
+      default:
+        aliases:
+        - localhost
+    build:
+      context: .
+      dockerfile: Dockerfile.cached
+      target: runtime-image
+      # FIXME: https://github.com/docker/compose/issues/5090
+      # FIXME: https://github.com/docker/docker-py/issues/998
+      cache_from:
+        - bossjones/ultron8-ci:base
+      args:
+        CONTAINER_GID: ${CONTAINER_GID:-1000}
+        CONTAINER_UID: ${CONTAINER_UID:-1000}
+    image: bossjones/ultron8-ci:runtime-image
+    ports:
+    - published: 11267
+      target: 11267
+    environment:
+      - CONTAINER_GID=${CONTAINER_GID:-1000}
+      - CONTAINER_UID=${CONTAINER_UID:-1000}
+      - TRAVIS
+      - TRAVIS_BRANCH
+      - TRAVIS_BUILD_DIR
+      - TRAVIS_JOB_ID
+      - TRAVIS_JOB_NUMBER
+      - TRAVIS_PULL_REQUEST
+      - TRAVIS_COMMIT
+      - TRAVIS_REPO_SLUG
+      - TRAVIS_OS_NAME
+      - TRAVIS_TAG
+      - ULTRON_ENABLE_WEB=${ULTRON_ENABLE_WEB:-false}
+      - BETTER_EXCEPTIONS=1
+      # FOR WEB APPLICATION
+      - DEBUG=True
+      - TESTING=True
+      - SECRET_KEY=43n080musdfjt54t-09sdgr
+      - JUPYTER=jupyter lab --ip=0.0.0.0 --allow-root --NotebookApp.custom_display_url=http://127.0.0.1:8888
+      - DOMAIN=localhost
+      - SERVER_NAME=localhost:11267
+      - SERVER_HOST=http://localhost:11267
+      - PROJECT_NAME=ultron8
+      - DOMAIN_MAIN=ultron8.com
+      - FIRST_SUPERUSER=admin@ultron8.com
+      - FIRST_SUPERUSER_PASSWORD=password
+      - SMTP_TLS=True
+      - SMTP_PORT=587
+      - SMTP_HOST
+      - SMTP_USER
+      - SMTP_PASSWORD
+      - SMTP_EMAILS_FROM_EMAIL=info@ultron8.com
+      - FLOWER_AUTH=admin:password
+      - USERS_OPEN_REGISTRATION=False
+      - BACKEND_CORS_ORIGINS='*'
+      - DATABASE_URL=sqlite:///dev.db
+      - TEST_DATABASE_URL=sqlite:///test.db
+      - DEFAULT_MODULE_NAME=ultron8.web
+      - VARIABLE_NAME=app
+      - DEFAULT_GUNICORN_CONF=/gunicorn_conf.py
+      - PRE_START_PATH=/home/developer/app/ultron8/migrations/gunicorn-prestart.sh
+      - HOST=0.0.0.0
+      - PORT=11267
+      - LOG_LEVEL=DEBUG
+    tty: true
+    stdin_open: true
+    entrypoint:
+      - bash
+    user: ${CONTAINER_UID:-1000}:${CONTAINER_GID:-1000}
+    volumes:
+      - .:/home/developer/app:rw
+      - ~/.cache/pip:/home/developer/.cache/pip
+      - ~/.wheelhouse/:/home/developer/.wheelhouse/

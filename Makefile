@@ -870,6 +870,9 @@ local-black-check: ## CHECK MODE: sensible pylint ( Lots of press over this duri
 local-black: ## sensible pylint ( Lots of press over this during pycon 2018 )
 	pipenv run black --verbose --exclude="/\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|build|dist|ultron8_venv/" .
 
+.PHONY: black
+black: local-black ## sensible pylint ( Lots of press over this during pycon 2018 )
+
 local-dev: pipenv-dev ## Run `pipenv install --dev` to create dev environment
 
 .PHONY: local-reformat
@@ -908,6 +911,14 @@ local-install-jupyter:
 	pipenv run pip install jupyter
 	pipenv run pip install ipython-sql cython
 	pipenv run python -m ipykernel install --user
+
+	# SOURCE: https://ndres.me/post/best-jupyter-notebook-extensions/
+	pipenv run pip install jupyter_nbextensions_configurator jupyter_contrib_nbextensions
+	pipenv run jupyter contrib nbextension install --user
+	pipenv run jupyter nbextensions_configurator enable --user
+	# SOURCE: https://ipywidgets.readthedocs.io/en/latest/user_install.html
+	pipenv run pip install ipywidgets
+	pipenv run jupyter nbextension enable --py widgetsnbextension --sys-prefix
 
 .PHONY: local-jupyter
 local-jupyter:
@@ -1111,3 +1122,17 @@ migration-info:
 
 migration-history:
 	pipenv run alembic history --verbose
+
+build-cached: ## docker-compose build wheelhouse version
+	docker-compose -f docker-compose.cached.yml build | gnomon
+
+pipenv_activate: ## Activate pipenv shell
+	pipenv shell
+
+pipenv_shell: pipenv_activate ## (alias) Activate pipenv shell
+
+pre-commit-run: ## run pre-commit hooks across all files
+	pre-commit run --all-files
+
+pre-commit-install: ## install all pre-commit hooks
+	pre-commit install -f --install-hooks
