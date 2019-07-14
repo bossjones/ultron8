@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Config, yaml based config object using the ruamel python module"""
 # pylint: disable=line-too-long
 # pylint: disable=W1202

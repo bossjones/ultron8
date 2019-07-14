@@ -15,36 +15,6 @@ from ultron8.consts import ResourceType
 
 from ultron8.api.models.system.common import ResourceReference
 
-"""
-class_name: "FileWatchSensor"
-enabled: true
-entry_point: "file_watch_sensor.py"
-description: "Sensor which monitors files for new lines"
-trigger_types:
-  -
-    name: "file_watch.line"
-    pack: "linux"
-    description: "Trigger which indicates a new line has been detected"
-    # This sensor can be supplied a path to a file to tail via a rule.
-    parameters_schema:
-      type: "object"
-      properties:
-        file_path:
-          description: "Path to the file to monitor"
-          type: "string"
-          required: true
-      additionalProperties: false
-    # This is the schema of the trigger payload the sensor generates
-    payload_schema:
-      type: "object"
-      properties:
-        file_path:
-          type: "string"
-        file_name:
-          type: "string"
-        line:
-          type: "string"
-"""
 
 class Sensors(UIDFieldMixin, Base):
     """
@@ -111,6 +81,8 @@ class Sensors(UIDFieldMixin, Base):
             self.trigger_types,
             self.entry_point,
         )
+
+
 #######################################################################################################
 
 MODELS = [Sensors]
@@ -255,28 +227,22 @@ if "__main__" == __name__:
                         "file_path": {
                             "description": "Path to the file to monitor",
                             "type": "string",
-                            "required": True
+                            "required": True,
                         }
                     },
-                    "additionalProperties": False
+                    "additionalProperties": False,
                 },
                 "payload_schema": {
                     "type": "object",
                     "properties": {
-                        "file_path": {
-                            "type": "string"
-                        },
-                        "file_name": {
-                            "type": "string"
-                        },
-                        "line": {
-                            "type": "string"
-                        }
-                    }
-                }
+                        "file_path": {"type": "string"},
+                        "file_name": {"type": "string"},
+                        "line": {"type": "string"},
+                    },
+                },
             }
         ],
-        pack=pack_linux
+        pack=pack_linux,
     )
 
     print(sensors)
