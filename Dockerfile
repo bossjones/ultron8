@@ -36,9 +36,9 @@ COPY --chown=developer:developer requirements-test.txt requirements-test.txt
 
 RUN set -x; pyenv global ${PYENV_VERSION} && \
     pip3 install -q --no-cache-dir -U pip setuptools tox wheel && \
-    pip3 install --no-cache-dir -r requirements.txt && \
-    pip3 install --no-cache-dir -r requirements-dev.txt && \
-    pip3 install -q --no-cache-dir -r requirements-test.txt && \
+    pip3 wheel -q -w wheelhouse -r requirements.txt && \
+    pip3 wheel -q -w wheelhouse -r requirements-dev.txt && \
+    pip3 wheel -q -w wheelhouse -r requirements-test.txt && \
     pyenv rehash
 
 # Copy over everything required to run tox
@@ -78,6 +78,7 @@ WORKDIR /home/${CONTAINER_USER}
 ENV LANG C.UTF-8
 
 COPY --from=base --chown=developer:developer /.pyenv /.pyenv
+COPY --from=base --chown=developer:developer /home/${CONTAINER_USER}/wheelhouse /home/${CONTAINER_USER}/wheelhouse
 
 COPY --chown=developer:developer requirements.txt requirements.txt
 COPY --chown=developer:developer requirements-dev.txt requirements-dev.txt
@@ -97,12 +98,21 @@ COPY --chown=developer:developer requirements-test.txt requirements-test.txt
 
 # RUN set -x; pyenv global ${PYENV_VERSION} && \
 #     pyenv rehash
+
+ENV PIP_INSTALL_ARGS="\
+    --only-binary :all: \
+    --no-index \
+    -q \
+    -f /home/${CONTAINER_USER}/wheelhouse \
+    "
+
 RUN set -x; pyenv global ${PYENV_VERSION} && \
     pip3 install -q --no-cache-dir -U pip setuptools tox wheel && \
-    pip3 install --no-cache-dir -r requirements.txt && \
-    pip3 install --no-cache-dir -r requirements-dev.txt && \
-    pip3 install -q --no-cache-dir -r requirements-test.txt && \
-    pyenv rehash
+    pip3 install ${PIP_INSTALL_ARGS} -r requirements.txt && \
+    pip3 install ${PIP_INSTALL_ARGS} -r requirements-dev.txt && \
+    pip3 install ${PIP_INSTALL_ARGS} -r requirements-test.txt && \
+    pyenv rehash && \
+    rm -rf /home/${CONTAINER_USER}/.cache
 
 # RUN set -x; tree; tox -e py36 --notest; echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run."
 
@@ -113,9 +123,9 @@ RUN set -x; pyenv global ${PYENV_VERSION} && \
 ENV GOSU_VERSION=1.11
 
 RUN cd /tmp && \
-  sudo curl -sSL https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64 -o /usr/local/bin/gosu && \
-  sudo chmod +x /usr/local/bin/gosu && \
-  sudo chown developer:developer /usr/local/bin/gosu
+    sudo curl -sSL https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64 -o /usr/local/bin/gosu && \
+    sudo chmod +x /usr/local/bin/gosu && \
+    sudo chown developer:developer /usr/local/bin/gosu
 
 USER root
 
