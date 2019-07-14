@@ -35,10 +35,10 @@ COPY --chown=developer:developer requirements-doc.txt requirements-doc.txt
 COPY --chown=developer:developer requirements-test.txt requirements-test.txt
 
 RUN set -x; pyenv global ${PYENV_VERSION} && \
-    pip3 install -q --no-cache-dir -U pip setuptools tox wheel && \
-    pip3 wheel -q -w wheelhouse -r requirements.txt && \
-    pip3 wheel -q -w wheelhouse -r requirements-dev.txt && \
-    pip3 wheel -q -w wheelhouse -r requirements-test.txt && \
+    pip3 install --no-cache-dir -U pip setuptools tox wheel && \
+    pip3 wheel -w wheelhouse -r requirements.txt && \
+    pip3 wheel -w wheelhouse -r requirements-dev.txt && \
+    pip3 wheel -w wheelhouse -r requirements-test.txt && \
     pyenv rehash
 
 # Copy over everything required to run tox
