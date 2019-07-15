@@ -23,21 +23,21 @@ def get_multi(db_session: Session, *, skip=0, limit=100) -> List[Optional[Packs]
     return db_session.query(Packs).offset(skip).limit(limit).all()
 
 
-def get_multi_by_email(
-    db_session: Session, *, email: str, skip=0, limit=100
-) -> List[Optional[Packs]]:
-    return (
-        db_session.query(Packs)
-        .filter(Packs.email == email)
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
+# def get_multi_by_email(
+#     db_session: Session, *, email: str, skip=0, limit=100
+# ) -> List[Optional[Packs]]:
+#     return (
+#         db_session.query(Packs)
+#         .filter(Packs.email == email)
+#         .offset(skip)
+#         .limit(limit)
+#         .all()
+#     )
 
 
-def create(db_session: Session, *, packs_in: PacksCreate, email: str) -> Packs:
+def create(db_session: Session, *, packs_in: PacksCreate) -> Packs:
     packs_in_data = jsonable_encoder(packs_in)
-    packs = Packs(**packs_in_data, email=email)
+    packs = Packs(**packs_in_data)
     db_session.add(packs)
     db_session.commit()
     db_session.refresh(packs)

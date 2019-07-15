@@ -3,6 +3,8 @@ from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
+from sqlalchemy import JSON
+from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -21,10 +23,13 @@ class Action(UIDFieldMixin, Base):
     """Db Schema for Action table."""
 
     RESOURCE_TYPE = ResourceType.ACTION
-    # UID_FIELDS = ["packs_name", "name"]
     UID_FIELDS = ["packs_name", "name"]
 
     __tablename__ = "actions"
+
+    # __table_args__ = (UniqueConstraint('pack', 'name', name='_customer_location_uc'),
+    # SOURCE: https://stackoverflow.com/questions/10059345/sqlalchemy-unique-across-multiple-columns
+    __table_args__ = (UniqueConstraint("pack", "name"),)
 
     id = Column(Integer, primary_key=True, index=True)
     # NOTE: New
@@ -36,7 +41,7 @@ class Action(UIDFieldMixin, Base):
     runner_type = Column("runner_type", String(255))
     enabled = Column("enabled", String(255))
     entry_point = Column("entry_point", String(255))
-    parameters = Column("parameters", String(255))
+    parameters = Column("parameters", JSON)
     tags = Column("tags", String(255))
     created_at = Column(DateTime(timezone=True), server_default=func.utcnow())
     updated_at = Column(DateTime(timezone=True), onupdate=func.utcnow())
@@ -199,7 +204,16 @@ if "__main__" == __name__:
         description="Check CPU Load Average on a Host",
         enabled=True,
         entry_point="checks/check_loadavg.py",
-        parameters='{"period": {"enum": ["1","5","15","all"], "type": "string", "description": "Time period for load avg: 1,5,15 minutes, or \'all\'", "default": "all", "position": 0}}',
+        # parameters='{"period": {"enum": ["1","5","15","all"], "type": "string", "description": "Time period for load avg: 1,5,15 minutes, or \'all\'", "default": "all", "position": 0}}',
+        parameters={
+            "period": {
+                "enum": ["1", "5", "15", "all"],
+                "type": "string",
+                "description": "Time period for load avg: 1,5,15 minutes, or 'all'",
+                "default": "all",
+                "position": 0,
+            }
+        },
         pack=pack_linux,
     )
 
