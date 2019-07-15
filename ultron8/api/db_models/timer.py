@@ -28,7 +28,7 @@ class TimerDB(UIDFieldMixin, Base):
     """
 
     RESOURCE_TYPE = ResourceType.TIMER
-    UID_FIELDS = ["pack", "name"]
+    UID_FIELDS = ["packs_name", "name"]
 
     name = Column("name", String(255))
     uid = Column("uid", String(255), nullable=True)
