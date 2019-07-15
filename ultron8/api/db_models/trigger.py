@@ -20,8 +20,9 @@ from ultron8.consts import ResourceType
 from ultron8.api.models.system.common import ResourceReference
 
 
-class TriggerType(UIDFieldMixin, Base):
-    """Description of a specific kind/type of a trigger. The
+class TriggerTypeDB(UIDFieldMixin, Base):
+    """
+    Description of a specific kind/type of a trigger. The
        (pack, name) tuple is expected uniquely identify a trigger in
        the namespace of all triggers provided by a specific trigger_source.
     Attribute:
@@ -55,7 +56,7 @@ class TriggerType(UIDFieldMixin, Base):
     )
 
     def __init__(self, *args, **values):
-        super(TriggerType, self).__init__(*args, **values)
+        super(TriggerTypeDB, self).__init__(*args, **values)
         self.ref = self.get_reference().ref
         # pylint: disable=no-member
         self.uid = self.get_uid()
@@ -74,11 +75,13 @@ class TriggerType(UIDFieldMixin, Base):
         return ref
 
     def __repr__(self):
-        return "TriggerType<name=%s,ref=%s>" % (self.name, self.ref)
+        return "TriggerTypeDB<name=%s,ref=%s>" % (self.name, self.ref)
 
 
-class Trigger(UIDFieldMixin, Base):
+class TriggerDB(UIDFieldMixin, Base):
     """
+    Basically events emitted by a sensor.
+
     Attribute:
         name - Trigger name.
         pack - Name of the content pack this trigger belongs to.
@@ -110,7 +113,7 @@ class Trigger(UIDFieldMixin, Base):
     )
 
     def __init__(self, *args, **values):
-        super(Trigger, self).__init__(*args, **values)
+        super(TriggerDB, self).__init__(*args, **values)
         self.ref = self.get_reference().ref
         self.uid = self.get_uid()
 
@@ -130,7 +133,7 @@ class Trigger(UIDFieldMixin, Base):
     def get_uid(self):
         # Note: Trigger is uniquely identified using name + pack + parameters attributes
         # pylint: disable=no-member
-        uid = super(Trigger, self).get_uid()
+        uid = super(TriggerDB, self).get_uid()
 
         # Note: We sort the resulting JSON object so that the same dictionary always results
         # in the same hash
@@ -147,34 +150,35 @@ class Trigger(UIDFieldMixin, Base):
         return len(parts) == len(self.UID_FIELDS) + 1 + 1
 
     def __repr__(self):
-        return "Trigger<name=%s,ref=%s>" % (self.name, self.ref)
+        return "TriggerDB<name=%s,ref=%s>" % (self.name, self.ref)
 
 
 class TriggerInstanceDB(Base):
-    """An instance or occurrence of a type of Trigger.
+    """
+    An instance or occurrence of a type of Trigger.
+
     Attribute:
         trigger: Reference to the Trigger object.
         payload (dict): payload specific to the occurrence.
         occurrence_time (datetime): time of occurrence of the trigger.
     """
 
-    __tablename__ = "trigger_instances"
+    __tablename__ = "trigger_events"
 
     id = Column("id", Integer, primary_key=True, index=True)
     trigger = Column("trigger", String(255))
     payload = Column("payload", JSON)
     occurrence_time = Column(DateTime(timezone=True), onupdate=func.utcnow())
-
     status = Column("status", String(255), nullable=False)
 
     def __repr__(self):
         return "TriggerInstanceDB<trigger=%s,payload=%s>" % (self.trigger, self.payload)
 
 
-MODELS = [TriggerType, Trigger, TriggerInstanceDB]
+MODELS = [TriggerTypeDB, TriggerDB, TriggerInstanceDB]
 
 
 if "__main__" == __name__:
-    trigger = TriggerType()
+    trigger = TriggerTypeDB()
 
     print(trigger)
