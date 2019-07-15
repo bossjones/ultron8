@@ -6,6 +6,7 @@ MAKEFLAGS += --warn-undefined-variables
 SHELL = /bin/bash
 
 CI_PYENV_DOCKER_IMAGE := bossjones/docker-pyenv:latest
+CI_IMAGE := bossjones/ultron8-ci
 
 VAGRANT_HOST_IP := 192.168.2.8
 
@@ -431,8 +432,15 @@ install-virtualenv-osx:
 pre_commit_install:
 	-cp git_hooks/.pre-commit-config.yaml .git/hooks/pre-commit
 
-travis:
-	tox
+travis-pull: ## pull base and run-image tags
+	docker pull $(CI_IMAGE):base || true
+	docker pull $(CI_IMAGE):runtime-image || true
+
+travis-build: ## simply build docker image using docker-compose
+	docker-compose -f docker-compose.ci.yml build
+
+travis: travis-pull travis-build dc-up-web ci-test ## Bring up web server using docker-compose, then exec into container and run pytest
+# tox
 
 .PHONY: run-black-check
 run-black-check: ## CHECK MODE: sensible pylint ( Lots of press over this during pycon 2018 )
