@@ -656,14 +656,29 @@ pipenv-activate:
 test-coverage:
 	pytest --capture=no --cov-report html --cov=. tests
 
+# ci:
+# # pipenv run py.test -n 8 --boxed --junitxml=report.xml
+# 	export $(\cat .env.dist | xargs) && \
+# 	echo " [run] alembic upgrade head" && \
+# 	alembic upgrade head && \
+# 	echo " [run] kick off ultron8/api/tests_pre_start.py" && \
+# 	python ultron8/api/tests_pre_start.py && \
+# 	py.test --cov-config .coveragerc \
+# 	--verbose --cov-append --cov-report term-missing \
+# 	--cov-report xml:cov.xml --cov-report html:htmlcov \
+# 	--cov-report annotate:cov_annotate \
+# 	--mypy \
+# 	--showlocals \
+# 	--tb=short \
+# 	--cov=ultron8 \
+# 	tests
+
 ci:
-# pipenv run py.test -n 8 --boxed --junitxml=report.xml
-	export $(/bin/cat .env.dist | xargs) && \
-	echo " [run] alembic upgrade head" && \
-	alembic upgrade head && \
-	echo " [run] kick off ultron8/api/tests_pre_start.py" && \
-	python ultron8/api/tests_pre_start.py && \
-	py.test --cov-config .coveragerc \
+	echo " [run] alembic upgrade head"
+	pipenv run alembic upgrade head
+	echo " [run] kick off ultron8/api/tests_pre_start.py"
+	pipenv run python ultron8/api/tests_pre_start.py
+	pipenv run py.test --cov-config .coveragerc \
 	--verbose --cov-append --cov-report term-missing \
 	--cov-report xml:cov.xml --cov-report html:htmlcov \
 	--cov-report annotate:cov_annotate \
