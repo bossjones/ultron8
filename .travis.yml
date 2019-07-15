@@ -207,6 +207,7 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
   - docker-compose --version
+  - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
   - make ci-before_install | gnomon
 
 # install:
