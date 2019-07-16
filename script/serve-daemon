@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
+source .env.dist
+
+pkill -f "ultron8/dev_serve.py" || true
+pgrep -f "ultron8/dev_serve.py" || true
+
 pipenv run python ./ultron8/api/backend_pre_start.py
 
 pipenv run python ./ultron8/initial_data.py
