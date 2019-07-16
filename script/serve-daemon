@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+pipenv run python ./ultron8/api/backend_pre_start.py
+
+pipenv run python ./ultron8/initial_data.py
+
+pipenv run python ultron8/dev_serve.py &

@@ -10,6 +10,17 @@ from starlette.datastructures import Secret
 log = logging.getLogger(__name__)
 
 
+LOG_LEVEL_MAP = {
+    "INFO": logging.INFO,
+    "DEBUG": logging.DEBUG,
+    "WARNING": logging.WARN,
+    "WARN": logging.WARN,
+    "ERROR": logging.ERROR,
+    "FATAL": logging.FATAL,
+    "CRITICAL": logging.CRITICAL,
+}
+
+
 def getenv_boolean(var_name, default_value=False):
     result = default_value
     env_value = os.getenv(var_name)
@@ -85,5 +96,7 @@ BACKEND_CORS_ORIGINS = os.getenv(
 
 FIRST_SUPERUSER = os.getenv("FIRST_SUPERUSER", "admin")
 FIRST_SUPERUSER_PASSWORD = os.getenv("FIRST_SUPERUSER_PASSWORD", "password")
-LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+
+_USER_LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+LOG_LEVEL = LOG_LEVEL_MAP[_USER_LOG_LEVEL]
 MASK_SECRETS = os.getenv("MASK_SECRETS", True)
