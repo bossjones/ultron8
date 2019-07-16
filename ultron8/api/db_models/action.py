@@ -51,7 +51,10 @@ class Action(UIDFieldMixin, Base):
     # FIX: sqlalchemy Error creating backref on relationship
     # https://stackoverflow.com/questions/26693041/sqlalchemy-error-creating-backref-on-relationship
     pack = relationship(
-        "Packs", backref=backref("pack_actions", uselist=False), foreign_keys=[packs_id]
+        "Packs",
+        backref=backref("pack_actions", uselist=False),
+        foreign_keys=[packs_id],
+        back_populates="actions",
     )
 
     def __init__(self, *args, **values):

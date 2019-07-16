@@ -5,7 +5,7 @@ import click
 import pyconfig
 
 from . import commands
-from .logging import getLogger
+from .logging_init import getLogger
 from .process import fail
 
 logger = getLogger(__name__)

@@ -1,5 +1,5 @@
 from . import cli
-from .logging import getLogger
+from .logging_init import getLogger
 
 logger = getLogger(__name__)
 

@@ -1143,7 +1143,7 @@ ci-gunzip: ## take contents of dockerfile and cache it locally into $HOME/.cache
 ci-bleeding: ci-build ci-gunzip ci-test
 
 ci-test: # Testing out new build to see if faster than before
-	.ci/dc-ci-exec-test.sh
+	.ci/dc-ci-exec-test.sh | gnomon
 
 ci-experimental: ci-build ci-test # Testing out new build to see if faster than before
 
@@ -1178,7 +1178,13 @@ serve-daemon: ## serve the web daemon from 'pipenv run'
 	pipenv run serve-daemon
 
 ci-local: ## run pytest using 'pipenv run'
-	bash script/local_pytest
+	pipenv run bash script/local_pytest
 
-local_pytest: ci-local ## run pytest using 'pipenv run'
-local-pytest: ci-local ## run pytest using 'pipenv run'
+local_pytest: ci-local ## [ALIAS for ci-local] run pytest using 'pipenv run'
+local-pytest: ci-local ## [ALIAS for ci-local] run pytest using 'pipenv run'
+
+ci-local-pdb: ## run pytest WITH PDB using 'pipenv run'
+	pipenv run bash script/local_pytest_pdb
+
+local_pytest_pdb: ci-local-pdb ## [ALIAS for ci-local-pdb] run pytest WITH PDB using 'pipenv run'
+local-pytest-pdb: ci-local-pdb ## [ALIAS for ci-local-pdb] run pytest WITH PDB using 'pipenv run'

@@ -81,11 +81,13 @@ class PacksBase(BaseModel):
     # User-friendly pack description.
     description: Optional[str] = None
     # Keywords which are used when searching for packs.
-    keywords: Optional[List[str]] = []  # List of strings, default to []
+    # keywords: Optional[List[str]] = []  # List of strings, default to []
+    keywords: Optional[str] = None
     # Pack version which must follow semver format (<major>.<minor>.<patch> e.g. 1.0.0)
-    version: Optional[float] = None
+    version: Optional[str] = None
     # A list of major Python versions pack is tested with and works with.
-    python_versions: Optional[List[str]] = []
+    # python_versions: Optional[List[str]] = []
+    python_versions: Optional[str] = None
     # Name of the pack author.
     author: Optional[str] = None
     # Email of the pack author.
@@ -110,11 +112,14 @@ class PacksCreate(PacksBaseInDB):
     # User-friendly pack description.
     description: str
     # Keywords which are used when searching for packs.
-    keywords: List[str]
+    # keywords: List[str]
+    keywords: str
     # Pack version which must follow semver format (<major>.<minor>.<patch> e.g. 1.0.0)
-    version: float
+    # version: str
+    version: str
     # A list of major Python versions pack is tested with and works with.
-    python_versions: List[str]
+    # python_versions: List[str]
+    python_versions: str
     # Name of the pack author.
     author: str
     # Email of the pack author.
@@ -132,11 +137,13 @@ class PacksUpdate(PacksBaseInDB):
     # User-friendly pack description.
     description: str
     # Keywords which are used when searching for packs.
-    keywords: List[str]
+    # keywords: List[str]
+    keywords: str
     # Pack version which must follow semver format (<major>.<minor>.<patch> e.g. 1.0.0)
-    version: float
+    version: str
     # A list of major Python versions pack is tested with and works with.
-    python_versions: List[str]
+    # python_versions: List[str]
+    python_versions: str
     # Name of the pack author.
     author: str
     # Email of the pack author.

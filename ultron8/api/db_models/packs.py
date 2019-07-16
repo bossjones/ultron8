@@ -34,7 +34,7 @@ class Packs(UIDFieldMixin, Base):
     uid = Column("uid", String(255), nullable=True)
     name = Column("name", String(255), nullable=False)
     description = Column("description", String(255), nullable=False)
-    keywords = Column("keywords", String(255))
+    keywords = Column("keywords", String(255), nullable=True)
     version = Column("version", String(255), nullable=False)
     python_versions = Column("python_versions", String(255))
     author = Column("author", String(255), nullable=False)
@@ -64,7 +64,12 @@ class Packs(UIDFieldMixin, Base):
     # Inspired by: https://auth0.com/blog/sqlalchemy-orm-tutorial-for-python-developers/
     # # and we added the actions property to Packs and configured the
     # packs_actions_association as the intermediary table.
-    actions = relationship("Action", secondary=PACKS_ACTIONS_ASSOCIATION)
+    actions = relationship(
+        "Action",
+        secondary=PACKS_ACTIONS_ASSOCIATION,
+        back_populates="pack",
+        lazy="dynamic",
+    )
 
     def __init__(self, *args, **values):
         super(Packs, self).__init__(*args, **values)

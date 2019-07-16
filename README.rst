@@ -88,6 +88,32 @@ To upgrade to latest version:
       eval "$(pyenv virtualenv-init -)"
 
 
+.. _testing:
+
+Local Testing
+------------------------------------------------------------------------------
+
+``ultron8`` can be tested locally if you have all of the correct dependencies installed, simply run:
+
+.. code-block:: console
+
+    $ pipenv run pip install -e .
+
+
+
+To run local tests, first start up the web server:
+
+.. code-block:: console
+
+    $ make serve-daemon
+
+Then run pytest using our wrapper script:
+
+.. code-block:: console
+
+    $ make ci-local
+
+
 
 Resources
 ------------------------------------------------------------------------------

@@ -30,7 +30,8 @@ def test_create_packs():
     description = "TEST Generic Linux actions"
     keywords = "linux"
     version = "0.1.0"
-    python_versions = ["3"]
+    # python_versions = ["3"]
+    python_versions = "3"
     author = "Jarvis"
     email = "info@theblacktonystark.com"
     contributors = ["bossjones"]
