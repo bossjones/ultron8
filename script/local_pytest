@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Description: run pytest using 'pipenv run', think ci-local
+
+echo " [run] alembic upgrade head"
+pipenv run alembic upgrade head
+
+echo " [run] kick off ultron8/api/tests_pre_start.py"
+pipenv run python ultron8/api/tests_pre_start.py
+
+set -eo pipefail
+
+pipenv run py.test --cov-config .coveragerc --verbose --cov-append --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests

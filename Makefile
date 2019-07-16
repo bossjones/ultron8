@@ -1176,3 +1176,9 @@ pre-commit-install: ## install all pre-commit hooks
 
 serve-daemon: ## serve the web daemon from 'pipenv run'
 	pipenv run serve-daemon
+
+ci-local: ## run pytest using 'pipenv run'
+	bash script/local_pytest
+
+local_pytest: ci-local ## run pytest using 'pipenv run'
+local-pytest: ci-local ## run pytest using 'pipenv run'
