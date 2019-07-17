@@ -1143,7 +1143,7 @@ ci-gunzip: ## take contents of dockerfile and cache it locally into $HOME/.cache
 ci-bleeding: ci-build ci-gunzip ci-test
 
 ci-test: # Testing out new build to see if faster than before
-	.ci/dc-ci-exec-test.sh | gnomon
+	.ci/dc-ci-exec-test.sh
 
 ci-experimental: ci-build ci-test # Testing out new build to see if faster than before
 
