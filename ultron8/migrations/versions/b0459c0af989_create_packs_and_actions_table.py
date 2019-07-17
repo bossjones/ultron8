@@ -1,8 +1,8 @@
 """create packs and actions table
 
-Revision ID: 848ec86cfb7c
+Revision ID: b0459c0af989
 Revises: 2339440ca3c3
-Create Date: 2019-07-17 16:06:56.296693
+Create Date: 2019-07-17 19:12:14.329988
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "848ec86cfb7c"
+revision = "b0459c0af989"
 down_revision = "2339440ca3c3"
 branch_labels = None
 depends_on = None

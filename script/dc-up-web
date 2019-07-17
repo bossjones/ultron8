@@ -21,4 +21,8 @@ TAG="${IMAGE_TAG}"
 echo " [run] Remove possibly previous broken stacks left hanging after an error"
 docker-compose -f docker-compose.ci.yml down -v --remove-orphans
 
+echo " [run] docker-compose up daemonized"
 docker-compose -f docker-compose.ci.yml -f docker-compose.web.yml up -d
+
+# echo " [run] docker-compose logs"
+# docker-compose -f docker-compose.ci.yml -f docker-compose.web.yml logs --no-color ultron8_ci

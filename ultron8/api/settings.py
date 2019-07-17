@@ -85,10 +85,14 @@ USERS_OPEN_REGISTRATION = getenv_boolean("USERS_OPEN_REGISTRATION")
 
 # -------------------------------------------------------------------------------
 # # Main Configs
-DEBUG = os.environ.get("DEBUG", None)
-TESTING = os.environ.get("TESTING", False)
-DATABASE_URL = os.environ.get("DATABASE_URL", None)
+DEBUG = bool(os.environ.get("DEBUG", False))
+TESTING = bool(os.environ.get("TESTING", False))
 TEST_DATABASE_URL = os.environ.get("TEST_DATABASE_URL", None)
+
+if TESTING and TEST_DATABASE_URL:
+    DATABASE_URL = TEST_DATABASE_URL
+else:
+    DATABASE_URL = os.environ.get("DATABASE_URL", None)
 
 BACKEND_CORS_ORIGINS = os.getenv(
     "BACKEND_CORS_ORIGINS", "*"

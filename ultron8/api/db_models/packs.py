@@ -68,11 +68,19 @@ class Packs(UIDFieldMixin, Base):
     # NOTE: On actions relationship
     # In this case, we had to create a helper table to persist the association between instances of Packs and instances of Action, as this wouldn't be possible without an extra table.
     # ------------------------------------------------------------------------------------
+    # actions = relationship(
+    #     "Action",
+    #     secondary=PACKS_ACTIONS_ASSOCIATION,
+    #     # back_populates="pack",
+    #     # lazy="dynamic",
+    #     lazy=True,
+    # )
+
+    # based on flask tutorial
     actions = relationship(
         "Action",
-        secondary=PACKS_ACTIONS_ASSOCIATION,
-        # back_populates="pack",
-        # lazy="dynamic",
+        # This is an attribute that will be added to the Action class
+        backref="pack",
         lazy=True,
     )
 
