@@ -34,14 +34,14 @@ class Packs(UIDFieldMixin, Base):
     uid = Column("uid", String(255), nullable=True)
     name = Column("name", String(255), nullable=False)
     description = Column("description", String(255), nullable=False)
-    keywords = Column("keywords", String(255), nullable=True)
+    keywords = Column("keywords", String(255), nullable=True, default="")
     version = Column("version", String(255), nullable=False)
-    python_versions = Column("python_versions", String(255))
+    python_versions = Column("python_versions", String(255), default="3")
     author = Column("author", String(255), nullable=False)
-    email = Column("email", String(255))
+    email = Column("email", String(255), nullable=False)
 
     # contributors = me.ListField(field=me.StringField())
-    contributors = Column("contributors", String(255))
+    contributors = Column("contributors", String(255), default="")
     # files = me.ListField(field=me.StringField())
     files = Column("files", String(255))
     # path = Column(String(255), nullable=True)
@@ -61,14 +61,19 @@ class Packs(UIDFieldMixin, Base):
     #     "Person", back_populates="company", cascade="all, delete-orphan"
     # )
 
-    # Inspired by: https://auth0.com/blog/sqlalchemy-orm-tutorial-for-python-developers/
     # # and we added the actions property to Packs and configured the
     # packs_actions_association as the intermediary table.
+    # Inspired by: https://auth0.com/blog/sqlalchemy-orm-tutorial-for-python-developers/
+    # ------------------------------------------------------------------------------------
+    # NOTE: On actions relationship
+    # In this case, we had to create a helper table to persist the association between instances of Packs and instances of Action, as this wouldn't be possible without an extra table.
+    # ------------------------------------------------------------------------------------
     actions = relationship(
         "Action",
         secondary=PACKS_ACTIONS_ASSOCIATION,
-        back_populates="pack",
-        lazy="dynamic",
+        # back_populates="pack",
+        # lazy="dynamic",
+        lazy=True,
     )
 
     def __init__(self, *args, **values):

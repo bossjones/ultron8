@@ -29,7 +29,7 @@ class Action(UIDFieldMixin, Base):
 
     # __table_args__ = (UniqueConstraint('pack', 'name', name='_customer_location_uc'),
     # SOURCE: https://stackoverflow.com/questions/10059345/sqlalchemy-unique-across-multiple-columns
-    __table_args__ = (UniqueConstraint("pack", "name"),)
+    # __table_args__ = (UniqueConstraint("pack", "name"),)
 
     id = Column(Integer, primary_key=True, index=True)
     # NOTE: New
@@ -50,17 +50,23 @@ class Action(UIDFieldMixin, Base):
     packs_name = Column("packs_name", Integer, ForeignKey("packs.name"), nullable=True)
     # FIX: sqlalchemy Error creating backref on relationship
     # https://stackoverflow.com/questions/26693041/sqlalchemy-error-creating-backref-on-relationship
-    pack = relationship(
-        "Packs",
-        backref=backref("pack_actions", uselist=False),
-        foreign_keys=[packs_id],
-        back_populates="actions",
-    )
+    # pack = relationship(
+    #     "Packs",
+    #     backref=backref("pack_actions", uselist=False),
+    #     foreign_keys=[packs_id],
+    #     # back_populates="actions",
+    #     lazy=True
+    # )
+    # pack = relationship(
+    #     "Packs",
+    #     back_populates="actions"
+    # )
 
-    def __init__(self, *args, **values):
+    def __init__(self, pack, *args, **values):
         super(Action, self).__init__(*args, **values)
         self.ref = self.get_reference().ref
         self.uid = self.get_uid()
+        self.pack = self.pack
 
     def get_reference(self):
         """
