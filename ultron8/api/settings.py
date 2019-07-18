@@ -85,8 +85,10 @@ USERS_OPEN_REGISTRATION = getenv_boolean("USERS_OPEN_REGISTRATION")
 
 # -------------------------------------------------------------------------------
 # # Main Configs
-DEBUG = bool(os.environ.get("DEBUG", False))
-TESTING = bool(os.environ.get("TESTING", False))
+DEBUG = getenv_boolean("DEBUG", True)
+# bool(os.environ.get("DEBUG", False))
+# TESTING = bool(os.environ.get("TESTING", False))
+TESTING = getenv_boolean("TESTING", False)
 TEST_DATABASE_URL = os.environ.get("TEST_DATABASE_URL", None)
 
 if TESTING and TEST_DATABASE_URL:
@@ -103,4 +105,4 @@ FIRST_SUPERUSER_PASSWORD = os.getenv("FIRST_SUPERUSER_PASSWORD", "password")
 
 _USER_LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 LOG_LEVEL = LOG_LEVEL_MAP[_USER_LOG_LEVEL]
-MASK_SECRETS = os.getenv("MASK_SECRETS", True)
+MASK_SECRETS = getenv_boolean("MASK_SECRETS", True)
