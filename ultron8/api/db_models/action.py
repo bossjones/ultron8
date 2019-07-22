@@ -23,7 +23,8 @@ class Action(UIDFieldMixin, Base):
     """Db Schema for Action table."""
 
     RESOURCE_TYPE = ResourceType.ACTION
-    UID_FIELDS = ["packs_name", "name"]
+    # UID_FIELDS = ["packs_name", "name"]
+    UID_FIELDS = ["metadata_file", "name"]
 
     __tablename__ = "actions"
 
@@ -46,8 +47,12 @@ class Action(UIDFieldMixin, Base):
     created_at = Column(DateTime(timezone=True), server_default=func.utcnow())
     updated_at = Column(DateTime(timezone=True), onupdate=func.utcnow())
 
-    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
-    packs_name = Column("packs_name", Integer, ForeignKey("packs.name"), nullable=True)
+    # packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
+    # packs_name = Column("packs_name", Integer, ForeignKey("packs.name"), nullable=True)
+
+    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"))
+    # packs_name = Column("packs_name", Integer, ForeignKey("packs.name"))
+
     # FIX: sqlalchemy Error creating backref on relationship
     # https://stackoverflow.com/questions/26693041/sqlalchemy-error-creating-backref-on-relationship
     # pack = relationship(
@@ -62,11 +67,30 @@ class Action(UIDFieldMixin, Base):
     #     back_populates="actions"
     # )
 
-    def __init__(self, pack, *args, **values):
+    # pack = relationship("Packs", back_populates="actions", foreign_keys=[packs_id, packs_name])
+
+    # pack = relationship("Packs")
+
+    # def __init__(self, pack, *args, **values):
+    def __init__(self, *args, **values):
         super(Action, self).__init__(*args, **values)
         self.ref = self.get_reference().ref
         self.uid = self.get_uid()
-        self.pack = self.pack
+        # self.pack = self.pack
+
+    def get_packs_name(self):
+        """
+        Retrieve packs.name object for this model.
+
+        :rtype: :class:`String`
+        """
+        # FIXME: This is brittle AF
+        if getattr(self, "packs_name", None):
+            packs_name = self.pack.name
+        else:
+            packs_name = self.packs_name
+
+        return packs_name
 
     def get_reference(self):
         """
@@ -88,6 +112,14 @@ class Action(UIDFieldMixin, Base):
             self.runner_type,
             self.entry_point,
         )
+
+    # def dump(self, _indent=0):
+    #     return (
+    #         "   " * _indent
+    #         + repr(self)
+    #         + "\n"
+    #         + "".join([c.dump(_indent + 1) for c in self.children.values()])
+    #     )
 
 
 # smoke tests

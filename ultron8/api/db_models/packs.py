@@ -1,9 +1,11 @@
 from sqlalchemy import Column
 from sqlalchemy import DateTime
-from sqlalchemy import ForeignKey
+
+# from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
-from sqlalchemy import Table
+
+# from sqlalchemy import Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -11,13 +13,15 @@ from ultron8.api.db.u_sqlite.base_class import Base
 from ultron8.api.db_models.ultronbase import UIDFieldMixin
 from ultron8.consts import ResourceType
 
+from sqlalchemy.orm import backref
 
-PACKS_ACTIONS_ASSOCIATION = Table(
-    "packs_actions",
-    Base.metadata,
-    Column("pack_id", Integer, ForeignKey("packs.id")),
-    Column("action_id", Integer, ForeignKey("actions.id")),
-)
+
+# PACKS_ACTIONS_ASSOCIATION = Table(
+#     "packs_actions",
+#     Base.metadata,
+#     Column("pack_id", Integer, ForeignKey("packs.id")),
+#     Column("action_id", Integer, ForeignKey("actions.id")),
+# )
 
 
 # class Packs(ContentPackResourceMixin, UIDFieldMixin, Base):
@@ -77,12 +81,17 @@ class Packs(UIDFieldMixin, Base):
     # )
 
     # based on flask tutorial
-    actions = relationship(
-        "Action",
-        # This is an attribute that will be added to the Action class
-        backref="pack",
-        lazy=True,
-    )
+    # actions = relationship(
+    #     "Action",
+    #     # This is an attribute that will be added to the Action class
+    #     backref="pack",
+    #     lazy=True,
+    # )
+
+    # actions = relationship("Action", back_populates="pack")
+    # actions = relationship("Action")
+
+    actions = relationship("Action", backref=backref("pack", lazy="joined"))
 
     def __init__(self, *args, **values):
         super(Packs, self).__init__(*args, **values)
@@ -90,6 +99,14 @@ class Packs(UIDFieldMixin, Base):
 
     def __repr__(self):
         return "Packs<name=%s,ref=%s>" % (self.name, self.ref)
+
+    # def dump(self, _indent=0):
+    #     return (
+    #         "   " * _indent
+    #         + repr(self)
+    #         + "\n"
+    #         + "".join([c.dump(_indent + 1) for c in self.children.values()])
+    #     )
 
 
 if "__main__" == __name__:
