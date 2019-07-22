@@ -5,6 +5,8 @@ MAKEFLAGS += --warn-undefined-variables
 
 SHELL = /bin/bash
 
+ONLY_RUN ?= packsonly
+
 CI_PYENV_DOCKER_IMAGE := bossjones/docker-pyenv:latest
 CI_IMAGE := bossjones/ultron8-ci
 
@@ -1179,6 +1181,9 @@ serve-daemon: ## serve the web daemon from 'pipenv run'
 
 ci-local: ## run pytest using 'pipenv run'
 	pipenv run bash script/local_pytest
+
+ci-local-only: ## run pytest using 'pipenv run'
+	pipenv run bash script/local_pytest_with_args $(ONLY_RUN)
 
 local_pytest: ci-local ## [ALIAS for ci-local] run pytest using 'pipenv run'
 local-pytest: ci-local ## [ALIAS for ci-local] run pytest using 'pipenv run'

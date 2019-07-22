@@ -1,3 +1,4 @@
+import pytest
 from fastapi.encoders import jsonable_encoder
 
 from tests.utils.utils import random_lower_string
@@ -25,6 +26,8 @@ from ultron8.api.models.packs import PacksUpdate
 # pack_linux
 
 
+@pytest.mark.packsonly
+@pytest.mark.unittest
 def test_create_packs():
     name = "linuxtest"
     description = "TEST Generic Linux actions"
