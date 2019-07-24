@@ -85,18 +85,9 @@ USERS_OPEN_REGISTRATION = getenv_boolean("USERS_OPEN_REGISTRATION")
 
 # -------------------------------------------------------------------------------
 # # Main Configs
-<<<<<<< HEAD
-DEBUG = getenv_boolean("DEBUG", True)
-# bool(os.environ.get("DEBUG", False))
-# TESTING = bool(os.environ.get("TESTING", False))
-TESTING = getenv_boolean("TESTING", False)
-||||||| merged common ancestors
-DEBUG = bool(os.environ.get("DEBUG", False))
-TESTING = bool(os.environ.get("TESTING", False))
-=======
+
 DEBUG = getenv_boolean("DEBUG", default_value=False)
 TESTING = getenv_boolean("TESTING", default_value=False)
->>>>>>> Feature: fixed alembic migration script, sqlite3 does not like datetimes
 TEST_DATABASE_URL = os.environ.get("TEST_DATABASE_URL", None)
 
 if TESTING and TEST_DATABASE_URL:
@@ -114,6 +105,7 @@ FIRST_SUPERUSER_PASSWORD = os.getenv("FIRST_SUPERUSER_PASSWORD", "password")
 _USER_LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 LOG_LEVEL = LOG_LEVEL_MAP[_USER_LOG_LEVEL]
 MASK_SECRETS = getenv_boolean("MASK_SECRETS", default_value=True)
+
 
 class SettingsConfig:
     DEBUG = DEBUG
