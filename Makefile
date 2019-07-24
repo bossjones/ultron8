@@ -1176,8 +1176,11 @@ pre-commit-run: ## run pre-commit hooks across all files
 pre-commit-install: ## install all pre-commit hooks
 	pre-commit install -f --install-hooks
 
-serve-daemon: ## serve the web daemon from 'pipenv run'
+serve-daemon-pipenv: ## serve the web daemon from 'pipenv run'
 	pipenv run serve-daemon
+
+serve-daemon: ## serve the web daemon from 'pipenv run'
+	bash script/serve-daemon
 
 ci-local: ## run pytest using 'pipenv run'
 	pipenv run bash script/local_pytest

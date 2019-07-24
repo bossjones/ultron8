@@ -2,12 +2,14 @@
 
 import sys
 
-from IPython.core.debugger import Tracer  # noqa
-from IPython.core import ultratb
+# import better_exceptions; better_exceptions.hook()
 
-sys.excepthook = ultratb.FormattedTB(
-    mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
-)
+# from IPython.core.debugger import Tracer  # noqa
+# from IPython.core import ultratb
+
+# sys.excepthook = ultratb.FormattedTB(
+#     mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
+# )
 
 
 import logging
@@ -94,6 +96,9 @@ async def db_session_middleware(request: Request, call_next):
 if __name__ == "__main__":
     import os
 
-    HOST = os.environ.get("HOST", "0.0.0.0")
+    # HOST = os.environ.get("HOST", "localhost")
+    HOST = "localhost"
     PORT = int(os.environ.get("PORT", 11267))
+    print(f" [HOST] {HOST}")
+    print(f" [PORT] {PORT}")
     uvicorn.run(app, host=HOST, port=PORT)

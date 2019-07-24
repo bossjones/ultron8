@@ -22,6 +22,13 @@ def debug_dump(obj):
             print("obj.%s = %s" % (attr, getattr(obj, attr)))
 
 
+def debug_dump_exclude(obj, exclude=["__builtins__", "__doc__"]):
+    for attr in dir(obj):
+        if hasattr(obj, attr):
+            if attr not in exclude:
+                print("obj.%s = %s" % (attr, getattr(obj, attr)))
+
+
 # NOTE: What is a lexer - A lexer is a software program that performs lexical analysis. Lexical analysis is the process of separating a stream of characters into different words, which in computer science we call 'tokens' . When you read my answer you are performing the lexical operation of breaking the string of text at the space characters into multiple words.
 def dump_color(obj):
     # source: https://gist.github.com/EdwardBetts/0814484fdf7bbf808f6f

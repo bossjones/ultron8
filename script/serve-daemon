@@ -1,13 +1,30 @@
 #!/usr/bin/env bash
 set -e
 
-source .env.dist
+source .local.dist
+
+export BETTER_EXCEPTIONS=1
+
+echo -e " [run] override env vars 'SERVER_NAME' and 'SERVER_HOST' - We don't want to mess w/ ''.env.dist' for this situation \n\n"
+echo -e " [run] manually set env: SERVER_NAME=localhost:11267 \n\n"
+export SERVER_NAME=localhost:11267
+echo -e " [run] manually set env: SERVER_HOST=http://localhost:11267 \n\n"
+export SERVER_HOST=http://localhost:11267
+
+# python script/envvar_check.py
 
 pkill -f "ultron8/dev_serve.py" || true
 pgrep -f "ultron8/dev_serve.py" || true
 
-pipenv run python ./ultron8/api/backend_pre_start.py
 
-pipenv run python ./ultron8/initial_data.py
+echo -e " [run] alembic --raiseerr upgrade head\n\n"
+alembic --raiseerr upgrade head
 
-pipenv run python ultron8/dev_serve.py &
+echo -e " [run] backend_pre_start.py\n\n"
+python ./ultron8/api/backend_pre_start.py
+
+echo -e " [run] initial_data.py\n\n"
+python ./ultron8/initial_data.py
+
+echo " [run] dev_serve.py\n\n"
+python ultron8/dev_serve.py &

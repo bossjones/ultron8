@@ -44,8 +44,10 @@ class Action(UIDFieldMixin, Base):
     entry_point = Column("entry_point", String(255))
     parameters = Column("parameters", JSON)
     tags = Column("tags", String(255))
-    created_at = Column(DateTime(timezone=True), server_default=func.utcnow())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.utcnow())
+    # created_at = Column(DateTime(timezone=True), server_default=func.utcnow())
+    # updated_at = Column(DateTime(timezone=True), onupdate=func.utcnow())
+    created_at = Column("created_at", String)
+    updated_at = Column("updated_at", String)
 
     # packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
     # packs_name = Column("packs_name", Integer, ForeignKey("packs.name"), nullable=True)

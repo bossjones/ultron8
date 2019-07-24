@@ -85,10 +85,18 @@ USERS_OPEN_REGISTRATION = getenv_boolean("USERS_OPEN_REGISTRATION")
 
 # -------------------------------------------------------------------------------
 # # Main Configs
+<<<<<<< HEAD
 DEBUG = getenv_boolean("DEBUG", True)
 # bool(os.environ.get("DEBUG", False))
 # TESTING = bool(os.environ.get("TESTING", False))
 TESTING = getenv_boolean("TESTING", False)
+||||||| merged common ancestors
+DEBUG = bool(os.environ.get("DEBUG", False))
+TESTING = bool(os.environ.get("TESTING", False))
+=======
+DEBUG = getenv_boolean("DEBUG", default_value=False)
+TESTING = getenv_boolean("TESTING", default_value=False)
+>>>>>>> Feature: fixed alembic migration script, sqlite3 does not like datetimes
 TEST_DATABASE_URL = os.environ.get("TEST_DATABASE_URL", None)
 
 if TESTING and TEST_DATABASE_URL:
@@ -105,4 +113,43 @@ FIRST_SUPERUSER_PASSWORD = os.getenv("FIRST_SUPERUSER_PASSWORD", "password")
 
 _USER_LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 LOG_LEVEL = LOG_LEVEL_MAP[_USER_LOG_LEVEL]
-MASK_SECRETS = getenv_boolean("MASK_SECRETS", True)
+MASK_SECRETS = getenv_boolean("MASK_SECRETS", default_value=True)
+
+class SettingsConfig:
+    DEBUG = DEBUG
+    API_V1_STR = API_V1_STR
+    DEFAULT_SECRET_KEY = DEFAULT_SECRET_KEY
+    SECRET_KEY = SECRET_KEY
+    ACCESS_TOKEN_EXPIRE_MINUTES = ACCESS_TOKEN_EXPIRE_MINUTES
+    SERVER_NAME = SERVER_NAME
+    SERVER_HOST = SERVER_HOST
+    PROJECT_NAME = PROJECT_NAME
+    SENTRY_DSN = SENTRY_DSN
+    SMTP_TLS = getenv_boolean("SMTP_TLS", True)
+    SMTP_PORT = None
+    SMTP_PORT = SMTP_PORT
+    SMTP_HOST = SMTP_HOST
+    SMTP_USER = SMTP_USER
+    SMTP_PASSWORD = SMTP_PASSWORD
+    EMAILS_FROM_EMAIL = EMAILS_FROM_EMAIL
+    EMAILS_FROM_NAME = EMAILS_FROM_NAME
+    EMAIL_RESET_TOKEN_EXPIRE_HOURS = EMAIL_RESET_TOKEN_EXPIRE_HOURS
+    EMAIL_TEMPLATES_DIR = EMAIL_TEMPLATES_DIR
+    EMAILS_ENABLED = EMAILS_ENABLED
+    USERS_OPEN_REGISTRATION = USERS_OPEN_REGISTRATION
+    DEBUG = DEBUG
+    TESTING = TESTING
+    TEST_DATABASE_URL = TEST_DATABASE_URL
+    DATABASE_URL = DATABASE_URL
+    BACKEND_CORS_ORIGINS = BACKEND_CORS_ORIGINS
+    FIRST_SUPERUSER = FIRST_SUPERUSER
+    FIRST_SUPERUSER_PASSWORD = FIRST_SUPERUSER_PASSWORD
+    LOG_LEVEL = LOG_LEVEL
+    MASK_SECRETS = MASK_SECRETS
+
+
+if __name__ == "__main__":
+    from ultron8.debugger import debug_dump_exclude
+
+    SC = SettingsConfig()
+    debug_dump_exclude(SC)
