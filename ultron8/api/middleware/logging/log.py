@@ -30,6 +30,8 @@ def setup_logging(level=None, outputs=None):
                 )
             ),
         )
+        # FIXME: TRY THIS LOGGING FORMAT # [%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s
+
         # outputs = (
         #     daiquiri.output.Stream(formatter=daiquiri.formatter.ColorFormatter(
         #         fmt="%(asctime)s [PID=%(process)d] [LEVEL=%(levelname)s] [NAME=%(name)s] - [THREAD=%(threadName)s] "

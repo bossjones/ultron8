@@ -30,9 +30,11 @@ if settings.LOG_LEVEL == logging.DEBUG:
     SQLALCHEMY_POOL_LOGGER = logging.getLogger("sqlalchemy.pool")
     SQLALCHEMY_ENGINE_LOGGER = logging.getLogger("sqlalchemy.engine")
     SQLALCHEMY_ORM_LOGGER = logging.getLogger("sqlalchemy.orm")
+    SQLALCHEMY_DIALECTS_LOGGER = logging.getLogger("sqlalchemy.dialects")
     SQLALCHEMY_POOL_LOGGER.setLevel(logging.DEBUG)
     SQLALCHEMY_ENGINE_LOGGER.setLevel(logging.DEBUG)
     SQLALCHEMY_ORM_LOGGER.setLevel(logging.DEBUG)
+    SQLALCHEMY_DIALECTS_LOGGER.setLevel(logging.DEBUG)
 
 LOGGER = logging.getLogger(__name__)
 
