@@ -10,6 +10,17 @@ from starlette.datastructures import Secret
 log = logging.getLogger(__name__)
 
 
+LOG_LEVEL_MAP = {
+    "INFO": logging.INFO,
+    "DEBUG": logging.DEBUG,
+    "WARNING": logging.WARN,
+    "WARN": logging.WARN,
+    "ERROR": logging.ERROR,
+    "FATAL": logging.FATAL,
+    "CRITICAL": logging.CRITICAL,
+}
+
+
 def getenv_boolean(var_name, default_value=False):
     result = default_value
     env_value = os.getenv(var_name)
@@ -74,10 +85,15 @@ USERS_OPEN_REGISTRATION = getenv_boolean("USERS_OPEN_REGISTRATION")
 
 # -------------------------------------------------------------------------------
 # # Main Configs
-DEBUG = os.environ.get("DEBUG", None)
-TESTING = os.environ.get("TESTING", False)
-DATABASE_URL = os.environ.get("DATABASE_URL", None)
+
+DEBUG = getenv_boolean("DEBUG", default_value=False)
+TESTING = getenv_boolean("TESTING", default_value=False)
 TEST_DATABASE_URL = os.environ.get("TEST_DATABASE_URL", None)
+
+if TESTING and TEST_DATABASE_URL:
+    DATABASE_URL = TEST_DATABASE_URL
+else:
+    DATABASE_URL = os.environ.get("DATABASE_URL", None)
 
 BACKEND_CORS_ORIGINS = os.getenv(
     "BACKEND_CORS_ORIGINS", "*"
@@ -85,5 +101,47 @@ BACKEND_CORS_ORIGINS = os.getenv(
 
 FIRST_SUPERUSER = os.getenv("FIRST_SUPERUSER", "admin")
 FIRST_SUPERUSER_PASSWORD = os.getenv("FIRST_SUPERUSER_PASSWORD", "password")
-LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
-MASK_SECRETS = os.getenv("MASK_SECRETS", True)
+
+_USER_LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+LOG_LEVEL = LOG_LEVEL_MAP[_USER_LOG_LEVEL]
+MASK_SECRETS = getenv_boolean("MASK_SECRETS", default_value=True)
+
+
+class SettingsConfig:
+    DEBUG = DEBUG
+    API_V1_STR = API_V1_STR
+    DEFAULT_SECRET_KEY = DEFAULT_SECRET_KEY
+    SECRET_KEY = SECRET_KEY
+    ACCESS_TOKEN_EXPIRE_MINUTES = ACCESS_TOKEN_EXPIRE_MINUTES
+    SERVER_NAME = SERVER_NAME
+    SERVER_HOST = SERVER_HOST
+    PROJECT_NAME = PROJECT_NAME
+    SENTRY_DSN = SENTRY_DSN
+    SMTP_TLS = getenv_boolean("SMTP_TLS", True)
+    SMTP_PORT = None
+    SMTP_PORT = SMTP_PORT
+    SMTP_HOST = SMTP_HOST
+    SMTP_USER = SMTP_USER
+    SMTP_PASSWORD = SMTP_PASSWORD
+    EMAILS_FROM_EMAIL = EMAILS_FROM_EMAIL
+    EMAILS_FROM_NAME = EMAILS_FROM_NAME
+    EMAIL_RESET_TOKEN_EXPIRE_HOURS = EMAIL_RESET_TOKEN_EXPIRE_HOURS
+    EMAIL_TEMPLATES_DIR = EMAIL_TEMPLATES_DIR
+    EMAILS_ENABLED = EMAILS_ENABLED
+    USERS_OPEN_REGISTRATION = USERS_OPEN_REGISTRATION
+    DEBUG = DEBUG
+    TESTING = TESTING
+    TEST_DATABASE_URL = TEST_DATABASE_URL
+    DATABASE_URL = DATABASE_URL
+    BACKEND_CORS_ORIGINS = BACKEND_CORS_ORIGINS
+    FIRST_SUPERUSER = FIRST_SUPERUSER
+    FIRST_SUPERUSER_PASSWORD = FIRST_SUPERUSER_PASSWORD
+    LOG_LEVEL = LOG_LEVEL
+    MASK_SECRETS = MASK_SECRETS
+
+
+if __name__ == "__main__":
+    from ultron8.debugger import debug_dump_exclude
+
+    SC = SettingsConfig()
+    debug_dump_exclude(SC)

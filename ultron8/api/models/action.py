@@ -44,7 +44,7 @@ class ActionBase(BaseModel):
     description: Optional[str] = None
     enabled: Optional[bool] = True
     entry_point: Optional[str] = None
-    pack: Optional[str] = None
+    # pack: Optional[str] = None
     parameters: Optional[dict] = {}
     # output_Schema : Optional[Optional[str]
     # notify : Optional[Optional[str]
@@ -79,7 +79,7 @@ class ActionBaseInDB(ActionBase):
 
     id: int
     packs_id: int
-    pack: str
+    # pack: str
     created_at: datetime = None
     updated_at: datetime = None
 
@@ -92,7 +92,7 @@ class ActionCreate(ActionBaseInDB):
     description: str = ""
     enabled: bool = True
     entry_point: str = ""
-    pack: str
+    # pack: str
     parameters: dict = {}
     # output_Schema :Optional[str]
     # notify :Optional[str]
@@ -108,7 +108,7 @@ class ActionUpdate(ActionBaseInDB):
     description: str = ""
     enabled: bool = True
     entry_point: str = ""
-    pack: str
+    # pack: str
     parameters: dict = {}
     # output_Schema :Optional[str]
     # notify :Optional[str]

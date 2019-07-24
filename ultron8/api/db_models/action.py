@@ -3,6 +3,8 @@ from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
+from sqlalchemy import JSON
+from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -22,9 +24,13 @@ class Action(UIDFieldMixin, Base):
 
     RESOURCE_TYPE = ResourceType.ACTION
     # UID_FIELDS = ["packs_name", "name"]
-    UID_FIELDS = ["packs_name", "name"]
+    UID_FIELDS = ["metadata_file", "name"]
 
     __tablename__ = "actions"
+
+    # __table_args__ = (UniqueConstraint('pack', 'name', name='_customer_location_uc'),
+    # SOURCE: https://stackoverflow.com/questions/10059345/sqlalchemy-unique-across-multiple-columns
+    # __table_args__ = (UniqueConstraint("pack", "name"),)
 
     id = Column(Integer, primary_key=True, index=True)
     # NOTE: New
@@ -36,23 +42,57 @@ class Action(UIDFieldMixin, Base):
     runner_type = Column("runner_type", String(255))
     enabled = Column("enabled", String(255))
     entry_point = Column("entry_point", String(255))
-    parameters = Column("parameters", String(255))
+    parameters = Column("parameters", JSON)
     tags = Column("tags", String(255))
-    created_at = Column(DateTime(timezone=True), server_default=func.utcnow())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.utcnow())
+    # created_at = Column(DateTime(timezone=True), server_default=func.utcnow())
+    # updated_at = Column(DateTime(timezone=True), onupdate=func.utcnow())
+    created_at = Column("created_at", String)
+    updated_at = Column("updated_at", String)
 
-    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
-    packs_name = Column("packs_name", Integer, ForeignKey("packs.name"), nullable=True)
+    # packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
+    # packs_name = Column("packs_name", Integer, ForeignKey("packs.name"), nullable=True)
+
+    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"))
+    # packs_name = Column("packs_name", Integer, ForeignKey("packs.name"))
+
     # FIX: sqlalchemy Error creating backref on relationship
     # https://stackoverflow.com/questions/26693041/sqlalchemy-error-creating-backref-on-relationship
-    pack = relationship(
-        "Packs", backref=backref("pack_actions", uselist=False), foreign_keys=[packs_id]
-    )
+    # pack = relationship(
+    #     "Packs",
+    #     backref=backref("pack_actions", uselist=False),
+    #     foreign_keys=[packs_id],
+    #     # back_populates="actions",
+    #     lazy=True
+    # )
+    # pack = relationship(
+    #     "Packs",
+    #     back_populates="actions"
+    # )
 
+    # pack = relationship("Packs", back_populates="actions", foreign_keys=[packs_id, packs_name])
+
+    # pack = relationship("Packs")
+
+    # def __init__(self, pack, *args, **values):
     def __init__(self, *args, **values):
         super(Action, self).__init__(*args, **values)
         self.ref = self.get_reference().ref
         self.uid = self.get_uid()
+        # self.pack = self.pack
+
+    def get_packs_name(self):
+        """
+        Retrieve packs.name object for this model.
+
+        :rtype: :class:`String`
+        """
+        # FIXME: This is brittle AF
+        if getattr(self, "packs_name", None):
+            packs_name = self.pack.name
+        else:
+            packs_name = self.packs_name
+
+        return packs_name
 
     def get_reference(self):
         """
@@ -74,6 +114,14 @@ class Action(UIDFieldMixin, Base):
             self.runner_type,
             self.entry_point,
         )
+
+    # def dump(self, _indent=0):
+    #     return (
+    #         "   " * _indent
+    #         + repr(self)
+    #         + "\n"
+    #         + "".join([c.dump(_indent + 1) for c in self.children.values()])
+    #     )
 
 
 # smoke tests
@@ -199,7 +247,16 @@ if "__main__" == __name__:
         description="Check CPU Load Average on a Host",
         enabled=True,
         entry_point="checks/check_loadavg.py",
-        parameters='{"period": {"enum": ["1","5","15","all"], "type": "string", "description": "Time period for load avg: 1,5,15 minutes, or \'all\'", "default": "all", "position": 0}}',
+        # parameters='{"period": {"enum": ["1","5","15","all"], "type": "string", "description": "Time period for load avg: 1,5,15 minutes, or \'all\'", "default": "all", "position": 0}}',
+        parameters={
+            "period": {
+                "enum": ["1", "5", "15", "all"],
+                "type": "string",
+                "description": "Time period for load avg: 1,5,15 minutes, or 'all'",
+                "default": "all",
+                "position": 0,
+            }
+        },
         pack=pack_linux,
     )
 

@@ -1,9 +1,4 @@
-# SOURCE: https://github.com/nwcell/guid_tracker/blob/aef948336ba268aa06df7cc9e7e6768b08d0f363/.env.dist
-# Add src to path
-# PYTHONPATH=${PYTHONPATH}:src
-
-# SOURCE: https://stackoverflow.com/questions/15648284/alembic-alembic-revision-says-import-error
-# export PYTHONPATH=${PYTHONPATH}:ultron8
+# NOTE: Use this for local testing outside of docker
 
 # Main Configs
 export DEBUG=True
@@ -25,7 +20,7 @@ export DATABASE_URL=sqlite:///dev.db
 
 # Testing
 export TEST_DATABASE_URL=sqlite:///test.db
-# TEST_DATABASE_URL=sqlite:///:memory:
+# export TEST_DATABASE_URL=sqlite:///:memory:
 
 
 # -------------------------------
@@ -38,8 +33,26 @@ export VARIABLE_NAME=${VARIABLE_NAME:-app}
 export APP_MODULE=${APP_MODULE:-"$MODULE_NAME:$VARIABLE_NAME"}
 export DEFAULT_GUNICORN_CONF=/gunicorn_conf.py
 export PRE_START_PATH=${PRE_START_PATH:-/home/developer/app/ultron8/migrations/gunicorn-prestart.sh}
-# export PRE_START_PATH=/home/developer/app/ultron8/migrations/gunicorn-prestart.sh
-export HOST=${HOST:-0.0.0.0}
-# export HOST=${HOST:-localhost}
-export PORT=${PORT:-11267}
-export LOG_LEVEL=${LOG_LEVEL:-info}
+
+
+export DOMAIN=localhost
+export HOST=${DOMAIN}
+export PORT=11267
+export LOG_LEVEL=DEBUG
+
+export BETTER_EXCEPTIONS=1
+export SERVER_NAME=${DOMAIN}:${PORT}
+export SERVER_HOST=http://${DOMAIN}:${PORT}
+
+export ULTRON_ENABLE_WEB=${ULTRON_ENABLE_WEB:-false}
+export JUPYTER="jupyter lab --ip=0.0.0.0 --allow-root --NotebookApp.custom_display_url=http://127.0.0.1:8888"
+export PROJECT_NAME=ultron8
+export DOMAIN_MAIN=ultron8.com
+export FIRST_SUPERUSER=admin@ultron8.com
+export FIRST_SUPERUSER_PASSWORD=password
+export SMTP_TLS=True
+export SMTP_PORT=587
+export SMTP_EMAILS_FROM_EMAIL=info@ultron8.com
+export FLOWER_AUTH=admin:password
+export USERS_OPEN_REGISTRATION=False
+export BACKEND_CORS_ORIGINS='*'

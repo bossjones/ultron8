@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from ultron8.api.core.security import get_password_hash
 from ultron8.api.core.security import verify_password
 from ultron8.api.db_models.action import Action
+from ultron8.api.db_models.packs import Packs
 from ultron8.api.models.action import ActionCreate
 from ultron8.api.models.action import ActionUpdate
 
@@ -17,6 +18,10 @@ def get(db_session: Session, *, action_id: int) -> Optional[Action]:
 
 def get_by_ref(db_session: Session, *, ref: str) -> Optional[Action]:
     return db_session.query(Action).filter(Action.ref == ref).first()
+
+
+def get_by_name(db_session: Session, *, name: str) -> Optional[Action]:
+    return db_session.query(Action).filter(Action.name == name).first()
 
 
 def get_multi(db_session: Session, *, skip=0, limit=100) -> List[Optional[Action]]:
@@ -35,9 +40,9 @@ def get_multi_by_packs_id(
     )
 
 
-def create(db_session: Session, *, action_in: ActionCreate, email: str) -> Action:
+def create(db_session: Session, *, action_in: ActionCreate, pack: Packs) -> Action:
     action_in_data = jsonable_encoder(action_in)
-    action = Action(**action_in_data, email=email)
+    action = Action(**action_in_data, pack=pack)
     db_session.add(action)
     db_session.commit()
     db_session.refresh(action)

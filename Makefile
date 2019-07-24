@@ -5,7 +5,10 @@ MAKEFLAGS += --warn-undefined-variables
 
 SHELL = /bin/bash
 
+ONLY_RUN ?= packsonly
+
 CI_PYENV_DOCKER_IMAGE := bossjones/docker-pyenv:latest
+CI_IMAGE := bossjones/ultron8-ci
 
 VAGRANT_HOST_IP := 192.168.2.8
 
@@ -431,8 +434,15 @@ install-virtualenv-osx:
 pre_commit_install:
 	-cp git_hooks/.pre-commit-config.yaml .git/hooks/pre-commit
 
-travis:
-	tox
+travis-pull: ## pull base and run-image tags
+	docker pull $(CI_IMAGE):base || true
+	docker pull $(CI_IMAGE):runtime-image || true
+
+travis-build: ## simply build docker image using docker-compose
+	docker-compose -f docker-compose.ci.yml build
+
+travis: travis-pull travis-build dc-up-web ci-test ## Bring up web server using docker-compose, then exec into container and run pytest
+# tox
 
 .PHONY: run-black-check
 run-black-check: ## CHECK MODE: sensible pylint ( Lots of press over this during pycon 2018 )
@@ -656,8 +666,37 @@ pipenv-activate:
 test-coverage:
 	pytest --capture=no --cov-report html --cov=. tests
 
+# ci:
+# # pipenv run py.test -n 8 --boxed --junitxml=report.xml
+# 	export $(\cat .env.dist | xargs) && \
+# 	echo " [run] alembic upgrade head" && \
+# 	alembic upgrade head && \
+# 	echo " [run] kick off ultron8/api/tests_pre_start.py" && \
+# 	python ultron8/api/tests_pre_start.py && \
+# 	py.test --cov-config .coveragerc \
+# 	--verbose --cov-append --cov-report term-missing \
+# 	--cov-report xml:cov.xml --cov-report html:htmlcov \
+# 	--cov-report annotate:cov_annotate \
+# 	--mypy \
+# 	--showlocals \
+# 	--tb=short \
+# 	--cov=ultron8 \
+# 	tests
+
 ci:
-	pipenv run py.test -n 8 --boxed --junitxml=report.xml
+	echo " [run] alembic upgrade head"
+	pipenv run alembic upgrade head
+	echo " [run] kick off ultron8/api/tests_pre_start.py"
+	pipenv run python ultron8/api/tests_pre_start.py
+	pipenv run py.test --cov-config .coveragerc \
+	--verbose --cov-append --cov-report term-missing \
+	--cov-report xml:cov.xml --cov-report html:htmlcov \
+	--cov-report annotate:cov_annotate \
+	--mypy \
+	--showlocals \
+	--tb=short \
+	--cov=ultron8 \
+	tests
 
 test-readme:
 	@pipenv run python setup.py check --restructuredtext --strict && ([ $$? -eq 0 ] && echo "README.rst and HISTORY.rst ok") || echo "Invalid markup in README.rst or HISTORY.rst!"
@@ -1136,3 +1175,24 @@ pre-commit-run: ## run pre-commit hooks across all files
 
 pre-commit-install: ## install all pre-commit hooks
 	pre-commit install -f --install-hooks
+
+serve-daemon-pipenv: ## serve the web daemon from 'pipenv run'
+	pipenv run serve-daemon
+
+serve-daemon: ## serve the web daemon from 'pipenv run'
+	bash script/serve-daemon
+
+ci-local: ## run pytest using 'pipenv run'
+	pipenv run bash script/local_pytest
+
+ci-local-only: ## run pytest using 'pipenv run'
+	pipenv run bash script/local_pytest_with_args $(ONLY_RUN)
+
+local_pytest: ci-local ## [ALIAS for ci-local] run pytest using 'pipenv run'
+local-pytest: ci-local ## [ALIAS for ci-local] run pytest using 'pipenv run'
+
+ci-local-pdb: ## run pytest WITH PDB using 'pipenv run'
+	pipenv run bash script/local_pytest_pdb
+
+local_pytest_pdb: ci-local-pdb ## [ALIAS for ci-local-pdb] run pytest WITH PDB using 'pipenv run'
+local-pytest-pdb: ci-local-pdb ## [ALIAS for ci-local-pdb] run pytest WITH PDB using 'pipenv run'
