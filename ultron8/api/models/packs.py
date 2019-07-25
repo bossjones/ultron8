@@ -92,14 +92,18 @@ class PacksBase(BaseModel):
     author: Optional[str] = None
     # Email of the pack author.
     email: Optional[EmailStr] = None
-    # contributors
+
+    contributors: Optional[str] = None
 
 
 class PacksBaseInDB(PacksBase):
     id: int = None
+    uid: int = None
     created_at: datetime = None
     updated_at: datetime = None
-    # deleted_at: datetime = None
+    files: str
+    path: str
+    # actions: Optional[ActionInDB] = []
 
 
 # Properties to receive via API on creation
@@ -125,30 +129,16 @@ class PacksCreate(PacksBaseInDB):
     # Email of the pack author.
     email: EmailStr
     # contributors
+    contributors: str
 
 
 # Properties to receive via API on update
 class PacksUpdate(PacksBaseInDB):
-    # Pack reference. It can only contain letters, digits and underscores.
-    ref: str
-    # User-friendly pack name. If this attribute contains spaces or any other special characters, then
-    # the "ref" attribute must also be specified (see above).
-    name: str
-    # User-friendly pack description.
-    description: str
-    # Keywords which are used when searching for packs.
-    # keywords: List[str]
-    keywords: str
-    # Pack version which must follow semver format (<major>.<minor>.<patch> e.g. 1.0.0)
-    version: str
-    # A list of major Python versions pack is tested with and works with.
-    # python_versions: List[str]
-    python_versions: str
-    # Name of the pack author.
-    author: str
-    # Email of the pack author.
-    email: EmailStr
-    # contributors
+    pass
+
+
+# DB representation of Pack, with correctly scoped types etc
+# class PacksInDB(PacksBaseInDB):
 
 
 # smoke-tests

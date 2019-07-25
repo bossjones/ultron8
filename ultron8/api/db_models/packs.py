@@ -15,6 +15,8 @@ from ultron8.consts import ResourceType
 
 from sqlalchemy.orm import backref
 
+import datetime
+
 
 # PACKS_ACTIONS_ASSOCIATION = Table(
 #     "packs_actions",
@@ -52,7 +54,7 @@ class Packs(UIDFieldMixin, Base):
     path = Column("path", String)
     dependencies = Column("dependencies", String)
     # dependencies = me.ListField(field=me.StringField())
-    system = Column("system", String)
+    system = Column("system", String, nullable=True)
     # system = me.DictField()
     # created_at = Column(DateTime(timezone=True), server_default=func.utcnow())
     # updated_at = Column(DateTime(timezone=True), onupdate=func.utcnow())
@@ -99,6 +101,8 @@ class Packs(UIDFieldMixin, Base):
     def __init__(self, *args, **values):
         super(Packs, self).__init__(*args, **values)
         self.uid = self.get_uid()
+        self.created_at = str(datetime.datetime.utcnow())
+        self.updated_at = str(datetime.datetime.utcnow())
 
     def __repr__(self):
         return "Packs<name=%s,ref=%s>" % (self.name, self.ref)

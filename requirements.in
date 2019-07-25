@@ -97,3 +97,8 @@ daiquiri
 raven
 celery
 pandas
+
+
+# https://github.com/fwkz/riposte
+# Python package for wrapping applications inside a tailored interactive shell
+# riposte
