@@ -92,14 +92,18 @@ class PacksBase(BaseModel):
     author: Optional[str] = None
     # Email of the pack author.
     email: Optional[EmailStr] = None
-    # contributors
+
+    contributors: Optional[str] = None
 
 
 class PacksBaseInDB(PacksBase):
     id: int = None
+    uid: int = None
     created_at: datetime = None
     updated_at: datetime = None
-    # deleted_at: datetime = None
+    files: str
+    path: str
+    # actions: Optional[ActionInDB] = []
 
 
 # Properties to receive via API on creation
@@ -125,6 +129,7 @@ class PacksCreate(PacksBaseInDB):
     # Email of the pack author.
     email: EmailStr
     # contributors
+    contributors: str
 
 
 # Properties to receive via API on update
@@ -149,6 +154,11 @@ class PacksUpdate(PacksBaseInDB):
     # Email of the pack author.
     email: EmailStr
     # contributors
+    contributors: str
+
+
+# DB representation of Pack, with correctly scoped types etc
+# class PacksInDB(PacksBaseInDB):
 
 
 # smoke-tests

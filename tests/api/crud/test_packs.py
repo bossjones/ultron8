@@ -33,12 +33,11 @@ def test_create_packs():
     description = "TEST Generic Linux actions"
     keywords = "linux"
     version = "0.1.0"
-    # python_versions = ["3"]
     python_versions = "3"
     author = "Jarvis"
     email = "info@theblacktonystark.com"
-    contributors = ["bossjones"]
-    files = ["./tests/fixtures/simple/packs/linux"]
+    contributors = "bossjones"
+    files = "./tests/fixtures/simple/packs/linux"
     path = "./tests/fixtures/simple/packs/linux"
     ref = "linux"
 
@@ -57,6 +56,16 @@ def test_create_packs():
     )
     packs = crud.packs.create(db_session, packs_in=packs_in)
     assert packs.name == name
+    assert packs.description == description
+    assert packs.keywords == keywords
+    assert packs.version == version
+    assert packs.python_versions == python_versions
+    assert packs.author == author
+    assert packs.email == email
+    assert packs.contributors == contributors
+    assert packs.files == files
+    assert packs.path == path
+    assert packs.ref == ref
     # assert hasattr(packs, "hashed_password")
 
 

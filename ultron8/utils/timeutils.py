@@ -6,6 +6,18 @@ from __future__ import unicode_literals
 import calendar
 import datetime
 import re
+import os
+import time
+
+
+def set_timezone(timezone="UTC"):
+    """Set timezone for application
+
+    Keyword Arguments:
+        timezone {str} -- [description] (default: {'UTC'})
+    """
+    os.environ["TZ"] = timezone
+    time.tzset()
 
 
 def current_time(tz=None):

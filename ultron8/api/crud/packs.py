@@ -10,27 +10,55 @@ from ultron8.api.models.packs import PacksUpdate
 
 
 def get(db_session: Session, *, packs_id: int) -> Optional[Packs]:
+    """Return Packs object based on pack id.
+
+    Arguments:
+        db_session {Session} -- SQLAlchemy Session object
+        packs_id {int} -- ID of pack
+
+    Returns:
+        Optional[Packs] -- Returns a Packs object or nothing if it doesn't exist
+    """
     return db_session.query(Packs).filter(Packs.id == packs_id).first()
 
 
 def get_by_ref(db_session: Session, *, ref: str) -> Optional[Packs]:
+    """Return Packs object based on pack ref.
+
+    Arguments:
+        db_session {Session} -- SQLAlchemy Session object
+        ref {str} -- ref name of pack
+
+    Returns:
+        Optional[Packs] -- Returns a Packs object or nothing if it doesn't exist
+    """
     return db_session.query(Packs).filter(Packs.ref == ref).first()
 
 
+def get_by_name(db_session: Session, *, name: str) -> Optional[Packs]:
+    """Return Packs object based on pack name.
+
+    Arguments:
+        db_session {Session} -- SQLAlchemy Session object
+        name {str} -- name of pack
+
+    Returns:
+        Optional[Packs] -- Returns a Packs object or nothing if it doesn't exist
+    """
+    return db_session.query(Packs).filter(Packs.name == name).first()
+
+
 def get_multi(db_session: Session, *, skip=0, limit=100) -> List[Optional[Packs]]:
+    """Return multiple Packs objects.
+
+    Arguments:
+        db_session {Session} -- SQLAlchemy Session object
+        name {str} -- name of pack
+
+    Returns:
+        Optional[Packs] -- Returns a Packs object or nothing if it doesn't exist
+    """
     return db_session.query(Packs).offset(skip).limit(limit).all()
-
-
-# def get_multi_by_email(
-#     db_session: Session, *, email: str, skip=0, limit=100
-# ) -> List[Optional[Packs]]:
-#     return (
-#         db_session.query(Packs)
-#         .filter(Packs.email == email)
-#         .offset(skip)
-#         .limit(limit)
-#         .all()
-#     )
 
 
 def create(db_session: Session, *, packs_in: PacksCreate) -> Packs:

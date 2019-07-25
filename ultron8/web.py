@@ -35,6 +35,12 @@ logger = logging.getLogger(__name__)
 # TODO: As soon as we merge web.py into the MCP, we will want to nuke this setup_logging line!!!
 log.setup_logging()
 
+
+# # Suppress overly verbose logs from libraries that aren't helpful
+# logging.getLogger('requests').setLevel(logging.WARNING)
+# logging.getLogger('urllib3').setLevel(logging.WARNING)
+# logging.getLogger('aiohttp.access').setLevel(logging.WARNING)
+
 # ---------------------------------------------------------------------
 # SOURCE: https://github.com/webrecorder/browsertrix/blob/f6152b780e054940fbd2d336869ebf0fa052147d/browsertrix/crawl.py
 # from asyncio import AbstractEventLoop, gather as aio_gather, get_event_loop
