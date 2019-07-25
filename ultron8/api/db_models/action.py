@@ -14,6 +14,14 @@ from ultron8.api.db_models.ultronbase import UIDFieldMixin, ContentPackResourceM
 from ultron8.consts import ResourceType
 
 from ultron8.api.models.system.common import ResourceReference
+import datetime
+
+# SOURCE: https://docs.sqlalchemy.org/en/13/dialects/sqlite.html
+# NOTE: acceptable sqlite types
+# from sqlalchemy.dialects.sqlite import \
+#             BLOB, BOOLEAN, CHAR, DATE, DATETIME, DECIMAL, FLOAT, \
+#             INTEGER, NUMERIC, JSON, SMALLINT, TEXT, TIME, TIMESTAMP, \
+#             VARCHAR
 
 # from ultron8.api.db.base import Base
 
@@ -43,7 +51,7 @@ class Action(UIDFieldMixin, Base):
     enabled = Column("enabled", String(255))
     entry_point = Column("entry_point", String(255))
     parameters = Column("parameters", JSON)
-    tags = Column("tags", String(255))
+    tags = Column("tags", JSON, nullable=True)
     # created_at = Column(DateTime(timezone=True), server_default=func.utcnow())
     # updated_at = Column(DateTime(timezone=True), onupdate=func.utcnow())
     created_at = Column("created_at", String)
@@ -79,6 +87,8 @@ class Action(UIDFieldMixin, Base):
         self.ref = self.get_reference().ref
         self.uid = self.get_uid()
         # self.pack = self.pack
+        self.created_at = str(datetime.datetime.utcnow())
+        self.updated_at = str(datetime.datetime.utcnow())
 
     def get_packs_name(self):
         """
