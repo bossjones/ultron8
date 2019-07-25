@@ -9,6 +9,8 @@ from ultron8.api.models.packs import PacksBaseInDB
 from ultron8.api.models.packs import PacksCreate
 from ultron8.api.models.packs import PacksUpdate
 
+from freezegun import freeze_time
+
 # pack_linux = Packs(
 #     name="linux",
 #     description="Generic Linux actions",
@@ -26,6 +28,7 @@ from ultron8.api.models.packs import PacksUpdate
 # pack_linux
 
 
+@freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.packsonly
 @pytest.mark.unittest
 def test_create_packs():
@@ -66,6 +69,8 @@ def test_create_packs():
     assert packs.files == files
     assert packs.path == path
     assert packs.ref == ref
+    assert packs.created_at == "2019-07-25 01:11:00.740428"
+    assert packs.updated_at == "2019-07-25 01:11:00.740428"
     # assert hasattr(packs, "hashed_password")
 
 
@@ -135,3 +140,37 @@ def test_create_packs():
 #     packs_2 = crud.packs.get(db_session, packs_id=packs.id)
 #     assert packs.email == packs_2.email
 #     assert jsonable_encoder(packs) == jsonable_encoder(packs_2)
+
+
+@freeze_time("2019-07-25 01:11:00.740428")
+@pytest.mark.packsonly
+@pytest.mark.unittest
+def test_get_packs():
+    name = random_lower_string()
+    description = random_lower_string()
+    keywords = random_lower_string()
+    version = random_lower_string()
+    python_versions = random_lower_string()
+    author = random_lower_string()
+    email = "info@theblacktonystark.com"
+    contributors = random_lower_string()
+    files = random_lower_string()
+    path = random_lower_string()
+    ref = random_lower_string()
+
+    packs_in = PacksCreate(
+        name=name,
+        description=description,
+        keywords=keywords,
+        version=version,
+        python_versions=python_versions,
+        author=author,
+        email=email,
+        contributors=contributors,
+        files=files,
+        path=path,
+        ref=ref,
+    )
+    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs_2 = crud.packs.get(db_session, packs_id=packs.id)
+    assert jsonable_encoder(packs) == jsonable_encoder(packs_2)
