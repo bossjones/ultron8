@@ -74,74 +74,6 @@ def test_create_packs():
     # assert hasattr(packs, "hashed_password")
 
 
-# def test_authenticate_packs():
-#     email = random_lower_string()
-#     password = random_lower_string()
-#     packs_in = PacksCreate(email=email, password=password)
-#     packs = crud.packs.create(db_session, packs_in=packs_in)
-#     authenticated_packs = crud.packs.authenticate(
-#         db_session, email=email, password=password
-#     )
-#     assert authenticated_packs
-#     assert packs.email == authenticated_packs.email
-
-
-# def test_not_authenticate_packs():
-#     email = random_lower_string()
-#     password = random_lower_string()
-#     packs = crud.packs.authenticate(db_session, email=email, password=password)
-#     assert packs is None
-
-
-# def test_check_if_packs_is_active():
-#     email = random_lower_string()
-#     password = random_lower_string()
-#     packs_in = PacksCreate(email=email, password=password)
-#     packs = crud.packs.create(db_session, packs_in=packs_in)
-#     is_active = crud.packs.is_active(packs)
-#     assert is_active is True
-
-
-# def test_check_if_packs_is_active_inactive():
-#     email = random_lower_string()
-#     password = random_lower_string()
-#     packs_in = PacksCreate(email=email, password=password, disabled=True)
-#     print(packs_in)
-#     packs = crud.packs.create(db_session, packs_in=packs_in)
-#     print(packs)
-#     is_active = crud.packs.is_active(packs)
-#     print(is_active)
-#     assert is_active
-
-
-# def test_check_if_packs_is_superpacks():
-#     email = random_lower_string()
-#     password = random_lower_string()
-#     packs_in = PacksCreate(email=email, password=password, is_superpacks=True)
-#     packs = crud.packs.create(db_session, packs_in=packs_in)
-#     is_superpacks = crud.packs.is_superpacks(packs)
-#     assert is_superpacks is True
-
-
-# def test_check_if_packs_is_superpacks_normal_packs():
-#     packsname = random_lower_string()
-#     password = random_lower_string()
-#     packs_in = PacksCreate(email=packsname, password=password)
-#     packs = crud.packs.create(db_session, packs_in=packs_in)
-#     is_superpacks = crud.packs.is_superpacks(packs)
-#     assert is_superpacks is False
-
-
-# def test_get_packs():
-#     password = random_lower_string()
-#     packsname = random_lower_string()
-#     packs_in = PacksCreate(email=packsname, password=password, is_superpacks=True)
-#     packs = crud.packs.create(db_session, packs_in=packs_in)
-#     packs_2 = crud.packs.get(db_session, packs_id=packs.id)
-#     assert packs.email == packs_2.email
-#     assert jsonable_encoder(packs) == jsonable_encoder(packs_2)
-
-
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.packsonly
 @pytest.mark.unittest
@@ -174,3 +106,108 @@ def test_get_packs():
     packs = crud.packs.create(db_session, packs_in=packs_in)
     packs_2 = crud.packs.get(db_session, packs_id=packs.id)
     assert jsonable_encoder(packs) == jsonable_encoder(packs_2)
+
+
+@freeze_time("2019-07-25 01:11:00.740428")
+@pytest.mark.packsonly
+@pytest.mark.unittest
+def test_update_packs():
+    name = random_lower_string()
+    description = random_lower_string()
+    keywords = random_lower_string()
+    version = random_lower_string()
+    python_versions = random_lower_string()
+    author = random_lower_string()
+    email = "info@theblacktonystark.com"
+    contributors = random_lower_string()
+    files = random_lower_string()
+    path = random_lower_string()
+    ref = random_lower_string()
+
+    packs_in = PacksCreate(
+        name=name,
+        description=description,
+        keywords=keywords,
+        version=version,
+        python_versions=python_versions,
+        author=author,
+        email=email,
+        contributors=contributors,
+        files=files,
+        path=path,
+        ref=ref,
+    )
+    packs = crud.packs.create(db_session, packs_in=packs_in)
+    description2 = random_lower_string()
+    packs_update = PacksUpdate(description=description2, files=files, path=path)
+    packs2 = crud.packs.update(
+        db_session=db_session, packs=packs, packs_in=packs_update
+    )
+
+    assert packs.name == packs2.name
+    assert packs.description == description2
+    assert packs.keywords == packs2.keywords
+    assert packs.version == packs2.version
+    assert packs.python_versions == packs2.python_versions
+    assert packs.author == packs2.author
+    assert packs.email == packs2.email
+    assert packs.contributors == packs2.contributors
+    assert packs.files == packs2.files
+    assert packs.path == packs2.path
+    assert packs.ref == packs2.ref
+    assert packs.created_at == "2019-07-25 01:11:00.740428"
+    assert packs.updated_at == "2019-07-25 01:11:00.740428"
+
+
+@freeze_time("2019-07-25 01:11:00.740428")
+@pytest.mark.packsonly
+@pytest.mark.unittest
+def test_delete_packs():
+    name = random_lower_string()
+    description = random_lower_string()
+    keywords = random_lower_string()
+    version = random_lower_string()
+    python_versions = random_lower_string()
+    author = random_lower_string()
+    email = "info@theblacktonystark.com"
+    contributors = random_lower_string()
+    files = random_lower_string()
+    path = random_lower_string()
+    ref = random_lower_string()
+
+    packs_in = PacksCreate(
+        name=name,
+        description=description,
+        keywords=keywords,
+        version=version,
+        python_versions=python_versions,
+        author=author,
+        email=email,
+        contributors=contributors,
+        files=files,
+        path=path,
+        ref=ref,
+    )
+    packs = crud.packs.create(db_session, packs_in=packs_in)
+    description2 = random_lower_string()
+
+    packs2 = crud.packs.remove(db_session=db_session, id=packs.id)
+
+    packs3 = crud.packs.get(db_session=db_session, packs_id=packs.id)
+
+    assert packs3 is None
+
+    assert packs2.id == packs.id
+    assert packs2.name == name
+    assert packs2.description == description
+    assert packs2.keywords == keywords
+    assert packs2.version == version
+    assert packs2.python_versions == python_versions
+    assert packs2.author == author
+    assert packs2.email == email
+    assert packs2.contributors == contributors
+    assert packs2.files == files
+    assert packs2.path == path
+    assert packs2.ref == ref
+    assert packs2.created_at == "2019-07-25 01:11:00.740428"
+    assert packs2.updated_at == "2019-07-25 01:11:00.740428"
