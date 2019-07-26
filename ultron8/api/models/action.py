@@ -14,6 +14,8 @@ from pydantic import BaseModel
 from pydantic import EmailStr
 from pydantic import Schema
 
+# from ultron8.api.models.packs import
+
 log = logging.getLogger(__name__)
 
 
@@ -38,8 +40,9 @@ class RunnerTypeModel(str, Enum):
 
 class ActionBase(BaseModel):
     # Pack reference. It can only contain letters, digits and underscores.
-    ref: Optional[str] = None
     name: Optional[str] = None
+    ref: Optional[str] = None
+    packs_name: Optional[str] = None
     runner_type: Optional[RunnerTypeModel] = None
     description: Optional[str] = None
     enabled: Optional[bool] = True
@@ -77,16 +80,16 @@ class ActionBaseInDB(ActionBase):
         ActionBaseInDB {[type]} -- [description]
     """
 
-    id: int
-    packs_id: int
-    # pack: str
+    id: int = None
+    uid: str = None
+    metadata_file: Optional[str] = None
     created_at: datetime = None
     updated_at: datetime = None
 
 
 class ActionCreate(ActionBaseInDB):
-    ref: str
-    packs_id: int
+    # ref: str
+    ref: Optional[str] = None
     name: str
     runner_type: RunnerTypeModel
     description: str = ""
@@ -97,22 +100,12 @@ class ActionCreate(ActionBaseInDB):
     # output_Schema :Optional[str]
     # notify :Optional[str]
     tags: List[str] = []
+    # packs_name: Optional[str] = None
 
 
 # Properties to receive via API on update
 class ActionUpdate(ActionBaseInDB):
-    ref: str
-    packs_id: int
-    name: str
-    runner_type: RunnerTypeModel
-    description: str = ""
-    enabled: bool = True
-    entry_point: str = ""
-    # pack: str
-    parameters: dict = {}
-    # output_Schema :Optional[str]
-    # notify :Optional[str]
-    tags: List[str] = []
+    pass
 
 
 # smoke-tests

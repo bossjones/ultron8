@@ -98,7 +98,7 @@ class PacksBase(BaseModel):
 
 class PacksBaseInDB(PacksBase):
     id: int = None
-    uid: int = None
+    uid: str = None
     created_at: datetime = None
     updated_at: datetime = None
     files: str

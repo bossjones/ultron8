@@ -189,7 +189,6 @@ def test_delete_packs():
         ref=ref,
     )
     packs = crud.packs.create(db_session, packs_in=packs_in)
-    description2 = random_lower_string()
 
     packs2 = crud.packs.remove(db_session=db_session, id=packs.id)
 
