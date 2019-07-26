@@ -1194,5 +1194,11 @@ local-pytest: ci-local ## [ALIAS for ci-local] run pytest using 'pipenv run'
 ci-local-pdb: ## run pytest WITH PDB using 'pipenv run'
 	pipenv run bash script/local_pytest_pdb
 
+ci-local-pdb-only: ## run pytest using 'pipenv run' limited by ONLY_RUN=<pytest tag> with pdb enabled
+	pipenv run bash script/local_pytest_pdb_with_args $(ONLY_RUN)
+
+local_pytest_pdb_with_args: ci-local-pdb-only ## run pytest using 'pipenv run' limited by ONLY_RUN=<pytest tag> with pdb enabled
+local-pytest-pdb-with-args: ci-local-pdb-only ## run pytest using 'pipenv run' limited by ONLY_RUN=<pytest tag> with pdb enabled
+
 local_pytest_pdb: ci-local-pdb ## [ALIAS for ci-local-pdb] run pytest WITH PDB using 'pipenv run'
 local-pytest-pdb: ci-local-pdb ## [ALIAS for ci-local-pdb] run pytest WITH PDB using 'pipenv run'

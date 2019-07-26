@@ -149,10 +149,14 @@ def test_create_action():
         enabled=action_enabled,
         entry_point=action_entry_point,
         parameters=action_parameters,
-        ref="{packs_name}.{action_name}".format(
-            packs_name=packs_name, action_name=action_name
-        ),
+        packs_name=packs_name,
+        # ref="{packs_name}.{action_name}".format(
+        #     packs_name=packs_name, action_name=action_name
+        # ),
     )
+
+    # import pdb;pdb.set_trace()
+
     action = crud.action.create(db_session, action_in=action_in, packs_id=packs.id)
 
     assert action.name == action_name

@@ -14,6 +14,8 @@ from pydantic import BaseModel
 from pydantic import EmailStr
 from pydantic import Schema
 
+# from ultron8.api.models.packs import
+
 log = logging.getLogger(__name__)
 
 
@@ -40,6 +42,7 @@ class ActionBase(BaseModel):
     # Pack reference. It can only contain letters, digits and underscores.
     name: Optional[str] = None
     ref: Optional[str] = None
+    packs_name: Optional[str] = None
     runner_type: Optional[RunnerTypeModel] = None
     description: Optional[str] = None
     enabled: Optional[bool] = True
@@ -85,7 +88,8 @@ class ActionBaseInDB(ActionBase):
 
 
 class ActionCreate(ActionBaseInDB):
-    ref: str
+    # ref: str
+    ref: Optional[str] = None
     name: str
     runner_type: RunnerTypeModel
     description: str = ""
@@ -96,6 +100,7 @@ class ActionCreate(ActionBaseInDB):
     # output_Schema :Optional[str]
     # notify :Optional[str]
     tags: List[str] = []
+    # packs_name: Optional[str] = None
 
 
 # Properties to receive via API on update

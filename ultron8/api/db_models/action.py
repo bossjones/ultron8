@@ -1,9 +1,11 @@
+import logging
 from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import JSON
+from sqlalchemy import Boolean
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import relationship
@@ -15,6 +17,9 @@ from ultron8.consts import ResourceType
 
 from ultron8.api.models.system.common import ResourceReference
 import datetime
+from sqlalchemy.ext.hybrid import hybrid_property
+
+LOGGER = logging.getLogger(__name__)
 
 # SOURCE: https://docs.sqlalchemy.org/en/13/dialects/sqlite.html
 # NOTE: acceptable sqlite types
@@ -48,7 +53,7 @@ class Action(UIDFieldMixin, Base):
     name = Column("name", String(255))
     description = Column("description", String(255))
     runner_type = Column("runner_type", String(255))
-    enabled = Column("enabled", String(255))
+    enabled = Column("enabled", Boolean)
     entry_point = Column("entry_point", String(255))
     parameters = Column("parameters", JSON)
     tags = Column("tags", JSON, nullable=True)
@@ -62,6 +67,9 @@ class Action(UIDFieldMixin, Base):
 
     packs_id = Column("packs_id", Integer, ForeignKey("packs.id"))
     # packs_name = Column("packs_name", Integer, ForeignKey("packs.name"))
+    # packs_name = Column("packs_name", String(255), nullable=True)
+    # packs_name = relationship("Packs", String(255))
+    # pack = relationship("Packs", back_populates="actions", uselist=False)
 
     # FIX: sqlalchemy Error creating backref on relationship
     # https://stackoverflow.com/questions/26693041/sqlalchemy-error-creating-backref-on-relationship
@@ -82,40 +90,53 @@ class Action(UIDFieldMixin, Base):
     # pack = relationship("Packs")
 
     # def __init__(self, pack, *args, **values):
-    def __init__(self, *args, **values):
+    def __init__(self, *args, packs_name=None, **values):
         super(Action, self).__init__(*args, **values)
-        self.ref = self.get_reference().ref
+        self.packs_name = packs_name
+        # self.ref = self.get_reference().ref
+        self.ref = "{}.{}".format(self.packs_name, self.name)
         self.uid = self.get_uid()
         # self.pack = self.pack
         self.created_at = str(datetime.datetime.utcnow())
         self.updated_at = str(datetime.datetime.utcnow())
 
-    def get_packs_name(self):
-        """
-        Retrieve packs.name object for this model.
+    # def get_ref(self):
+    #     return "{}.{}".format(self.pack.name, self.name)
 
-        :rtype: :class:`String`
-        """
-        # FIXME: This is brittle AF
-        if getattr(self, "packs_name", None):
-            packs_name = self.pack.name
-        else:
-            packs_name = self.packs_name
+    # @hybrid_property
+    # def ref(self):
+    #     return self.get_ref()
 
-        return packs_name
+    # def get_packs_name(self):
+    #     """
+    #     Retrieve packs.name object for this model.
 
-    def get_reference(self):
-        """
-        Retrieve referene object for this model.
+    #     :rtype: :class:`String`
+    #     """
+    #     # print("HELP: %s" % self.pack)
+    #     # print("HELP: %s" % type(self.pack))
+    #     # import pdb;pdb.set_trace()
 
-        :rtype: :class:`ResourceReference`
-        """
-        if getattr(self, "ref", None):
-            ref = ResourceReference.from_string_reference(ref=self.ref)
-        else:
-            ref = ResourceReference(pack=self.pack, name=self.name)
+    #     # FIXME: This is brittle AF
+    #     if getattr(self, "packs_name", None):
+    #         packs_name = self.pack.name
+    #     else:
+    #         packs_name = self.packs_name
 
-        return ref
+    #     return packs_name
+
+    # def get_reference(self):
+    #     """
+    #     Retrieve referene object for this model.
+
+    #     :rtype: :class:`ResourceReference`
+    #     """
+    #     if getattr(self, "ref", None):
+    #         ref = ResourceReference.from_string_reference(ref=self.ref)
+    #     else:
+    #         ref = ResourceReference(pack=self.pack, name=self.name)
+
+    #     return ref
 
     def __repr__(self):
         return "Action<name=%s,ref=%s,runner_type=%s,entry_point=%s>" % (

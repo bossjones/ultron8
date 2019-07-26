@@ -96,6 +96,7 @@ class Packs(UIDFieldMixin, Base):
     # actions = relationship("Action", back_populates="pack")
     # actions = relationship("Action")
 
+    # lazy = 'joined' literally joins the two tables and returns the results. By querying like below:
     actions = relationship("Action", backref=backref("pack", lazy="joined"))
 
     def __init__(self, *args, **values):
