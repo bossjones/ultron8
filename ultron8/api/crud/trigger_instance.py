@@ -10,7 +10,9 @@ from ultron8.api.models.trigger import TriggerInstanceCreate
 from ultron8.api.models.trigger import TriggerInstanceUpdate
 
 
-def get(db_session: Session, *, trigger_id: int) -> Optional[TriggerInstanceDB]:
+def get(
+    db_session: Session, *, trigger_instance_id: int
+) -> Optional[TriggerInstanceDB]:
     """Return trigger object based on trigger id.
 
     Arguments:
@@ -22,7 +24,7 @@ def get(db_session: Session, *, trigger_id: int) -> Optional[TriggerInstanceDB]:
     """
     return (
         db_session.query(TriggerInstanceDB)
-        .filter(TriggerInstanceDB.id == trigger_id)
+        .filter(TriggerInstanceDB.id == trigger_instance_id)
         .first()
     )
 
@@ -103,55 +105,55 @@ def get_multi_by_packs_id(
 
 
 def create(
-    db_session: Session, *, trigger_in: TriggerInstanceCreate, packs_id: int
+    db_session: Session, *, trigger_instance_in: TriggerInstanceCreate, packs_id: int
 ) -> TriggerInstanceDB:
     """Create TriggerInstanceDB object
 
     Arguments:
         db_session {Session} -- SQLAlchemy Session object
-        trigger_in {TriggerInstanceCreate} -- TriggerInstanceCreate object containing trigger args
+        trigger_instance_in {TriggerInstanceCreate} -- TriggerInstanceCreate object containing trigger args
         packs_id {int} -- Pack id
 
     Returns:
         TriggerInstanceDB -- Returns a TriggerInstanceDB object
     """
-    trigger_in_data = jsonable_encoder(trigger_in)
-    trigger = TriggerInstanceDB(**trigger_in_data, packs_id=packs_id)
-    db_session.add(trigger)
+    trigger_instance_in_data = jsonable_encoder(trigger_instance_in)
+    trigger_instance = TriggerInstanceDB(**trigger_instance_in_data, packs_id=packs_id)
+    db_session.add(trigger_instance)
     db_session.commit()
-    db_session.refresh(trigger)
-    return trigger
+    db_session.refresh(trigger_instance)
+    return trigger_instance
 
 
 def update(
     db_session: Session,
     *,
-    trigger: TriggerInstanceDB,
-    trigger_in: TriggerInstanceUpdate
+    trigger_instance: TriggerInstanceDB,
+    trigger_instance_in: TriggerInstanceUpdate
 ) -> TriggerInstanceDB:
-    """[summary]
+    """Update TriggerInstanceDB object
 
     Arguments:
         db_session {Session} -- SQLAlchemy Session object
-        trigger {TriggerInstanceDB} -- TriggerInstanceDB object
-        trigger_in {TriggerInstanceUpdate} -- TriggerInstanceDB object values to override
+        trigger_instance {TriggerInstanceDB} -- TriggerInstanceDB object
+        trigger_instance_in {TriggerInstanceUpdate} -- TriggerInstanceDB object values to override
 
     Returns:
         TriggerInstanceDB -- Returns a TriggerInstanceDB object
     """
-    trigger_data = jsonable_encoder(trigger)
-    update_data = trigger_in.dict(skip_defaults=True)
-    for field in trigger_data:
+    trigger_instance_data = jsonable_encoder(trigger_instance)
+    update_data = trigger_instance_in.dict(skip_defaults=True)
+    for field in trigger_instance_data:
         if field in update_data:
-            setattr(trigger, field, update_data[field])
-    db_session.add(trigger)
+            setattr(trigger_instance, field, update_data[field])
+    db_session.add(trigger_instance)
     db_session.commit()
-    db_session.refresh(trigger)
-    return trigger
+    db_session.refresh(trigger_instance)
+    return trigger_instance
 
 
-def remove(db_session: Session, *, trigger_id: int):
-    """[summary]
+def remove(db_session: Session, *, trigger_instance_id: int):
+    """Remove TriggerInstanceDB object
 
     Arguments:
         db_session {Session} -- SQLAlchemy Session object
@@ -160,11 +162,11 @@ def remove(db_session: Session, *, trigger_id: int):
     Returns:
         [type] -- [description]
     """
-    trigger = (
+    trigger_instance = (
         db_session.query(TriggerInstanceDB)
-        .filter(TriggerInstanceDB.id == trigger_id)
+        .filter(TriggerInstanceDB.id == trigger_instance_id)
         .first()
     )
-    db_session.delete(trigger)
+    db_session.delete(trigger_instance)
     db_session.commit()
-    return trigger
+    return trigger_instance

@@ -24,6 +24,16 @@ TAG="${IMAGE_TAG}"
 header " [run] docker ps -a"
 docker ps -a
 
+
+_NUM_STOPPED_CONTAINER=$(docker ps -a| grep -v PORTS | grep Exited | awk '{print $1}' | wc -l)
+
+header " [info] _NUM_STOPPED_CONTAINER=${_NUM_STOPPED_CONTAINER}"
+
+if [[ "${_NUM_STOPPED_CONTAINER}" -gt "2" ]]; then
+    _CONTAINER_ID=$(docker ps -a| grep -v PORTS | awk '{print $1}')
+    docker logs ${_CONTAINER_ID}
+fi
+
 header " [run] test container 'ultron8_ci' using /home/developer/app/.ci/pytest_runner.sh"
 # -T Disable pseudo-tty allocation. By default `docker-compose exec` allocates a TTY.
 time docker-compose -f docker-compose.ci.yml exec -T ultron8_ci /home/developer/app/.ci/pytest_runner.sh
