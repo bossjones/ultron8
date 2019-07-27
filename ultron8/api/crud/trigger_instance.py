@@ -105,7 +105,7 @@ def get_multi_by_packs_id(
 
 
 def create(
-    db_session: Session, *, trigger_instance_in: TriggerInstanceCreate, packs_id: int
+    db_session: Session, *, trigger_instance_in: TriggerInstanceCreate
 ) -> TriggerInstanceDB:
     """Create TriggerInstanceDB object
 
@@ -118,7 +118,7 @@ def create(
         TriggerInstanceDB -- Returns a TriggerInstanceDB object
     """
     trigger_instance_in_data = jsonable_encoder(trigger_instance_in)
-    trigger_instance = TriggerInstanceDB(**trigger_instance_in_data, packs_id=packs_id)
+    trigger_instance = TriggerInstanceDB(**trigger_instance_in_data)
     db_session.add(trigger_instance)
     db_session.commit()
     db_session.refresh(trigger_instance)

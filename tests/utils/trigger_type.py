@@ -21,30 +21,35 @@ def create_random_trigger_type_name():
 #     return "{pack_name}.{trigger_name}{random_num}".format(pack_name=pack_name, trigger_name=trigger_name, random_num=random_num)
 
 
-# def create_random_trigger(override_parameters={}):
-#     """Create a random trigger db object
+def create_random_trigger_type(packs=None):
+    trigger_type_name = create_random_trigger_type_name()
+    trigger_type_packs_name = packs.name
+    trigger_type_description = random_lower_string()
+    trigger_type_parameters_schema = {
+        "additionalProperties": False,
+        "properties": {"url": {"type": "string", "required": True}},
+        "type": "object",
+    }
 
-#     Returns:
-#         [TriggerDB] -- TriggerDB object
-#     """
-#     # Create random pack
-#     packs = create_random_user()
+    trigger_type_payload_schema = {"type": "object"}
 
-#     shared_name = create_random_trigger_name()
-#     trigger_name = shared_name
-#     trigger_packs_name = packs.name
-#     trigger_description = random_lower_string()
-#     trigger_type = create_trigger_type_from_name(pack_name=packs.name, trigger_name=shared_name)
-#     trigger_parameters = override_parameters
+    folder_name = trigger_type_name.split(".")
 
-#     trigger_in = TriggerCreate(
-#         name=trigger_name,
-#         packs_name=trigger_packs_name,
-#         description=trigger_description,
-#         type=trigger_type,
-#         parameters=trigger_parameters,
-#     )
+    trigger_type_metadata_file = "./tests/fixtures/simple/packs/{}".format(
+        folder_name[1]
+    )
 
-#     trigger = crud.trigger.create(db_session, trigger_in=trigger_in, packs_id=packs.id)
+    trigger_type_in = TriggerTypeCreate(
+        name=trigger_type_name,
+        packs_name=trigger_type_packs_name,
+        description=trigger_type_description,
+        payload_schema=trigger_type_payload_schema,
+        parameters_schema=trigger_type_parameters_schema,
+        metadata_file=trigger_type_metadata_file,
+    )
 
-#     return trigger
+    trigger_type = crud.trigger_types.create(
+        db_session, trigger_type_in=trigger_type_in, packs_id=packs.id
+    )
+
+    return trigger_type

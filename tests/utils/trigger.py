@@ -24,23 +24,56 @@ def create_trigger_type_from_name(pack_name="", trigger_name=""):
     )
 
 
-def create_random_trigger(override_parameters={}):
+# def create_random_trigger(override_parameters={}):
+#     """Create a random trigger db object
+
+#     Returns:
+#         [TriggerDB] -- TriggerDB object
+#     """
+#     # Create random pack
+#     packs = create_random_user()
+
+#     shared_name = create_random_trigger_name()
+#     trigger_name = shared_name
+#     trigger_packs_name = packs.name
+#     trigger_description = random_lower_string()
+#     trigger_type = create_trigger_type_from_name(
+#         pack_name=packs.name, trigger_name=shared_name
+#     )
+#     trigger_parameters = override_parameters
+
+#     trigger_in = TriggerCreate(
+#         name=trigger_name,
+#         packs_name=trigger_packs_name,
+#         description=trigger_description,
+#         type=trigger_type,
+#         parameters=trigger_parameters,
+#     )
+
+#     trigger = crud.trigger.create(db_session, trigger_in=trigger_in, packs_id=packs.id)
+
+#     return trigger
+
+
+def create_random_trigger(packs=None, trigger_type=None):
     """Create a random trigger db object
 
     Returns:
         [TriggerDB] -- TriggerDB object
     """
-    # Create random pack
-    packs = create_random_user()
 
-    shared_name = create_random_trigger_name()
+    # shared_name = create_random_trigger_name()
+    # trigger_name = shared_name.split(".")[1]
+    shared_name = random_lower_string()
     trigger_name = shared_name
     trigger_packs_name = packs.name
     trigger_description = random_lower_string()
-    trigger_type = create_trigger_type_from_name(
-        pack_name=packs.name, trigger_name=shared_name
+
+    trigger_type = "{pack_name}.{trigger_type_name}".format(
+        pack_name=packs.name, trigger_type_name=trigger_type.name
     )
-    trigger_parameters = override_parameters
+
+    trigger_parameters = {"url": "person"}
 
     trigger_in = TriggerCreate(
         name=trigger_name,
