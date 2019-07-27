@@ -115,6 +115,7 @@ class TriggerDB(UIDFieldMixin, Base):
 
     id = Column("id", Integer, primary_key=True, index=True)
     name = Column("name", String, nullable=False)
+    description = Column("description", String, nullable=False)
     ref = Column("ref", String(255))
     uid = Column("uid", String(255), nullable=True)
     type = Column("type", String(255))
