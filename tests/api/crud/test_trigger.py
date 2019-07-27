@@ -21,6 +21,7 @@ from ultron8.api.models.trigger import TriggerInstanceBaseDB
 from ultron8.api.models.trigger import TriggerInstanceBaseInDB
 from ultron8.api.models.trigger import TriggerInstanceCreate
 from ultron8.api.models.trigger import TriggerInstanceUpdate
+from ultron8.api.db_models.trigger import TriggerDB
 
 from ultron8.api.models.packs import PacksCreate
 
@@ -282,6 +283,156 @@ def test_get_by_name_trigger():
     trigger = crud.trigger.create(db_session, trigger_in=trigger_in, packs_id=packs.id)
     trigger_2 = crud.trigger.get_by_name(db_session, name=trigger_name)
     assert jsonable_encoder(trigger) == jsonable_encoder(trigger_2)
+
+
+@freeze_time("2019-07-25 01:11:00.740428")
+@pytest.mark.triggeronly
+@pytest.mark.unittest
+def test_get_multi_trigger():
+    pack_shared_name = random_lower_string()
+    packs_name = pack_shared_name
+    packs_description = random_lower_string()
+    packs_keywords = random_lower_string()
+    packs_version = random_lower_string()
+    packs_python_versions = random_lower_string()
+    packs_author = random_lower_string()
+    packs_email = "info@theblacktonystark.com"
+    packs_contributors = random_lower_string()
+    packs_files = random_lower_string()
+    packs_path = random_lower_string()
+    packs_ref = pack_shared_name
+
+    trigger_name0 = random_lower_string()
+    trigger_packs_name0 = packs_name
+    trigger_description0 = TRIGGER_0["description"]
+    trigger_type0 = TRIGGER_0["type"]
+    trigger_parameters0 = TRIGGER_0["parameters"]
+
+    trigger_name1 = random_lower_string()
+    trigger_packs_name1 = packs_name
+    trigger_description1 = TRIGGER_1["description"]
+    trigger_type1 = TRIGGER_1["type"]
+    trigger_parameters1 = TRIGGER_1["parameters"]
+
+    packs_in = PacksCreate(
+        name=packs_name,
+        description=packs_description,
+        keywords=packs_keywords,
+        version=packs_version,
+        python_versions=packs_python_versions,
+        author=packs_author,
+        email=packs_email,
+        contributors=packs_contributors,
+        files=packs_files,
+        path=packs_path,
+        ref=packs_ref,
+    )
+
+    packs = crud.packs.create(db_session, packs_in=packs_in)
+
+    trigger_in0 = TriggerCreate(
+        name=trigger_name0,
+        packs_name=trigger_packs_name0,
+        description=trigger_description0,
+        type=trigger_type0,
+        parameters=trigger_parameters0,
+    )
+
+    trigger_in1 = TriggerCreate(
+        name=trigger_name1,
+        packs_name=trigger_packs_name1,
+        description=trigger_description1,
+        type=trigger_type1,
+        parameters=trigger_parameters1,
+    )
+
+    trigger0 = crud.trigger.create(
+        db_session, trigger_in=trigger_in0, packs_id=packs.id
+    )
+    trigger1 = crud.trigger.create(
+        db_session, trigger_in=trigger_in1, packs_id=packs.id
+    )
+
+    trigger_2 = crud.trigger.get_multi(db_session)
+    for t in trigger_2:
+        assert type(t) == TriggerDB
+
+
+@freeze_time("2019-07-25 01:11:00.740428")
+@pytest.mark.triggeronly
+@pytest.mark.unittest
+def test_get_multi_by_packs_id_trigger():
+    pack_shared_name = random_lower_string()
+    packs_name = pack_shared_name
+    packs_description = random_lower_string()
+    packs_keywords = random_lower_string()
+    packs_version = random_lower_string()
+    packs_python_versions = random_lower_string()
+    packs_author = random_lower_string()
+    packs_email = "info@theblacktonystark.com"
+    packs_contributors = random_lower_string()
+    packs_files = random_lower_string()
+    packs_path = random_lower_string()
+    packs_ref = pack_shared_name
+
+    trigger_name0 = random_lower_string()
+    trigger_packs_name0 = packs_name
+    trigger_description0 = TRIGGER_0["description"]
+    trigger_type0 = TRIGGER_0["type"]
+    trigger_parameters0 = TRIGGER_0["parameters"]
+
+    trigger_name1 = random_lower_string()
+    trigger_packs_name1 = packs_name
+    trigger_description1 = TRIGGER_1["description"]
+    trigger_type1 = TRIGGER_1["type"]
+    trigger_parameters1 = TRIGGER_1["parameters"]
+
+    packs_in = PacksCreate(
+        name=packs_name,
+        description=packs_description,
+        keywords=packs_keywords,
+        version=packs_version,
+        python_versions=packs_python_versions,
+        author=packs_author,
+        email=packs_email,
+        contributors=packs_contributors,
+        files=packs_files,
+        path=packs_path,
+        ref=packs_ref,
+    )
+
+    packs = crud.packs.create(db_session, packs_in=packs_in)
+
+    trigger_in0 = TriggerCreate(
+        name=trigger_name0,
+        packs_name=trigger_packs_name0,
+        description=trigger_description0,
+        type=trigger_type0,
+        parameters=trigger_parameters0,
+    )
+
+    trigger_in1 = TriggerCreate(
+        name=trigger_name1,
+        packs_name=trigger_packs_name1,
+        description=trigger_description1,
+        type=trigger_type1,
+        parameters=trigger_parameters1,
+    )
+
+    trigger0 = crud.trigger.create(
+        db_session, trigger_in=trigger_in0, packs_id=packs.id
+    )
+    trigger1 = crud.trigger.create(
+        db_session, trigger_in=trigger_in1, packs_id=packs.id
+    )
+
+    trigger_2 = crud.trigger.get_multi_by_packs_id(
+        db_session, packs_id=packs.id, limit=2
+    )
+
+    for t in trigger_2:
+        assert type(t) == TriggerDB
+        assert t.packs_id == packs.id
 
 
 @freeze_time("2019-07-25 01:11:00.740428")
