@@ -16,11 +16,6 @@ def create_random_trigger_type_name():
     return "{}.{}".format(trigger_name_base, trigger_name_end)
 
 
-# def create_trigger_type_fixture_from_name(pack_name="", trigger_name=""):
-#     random_num = random.randint(0,9)
-#     return "{pack_name}.{trigger_name}{random_num}".format(pack_name=pack_name, trigger_name=trigger_name, random_num=random_num)
-
-
 def create_random_trigger_type(packs=None):
     trigger_type_name = create_random_trigger_type_name()
     trigger_type_packs_name = packs.name

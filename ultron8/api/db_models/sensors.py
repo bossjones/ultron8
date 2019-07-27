@@ -8,12 +8,29 @@ from sqlalchemy import JSON
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+from sqlalchemy import Table
 
 from ultron8.api.db.u_sqlite.base_class import Base
 from ultron8.api.db_models.ultronbase import UIDFieldMixin, ContentPackResourceMixin
 from ultron8.consts import ResourceType
+import datetime
 
 from ultron8.api.models.system.common import ResourceReference
+
+# assoc_table = db.Table('association',
+#    db.Column('ingredient_id', db.Integer, db.ForeignKey('ingredients.id')),
+#    db.Column('cocktail_id', db.Integer, db.ForeignKey('cocktails.id'))
+# )
+
+
+SENSORS_TRIGGER_TYPES_ASSOCIATION = Table(
+    "sensors_trigger_types_association",
+    Base.metadata,
+    Column("sensors_id", Integer, ForeignKey("sensors.id"), primary_key=True),
+    Column(
+        "trigger_types_id", Integer, ForeignKey("trigger_types.id"), primary_key=True
+    ),
+)
 
 
 class Sensors(UIDFieldMixin, Base):
@@ -36,7 +53,7 @@ class Sensors(UIDFieldMixin, Base):
 
     id = Column("id", Integer, primary_key=True, index=True)
     # class_name = Column("class_name", String(255))
-    name = Column("class_name", String(255))
+    class_name = Column("class_name", String(255))
     ref = Column("ref", String(255))
     uid = Column("uid", String(255), nullable=True)
     artifact_uri = Column("artifact_uri", String(255))
@@ -44,17 +61,21 @@ class Sensors(UIDFieldMixin, Base):
     enabled = Column("enabled", Boolean)
     entry_point = Column("entry_point", String(255))
     description = Column("description", String(255))
-    trigger_types = Column("trigger_types", JSON)
-    created_at = Column(DateTime(timezone=True), server_default=func.utcnow())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.utcnow())
-
-    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
-    packs_name = Column("packs_name", Integer, ForeignKey("packs.name"), nullable=True)
-    # FIX: sqlalchemy Error creating backref on relationship
-    # https://stackoverflow.com/questions/26693041/sqlalchemy-error-creating-backref-on-relationship
-    pack = relationship(
-        "Packs", backref=backref("pack_sensors", uselist=False), foreign_keys=[packs_id]
+    # trigger_types = Column("trigger_types", JSON)
+    trigger_types_id = Column(
+        "trigger_types_id", Integer, ForeignKey("trigger_types.id"), nullable=True
     )
+    # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"))
+    # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"))
+    trigger_types = relationship(
+        "TriggerTypeDB",
+        secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
+        backref=backref("sensor_trigger_types"),
+        lazy="dynamic",
+    )
+    created_at = Column("created_at", String)
+    updated_at = Column("updated_at", String)
+    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
 
     # # ---
     # # class_name: "SampleSensor"
@@ -72,30 +93,39 @@ class Sensors(UIDFieldMixin, Base):
     # #           format: "date-time"
     # #           default: "2014-07-30 05:04:24.578325"
 
-    def __init__(self, *args, **values):
+    def __init__(self, *args, packs_name=None, **values):
         super(Sensors, self).__init__(*args, **values)
-        self.ref = self.get_reference().ref
+        self.packs_name = packs_name
+        self.ref = "{}.{}".format(self.packs_name, self.class_name)
         self.uid = self.get_uid()
+        self.created_at = str(datetime.datetime.utcnow())
+        self.updated_at = str(datetime.datetime.utcnow())
 
-    def get_reference(self):
-        """
-        Retrieve referene object for this model.
+    # def get_reference(self):
+    #     """
+    #     Retrieve referene object for this model.
 
-        :rtype: :class:`ResourceReference`
-        """
-        if getattr(self, "ref", None):
-            ref = ResourceReference.from_string_reference(ref=self.ref)
-        else:
-            ref = ResourceReference(pack=self.pack, name=self.name)
+    #     :rtype: :class:`ResourceReference`
+    #     """
+    #     if getattr(self, "ref", None):
+    #         ref = ResourceReference.from_string_reference(ref=self.ref)
+    #     else:
+    #         ref = ResourceReference(pack=self.pack, name=self.name)
 
-        return ref
+    #     return ref
 
     def __repr__(self):
-        return "Sensor<name=%s,ref=%s,trigger_types=%s,entry_point=%s>" % (
-            self.name,
-            self.ref,
-            self.trigger_types,
-            self.entry_point,
+        return (
+            "Sensor<class_name=%s,ref=%s,uid=%s,artifact_uri=%s,poll_interval=%s,enabled=%s,entry_point=%s>"
+            % (
+                self.class_name,
+                self.ref,
+                self.uid,
+                self.artifact_uri,
+                self.poll_interval,
+                self.enabled,
+                self.entry_point,
+            )
         )
 
 

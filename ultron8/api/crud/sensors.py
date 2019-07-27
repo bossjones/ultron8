@@ -58,8 +58,8 @@ def update(
     return sensors
 
 
-def remove(db_session: Session, *, id: int):
-    sensors = db_session.query(Sensors).filter(Sensors.id == id).first()
+def remove(db_session: Session, *, sensors_id: int):
+    sensors = db_session.query(Sensors).filter(Sensors.id == sensors_id).first()
     db_session.delete(sensors)
     db_session.commit()
     return sensors

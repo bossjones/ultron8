@@ -7,4 +7,5 @@ from . import (
     trigger_types,
     trigger_tags,
     trigger_instance,
+    sensors,
 )
