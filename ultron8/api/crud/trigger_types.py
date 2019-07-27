@@ -10,7 +10,7 @@ from ultron8.api.models.trigger import TriggerTypeCreate
 from ultron8.api.models.trigger import TriggerTypeUpdate
 
 
-def get(db_session: Session, *, trigger_id: int) -> Optional[TriggerTypeDB]:
+def get(db_session: Session, *, trigger_type_id: int) -> Optional[TriggerTypeDB]:
     """Return trigger object based on trigger id.
 
     Arguments:
@@ -21,7 +21,9 @@ def get(db_session: Session, *, trigger_id: int) -> Optional[TriggerTypeDB]:
         Optional[TriggerTypeDB] -- Returns a TriggerTypeDB object or nothing if it doesn't exist
     """
     return (
-        db_session.query(TriggerTypeDB).filter(TriggerTypeDB.id == trigger_id).first()
+        db_session.query(TriggerTypeDB)
+        .filter(TriggerTypeDB.id == trigger_type_id)
+        .first()
     )
 
 
@@ -95,20 +97,20 @@ def get_multi_by_packs_id(
 
 
 def create(
-    db_session: Session, *, trigger_in: TriggerTypeCreate, packs_id: int
+    db_session: Session, *, trigger_type_in: TriggerTypeCreate, packs_id: int
 ) -> TriggerTypeDB:
     """Create TriggerTypeDB object
 
     Arguments:
         db_session {Session} -- SQLAlchemy Session object
-        trigger_in {TriggerTypeCreate} -- TriggerTypeCreate object containing trigger args
+        trigger_type_in {TriggerTypeCreate} -- TriggerTypeCreate object containing trigger args
         packs_id {int} -- Pack id
 
     Returns:
         TriggerTypeDB -- Returns a TriggerTypeDB object
     """
-    trigger_in_data = jsonable_encoder(trigger_in)
-    trigger = TriggerTypeDB(**trigger_in_data, packs_id=packs_id)
+    trigger_type_in_data = jsonable_encoder(trigger_type_in)
+    trigger = TriggerTypeDB(**trigger_type_in_data, packs_id=packs_id)
     db_session.add(trigger)
     db_session.commit()
     db_session.refresh(trigger)
@@ -116,30 +118,33 @@ def create(
 
 
 def update(
-    db_session: Session, *, trigger: TriggerTypeDB, trigger_in: TriggerTypeUpdate
+    db_session: Session,
+    *,
+    trigger_type: TriggerTypeDB,
+    trigger_type_in: TriggerTypeUpdate
 ) -> TriggerTypeDB:
     """[summary]
 
     Arguments:
         db_session {Session} -- SQLAlchemy Session object
         trigger {TriggerTypeDB} -- TriggerTypeDB object
-        trigger_in {TriggerTypeUpdate} -- TriggerTypeDB object values to override
+        trigger_type_in {TriggerTypeUpdate} -- TriggerTypeDB object values to override
 
     Returns:
         TriggerTypeDB -- Returns a TriggerTypeDB object
     """
-    trigger_data = jsonable_encoder(trigger)
-    update_data = trigger_in.dict(skip_defaults=True)
+    trigger_data = jsonable_encoder(trigger_type)
+    update_data = trigger_type_in.dict(skip_defaults=True)
     for field in trigger_data:
         if field in update_data:
-            setattr(trigger, field, update_data[field])
-    db_session.add(trigger)
+            setattr(trigger_type, field, update_data[field])
+    db_session.add(trigger_type)
     db_session.commit()
-    db_session.refresh(trigger)
-    return trigger
+    db_session.refresh(trigger_type)
+    return trigger_type
 
 
-def remove(db_session: Session, *, trigger_id: int):
+def remove(db_session: Session, *, trigger_type_id: int):
     """[summary]
 
     Arguments:
@@ -150,7 +155,9 @@ def remove(db_session: Session, *, trigger_id: int):
         [type] -- [description]
     """
     trigger = (
-        db_session.query(TriggerTypeDB).filter(TriggerTypeDB.id == trigger_id).first()
+        db_session.query(TriggerTypeDB)
+        .filter(TriggerTypeDB.id == trigger_type_id)
+        .first()
     )
     db_session.delete(trigger)
     db_session.commit()

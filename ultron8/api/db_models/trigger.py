@@ -77,9 +77,6 @@ class TriggerTypeDB(UIDFieldMixin, Base):
         # pylint: disable=no-member
         self.uid = self.get_uid()
 
-        # self.created_at = str(datetime.datetime.utcnow())
-        # self.updated_at = str(datetime.datetime.utcnow())
-
     # def get_reference(self):
     #     """
     #     Retrieve referene object for this model.
