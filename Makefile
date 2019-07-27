@@ -1202,3 +1202,6 @@ local-pytest-pdb-with-args: ci-local-pdb-only ## run pytest using 'pipenv run' l
 
 local_pytest_pdb: ci-local-pdb ## [ALIAS for ci-local-pdb] run pytest WITH PDB using 'pipenv run'
 local-pytest-pdb: ci-local-pdb ## [ALIAS for ci-local-pdb] run pytest WITH PDB using 'pipenv run'
+
+open-coverage: ## Open coverage report inside of web browser
+	./script/open-browser.py file://$(CURRENT_DIR)/htmlcov/index.html
