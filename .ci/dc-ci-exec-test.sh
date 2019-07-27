@@ -21,6 +21,9 @@ IMAGE_TAG=${REPO_NAME}:${PR_SHA}
 
 TAG="${IMAGE_TAG}"
 
+header " [run] docker ps -a"
+docker ps -a
+
 header " [run] test container 'ultron8_ci' using /home/developer/app/.ci/pytest_runner.sh"
 # -T Disable pseudo-tty allocation. By default `docker-compose exec` allocates a TTY.
 time docker-compose -f docker-compose.ci.yml exec -T ultron8_ci /home/developer/app/.ci/pytest_runner.sh
