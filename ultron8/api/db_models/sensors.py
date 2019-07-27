@@ -56,6 +56,22 @@ class Sensors(UIDFieldMixin, Base):
         "Packs", backref=backref("pack_sensors", uselist=False), foreign_keys=[packs_id]
     )
 
+    # # ---
+    # # class_name: "SampleSensor"
+    # # entry_point: "sample_sensor.py"
+    # # description: "Sample sensor that emits triggers."
+    # # trigger_types:
+    # #   -
+    # #     name: "event"
+    # #     description: "An example trigger."
+    # #     payload_schema:
+    # #       type: "object"
+    # #       properties:
+    # #         executed_at:
+    # #           type: "string"
+    # #           format: "date-time"
+    # #           default: "2014-07-30 05:04:24.578325"
+
     def __init__(self, *args, **values):
         super(Sensors, self).__init__(*args, **values)
         self.ref = self.get_reference().ref

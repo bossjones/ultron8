@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+import logging
 import hashlib
 import json
 
@@ -18,6 +19,24 @@ from ultron8.api.db_models.ultronbase import UIDFieldMixin, ContentPackResourceM
 from ultron8.consts import ResourceType
 
 from ultron8.api.models.system.common import ResourceReference
+import datetime
+
+# http://blog.benjamin-encz.de/post/sqlite-one-to-many-json1-extension/
+
+
+class TriggerTagsDB(Base):
+    """Database model to support Trigger tags.
+
+    Arguments:
+        Base {[type]} -- SqlAlchemy Base model
+    """
+
+    __tablename__ = "trigger_tags"
+
+    id = Column("id", Integer, primary_key=True, index=True)
+    trigger_type_id = Column("trigger_type_id", Integer, ForeignKey("trigger_types.id"))
+    tag = Column("tag", String, nullable=True)
+    trigger_name = Column("trigger_name", String, nullable=True)
 
 
 class TriggerTypeDB(UIDFieldMixin, Base):
@@ -41,38 +60,35 @@ class TriggerTypeDB(UIDFieldMixin, Base):
     name = Column("name", String(255))
     ref = Column("ref", String(255))
     uid = Column("uid", String(255), nullable=True)
-    pack = relationship("Packs")
-    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"))
     description = Column("description", String(255))
     payload_schema = Column("payload_schema", JSON)
     parameters_schema = Column("parameters_schema", JSON)
+    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"))
 
-    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
-    packs_name = Column("packs_name", Integer, ForeignKey("packs.name"), nullable=True)
-    # FIX: sqlalchemy Error creating backref on relationship
-    # https://stackoverflow.com/questions/26693041/sqlalchemy-error-creating-backref-on-relationship
-    pack = relationship(
-        "Packs", backref=backref("pack_actions", uselist=False), foreign_keys=[packs_id]
-    )
+    # Path to the metadata file relative to the pack directory.
+    metadata_file = Column("metadata_file", String(255))
+    tags = relationship("TriggerTagsDB", backref=backref("trigger", lazy="joined"))
 
-    def __init__(self, *args, **values):
+    def __init__(self, *args, packs_name=None, **values):
         super(TriggerTypeDB, self).__init__(*args, **values)
-        self.ref = self.get_reference().ref
+        self.packs_name = packs_name
+        # self.ref = self.get_reference().ref
+        self.ref = "{}.{}".format(self.packs_name, self.name)
         # pylint: disable=no-member
         self.uid = self.get_uid()
 
-    def get_reference(self):
-        """
-        Retrieve referene object for this model.
+    # def get_reference(self):
+    #     """
+    #     Retrieve referene object for this model.
 
-        :rtype: :class:`ResourceReference`
-        """
-        if getattr(self, "ref", None):
-            ref = ResourceReference.from_string_reference(ref=self.ref)
-        else:
-            ref = ResourceReference(pack=self.pack, name=self.name)
+    #     :rtype: :class:`ResourceReference`
+    #     """
+    #     if getattr(self, "ref", None):
+    #         ref = ResourceReference.from_string_reference(ref=self.ref)
+    #     else:
+    #         ref = ResourceReference(pack=self.pack, name=self.name)
 
-        return ref
+    #     return ref
 
     def __repr__(self):
         return "TriggerTypeDB<name=%s,ref=%s>" % (self.name, self.ref)
@@ -96,39 +112,41 @@ class TriggerDB(UIDFieldMixin, Base):
 
     id = Column("id", Integer, primary_key=True, index=True)
     name = Column("name", String, nullable=False)
+    description = Column("description", String, nullable=False)
     ref = Column("ref", String(255))
     uid = Column("uid", String(255), nullable=True)
     type = Column("type", String(255))
     parameters = Column("parameters", JSON)
-    ref_count = Column("ref_count", Integer)
-
+    ref_count = Column("ref_count", Integer, default=0)
     packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
-    packs_name = Column("packs_name", Integer, ForeignKey("packs.name"), nullable=True)
+    # packs_name = Column("packs_name", Integer, ForeignKey("packs.name"), nullable=True)
     # FIX: sqlalchemy Error creating backref on relationship
     # https://stackoverflow.com/questions/26693041/sqlalchemy-error-creating-backref-on-relationship
-    pack = relationship(
-        "Packs",
-        backref=backref("pack_triggers", uselist=False),
-        foreign_keys=[packs_id],
-    )
+    # pack = relationship(
+    #     "Packs",
+    #     backref=backref("pack_triggers", uselist=False),
+    #     foreign_keys=[packs_id],
+    # )
 
-    def __init__(self, *args, **values):
+    def __init__(self, *args, packs_name=None, **values):
         super(TriggerDB, self).__init__(*args, **values)
-        self.ref = self.get_reference().ref
+        self.packs_name = packs_name
+        # self._ref = self.get_reference().ref
+        self.ref = "{}.{}".format(self.packs_name, self.name)
         self.uid = self.get_uid()
 
-    def get_reference(self):
-        """
-        Retrieve referene object for this model.
+    # def get_reference(self):
+    #     """
+    #     Retrieve referene object for this model.
 
-        :rtype: :class:`ResourceReference`
-        """
-        if getattr(self, "ref", None):
-            ref = ResourceReference.from_string_reference(ref=self.ref)
-        else:
-            ref = ResourceReference(pack=self.pack, name=self.name)
+    #     :rtype: :class:`ResourceReference`
+    #     """
+    #     if getattr(self, "ref", None):
+    #         ref = ResourceReference.from_string_reference(ref=self.ref)
+    #     else:
+    #         ref = ResourceReference(pack=self.pack, name=self.name)
 
-        return ref
+    #     return ref
 
     def get_uid(self):
         # Note: Trigger is uniquely identified using name + pack + parameters attributes
@@ -168,11 +186,19 @@ class TriggerInstanceDB(Base):
     id = Column("id", Integer, primary_key=True, index=True)
     trigger = Column("trigger", String(255))
     payload = Column("payload", JSON)
-    occurrence_time = Column(DateTime(timezone=True), onupdate=func.utcnow())
+    # occurrence_time = Column(DateTime(timezone=True), onupdate=func.utcnow())
+    occurrence_time = Column("occurrence_time", String)
     status = Column("status", String(255), nullable=False)
 
+    def __init__(self, *args, **values):
+        super(TriggerInstanceDB, self).__init__(*args, **values)
+        self.occurrence_time = str(datetime.datetime.utcnow())
+
     def __repr__(self):
-        return "TriggerInstanceDB<trigger=%s,payload=%s>" % (self.trigger, self.payload)
+        return (
+            "TriggerInstanceDB<trigger=%s,payload=%s,status=%s,occurrence_time=%s>"
+            % (self.trigger, self.payload, self.status, self.occurrence_time)
+        )
 
 
 MODELS = [TriggerTypeDB, TriggerDB, TriggerInstanceDB]

@@ -7,17 +7,20 @@ from ultron8.api.models.packs import PacksCreate
 
 
 def create_random_packs():
-    name = random_lower_string()
+    shared_name = random_lower_string()
+    name = shared_name
     description = random_lower_string()
     keywords = random_lower_string()
     version = random_lower_string()
     python_versions = random_lower_string()
     author = random_lower_string()
-    email = random_lower_string()
-    contributors = [random_lower_string()]
-    files = [random_lower_string()]
+    email = "info@theblacktonystark.com"
+    # contributors = [random_lower_string()]
+    # files = [random_lower_string()]
+    contributors = random_lower_string()
+    files = random_lower_string()
     path = random_lower_string()
-    ref = random_lower_string()
+    ref = shared_name
 
     packs_in = PacksCreate(
         name=name,

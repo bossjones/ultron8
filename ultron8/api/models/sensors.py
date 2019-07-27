@@ -55,7 +55,8 @@ class ProcessInfoModel(BaseModel):
 class ParametersSchemaBase(BaseModel):
     type: str
     # properties: Union[FilePathModel, HostInfoModel]
-    properties: dict = {}
+    # properties: dict = {}
+    properties: Optional[List[dict]] = [{}]
     additionalProperties: bool
 
 

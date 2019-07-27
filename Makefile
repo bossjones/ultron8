@@ -1194,7 +1194,7 @@ local-pytest: ci-local ## [ALIAS for ci-local] run pytest using 'pipenv run'
 ci-local-pdb: ## run pytest WITH PDB using 'pipenv run'
 	pipenv run bash script/local_pytest_pdb
 
-ci-local-pdb-only: ## run pytest using 'pipenv run' limited by ONLY_RUN=<pytest tag> with pdb enabled
+ci-local-pdb-only: ## run pytest using 'pipenv run' limited by ONLY_RUN=<pytest tag> with pdb enabled. Example: make ci-local-pdb-only ONLY_RUN=triggeronly
 	pipenv run bash script/local_pytest_pdb_with_args $(ONLY_RUN)
 
 local_pytest_pdb_with_args: ci-local-pdb-only ## run pytest using 'pipenv run' limited by ONLY_RUN=<pytest tag> with pdb enabled
@@ -1202,3 +1202,6 @@ local-pytest-pdb-with-args: ci-local-pdb-only ## run pytest using 'pipenv run' l
 
 local_pytest_pdb: ci-local-pdb ## [ALIAS for ci-local-pdb] run pytest WITH PDB using 'pipenv run'
 local-pytest-pdb: ci-local-pdb ## [ALIAS for ci-local-pdb] run pytest WITH PDB using 'pipenv run'
+
+open-coverage: ## Open coverage report inside of web browser
+	./script/open-browser.py file://$(CURRENT_DIR)/htmlcov/index.html
