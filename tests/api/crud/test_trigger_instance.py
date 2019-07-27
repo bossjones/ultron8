@@ -106,47 +106,6 @@ def test_get_trigger_instance():
     assert jsonable_encoder(trigger_instance) == jsonable_encoder(trigger_instance_2)
 
 
-# @freeze_time("2019-07-25 01:11:00.740428")
-# @pytest.mark.triggerinstanceonly
-# @pytest.mark.unittest
-# def test_get_by_ref_trigger_instance():
-#     packs = create_random_packs()
-
-#     trigger_instance_name = create_random_trigger_instance_name()
-#     trigger_instance_packs_name = packs.name
-#     trigger_instance_description = random_lower_string()
-#     trigger_instance_parameters_schema = {
-#         "additionalProperties": False,
-#         "properties": {"url": {"type": "string", "required": True}},
-#         "type": "object",
-#     }
-
-#     trigger_instance_payload_schema = {"type": "object"}
-
-#     folder_name = trigger_instance_name.split(".")
-
-#     trigger_instance_metadata_file = "./tests/fixtures/simple/packs/{}".format(
-#         folder_name[1]
-#     )
-
-#     trigger_instance_in = TriggerTypeCreate(
-#         name=trigger_instance_name,
-#         packs_name=trigger_instance_packs_name,
-#         description=trigger_instance_description,
-#         payload_schema=trigger_instance_payload_schema,
-#         parameters_schema=trigger_instance_parameters_schema,
-#         metadata_file=trigger_instance_metadata_file,
-#     )
-
-#     trigger_instance = crud.trigger_instance.create(
-#         db_session, trigger_instance_in=trigger_instance_in, packs_id=packs.id
-#     )
-
-#     ref_lookup = "{}.{}".format(trigger_instance_packs_name, trigger_instance.name)
-#     trigger_instance_2 = crud.trigger_instance.get_by_ref(db_session, ref=ref_lookup)
-#     assert jsonable_encoder(trigger_instance) == jsonable_encoder(trigger_instance_2)
-
-
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggerinstanceonly
 @pytest.mark.unittest
