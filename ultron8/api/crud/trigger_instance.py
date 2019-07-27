@@ -29,34 +29,36 @@ def get(
     )
 
 
-def get_by_ref(db_session: Session, *, ref: str) -> Optional[TriggerInstanceDB]:
-    """Return trigger object based on trigger ref.
+# def get_by_ref(db_session: Session, *, ref: str) -> Optional[TriggerInstanceDB]:
+#     """Return trigger object based on trigger ref.
+
+#     Arguments:
+#         db_session {Session} -- SQLAlchemy Session object
+#         ref {str} -- ref string
+
+#     Returns:
+#         Optional[TriggerInstanceDB] -- Returns a TriggerInstanceDB object or nothing if it doesn't exist
+#     """
+#     return (
+#         db_session.query(TriggerInstanceDB).filter(TriggerInstanceDB.ref == ref).first()
+#     )
+
+
+def get_by_trigger(
+    db_session: Session, *, trigger_instance_trigger: str
+) -> Optional[TriggerInstanceDB]:
+    """Return trigger object based on trigger trigger_instance_trigger.
 
     Arguments:
         db_session {Session} -- SQLAlchemy Session object
-        ref {str} -- ref string
-
-    Returns:
-        Optional[TriggerInstanceDB] -- Returns a TriggerInstanceDB object or nothing if it doesn't exist
-    """
-    return (
-        db_session.query(TriggerInstanceDB).filter(TriggerInstanceDB.ref == ref).first()
-    )
-
-
-def get_by_name(db_session: Session, *, name: str) -> Optional[TriggerInstanceDB]:
-    """Return trigger object based on trigger name.
-
-    Arguments:
-        db_session {Session} -- SQLAlchemy Session object
-        name {str} -- trigger name
+        trigger_instance_trigger {str} -- trigger trigger_instance_trigger
 
     Returns:
         Optional[TriggerInstanceDB] -- Returns a TriggerInstanceDB object or nothing if it doesn't exist
     """
     return (
         db_session.query(TriggerInstanceDB)
-        .filter(TriggerInstanceDB.name == name)
+        .filter(TriggerInstanceDB.trigger == trigger_instance_trigger)
         .first()
     )
 
@@ -77,31 +79,6 @@ def get_multi(
         List[Optional[TriggerInstanceDB]] -- Returns a list of TriggerInstanceDB objects
     """
     return db_session.query(TriggerInstanceDB).offset(skip).limit(limit).all()
-
-
-def get_multi_by_packs_id(
-    db_session: Session, *, packs_id: int, skip=0, limit=100
-) -> List[Optional[TriggerInstanceDB]]:
-    """Get multiple TriggerInstanceDB objects by packs_id
-
-    Arguments:
-        db_session {Session} -- SQLAlchemy Session object
-        packs_id {int} -- Pack id
-
-    Keyword Arguments:
-        skip {int} -- Number of entries to skip (default: {0})
-        limit {int} -- Number of trigger objects to limit by (default: {100})
-
-    Returns:
-        List[Optional[TriggerInstanceDB]] -- Returns a list of TriggerInstanceDB objects
-    """
-    return (
-        db_session.query(TriggerInstanceDB)
-        .filter(TriggerInstanceDB.packs_id == packs_id)
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
 
 
 def create(
