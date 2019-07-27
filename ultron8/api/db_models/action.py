@@ -36,8 +36,8 @@ class Action(UIDFieldMixin, Base):
     """Db Schema for Action table."""
 
     RESOURCE_TYPE = ResourceType.ACTION
-    # UID_FIELDS = ["packs_name", "name"]
-    UID_FIELDS = ["metadata_file", "name"]
+    UID_FIELDS = ["packs_name", "name"]
+    # UID_FIELDS = ["metadata_file", "name"]
 
     __tablename__ = "actions"
 
@@ -93,7 +93,7 @@ class Action(UIDFieldMixin, Base):
     def __init__(self, *args, packs_name=None, **values):
         super(Action, self).__init__(*args, **values)
         self.packs_name = packs_name
-        # self.ref = self.get_reference().ref
+        # self._ref = self.get_reference().ref
         self.ref = "{}.{}".format(self.packs_name, self.name)
         self.uid = self.get_uid()
         # self.pack = self.pack
