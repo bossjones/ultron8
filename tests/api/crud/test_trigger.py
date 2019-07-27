@@ -182,6 +182,111 @@ def test_get_trigger():
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
+def test_get_by_ref_trigger():
+    pack_shared_name = random_lower_string()
+    packs_name = pack_shared_name
+    packs_description = random_lower_string()
+    packs_keywords = random_lower_string()
+    packs_version = random_lower_string()
+    packs_python_versions = random_lower_string()
+    packs_author = random_lower_string()
+    packs_email = "info@theblacktonystark.com"
+    packs_contributors = random_lower_string()
+    packs_files = random_lower_string()
+    packs_path = random_lower_string()
+    packs_ref = pack_shared_name
+
+    trigger_name = TRIGGER_0["name"]
+    trigger_packs_name = packs_name
+    trigger_description = TRIGGER_0["description"]
+    trigger_type = TRIGGER_0["type"]
+    trigger_parameters = TRIGGER_0["parameters"]
+
+    packs_in = PacksCreate(
+        name=packs_name,
+        description=packs_description,
+        keywords=packs_keywords,
+        version=packs_version,
+        python_versions=packs_python_versions,
+        author=packs_author,
+        email=packs_email,
+        contributors=packs_contributors,
+        files=packs_files,
+        path=packs_path,
+        ref=packs_ref,
+    )
+
+    packs = crud.packs.create(db_session, packs_in=packs_in)
+
+    trigger_in = TriggerCreate(
+        name=trigger_name,
+        packs_name=trigger_packs_name,
+        description=trigger_description,
+        type=trigger_type,
+        parameters=trigger_parameters,
+    )
+
+    trigger = crud.trigger.create(db_session, trigger_in=trigger_in, packs_id=packs.id)
+    ref_lookup = "{}.{}".format(packs_name, trigger.name)
+    trigger_2 = crud.trigger.get_by_ref(db_session, ref=ref_lookup)
+    assert jsonable_encoder(trigger) == jsonable_encoder(trigger_2)
+
+
+@freeze_time("2019-07-25 01:11:00.740428")
+@pytest.mark.triggeronly
+@pytest.mark.unittest
+def test_get_by_name_trigger():
+    pack_shared_name = random_lower_string()
+    packs_name = pack_shared_name
+    packs_description = random_lower_string()
+    packs_keywords = random_lower_string()
+    packs_version = random_lower_string()
+    packs_python_versions = random_lower_string()
+    packs_author = random_lower_string()
+    packs_email = "info@theblacktonystark.com"
+    packs_contributors = random_lower_string()
+    packs_files = random_lower_string()
+    packs_path = random_lower_string()
+    packs_ref = pack_shared_name
+
+    trigger_name = random_lower_string()
+    trigger_packs_name = packs_name
+    trigger_description = TRIGGER_0["description"]
+    trigger_type = TRIGGER_0["type"]
+    trigger_parameters = TRIGGER_0["parameters"]
+
+    packs_in = PacksCreate(
+        name=packs_name,
+        description=packs_description,
+        keywords=packs_keywords,
+        version=packs_version,
+        python_versions=packs_python_versions,
+        author=packs_author,
+        email=packs_email,
+        contributors=packs_contributors,
+        files=packs_files,
+        path=packs_path,
+        ref=packs_ref,
+    )
+
+    packs = crud.packs.create(db_session, packs_in=packs_in)
+
+    trigger_in = TriggerCreate(
+        name=trigger_name,
+        packs_name=trigger_packs_name,
+        description=trigger_description,
+        type=trigger_type,
+        parameters=trigger_parameters,
+    )
+
+    trigger = crud.trigger.create(db_session, trigger_in=trigger_in, packs_id=packs.id)
+    trigger_2 = crud.trigger.get_by_name(db_session, name=trigger_name)
+    assert jsonable_encoder(trigger) == jsonable_encoder(trigger_2)
+
+
+@freeze_time("2019-07-25 01:11:00.740428")
+@pytest.mark.triggeronly
+@pytest.mark.unittest
 def test_update_trigger():
     packs_name = "dummy_pack_1"
     packs_description = random_lower_string()
