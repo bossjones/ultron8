@@ -82,7 +82,7 @@ class Sensors(UIDFieldMixin, Base):
 
     __tablename__ = "sensors"
 
-    id = Column("id", Integer, primary_key=True, index=True, autoincrement=True)
+    id = Column("id", Integer, primary_key=True, index=True)
     # class_name = Column("class_name", String(255))
     class_name = Column("class_name", String(255))
     ref = Column("ref", String(255))

@@ -33,7 +33,7 @@ class TriggerTagsDB(Base):
 
     __tablename__ = "trigger_tags"
 
-    id = Column("id", Integer, primary_key=True, index=True, autoincrement=True)
+    id = Column("id", Integer, primary_key=True, index=True)
     trigger_type_id = Column(
         "trigger_type_id", Integer, ForeignKey("trigger_types.id"), primary_key=True
     )
@@ -58,7 +58,7 @@ class TriggerTypeDB(UIDFieldMixin, Base):
 
     __tablename__ = "trigger_types"
 
-    id = Column("id", Integer, primary_key=True, index=True, autoincrement=True)
+    id = Column("id", Integer, primary_key=True, index=True)
     name = Column("name", String(255))
     ref = Column("ref", String(255))
     uid = Column("uid", String(255), nullable=True)

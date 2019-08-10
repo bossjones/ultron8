@@ -37,5 +37,5 @@ python ./ultron8/api/backend_pre_start.py
 echo -e " [run] initial_data.py\n\n"
 python ./ultron8/initial_data.py
 
-echo " [run] dev_serve.py\n\n"
+echo -e " [run] dev_serve.py\n\n"
 python ultron8/dev_serve.py &
