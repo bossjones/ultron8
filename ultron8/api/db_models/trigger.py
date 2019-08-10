@@ -33,7 +33,7 @@ class TriggerTagsDB(Base):
 
     __tablename__ = "trigger_tags"
 
-    id = Column("id", Integer, primary_key=True, index=True)
+    id = Column("id", Integer, primary_key=True, index=True, autoincrement=True)
     trigger_type_id = Column(
         "trigger_type_id", Integer, ForeignKey("trigger_types.id"), primary_key=True
     )
@@ -58,7 +58,7 @@ class TriggerTypeDB(UIDFieldMixin, Base):
 
     __tablename__ = "trigger_types"
 
-    id = Column("id", Integer, primary_key=True, index=True)
+    id = Column("id", Integer, primary_key=True, index=True, autoincrement=True)
     name = Column("name", String(255))
     ref = Column("ref", String(255))
     uid = Column("uid", String(255), nullable=True)
@@ -120,7 +120,7 @@ class TriggerDB(UIDFieldMixin, Base):
     type = Column("type", String(255))
     parameters = Column("parameters", JSON)
     ref_count = Column("ref_count", Integer, default=0)
-    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
+    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"))
     # packs_name = Column("packs_name", Integer, ForeignKey("packs.name"), nullable=True)
     # FIX: sqlalchemy Error creating backref on relationship
     # https://stackoverflow.com/questions/26693041/sqlalchemy-error-creating-backref-on-relationship

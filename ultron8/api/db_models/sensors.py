@@ -42,9 +42,13 @@ from ultron8.api.db_models.trigger import TriggerTypeDB
 
 SENSORS_TRIGGER_TYPES_ASSOCIATION = Table(
     "sensors_trigger_types_association",
-    Column("sensors_id", Integer, ForeignKey("sensors.id"), primary_key=True),
+    Base.metadata,
+    Column("sensors_packs_id", Integer, ForeignKey("sensors.packs_id"), nullable=False),
     Column(
-        "trigger_types_id", Integer, ForeignKey("trigger_types.id", primary_key=True)
+        "trigger_types_packs_id",
+        Integer,
+        ForeignKey("trigger_types.packs_id"),
+        nullable=False,
     ),
 )
 
@@ -78,7 +82,7 @@ class Sensors(UIDFieldMixin, Base):
 
     __tablename__ = "sensors"
 
-    id = Column("id", Integer, primary_key=True, index=True)
+    id = Column("id", Integer, primary_key=True, index=True, autoincrement=True)
     # class_name = Column("class_name", String(255))
     class_name = Column("class_name", String(255))
     ref = Column("ref", String(255))
@@ -96,15 +100,15 @@ class Sensors(UIDFieldMixin, Base):
     created_at = Column("created_at", String)
     updated_at = Column("updated_at", String)
     packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), primary_key=True)
-    trigger_types_id = Column(
-        "trigger_types_id", Integer, ForeignKey("trigger_types.id"), primary_key=True
-    )
-    triggers_types_packs_id = Column(
-        "triggers_types_packs_id",
-        Integer,
-        ForeignKey("trigger_types.packs_id"),
-        primary_key=True,
-    )
+    # DISABLED: # trigger_types_id = Column(
+    # DISABLED: #     "trigger_types_id", Integer, ForeignKey("trigger_types.id"), primary_key=True
+    # DISABLED: # )
+    # DISABLED: # triggers_types_packs_id = Column(
+    # DISABLED: #     "triggers_types_packs_id",
+    # DISABLED: #     Integer,
+    # DISABLED: #     ForeignKey("trigger_types.packs_id"),
+    # DISABLED: #     primary_key=True
+    # DISABLED: # )
     # triggers_types_packs_id = Column("triggers_types_packs_id", Integer)
 
     # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"))
@@ -140,12 +144,31 @@ class Sensors(UIDFieldMixin, Base):
     #     "TriggerTypeDB", backref="sensors"
     # )
 
+    # <><><><><><><><><><><><><><><><><><><>
+    # Sensor = LEFT side of join
+    # TriggerTypeDB = Right side of join
+    # <><><><><><><><><><><><><><><><><><><>
     # relationship() using explicit foreign_keys, remote_side
+    # HOW TO UNDERSTAND THIS: https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-viii-followers
     trigger_types = relationship(
+        # NOTE: is the right side entity of the relationship (the left side entity is the Sensor class).
         "TriggerTypeDB",
-        backref="sensors",
-        foreign_keys=[packs_id, trigger_types_id],
-        primaryjoin=packs_id == TriggerTypeDB.packs_id,
+        # NOTE: Configures the association table that is used for this relationship, which I defined right above this class.
+        secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
+        # NOTE: indicates the condition that links the left side entity (the sensor) with the association table. The join condition for the left side of the relationship is the user ID matching the sensors_packs_id field of the association table. The SENSORS_TRIGGER_TYPES_ASSOCIATION.c.sensors_packs_id expression references the sensors_packs_id column of the association table.
+        primaryjoin=(
+            SENSORS_TRIGGER_TYPES_ASSOCIATION.c.trigger_types_packs_id == packs_id
+        ),
+        # NOTE: indicates the condition that links the right side entity (the trigger_type) with the association table. This condition is similar to the one for primaryjoin, with the only difference that now I'm using sensors_packs_id, which is the other foreign key in the association table.
+        secondaryjoin=(
+            SENSORS_TRIGGER_TYPES_ASSOCIATION.c.sensors_packs_id == packs_id
+        ),
+        # NOTE: defines how this relationship will be accessed from the right side entity. From the left side, the relationship is named trigger_types, so from the right side I am going to use the name sensors to represent all the left side sensors that are linked to the trigger types in the right side. The additional lazy argument indicates the execution mode for this query. A mode of dynamic sets up the query to not run until specifically requested, which is also how I set up the posts one-to-many relationship.
+        backref=backref("sensors", lazy="dynamic"),
+        # foreign_keys=[packs_id],
+        # foreign_keys=[packs_id],
+        # NOTE: is similar to the parameter of the same name in the backref, but this one applies to the left side query instead of the right side.
+        lazy="dynamic",
     )
 
     # # SOURCE: https://stackoverflow.com/questions/28503656/attributeerror-list-object-has-no-attribute-sa-instance-state/28503775#28503775
@@ -194,7 +217,7 @@ class Sensors(UIDFieldMixin, Base):
         self.uid = self.get_uid()
         self.created_at = str(datetime.datetime.utcnow())
         self.updated_at = str(datetime.datetime.utcnow())
-        self.triggers_types_packs_id = self.packs_id
+        # self.triggers_types_packs_id = self.packs_id
 
     # def add_or_update_pattern_score(self, account_type, field, pattern, score):
     #     db_pattern_score = self.get_account_pattern_audit_score(account_type, field, pattern)
