@@ -34,7 +34,9 @@ class TriggerTagsDB(Base):
     __tablename__ = "trigger_tags"
 
     id = Column("id", Integer, primary_key=True, index=True)
-    trigger_type_id = Column("trigger_type_id", Integer, ForeignKey("trigger_types.id"))
+    trigger_type_id = Column(
+        "trigger_type_id", Integer, ForeignKey("trigger_types.id"), primary_key=True
+    )
     tag = Column("tag", String, nullable=True)
     trigger_name = Column("trigger_name", String, nullable=True)
 
@@ -63,7 +65,7 @@ class TriggerTypeDB(UIDFieldMixin, Base):
     description = Column("description", String(255))
     payload_schema = Column("payload_schema", JSON)
     parameters_schema = Column("parameters_schema", JSON)
-    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"))
+    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), primary_key=True)
 
     # Path to the metadata file relative to the pack directory.
     metadata_file = Column("metadata_file", String(255))

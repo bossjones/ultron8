@@ -17,26 +17,47 @@ import datetime
 
 from ultron8.api.models.system.common import ResourceReference
 
+from ultron8.api.db_models.trigger import TriggerTypeDB
+
 # assoc_table = db.Table('association',
 #    db.Column('ingredient_id', db.Integer, db.ForeignKey('ingredients.id')),
 #    db.Column('cocktail_id', db.Integer, db.ForeignKey('cocktails.id'))
 # )
 
 
+# SENSORS_TRIGGER_TYPES_ASSOCIATION = Table(
+#     "sensors_trigger_types_association",
+#     Base.metadata,
+#     Column("sensors_id", Integer, ForeignKey("sensors.id"), primary_key=True),
+#     Column(
+#         "trigger_types_id", Integer, ForeignKey("trigger_types.id", primary_key=True)
+#     ),
+#     Column(
+#         "packs_id",
+#         Integer,
+#         ForeignKey("packs.id"),
+#         primary_key=True,
+#     ),
+# )
+
 SENSORS_TRIGGER_TYPES_ASSOCIATION = Table(
     "sensors_trigger_types_association",
-    Base.metadata,
     Column("sensors_id", Integer, ForeignKey("sensors.id"), primary_key=True),
-    # Column(
-    #     "trigger_types_id", Integer, ForeignKey("trigger_types.id", primary_key=True)
-    # ),
     Column(
-        "triggers_types_packs_id",
-        Integer,
-        ForeignKey("trigger_types.packs_id"),
-        primary_key=True,
+        "trigger_types_id", Integer, ForeignKey("trigger_types.id", primary_key=True)
     ),
 )
+
+# class Association(Base):
+#     __tablename__ = 'association'
+#     left_id = Column(Integer, ForeignKey('left.id'), primary_key=True)
+#     right_id = Column(Integer, ForeignKey('right.id'), primary_key=True)
+#     extra_data = Column(String(50))
+#     child = relationship("Child", back_populates="parents")
+#     parent = relationship("Parent", back_populates="children")
+
+# NOTE: How to three-way many-to-many relationship in flask-sqlalchemy
+# SOURCE: https://stackoverflow.com/questions/23035662/how-to-three-way-many-to-many-relationship-in-flask-sqlalchemy
 
 
 class Sensors(UIDFieldMixin, Base):
@@ -74,14 +95,17 @@ class Sensors(UIDFieldMixin, Base):
 
     created_at = Column("created_at", String)
     updated_at = Column("updated_at", String)
-    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
-    # triggers_types_packs_id = Column(
-    #     "triggers_types_packs_id",
-    #     Integer,
-    #     ForeignKey("trigger_types.packs_id"),
-    #     nullable=True,
-    # )
-    triggers_types_packs_id = Column("triggers_types_packs_id", Integer)
+    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), primary_key=True)
+    trigger_types_id = Column(
+        "trigger_types_id", Integer, ForeignKey("trigger_types.id"), primary_key=True
+    )
+    triggers_types_packs_id = Column(
+        "triggers_types_packs_id",
+        Integer,
+        ForeignKey("trigger_types.packs_id"),
+        primary_key=True,
+    )
+    # triggers_types_packs_id = Column("triggers_types_packs_id", Integer)
 
     # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"))
     # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"))
@@ -104,10 +128,24 @@ class Sensors(UIDFieldMixin, Base):
     # )
 
     # FIXME: Recent attempts 8/9/2019
+    # trigger_types = relationship(
+    #     "TriggerTypeDB",
+    #     secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
+    #     backref=backref("sensor_trigger_types", lazy="joined"),
+    # )
+    # trigger_types = relationship(
+    #     "TriggerTypeDB", lazy="joined", cascade="all, delete"
+    # )
+    # trigger_types = relationship(
+    #     "TriggerTypeDB", backref="sensors"
+    # )
+
+    # relationship() using explicit foreign_keys, remote_side
     trigger_types = relationship(
         "TriggerTypeDB",
-        secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
-        backref=backref("sensor_trigger_types", lazy="dynamic"),
+        backref="sensors",
+        foreign_keys=[packs_id, trigger_types_id],
+        primaryjoin=packs_id == TriggerTypeDB.packs_id,
     )
 
     # # SOURCE: https://stackoverflow.com/questions/28503656/attributeerror-list-object-has-no-attribute-sa-instance-state/28503775#28503775

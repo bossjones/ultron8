@@ -102,8 +102,9 @@ def test_create_sensors():
     assert sensors_get.description == sensors_description
     assert sensors_get.packs_name == sensors_packs_name
     # sensors_trigger_types = sensors_get.trigger_types.filter(TriggerTypeDB.packs_id==packs.id)
+    print("sensors_get.trigger_types: {}".format(sensors_get.trigger_types))
     # import pdb;pdb.set_trace()
-    print("hello")
+    print("sensors_get.trigger_types: {}".format(sensors_get.trigger_types))
 
 
 # @freeze_time("2019-07-25 01:11:00.740428")
