@@ -3,7 +3,18 @@
 MAKEFLAGS += --warn-undefined-variables
 # .SHELLFLAGS := -eu -o pipefail
 
+# SOURCE: https://github.com/luismayta/zsh-servers-functions/blob/b68f34e486d6c4a465703472e499b1c39fe4a26c/Makefile
+# Configuration.
 SHELL = /bin/bash
+ROOT_DIR = $(shell pwd)
+PROJECT_BIN_DIR = $(ROOT_DIR)/bin
+DATA_DIR = $(ROOT_DIR)/var
+SCRIPT_DIR = $(ROOT_DIR)/script
+
+WGET = wget
+
+# Bin scripts
+PYENV_SETUP = $(shell) $(SCRIPT_DIR)/pyenv_setup.sh
 
 ONLY_RUN ?= packsonly
 
@@ -966,6 +977,9 @@ local-jupyter:
 
 local-notebook: local-jupyter
 
+notebook: ## start jupyter notebook
+	jupyter notebook
+
 .PHONY: local-web
 local-web:
 	pipenv run uvicorn ultron8.web:app --reload
@@ -1205,3 +1219,7 @@ local-pytest-pdb: ci-local-pdb ## [ALIAS for ci-local-pdb] run pytest WITH PDB u
 
 open-coverage: ## Open coverage report inside of web browser
 	./script/open-browser.py file://$(CURRENT_DIR)/htmlcov/index.html
+
+
+environment: ## setup pyenv environment
+	$(PYENV_SETUP)

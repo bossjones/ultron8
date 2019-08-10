@@ -27,8 +27,14 @@ SENSORS_TRIGGER_TYPES_ASSOCIATION = Table(
     "sensors_trigger_types_association",
     Base.metadata,
     Column("sensors_id", Integer, ForeignKey("sensors.id"), primary_key=True),
+    # Column(
+    #     "trigger_types_id", Integer, ForeignKey("trigger_types.id", primary_key=True)
+    # ),
     Column(
-        "trigger_types_id", Integer, ForeignKey("trigger_types.id"), primary_key=True
+        "triggers_types_packs_id",
+        Integer,
+        ForeignKey("trigger_types.packs_id"),
+        primary_key=True,
     ),
 )
 
@@ -62,20 +68,69 @@ class Sensors(UIDFieldMixin, Base):
     entry_point = Column("entry_point", String(255))
     description = Column("description", String(255))
     # trigger_types = Column("trigger_types", JSON)
-    trigger_types_id = Column(
-        "trigger_types_id", Integer, ForeignKey("trigger_types.id"), nullable=True
-    )
-    # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"))
-    # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"))
-    trigger_types = relationship(
-        "TriggerTypeDB",
-        secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
-        backref=backref("sensor_trigger_types"),
-        lazy="dynamic",
-    )
+    # trigger_types_id = Column(
+    #     "trigger_types_id", Integer, ForeignKey("trigger_types.id"), nullable=True
+    # )
+
     created_at = Column("created_at", String)
     updated_at = Column("updated_at", String)
     packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
+    triggers_types_packs_id = Column(
+        "triggers_types_packs_id",
+        Integer,
+        ForeignKey("trigger_types.packs_id"),
+        nullable=True,
+    )
+
+    # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"))
+    # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"))
+    # trigger_types = relationship(
+    #     "TriggerTypeDB",
+    #     secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
+    #     backref=backref("sensor_trigger_types", lazy="dynamic")
+    # )
+    # trigger_types = relationship(
+    #     "TriggerTypeDB",
+    #     secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
+    #     backref=backref("sensor_trigger_types", lazy="joined"),
+    #     foreign_keys=[packs_id]
+    # )
+    # trigger_types = relationship(
+    #     "TriggerTypeDB",
+    #     secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
+    #     backref=backref("sensor_trigger_types", lazy="joined")
+    #     # foreign_keys=[triggers_types_packs_id]
+    # )
+
+    # FIXME: Recent attempts 8/9/2019
+    trigger_types = relationship(
+        "TriggerTypeDB",
+        secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
+        backref=backref("sensor_trigger_types", lazy="dynamic"),
+    )
+
+    # # SOURCE: https://stackoverflow.com/questions/28503656/attributeerror-list-object-has-no-attribute-sa-instance-state/28503775#28503775
+    # # is_bestfriend = db.relationship( 'Users', uselist=False, remote_side=[id], post_update=True)
+    # trigger_types = relationship('TriggerTypeDB', #defining the relationship, Users is left side entity
+    #     secondary = SENSORS_TRIGGER_TYPES_ASSOCIATION, #indecates association table
+    #     primaryjoin = (SENSORS_TRIGGER_TYPES_ASSOCIATION.c.triggers_types_packs_id == packs_id), #condition linking the left side entity
+    #     # secondaryjoin = (SENSORS_TRIGGER_TYPES_ASSOCIATION.c.friend_id == id),#cond if link right.s ent. with assoc table
+    #     backref = backref('sensors_trigger_types_association', lazy = 'dynamic'),#how accessed from right
+    #     lazy = 'dynamic'
+    # )
+
+    # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"), foreign_keys=[triggers_types_packs_id])
+
+    # trigger_types = relationship(
+    #     "TriggerTypeDB", cascade="all, delete-orphan", backref="trigger_type"
+    # )
+
+    # Column(
+    #     "trigger_types_id", Integer, ForeignKey("trigger_types.id")
+    # ),
+    # Column(
+    #     "triggers_types_packs_id", Integer, ForeignKey("trigger_types.packs_id")
+    # ),
 
     # # ---
     # # class_name: "SampleSensor"
@@ -100,6 +155,24 @@ class Sensors(UIDFieldMixin, Base):
         self.uid = self.get_uid()
         self.created_at = str(datetime.datetime.utcnow())
         self.updated_at = str(datetime.datetime.utcnow())
+
+    # def add_or_update_pattern_score(self, account_type, field, pattern, score):
+    #     db_pattern_score = self.get_account_pattern_audit_score(account_type, field, pattern)
+    #     if db_pattern_score is not None:
+    #         db_pattern_score.score = score
+    #     else:
+    #         db_pattern_score = AccountPatternAuditScore(account_type=account_type,
+    #                                                     account_field=field,
+    #                                                     account_pattern=pattern,
+    #                                                     score=score)
+
+    #         self.account_pattern_scores.append(db_pattern_score)
+
+    # def get_account_pattern_audit_score(self, account_type, field, pattern):
+    #     for db_pattern_score in self.account_pattern_scores:
+    #         if db_pattern_score.account_field == field and \
+    #                 db_pattern_score.account_pattern == pattern and db_pattern_score.account_type == account_type:
+    #             return db_pattern_score
 
     # def get_reference(self):
     #     """
