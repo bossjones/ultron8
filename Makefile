@@ -1176,6 +1176,10 @@ migration-info:
 migration-history:
 	pipenv run alembic history --verbose
 
+migration-restart: ## Downgrade alembic database to base migration, then upgrade all the way back up
+	pipenv run alembic downgrade base
+	pipenv run alembic upgrade head
+
 build-cached: ## docker-compose build wheelhouse version
 	docker-compose -f docker-compose.cached.yml build | gnomon
 

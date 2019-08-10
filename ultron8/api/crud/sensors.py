@@ -35,9 +35,9 @@ def get_multi_by_packs_id(
     )
 
 
-def create(db_session: Session, *, sensors_in: SensorsCreate) -> Sensors:
+def create(db_session: Session, *, sensors_in: SensorsCreate, packs_id: int) -> Sensors:
     sensors_in_data = jsonable_encoder(sensors_in)
-    sensors = Sensors(**sensors_in_data)
+    sensors = Sensors(**sensors_in_data, packs_id=packs_id)
     db_session.add(sensors)
     db_session.commit()
     db_session.refresh(sensors)

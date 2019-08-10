@@ -75,12 +75,13 @@ class Sensors(UIDFieldMixin, Base):
     created_at = Column("created_at", String)
     updated_at = Column("updated_at", String)
     packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
-    triggers_types_packs_id = Column(
-        "triggers_types_packs_id",
-        Integer,
-        ForeignKey("trigger_types.packs_id"),
-        nullable=True,
-    )
+    # triggers_types_packs_id = Column(
+    #     "triggers_types_packs_id",
+    #     Integer,
+    #     ForeignKey("trigger_types.packs_id"),
+    #     nullable=True,
+    # )
+    triggers_types_packs_id = Column("triggers_types_packs_id", Integer)
 
     # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"))
     # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"))
@@ -155,6 +156,7 @@ class Sensors(UIDFieldMixin, Base):
         self.uid = self.get_uid()
         self.created_at = str(datetime.datetime.utcnow())
         self.updated_at = str(datetime.datetime.utcnow())
+        self.triggers_types_packs_id = self.packs_id
 
     # def add_or_update_pattern_score(self, account_type, field, pattern, score):
     #     db_pattern_score = self.get_account_pattern_audit_score(account_type, field, pattern)

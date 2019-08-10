@@ -90,7 +90,7 @@ def test_create_sensors():
         packs_name=sensors_packs_name,
         # trigger_types=sensors_trigger_types,
     )
-    sensors = crud.sensors.create(db_session, sensors_in=sensors_in)
+    sensors = crud.sensors.create(db_session, sensors_in=sensors_in, packs_id=packs.id)
 
     sensors_get = crud.sensors.get(db_session=db_session, sensors_id=sensors.id)
 
@@ -103,6 +103,7 @@ def test_create_sensors():
     assert sensors_get.packs_name == sensors_packs_name
     # sensors_trigger_types = sensors_get.trigger_types.filter(TriggerTypeDB.packs_id==packs.id)
     # import pdb;pdb.set_trace()
+    print("hello")
 
 
 # @freeze_time("2019-07-25 01:11:00.740428")
