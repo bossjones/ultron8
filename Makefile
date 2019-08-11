@@ -836,7 +836,7 @@ travis-pdb:
 
 
 .PHONY: clean-cache
-clean-cache:
+clean-cache: ## clear all python cached bytecode eg *.pyc and __pycache__
 	find . -name '*.pyc' | xargs rm
 	find . -name '__pycache__' | xargs rm -rf
 

@@ -109,6 +109,7 @@ def create(
     Returns:
         TriggerTypeDB -- Returns a TriggerTypeDB object
     """
+    # TODO: missing packs_name
     trigger_type_in_data = jsonable_encoder(trigger_type_in)
     trigger = TriggerTypeDB(**trigger_type_in_data, packs_id=packs_id)
     db_session.add(trigger)

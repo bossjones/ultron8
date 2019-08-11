@@ -45,8 +45,13 @@ from sqlalchemy import and_
 SENSORS_TRIGGER_TYPES_ASSOCIATION = Table(
     "sensors_trigger_types_association",
     Base.metadata,
-    Column("sensors_packs_id", Integer, ForeignKey("sensors.packs_id")),
-    Column("trigger_types_packs_id", Integer, ForeignKey("trigger_types.packs_id")),
+    Column("sensors_packs_id", Integer, ForeignKey("sensors.packs_id"), nullable=True),
+    Column(
+        "trigger_types_packs_id",
+        Integer,
+        ForeignKey("trigger_types.packs_id"),
+        nullable=True,
+    ),
 )
 
 # class Association(Base):
@@ -80,7 +85,6 @@ class Sensors(UIDFieldMixin, Base):
     __tablename__ = "sensors"
 
     id = Column("id", Integer, primary_key=True, index=True)
-    # class_name = Column("class_name", String(255))
     class_name = Column("class_name", String(255))
     ref = Column("ref", String(255))
     uid = Column("uid", String(255), nullable=True)
@@ -96,7 +100,7 @@ class Sensors(UIDFieldMixin, Base):
 
     created_at = Column("created_at", String)
     updated_at = Column("updated_at", String)
-    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), primary_key=True)
+    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
     # DISABLED: # trigger_types_id = Column(
     # DISABLED: #     "trigger_types_id", Integer, ForeignKey("trigger_types.id"), primary_key=True
     # DISABLED: # )
@@ -156,8 +160,7 @@ class Sensors(UIDFieldMixin, Base):
         secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
         # NOTE: indicates the condition that links the left side entity (the sensor) with the association table. The join condition for the left side of the relationship is the user ID matching the sensors_packs_id field of the association table. The SENSORS_TRIGGER_TYPES_ASSOCIATION.c.sensors_packs_id expression references the sensors_packs_id column of the association table.
         primaryjoin=and_(
-            (SENSORS_TRIGGER_TYPES_ASSOCIATION.c.trigger_types_packs_id == packs_id),
-            (TriggerTypeDB.id != None),
+            (SENSORS_TRIGGER_TYPES_ASSOCIATION.c.trigger_types_packs_id == packs_id)
         ),
         # NOTE: indicates the condition that links the right side entity (the trigger_type) with the association table. This condition is similar to the one for primaryjoin, with the only difference that now I'm using sensors_packs_id, which is the other foreign key in the association table.
         secondaryjoin=(
@@ -165,8 +168,11 @@ class Sensors(UIDFieldMixin, Base):
         ),
         # NOTE: defines how this relationship will be accessed from the right side entity. From the left side, the relationship is named trigger_types, so from the right side I am going to use the name sensors to represent all the left side sensors that are linked to the trigger types in the right side. The additional lazy argument indicates the execution mode for this query. A mode of dynamic sets up the query to not run until specifically requested, which is also how I set up the posts one-to-many relationship.
         backref=backref("sensors", lazy="dynamic"),
+        # backref=backref("sensors"),
         # foreign_keys=[packs_id],
         # foreign_keys=[packs_id],
+        # foreign_keys=[SENSORS_TRIGGER_TYPES_ASSOCIATION.c.trigger_types_packs_id,
+        # SENSORS_TRIGGER_TYPES_ASSOCIATION.c.sensors_packs_id],
         # NOTE: is similar to the parameter of the same name in the backref, but this one applies to the left side query instead of the right side.
         lazy="dynamic",
     )
@@ -270,161 +276,161 @@ class Sensors(UIDFieldMixin, Base):
 MODELS = [Sensors]
 
 
-# smoke-tests
-if "__main__" == __name__:
-    # Initial - Setup environment vars before testing anything
-    import os
-    from sqlalchemy import inspect
+# # smoke-tests
+# if "__main__" == __name__:
+#     # Initial - Setup environment vars before testing anything
+#     import os
+#     from sqlalchemy import inspect
 
-    # import better_exceptions; better_exceptions.hook()
+#     # import better_exceptions; better_exceptions.hook()
 
-    import sys
+#     import sys
 
-    from IPython.core.debugger import Tracer  # noqa
-    from IPython.core import ultratb
+#     from IPython.core.debugger import Tracer  # noqa
+#     from IPython.core import ultratb
 
-    sys.excepthook = ultratb.FormattedTB(
-        mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
-    )
+#     sys.excepthook = ultratb.FormattedTB(
+#         mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
+#     )
 
-    os.environ["DEBUG"] = "1"
-    os.environ["TESTING"] = "0"
-    os.environ["BETTER_EXCEPTIONS"] = "1"
+#     os.environ["DEBUG"] = "1"
+#     os.environ["TESTING"] = "0"
+#     os.environ["BETTER_EXCEPTIONS"] = "1"
 
-    # os.environ["DATABASE_URL"] = "sqlite:///:memory:"
-    # os.environ["TEST_DATABASE_URL"] = "sqlite:///:memory:"
+#     # os.environ["DATABASE_URL"] = "sqlite:///:memory:"
+#     # os.environ["TEST_DATABASE_URL"] = "sqlite:///:memory:"
 
-    os.environ["DATABASE_URL"] = "sqlite:///test.db"
-    os.environ["TEST_DATABASE_URL"] = "sqlite:///test.db"
+#     os.environ["DATABASE_URL"] = "sqlite:///test.db"
+#     os.environ["TEST_DATABASE_URL"] = "sqlite:///test.db"
 
-    def debug_dump(obj):
-        for attr in dir(obj):
-            if hasattr(obj, attr):
-                print("obj.%s = %s" % (attr, getattr(obj, attr)))
+#     def debug_dump(obj):
+#         for attr in dir(obj):
+#             if hasattr(obj, attr):
+#                 print("obj.%s = %s" % (attr, getattr(obj, attr)))
 
-    import logging
+#     import logging
 
-    from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
+#     from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
 
-    from ultron8.api.db.u_sqlite.session import db_session
+#     from ultron8.api.db.u_sqlite.session import db_session
 
-    logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(__name__)
+#     logging.basicConfig(level=logging.INFO)
+#     logger = logging.getLogger(__name__)
 
-    max_tries = 60 * 5  # 5 minutes
-    wait_seconds = 1
+#     max_tries = 60 * 5  # 5 minutes
+#     wait_seconds = 1
 
-    @retry(
-        stop=stop_after_attempt(max_tries),
-        wait=wait_fixed(wait_seconds),
-        before=before_log(logger, logging.INFO),
-        after=after_log(logger, logging.WARN),
-    )
-    def init():
-        try:
-            # Try to create session to check if DB is awake
-            # pylint: disable=no-member
-            db_session.execute("SELECT 1")
-        except Exception as e:
-            logger.error(e)
-            raise e
+#     @retry(
+#         stop=stop_after_attempt(max_tries),
+#         wait=wait_fixed(wait_seconds),
+#         before=before_log(logger, logging.INFO),
+#         after=after_log(logger, logging.WARN),
+#     )
+#     def init():
+#         try:
+#             # Try to create session to check if DB is awake
+#             # pylint: disable=no-member
+#             db_session.execute("SELECT 1")
+#         except Exception as e:
+#             logger.error(e)
+#             raise e
 
-    # Get sqlalchemy classes/objects
+#     # Get sqlalchemy classes/objects
 
-    from ultron8.api.db.u_sqlite.init_db import init_db
-    from ultron8.api.db.u_sqlite.session import db_session, engine, Session
+#     from ultron8.api.db.u_sqlite.init_db import init_db
+#     from ultron8.api.db.u_sqlite.session import db_session, engine, Session
 
-    # make sure all SQL Alchemy models are imported before initializing DB
-    # otherwise, SQL Alchemy might fail to initialize properly relationships
-    # for more details: https://github.com/tiangolo/full-stack-fastapi-postgresql/issues/28
-    from ultron8.api.db.u_sqlite.base import Base
+#     # make sure all SQL Alchemy models are imported before initializing DB
+#     # otherwise, SQL Alchemy might fail to initialize properly relationships
+#     # for more details: https://github.com/tiangolo/full-stack-fastapi-postgresql/issues/28
+#     from ultron8.api.db.u_sqlite.base import Base
 
-    import pandas as pd
+#     import pandas as pd
 
-    from ultron8.api.db_models.packs import Packs
-    from ultron8.api.db_models.action import Action
+#     from ultron8.api.db_models.packs import Packs
+#     from ultron8.api.db_models.action import Action
 
-    # Tables should be created with Alembic migrations
-    # But if you don't want to use migrations, create
-    # the tables un-commenting the next line
-    # 2 - generate database schema
-    Base.metadata.create_all(bind=engine)
+#     # Tables should be created with Alembic migrations
+#     # But if you don't want to use migrations, create
+#     # the tables un-commenting the next line
+#     # 2 - generate database schema
+#     Base.metadata.create_all(bind=engine)
 
-    # 3 - create a new session
-    session = Session()
+#     # 3 - create a new session
+#     session = Session()
 
-    # Try initializing everything now
-    logger.info("Initializing service")
-    init()
-    logger.info("Service finished initializing")
+#     # Try initializing everything now
+#     logger.info("Initializing service")
+#     init()
+#     logger.info("Service finished initializing")
 
-    logger.info("Creating initial data")
-    init_db(db_session)
-    logger.info("Initial data created")
+#     logger.info("Creating initial data")
+#     init_db(db_session)
+#     logger.info("Initial data created")
 
-    ##########################################
-    # packs
-    ##########################################
+#     ##########################################
+#     # packs
+#     ##########################################
 
-    # Create - packs
-    pack_linux = Packs(
-        name="linux",
-        description="Generic Linux actions",
-        keywords="linux",
-        version="0.1.0",
-        python_versions="3",
-        author="Jarvis",
-        email="info@theblacktonystark.com",
-        contributors="bossjones",
-        files="./tests/fixtures/simple/packs/linux",
-        path="./tests/fixtures/simple/packs/linux",
-        ref="linux",
-    )
+#     # Create - packs
+#     pack_linux = Packs(
+#         name="linux",
+#         description="Generic Linux actions",
+#         keywords="linux",
+#         version="0.1.0",
+#         python_versions="3",
+#         author="Jarvis",
+#         email="info@theblacktonystark.com",
+#         contributors="bossjones",
+#         files="./tests/fixtures/simple/packs/linux",
+#         path="./tests/fixtures/simple/packs/linux",
+#         ref="linux",
+#     )
 
-    print(pack_linux)
+#     print(pack_linux)
 
-    # action_check_loadavg = Action(
-    #     name="check_loadavg",
-    #     runner_type="remote-shell-script",
-    #     description="Check CPU Load Average on a Host",
-    #     enabled=True,
-    #     entry_point="checks/check_loadavg.py",
-    #     parameters='{"period": {"enum": ["1","5","15","all"], "type": "string", "description": "Time period for load avg: 1,5,15 minutes, or \'all\'", "default": "all", "position": 0}}',
-    #     pack=pack_linux,
-    # )
+#     # action_check_loadavg = Action(
+#     #     name="check_loadavg",
+#     #     runner_type="remote-shell-script",
+#     #     description="Check CPU Load Average on a Host",
+#     #     enabled=True,
+#     #     entry_point="checks/check_loadavg.py",
+#     #     parameters='{"period": {"enum": ["1","5","15","all"], "type": "string", "description": "Time period for load avg: 1,5,15 minutes, or \'all\'", "default": "all", "position": 0}}',
+#     #     pack=pack_linux,
+#     # )
 
-    sensors = Sensors(
-        name="FileWatchSensor",
-        enabled=True,
-        entry_point="file_watch_sensor.py",
-        description="Sensor which monitors files for new lines",
-        trigger_types=[
-            {
-                "name": "file_watch.line",
-                "pack": "linux",
-                "description": "Trigger which indicates a new line has been detected",
-                "parameters_schema": {
-                    "type": "object",
-                    "properties": {
-                        "file_path": {
-                            "description": "Path to the file to monitor",
-                            "type": "string",
-                            "required": True,
-                        }
-                    },
-                    "additionalProperties": False,
-                },
-                "payload_schema": {
-                    "type": "object",
-                    "properties": {
-                        "file_path": {"type": "string"},
-                        "file_name": {"type": "string"},
-                        "line": {"type": "string"},
-                    },
-                },
-            }
-        ],
-        pack=pack_linux,
-    )
+#     sensors = Sensors(
+#         name="FileWatchSensor",
+#         enabled=True,
+#         entry_point="file_watch_sensor.py",
+#         description="Sensor which monitors files for new lines",
+#         trigger_types=[
+#             {
+#                 "name": "file_watch.line",
+#                 "pack": "linux",
+#                 "description": "Trigger which indicates a new line has been detected",
+#                 "parameters_schema": {
+#                     "type": "object",
+#                     "properties": {
+#                         "file_path": {
+#                             "description": "Path to the file to monitor",
+#                             "type": "string",
+#                             "required": True,
+#                         }
+#                     },
+#                     "additionalProperties": False,
+#                 },
+#                 "payload_schema": {
+#                     "type": "object",
+#                     "properties": {
+#                         "file_path": {"type": "string"},
+#                         "file_name": {"type": "string"},
+#                         "line": {"type": "string"},
+#                     },
+#                 },
+#             }
+#         ],
+#         pack=pack_linux,
+#     )
 
-    print(sensors)
+#     print(sensors)

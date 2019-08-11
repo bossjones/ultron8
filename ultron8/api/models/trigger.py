@@ -17,7 +17,6 @@ from pydantic import Schema
 
 
 class TriggerTagsBase(BaseModel):
-    id: Optional[int] = None
     trigger_type_id: Optional[int] = None
     tag: Optional[str] = None
     trigger_name: Optional[str] = None
@@ -68,7 +67,7 @@ class TriggerTypeBaseInDB(TriggerTypeBase):
         payload_info: Meta information of the expected payload.
     """
 
-    id: Optional[int] = None
+    id: int = None
     uid: str = None
     ref: Optional[str] = None
     name: str
@@ -181,3 +180,56 @@ class TriggerInstanceUpdate(TriggerInstanceBaseInDB):
 ######################################################################
 # trigger_events - END
 ######################################################################
+
+# smoke-tests
+# if "__main__" == __name__:
+
+#     from ultron8.api.db_models.packs import Packs
+
+#     pack_smoke_test = Packs(
+#         name="smoke_test",
+#         description="Generic Linux actions",
+#         keywords="smoke_test",
+#         version="0.1.0",
+#         python_versions="3",
+#         author="Jarvis",
+#         email="info@theblacktonystark.com",
+#         contributors="bossjones",
+#         files="./tests/fixtures/simple/packs/smoke_test",
+#         path="./tests/fixtures/simple/packs/smoke_test",
+#         ref="linux",
+#     )
+#     print(pack_smoke_test)
+
+
+#     # create_random_trigger_type(packs=pack_smoke_test)
+
+#     trigger_type_name = create_random_trigger_type_name()
+#     trigger_type_packs_name = packs.name
+#     trigger_type_description = random_lower_string()
+#     trigger_type_parameters_schema = {
+#         "additionalProperties": False,
+#         "properties": {"url": {"type": "string", "required": True}},
+#         "type": "object",
+#     }
+
+#     trigger_type_payload_schema = {"type": "object"}
+
+#     folder_name = trigger_type_name.split(".")
+
+#     trigger_type_metadata_file = "./tests/fixtures/simple/packs/{}".format(
+#         folder_name[1]
+#     )
+
+#     trigger_type_in = TriggerTypeCreate(
+#         name=trigger_type_name,
+#         packs_name=trigger_type_packs_name,
+#         description=trigger_type_description,
+#         payload_schema=trigger_type_payload_schema,
+#         parameters_schema=trigger_type_parameters_schema,
+#         metadata_file=trigger_type_metadata_file,
+#     )
+
+#     trigger_type = crud.trigger_types.create(
+#         db_session, trigger_type_in=trigger_type_in, packs_id=packs.id
+#     )

@@ -22,6 +22,10 @@ from tests.utils.trigger import create_random_trigger
 
 from freezegun import freeze_time
 
+import better_exceptions
+
+better_exceptions.hook()
+
 
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.sensorsonly
@@ -90,6 +94,7 @@ def test_create_sensors():
         packs_name=sensors_packs_name,
         # trigger_types=sensors_trigger_types,
     )
+
     sensors = crud.sensors.create(db_session, sensors_in=sensors_in, packs_id=packs.id)
 
     sensors_get = crud.sensors.get(db_session=db_session, sensors_id=sensors.id)

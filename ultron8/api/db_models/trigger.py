@@ -35,7 +35,7 @@ class TriggerTagsDB(Base):
 
     id = Column("id", Integer, primary_key=True, index=True)
     trigger_type_id = Column(
-        "trigger_type_id", Integer, ForeignKey("trigger_types.id"), primary_key=True
+        "trigger_type_id", Integer, ForeignKey("trigger_types.id"), nullable=True
     )
     tag = Column("tag", String, nullable=True)
     trigger_name = Column("trigger_name", String, nullable=True)
@@ -58,6 +58,9 @@ class TriggerTypeDB(UIDFieldMixin, Base):
 
     __tablename__ = "trigger_types"
 
+    # /Users/malcolm/.virtualenvs/ultron8-cznMaMZB/lib/python3.6/site-packages/sqlalchemy/sql/crud.py:799: SAWarning: Column 'trigger_types.id' is marked as a member of the primary key for table 'trigger_types', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL. Note that as of SQLAlchemy 1.1, 'autoincrement=True' must be indicated explicitly for composite (e.g. multicolumn) primary keys if AUTO_INCREMENT/SERIAL/IDENTITY behavior is expected for one of the columns in the primary key. CREATE TABLE statements are impacted by this change as well on most backends.
+    # util.warn(msg)
+
     id = Column("id", Integer, primary_key=True, index=True)
     name = Column("name", String(255))
     ref = Column("ref", String(255))
@@ -65,7 +68,7 @@ class TriggerTypeDB(UIDFieldMixin, Base):
     description = Column("description", String(255))
     payload_schema = Column("payload_schema", JSON)
     parameters_schema = Column("parameters_schema", JSON)
-    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), primary_key=True)
+    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
 
     # Path to the metadata file relative to the pack directory.
     metadata_file = Column("metadata_file", String(255))
@@ -120,7 +123,7 @@ class TriggerDB(UIDFieldMixin, Base):
     type = Column("type", String(255))
     parameters = Column("parameters", JSON)
     ref_count = Column("ref_count", Integer, default=0)
-    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"))
+    packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
     # packs_name = Column("packs_name", Integer, ForeignKey("packs.name"), nullable=True)
     # FIX: sqlalchemy Error creating backref on relationship
     # https://stackoverflow.com/questions/26693041/sqlalchemy-error-creating-backref-on-relationship
