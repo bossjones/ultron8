@@ -13,6 +13,8 @@ SCRIPT_DIR = $(ROOT_DIR)/script
 
 WGET = wget
 
+CRUD_INTERFACES=$(shell grep "," ultron8/api/crud/__init__.py | grep -v "^#" | tr ',' '\n' | xargs)
+
 # Bin scripts
 PYENV_SETUP = $(shell) $(SCRIPT_DIR)/pyenv_setup.sh
 
@@ -25,6 +27,7 @@ VAGRANT_HOST_IP := 192.168.2.8
 
 # SOURCE: https://github.com/wk8838299/bullcoin/blob/8182e2f19c1f93c9578a2b66de6a9cce0506d1a7/LMN/src/makefile.osx
 HAVE_BREW=$(shell brew --prefix >/dev/null 2>&1; echo $$? )
+
 
 .PHONY: list help default all check fail-when-git-dirty
 
@@ -1162,6 +1165,18 @@ ci-test: # Testing out new build to see if faster than before
 	.ci/dc-ci-exec-test.sh
 
 ci-experimental: ci-build ci-test # Testing out new build to see if faster than before
+
+
+.PHONY: migration-clean
+migration-clean: ## Nuke all migrations scripts in the versions directory, nuke the local sqlite db then autogenerate again using shell command that greps all models together space delimited
+	rm -rfv ultron8/migrations/versions/*.py
+	-rm test.db || true
+	pipenv run alembic revision --autogenerate -m "Initial commit: $(CRUD_INTERFACES)"
+
+.PHONY: migration-clean-info
+migration-clean-info:
+	echo "$(CRUD_INTERFACES)"
+
 
 # SOURCE: https://alembic.sqlalchemy.org/en/latest/autogenerate.html
 migration-revision:
