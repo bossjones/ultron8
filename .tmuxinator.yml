@@ -58,18 +58,24 @@ windows:
       panes:
         - neofetch:
           - neofetch
-  - editor:
-      layout: even-horizontal
-      panes:
-        - editor:
         - pwd:
+          - exec zsh -l
+          - pyenv activate ultron8_venv
         - pwd:
-  - python:
-      layout: main-vertical
-      panes:
-        - ipython:
-  - docker:
-      layout: main-vertical
-      panes:
-        - webserver:
-        - databases:
+          - exec zsh -l
+          - pyenv activate ultron8_venv
+  # - editor:
+  #     layout: even-horizontal
+  #     panes:
+  #       - editor:
+  #       - pwd:
+  #       - pwd:
+  # - python:
+  #     layout: main-vertical
+  #     panes:
+  #       - ipython:
+  # - docker:
+  #     layout: main-vertical
+  #     panes:
+  #       - webserver:
+  #       - databases:

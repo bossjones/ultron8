@@ -1,8 +1,8 @@
 """Update: sensors
 
-Revision ID: d7ea2612bc67
+Revision ID: 5c324f189e23
 Revises: 124996a6f29e
-Create Date: 2019-08-10 00:45:42.664370
+Create Date: 2019-08-11 14:58:13.615811
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "d7ea2612bc67"
+revision = "5c324f189e23"
 down_revision = "124996a6f29e"
 branch_labels = None
 depends_on = None
@@ -38,8 +38,8 @@ def upgrade():
     op.create_index(op.f("ix_sensors_id"), "sensors", ["id"], unique=False)
     op.create_table(
         "sensors_trigger_types_association",
-        sa.Column("sensors_packs_id", sa.Integer(), nullable=False),
-        sa.Column("trigger_types_packs_id", sa.Integer(), nullable=False),
+        sa.Column("sensors_packs_id", sa.Integer(), nullable=True),
+        sa.Column("trigger_types_packs_id", sa.Integer(), nullable=True),
         sa.ForeignKeyConstraint(["sensors_packs_id"], ["sensors.packs_id"]),
         sa.ForeignKeyConstraint(["trigger_types_packs_id"], ["trigger_types.packs_id"]),
     )
