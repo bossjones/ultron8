@@ -19,6 +19,8 @@ from ultron8.api.models.system.common import ResourceReference
 
 from ultron8.api.db_models.trigger import TriggerTypeDB
 
+from sqlalchemy import and_
+
 # assoc_table = db.Table('association',
 #    db.Column('ingredient_id', db.Integer, db.ForeignKey('ingredients.id')),
 #    db.Column('cocktail_id', db.Integer, db.ForeignKey('cocktails.id'))
@@ -43,13 +45,8 @@ from ultron8.api.db_models.trigger import TriggerTypeDB
 SENSORS_TRIGGER_TYPES_ASSOCIATION = Table(
     "sensors_trigger_types_association",
     Base.metadata,
-    Column("sensors_packs_id", Integer, ForeignKey("sensors.packs_id"), nullable=False),
-    Column(
-        "trigger_types_packs_id",
-        Integer,
-        ForeignKey("trigger_types.packs_id"),
-        nullable=False,
-    ),
+    Column("sensors_packs_id", Integer, ForeignKey("sensors.packs_id")),
+    Column("trigger_types_packs_id", Integer, ForeignKey("trigger_types.packs_id")),
 )
 
 # class Association(Base):
@@ -110,6 +107,8 @@ class Sensors(UIDFieldMixin, Base):
     # DISABLED: #     primary_key=True
     # DISABLED: # )
     # triggers_types_packs_id = Column("triggers_types_packs_id", Integer)
+    # triggers_types_packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), primary_key=True)
+    # triggers_types_packs_id = Column(Integer, ForeignKey("triggers_types.id"), nullable=False)
 
     # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"))
     # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"))
@@ -156,8 +155,9 @@ class Sensors(UIDFieldMixin, Base):
         # NOTE: Configures the association table that is used for this relationship, which I defined right above this class.
         secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
         # NOTE: indicates the condition that links the left side entity (the sensor) with the association table. The join condition for the left side of the relationship is the user ID matching the sensors_packs_id field of the association table. The SENSORS_TRIGGER_TYPES_ASSOCIATION.c.sensors_packs_id expression references the sensors_packs_id column of the association table.
-        primaryjoin=(
-            SENSORS_TRIGGER_TYPES_ASSOCIATION.c.trigger_types_packs_id == packs_id
+        primaryjoin=and_(
+            (SENSORS_TRIGGER_TYPES_ASSOCIATION.c.trigger_types_packs_id == packs_id),
+            (TriggerTypeDB.id != None),
         ),
         # NOTE: indicates the condition that links the right side entity (the trigger_type) with the association table. This condition is similar to the one for primaryjoin, with the only difference that now I'm using sensors_packs_id, which is the other foreign key in the association table.
         secondaryjoin=(
