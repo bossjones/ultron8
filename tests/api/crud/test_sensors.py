@@ -12,7 +12,9 @@ from ultron8.api.models.sensors import SensorsCreate
 from ultron8.api.models.sensors import SensorsUpdate
 from ultron8.api.models.sensors import Sensor
 from ultron8.api.models.sensors import SensorInDB
+
 from ultron8.api.db_models.sensors import Sensors
+from ultron8.api.db_models.sensors import SENSORS_TRIGGER_TYPES_ASSOCIATION
 from ultron8.api.db_models.trigger import TriggerTypeDB
 
 from tests.utils.packs import create_random_packs
@@ -21,10 +23,7 @@ from tests.utils.trigger_type import create_random_trigger_type
 from tests.utils.trigger import create_random_trigger
 
 from freezegun import freeze_time
-
-import better_exceptions
-
-better_exceptions.hook()
+from ultron8.debugger import debug_dump_exclude
 
 
 @freeze_time("2019-07-25 01:11:00.740428")
@@ -108,7 +107,6 @@ def test_create_sensors():
     assert sensors_get.packs_name == sensors_packs_name
     # sensors_trigger_types = sensors_get.trigger_types.filter(TriggerTypeDB.packs_id==packs.id)
     print("sensors_get.trigger_types: {}".format(sensors_get.trigger_types))
-    # import pdb;pdb.set_trace()
     print("sensors_get.trigger_types: {}".format(sensors_get.trigger_types))
 
 

@@ -13,7 +13,8 @@ SCRIPT_DIR = $(ROOT_DIR)/script
 
 WGET = wget
 
-CRUD_INTERFACES=$(shell grep "," ultron8/api/crud/__init__.py | grep -v "^#" | tr ',' '\n' | xargs)
+# CRUD_INTERFACES:=$(shell grep "," ultron8/api/crud/__init__.py | grep -v "^#" | tr ',' '\n' | xargs)
+CRUD_INTERFACES:=$(shell $(SCRIPT_DIR)/get_crud_interfaces)
 
 # Bin scripts
 PYENV_SETUP = $(shell) $(SCRIPT_DIR)/pyenv_setup.sh
@@ -1172,25 +1173,30 @@ migration-clean: ## Nuke all migrations scripts in the versions directory, nuke 
 	rm -rfv ultron8/migrations/versions/*.py
 	-rm test.db || true
 	pipenv run alembic revision --autogenerate -m "Initial commit: $(CRUD_INTERFACES)"
+	pipenv run alembic --raiseerr upgrade head
 
 .PHONY: migration-clean-info
 migration-clean-info:
-	echo "$(CRUD_INTERFACES)"
-
+	@echo "$(CRUD_INTERFACES)"
 
 # SOURCE: https://alembic.sqlalchemy.org/en/latest/autogenerate.html
+.PHONY: migration-revision
 migration-revision:
 	pipenv run alembic revision --autogenerate -m "create account table"
 
+.PHONY: migration-run
 migration-run:
 	pipenv run alembic upgrade head
 
+.PHONY: migration-info
 migration-info:
 	pipenv run alembic current
 
+.PHONY: migration-history
 migration-history:
 	pipenv run alembic history --verbose
 
+.PHONY: migration-restart
 migration-restart: ## Downgrade alembic database to base migration, then upgrade all the way back up
 	pipenv run alembic downgrade base
 	pipenv run alembic upgrade head

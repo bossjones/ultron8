@@ -20,6 +20,7 @@ from ultron8.api.models.system.common import ResourceReference
 from ultron8.api.db_models.trigger import TriggerTypeDB
 
 from sqlalchemy import and_
+from ultron8.debugger import debug_dump_exclude
 
 # assoc_table = db.Table('association',
 #    db.Column('ingredient_id', db.Integer, db.ForeignKey('ingredients.id')),
@@ -45,12 +46,14 @@ from sqlalchemy import and_
 SENSORS_TRIGGER_TYPES_ASSOCIATION = Table(
     "sensors_trigger_types_association",
     Base.metadata,
-    Column("sensors_packs_id", Integer, ForeignKey("sensors.packs_id"), nullable=True),
+    Column(
+        "sensors_packs_id", Integer(), ForeignKey("sensors.packs_id"), primary_key=True
+    ),
     Column(
         "trigger_types_packs_id",
-        Integer,
+        Integer(),
         ForeignKey("trigger_types.packs_id"),
-        nullable=True,
+        primary_key=True,
     ),
 )
 
@@ -159,8 +162,8 @@ class Sensors(UIDFieldMixin, Base):
         # NOTE: Configures the association table that is used for this relationship, which I defined right above this class.
         secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
         # NOTE: indicates the condition that links the left side entity (the sensor) with the association table. The join condition for the left side of the relationship is the user ID matching the sensors_packs_id field of the association table. The SENSORS_TRIGGER_TYPES_ASSOCIATION.c.sensors_packs_id expression references the sensors_packs_id column of the association table.
-        primaryjoin=and_(
-            (SENSORS_TRIGGER_TYPES_ASSOCIATION.c.trigger_types_packs_id == packs_id)
+        primaryjoin=(
+            SENSORS_TRIGGER_TYPES_ASSOCIATION.c.trigger_types_packs_id == packs_id
         ),
         # NOTE: indicates the condition that links the right side entity (the trigger_type) with the association table. This condition is similar to the one for primaryjoin, with the only difference that now I'm using sensors_packs_id, which is the other foreign key in the association table.
         secondaryjoin=(
@@ -224,6 +227,14 @@ class Sensors(UIDFieldMixin, Base):
         self.created_at = str(datetime.datetime.utcnow())
         self.updated_at = str(datetime.datetime.utcnow())
         # self.triggers_types_packs_id = self.packs_id
+
+    def get_trigger_types(self):
+        """ Return list of Trigger Types associated with this Sensor. """
+        # trigger_types = TriggerTypeDB.query.join(Sensors.packs_id == self.packs_id).all()
+        #
+        return self.trigger_types.filter(
+            SENSORS_TRIGGER_TYPES_ASSOCIATION.c.trigger_types_packs_id == self.packs_id
+        ).all()
 
     # def add_or_update_pattern_score(self, account_type, field, pattern, score):
     #     db_pattern_score = self.get_account_pattern_audit_score(account_type, field, pattern)
