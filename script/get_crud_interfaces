@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Load utility bash functions
+source $_DIR/message.sh
+
+source .local.dist
+
+export BETTER_EXCEPTIONS=1
+export SERVER_NAME=localhost:11267
+export SERVER_HOST=http://localhost:11267
+
+_DB_MODELS=$(grep "," ultron8/api/crud/__init__.py | grep -v "^#" | tr ',' '\n' | xargs)
+
+echo "${_DB_MODELS}"

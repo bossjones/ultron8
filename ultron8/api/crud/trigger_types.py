@@ -9,6 +9,8 @@ from ultron8.api.db_models.trigger import TriggerTypeDB
 from ultron8.api.models.trigger import TriggerTypeCreate
 from ultron8.api.models.trigger import TriggerTypeUpdate
 
+# from ultron8.api.models.system.common import ResourceReference
+
 
 def get(db_session: Session, *, trigger_type_id: int) -> Optional[TriggerTypeDB]:
     """Return trigger object based on trigger id.
@@ -96,6 +98,22 @@ def get_multi_by_packs_id(
     )
 
 
+# SOURCE: st2common/st2common/services/triggers.py
+# def _create_trigger_type(pack, name, description=None, payload_schema=None,
+#                          parameters_schema=None, tags=None, metadata_file=None):
+#     trigger_type = {
+#         'name': name,
+#         'pack': pack,
+#         'description': description,
+#         'payload_schema': payload_schema,
+#         'parameters_schema': parameters_schema,
+#         'tags': tags,
+#         'metadata_file': metadata_file
+#     }
+
+#     return create_or_update_trigger_type_db(trigger_type=trigger_type)
+
+
 def create(
     db_session: Session, *, trigger_type_in: TriggerTypeCreate, packs_id: int
 ) -> TriggerTypeDB:
@@ -109,6 +127,7 @@ def create(
     Returns:
         TriggerTypeDB -- Returns a TriggerTypeDB object
     """
+    # TODO: missing packs_name
     trigger_type_in_data = jsonable_encoder(trigger_type_in)
     trigger = TriggerTypeDB(**trigger_type_in_data, packs_id=packs_id)
     db_session.add(trigger)
@@ -142,6 +161,33 @@ def update(
     db_session.commit()
     db_session.refresh(trigger_type)
     return trigger_type
+
+
+# # NOTE: idea borrowed from create_or_update_trigger_type_db
+# def create_or_update(
+#     db_session: Session, *, trigger_type_in: TriggerTypeUpdate, packs_id: int
+# ) -> TriggerTypeDB:
+
+#     # validation is automatically handled by pydantic
+
+#     # create ref string
+#     ref = "{}.{}".format(trigger_type_in.packs_name, trigger_type_in.name)
+
+#     # check if already exists in database
+
+#     existing_trigger_type_db = get_by_ref(ref)
+
+#     # If we get a real object back,
+#     if existing_trigger_type_db:
+#         is_update = True
+#     else:
+#         is_update = False
+
+#     # if object exists in db, make sure the ID is set
+#     if is_update:
+#         trigger_type_api.id = existing_trigger_type_db.id
+
+#     pass
 
 
 def remove(db_session: Session, *, trigger_type_id: int):

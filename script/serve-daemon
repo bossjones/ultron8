@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
+_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Load utility bash functions
+source $_DIR/message.sh
+
 source .local.dist
 
 export BETTER_EXCEPTIONS=1
@@ -16,6 +21,12 @@ export SERVER_HOST=http://localhost:11267
 pkill -f "ultron8/dev_serve.py" || true
 pgrep -f "ultron8/dev_serve.py" || true
 
+# if [ "x$ULTRON_CLEAN_TEST_DB" != "x" ] ; then
+
+#     msg             "\nEnv Var ULTRON_CLEAN_DB=True. Deleting "
+#     sha=`git rev-parse HEAD`;
+# fi
+
 
 echo -e " [run] alembic --raiseerr upgrade head\n\n"
 alembic --raiseerr upgrade head
@@ -26,5 +37,5 @@ python ./ultron8/api/backend_pre_start.py
 echo -e " [run] initial_data.py\n\n"
 python ./ultron8/initial_data.py
 
-echo " [run] dev_serve.py\n\n"
+echo -e " [run] dev_serve.py\n\n"
 python ultron8/dev_serve.py &

@@ -15,110 +15,60 @@ from pydantic import BaseModel
 from pydantic import EmailStr
 from pydantic import Schema
 
-from ultron8.api.models.trigger import TriggerTypeBase
-from ultron8.api.models.trigger import TriggerTypeBaseDB
+from ultron8.api.models.trigger import TriggerTypeBaseInDB
 
 # The ellipsis ... just means "Required" same as annotation only declarations above.
-
-
-class LineModel(BaseModel):
-    """
-    File Line Model.
-    """
-
-    description: str = None
-    type: str
-    required: bool = None
-
-
-class FileNameModel(BaseModel):
-    description: str = None
-    type: str
-    required: bool = None
-
-
-class FilePathModel(BaseModel):
-    description: str = None
-    type: str
-    required: bool = None
-
-
-class HostInfoModel(BaseModel):
-    hostname: str = None
-
-
-class ProcessInfoModel(BaseModel):
-    hostname: str = None
-    pid: int
-
-
-class ParametersSchemaBase(BaseModel):
-    type: str
-    # properties: Union[FilePathModel, HostInfoModel]
-    # properties: dict = {}
-    properties: Optional[List[dict]] = [{}]
-    additionalProperties: bool
-
-
-class ParametersSchemaBaseDB(ParametersSchemaBase):
-    id: int
-    created_at: datetime = None
-    updated_at: datetime = None
 
 
 class SensorsBase(BaseModel):
     """Sensor Data Model.
 
-    class_name: "FileWatchSensor"
-    enabled: true
-    entry_point: "file_watch_sensor.py"
-    description: "Sensor which monitors files for new lines"
+    name: "SampleSensor"
+    entry_point: "sample_sensor.py"
+    description: "Sample sensor that emits triggers."
     trigger_types:
       -
-        name: "file_watch.line"
-        pack: "linux"
-        description: "Trigger which indicates a new line has been detected"
-        # This sensor can be supplied a path to a file to tail via a rule.
-        parameters_schema:
-          type: "object"
-          properties:
-            file_path:
-              description: "Path to the file to monitor"
-              type: "string"
-              required: true
-          additionalProperties: false
-        # This is the schema of the trigger payload the sensor generates
+        name: "event"
+        description: "An example trigger."
         payload_schema:
           type: "object"
           properties:
-            file_path:
+            executed_at:
               type: "string"
-            file_name:
-              type: "string"
-            line:
-              type: "string"
+              format: "date-time"
+              default: "2014-07-30 05:04:24.578325"
 
     Arguments:
         BaseModel {[type]} -- [description]
     """
 
-    # id: int
+    id: Optional[int] = None
     class_name: Optional[str] = None
+    packs_name: Optional[str] = None
+    ref: Optional[str] = None
+    uid: Optional[str] = None
+    artifact_uri: Optional[str] = None
+    poll_interval: Optional[str] = None
     enabled: Optional[bool] = True
     entry_point: Optional[str] = None  # eg. "checks/check_loadavg.py"
     description: Optional[str] = None
-    trigger_types: Optional[List[TriggerTypeBase]] = []
-    # created_at: datetime = None
-    # updated_at: datetime = None
-    # deleted_at: datetime = None
+    trigger_types: Optional[List[TriggerTypeBaseInDB]] = []
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
 
 
 class SensorsBaseInDB(SensorsBase):
-    id: int
-    ref: str
-    packs_id: int
-    created_at: datetime = None
-    updated_at: datetime = None
+    id: int = None
+    class_name: str
+    packs_name: str
+    ref: Optional[str] = None
+    uid: Optional[str] = None
+    artifact_uri: Optional[str] = None
+    poll_interval: Optional[str] = None
+    enabled: Optional[bool] = True
+    entry_point: Optional[str] = None  # eg. "checks/check_loadavg.py"
+    description: Optional[str] = ""
+    trigger_types: Optional[List[TriggerTypeBaseInDB]] = []
 
 
 class SensorsCreate(SensorsBaseInDB):
@@ -126,22 +76,18 @@ class SensorsCreate(SensorsBaseInDB):
     enabled: Optional[bool] = None
     entry_point: Optional[str] = None  # eg. "checks/check_loadavg.py"
     description: Optional[str] = None
-    trigger_types: Optional[List[TriggerTypeBase]] = []
+    trigger_types: Optional[List[TriggerTypeBaseInDB]] = []
 
 
 class SensorsUpdate(SensorsBaseInDB):
-    class_name: Optional[str] = None
-    enabled: Optional[bool] = None
-    entry_point: Optional[str] = None  # eg. "checks/check_loadavg.py"
-    description: Optional[str] = None
-    trigger_types: Optional[List[TriggerTypeBase]] = []
+    pass
 
 
 class Sensor(SensorsBaseInDB):
     pass
 
 
-class SensorInDb(SensorsBaseInDB):
+class SensorInDB(SensorsBaseInDB):
     pass
 
 

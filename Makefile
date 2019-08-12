@@ -3,7 +3,21 @@
 MAKEFLAGS += --warn-undefined-variables
 # .SHELLFLAGS := -eu -o pipefail
 
+# SOURCE: https://github.com/luismayta/zsh-servers-functions/blob/b68f34e486d6c4a465703472e499b1c39fe4a26c/Makefile
+# Configuration.
 SHELL = /bin/bash
+ROOT_DIR = $(shell pwd)
+PROJECT_BIN_DIR = $(ROOT_DIR)/bin
+DATA_DIR = $(ROOT_DIR)/var
+SCRIPT_DIR = $(ROOT_DIR)/script
+
+WGET = wget
+
+# CRUD_INTERFACES:=$(shell grep "," ultron8/api/crud/__init__.py | grep -v "^#" | tr ',' '\n' | xargs)
+CRUD_INTERFACES:=$(shell $(SCRIPT_DIR)/get_crud_interfaces)
+
+# Bin scripts
+PYENV_SETUP = $(shell) $(SCRIPT_DIR)/pyenv_setup.sh
 
 ONLY_RUN ?= packsonly
 
@@ -14,6 +28,7 @@ VAGRANT_HOST_IP := 192.168.2.8
 
 # SOURCE: https://github.com/wk8838299/bullcoin/blob/8182e2f19c1f93c9578a2b66de6a9cce0506d1a7/LMN/src/makefile.osx
 HAVE_BREW=$(shell brew --prefix >/dev/null 2>&1; echo $$? )
+
 
 .PHONY: list help default all check fail-when-git-dirty
 
@@ -825,7 +840,7 @@ travis-pdb:
 
 
 .PHONY: clean-cache
-clean-cache:
+clean-cache: ## clear all python cached bytecode eg *.pyc and __pycache__
 	find . -name '*.pyc' | xargs rm
 	find . -name '__pycache__' | xargs rm -rf
 
@@ -965,6 +980,9 @@ local-jupyter:
 	pipenv run jupyter notebook
 
 local-notebook: local-jupyter
+
+notebook: ## start jupyter notebook
+	jupyter notebook
 
 .PHONY: local-web
 local-web:
@@ -1149,18 +1167,39 @@ ci-test: # Testing out new build to see if faster than before
 
 ci-experimental: ci-build ci-test # Testing out new build to see if faster than before
 
+
+.PHONY: migration-clean
+migration-clean: ## Nuke all migrations scripts in the versions directory, nuke the local sqlite db then autogenerate again using shell command that greps all models together space delimited
+	rm -rfv ultron8/migrations/versions/*.py
+	-rm test.db || true
+	pipenv run alembic revision --autogenerate -m "Initial commit: $(CRUD_INTERFACES)"
+	pipenv run alembic --raiseerr upgrade head
+
+.PHONY: migration-clean-info
+migration-clean-info:
+	@echo "$(CRUD_INTERFACES)"
+
 # SOURCE: https://alembic.sqlalchemy.org/en/latest/autogenerate.html
+.PHONY: migration-revision
 migration-revision:
 	pipenv run alembic revision --autogenerate -m "create account table"
 
+.PHONY: migration-run
 migration-run:
 	pipenv run alembic upgrade head
 
+.PHONY: migration-info
 migration-info:
 	pipenv run alembic current
 
+.PHONY: migration-history
 migration-history:
 	pipenv run alembic history --verbose
+
+.PHONY: migration-restart
+migration-restart: ## Downgrade alembic database to base migration, then upgrade all the way back up
+	pipenv run alembic downgrade base
+	pipenv run alembic upgrade head
 
 build-cached: ## docker-compose build wheelhouse version
 	docker-compose -f docker-compose.cached.yml build | gnomon
@@ -1205,3 +1244,7 @@ local-pytest-pdb: ci-local-pdb ## [ALIAS for ci-local-pdb] run pytest WITH PDB u
 
 open-coverage: ## Open coverage report inside of web browser
 	./script/open-browser.py file://$(CURRENT_DIR)/htmlcov/index.html
+
+
+environment: ## setup pyenv environment
+	$(PYENV_SETUP)

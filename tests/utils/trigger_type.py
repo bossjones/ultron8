@@ -16,12 +16,16 @@ def create_random_trigger_type_name():
     return "{}.{}".format(trigger_name_base, trigger_name_end)
 
 
-# def create_trigger_type_fixture_from_name(pack_name="", trigger_name=""):
-#     random_num = random.randint(0,9)
-#     return "{pack_name}.{trigger_name}{random_num}".format(pack_name=pack_name, trigger_name=trigger_name, random_num=random_num)
+def build_random_trigger_type_create_model(packs=None):
+    """Produces a pydantic model for TriggerTypeCreate
 
+    Keyword Arguments:
+        packs {Packs} -- Packs object (default: {None})
 
-def create_random_trigger_type(packs=None):
+    Returns:
+        [TriggerTypeCreate]
+    """
+
     trigger_type_name = create_random_trigger_type_name()
     trigger_type_packs_name = packs.name
     trigger_type_description = random_lower_string()
@@ -47,6 +51,20 @@ def create_random_trigger_type(packs=None):
         parameters_schema=trigger_type_parameters_schema,
         metadata_file=trigger_type_metadata_file,
     )
+
+    return trigger_type_in
+
+
+def create_random_trigger_type(packs=None):
+    """Creates a pydantic TriggerTypeCreate then commits it to the database
+
+    Keyword Arguments:
+        packs {Packs} -- Packs object (default: {None})
+
+    Returns:
+        [TriggerTypeCreate]
+    """
+    trigger_type_in = build_random_trigger_type_create_model(packs=packs)
 
     trigger_type = crud.trigger_types.create(
         db_session, trigger_type_in=trigger_type_in, packs_id=packs.id
