@@ -17,8 +17,7 @@ backend_pre_start = "python ultron8/api/backend_pre_start.py"
 initial_data = "python ultron8/initial_data.py"
 
 [packages]
-ultron8 = {path = ".",editable = true}
-pytest-ipdb = {editable = true,path = "."}
+ultron8 = {editable = true,path = "."}
 
 [dev-packages]
 pathlib_mate = "*"

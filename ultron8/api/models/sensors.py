@@ -15,7 +15,7 @@ from pydantic import BaseModel
 from pydantic import EmailStr
 from pydantic import Schema
 
-from ultron8.api.models.trigger import TriggerTypeBaseInDB
+from ultron8.api.models.trigger import TriggerTypeInDBModel
 
 # The ellipsis ... just means "Required" same as annotation only declarations above.
 
@@ -52,7 +52,7 @@ class SensorsBase(BaseModel):
     enabled: Optional[bool] = True
     entry_point: Optional[str] = None  # eg. "checks/check_loadavg.py"
     description: Optional[str] = None
-    trigger_types: Optional[List[TriggerTypeBaseInDB]] = []
+    trigger_types: Optional[List[TriggerTypeInDBModel]] = []
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
 
@@ -68,7 +68,7 @@ class SensorsBaseInDB(SensorsBase):
     enabled: Optional[bool] = True
     entry_point: Optional[str] = None  # eg. "checks/check_loadavg.py"
     description: Optional[str] = ""
-    trigger_types: Optional[List[TriggerTypeBaseInDB]] = []
+    trigger_types: Optional[List[TriggerTypeInDBModel]] = []
 
 
 class SensorsCreate(SensorsBaseInDB):
@@ -76,7 +76,7 @@ class SensorsCreate(SensorsBaseInDB):
     enabled: Optional[bool] = None
     entry_point: Optional[str] = None  # eg. "checks/check_loadavg.py"
     description: Optional[str] = None
-    trigger_types: Optional[List[TriggerTypeBaseInDB]] = []
+    trigger_types: Optional[List[TriggerTypeInDBModel]] = []
 
 
 class SensorsUpdate(SensorsBaseInDB):

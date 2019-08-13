@@ -77,6 +77,22 @@ class TriggerTypeBaseInDB(TriggerTypeBase):
     metadata_file: Optional[str] = None
 
 
+class TriggerTypeInDBModel(BaseModel):
+    """ CONVERSION: Model used for converting SQLAlchemy Orm objects to pydantic Model. """
+
+    id: int = None
+    uid: str = None
+    ref: Optional[str] = None
+    name: str
+    packs_name: str
+    parameters_schema: Optional[dict] = {}
+    payload_schema: Optional[dict] = {}
+    metadata_file: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
+
 class TriggerTypeCreate(TriggerTypeBaseInDB):
     id: int = None
     uid: str = None

@@ -42,7 +42,7 @@ dataclasses==0.6          # via pydantic
 dnspython==1.16.0         # via email-validator
 email-validator==1.0.4
 emails==0.5.15
-fastapi==0.23.0
+fastapi==0.35.0
 gunicorn==19.9.0
 h11==0.8.1                # via uvicorn
 hiredis==1.0.0            # via aioredis
@@ -68,7 +68,7 @@ prometheus-client==0.5.0  # via starlette-prometheus
 pycares==3.0.0            # via aiodns
 pyconfig==3.2.3
 pycparser==2.19           # via cffi
-pydantic==0.25            # via fastapi
+pydantic==0.30            # via fastapi
 pyjwt==1.7.1
 python-dateutil==2.8.0    # via alembic, emails, pandas, ruamel.yaml.convert
 python-editor==1.0.4      # via alembic

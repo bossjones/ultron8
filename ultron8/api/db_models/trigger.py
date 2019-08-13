@@ -21,6 +21,10 @@ from ultron8.consts import ResourceType
 from ultron8.api.models.system.common import ResourceReference
 import datetime
 
+from ultron8.api.db_models.sensors_trigger_types_association import (
+    SENSORS_TRIGGER_TYPES_ASSOCIATION,
+)
+
 # http://blog.benjamin-encz.de/post/sqlite-one-to-many-json1-extension/
 
 
@@ -73,6 +77,24 @@ class TriggerTypeDB(UIDFieldMixin, Base):
     # Path to the metadata file relative to the pack directory.
     metadata_file = Column("metadata_file", String(255))
     tags = relationship("TriggerTagsDB", backref=backref("trigger", lazy="joined"))
+
+    #################################################
+    # ONE-TO-MANY - https://docs.sqlalchemy.org/en/13/orm/basic_relationships.html
+    #################################################
+    # NOTE: trigger_types can be a child to sensors
+    ########################
+    # sensors_id = Column(Integer, ForeignKey("sensors.id"))
+    # sensors = relationship(
+    #     "ultron8.api.db_models.sensors.Sensors",
+    #     foreign_keys="ultron8.api.db_models.trigger.TriggerTypeDB.sensors_id",
+    #     back_populates="trigger_types",
+    # )
+
+    sensors = relationship(
+        "ultron8.api.db_models.sensors.Sensors",
+        secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
+        back_populates="trigger_types",
+    )
 
     def __init__(self, *args, packs_name=None, **values):
         super(TriggerTypeDB, self).__init__(*args, **values)

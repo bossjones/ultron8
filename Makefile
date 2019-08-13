@@ -11,6 +11,42 @@ PROJECT_BIN_DIR = $(ROOT_DIR)/bin
 DATA_DIR = $(ROOT_DIR)/var
 SCRIPT_DIR = $(ROOT_DIR)/script
 
+
+
+# export CONTAINER_USER = $(shell whoami)
+# export CONTAINER_UID  = $(shell id -u)
+# export CONTAINER_GID  = $(shell id -g)
+
+# # Workspace
+# CURRENT_DIR := $(shell pwd)
+# DETECTED_OS := $(shell uname -s)
+# WHOAMI      := $(shell whoami)
+# # home directory based on passwd file. Normally this will always be what we want to use, however IT jenkins does not obey this scenario.
+# USER_BASE_DIR := $(shell echo ~$(WHOAMI))
+# BASH_LOCATION := $(shell which bash)
+
+# # SOURCE: https://stackoverflow.com/questions/5553352/how-do-i-check-if-file-exists-in-makefile-so-i-can-delete-it
+# # SOURCE: https://smnd.sk/anino/programming/tools/gnumake/make_74.html#SEC73
+# ifeq (${DETECTED_OS}, Darwin)
+# 	HOME_DIR    ?= /Users/$(WHOAMI)
+# 	SHELL       := /usr/local/bin/bash
+# 	OS_X        := true
+# 	ARCHFLAGS="-arch x86_64"
+# 	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig
+# 	LDFLAGS="-L/usr/local/opt/openssl/lib"
+# 	CFLAGS="-I/usr/local/opt/openssl/include"
+# # if this is running on jenkins
+# else ifneq (findstring jnks,$(WHOAMI))
+# 	HOME_DIR    ?= /home/jenkins
+# 	SHELL       := /bin/bash
+# 	OS_X        := false
+# else
+# 	HOME_DIR    ?= $(USER_BASE_DIR)
+# 	SHELL       := $(BASH_LOCATION)
+# 	OS_X        := false
+# endif
+
+
 WGET = wget
 
 # CRUD_INTERFACES:=$(shell grep "," ultron8/api/crud/__init__.py | grep -v "^#" | tr ',' '\n' | xargs)
@@ -528,6 +564,9 @@ else
 	pip install -r requirements-experimental.txt
 endif
 
+.PHONY: pip-compile-and-install
+pip-compile-and-install: pip-compile install-deps-all ## generate requirement.txt files, then install all of those dependencies
+
 .PHONY: install-all
 install-all: install-deps-all
 
@@ -940,15 +979,20 @@ local-autopep8: local-reformat ## ** Pep8 Format Source Code
 local-pycodestyle: ## **  Show the source code for each error, and even the relevant text from PEP 8
 	pipenv run  pycodestyle --show-source --show-pep8 ultron8/
 
+.PHONY: overwrite-pipefile
 overwrite-pipefile:
 	bash script/overwrite-pipefile
 
+.PHONY: lock-pip-compile
 lock-pip-compile: pip-compile
 
+.PHONY: lock-pipfile
 lock-pipfile: overwrite-pipefile
 
+.PHONY: lock
 lock: check-python lock-pip-compile lock-pipfile
 
+.PHONY: lock-and-load
 lock-and-load: lock pipenv-dev ## Run `make lock` then install all the new deps using `make pipenv-dev`
 
 .PHONY: local-install-better_exceptions

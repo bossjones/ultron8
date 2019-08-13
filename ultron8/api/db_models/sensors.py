@@ -22,6 +22,10 @@ from ultron8.api.db_models.trigger import TriggerTypeDB
 from sqlalchemy import and_
 from ultron8.debugger import debug_dump_exclude
 
+from ultron8.api.db_models.sensors_trigger_types_association import (
+    SENSORS_TRIGGER_TYPES_ASSOCIATION,
+)
+
 # assoc_table = db.Table('association',
 #    db.Column('ingredient_id', db.Integer, db.ForeignKey('ingredients.id')),
 #    db.Column('cocktail_id', db.Integer, db.ForeignKey('cocktails.id'))
@@ -43,19 +47,19 @@ from ultron8.debugger import debug_dump_exclude
 #     ),
 # )
 
-SENSORS_TRIGGER_TYPES_ASSOCIATION = Table(
-    "sensors_trigger_types_association",
-    Base.metadata,
-    Column(
-        "sensors_packs_id", Integer(), ForeignKey("sensors.packs_id"), primary_key=True
-    ),
-    Column(
-        "trigger_types_packs_id",
-        Integer(),
-        ForeignKey("trigger_types.packs_id"),
-        primary_key=True,
-    ),
-)
+# SENSORS_TRIGGER_TYPES_ASSOCIATION = Table(
+#     "sensors_trigger_types_association",
+#     Base.metadata,
+#     Column(
+#         "sensors_packs_id", Integer(), ForeignKey("sensors.packs_id"), primary_key=True
+#     ),
+#     Column(
+#         "trigger_types_packs_id",
+#         Integer(),
+#         ForeignKey("trigger_types.packs_id"),
+#         primary_key=True,
+#     ),
+# )
 
 # class Association(Base):
 #     __tablename__ = 'association'
@@ -96,112 +100,50 @@ class Sensors(UIDFieldMixin, Base):
     enabled = Column("enabled", Boolean)
     entry_point = Column("entry_point", String(255))
     description = Column("description", String(255))
-    # trigger_types = Column("trigger_types", JSON)
-    # trigger_types_id = Column(
-    #     "trigger_types_id", Integer, ForeignKey("trigger_types.id"), nullable=True
-    # )
 
     created_at = Column("created_at", String)
     updated_at = Column("updated_at", String)
     packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
-    # DISABLED: # trigger_types_id = Column(
-    # DISABLED: #     "trigger_types_id", Integer, ForeignKey("trigger_types.id"), primary_key=True
-    # DISABLED: # )
-    # DISABLED: # triggers_types_packs_id = Column(
-    # DISABLED: #     "triggers_types_packs_id",
-    # DISABLED: #     Integer,
-    # DISABLED: #     ForeignKey("trigger_types.packs_id"),
-    # DISABLED: #     primary_key=True
-    # DISABLED: # )
-    # triggers_types_packs_id = Column("triggers_types_packs_id", Integer)
-    # triggers_types_packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), primary_key=True)
-    # triggers_types_packs_id = Column(Integer, ForeignKey("triggers_types.id"), nullable=False)
 
-    # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"))
-    # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"))
-    # trigger_types = relationship(
-    #     "TriggerTypeDB",
-    #     secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
-    #     backref=backref("sensor_trigger_types", lazy="dynamic")
-    # )
-    # trigger_types = relationship(
-    #     "TriggerTypeDB",
-    #     secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
-    #     backref=backref("sensor_trigger_types", lazy="joined"),
-    #     foreign_keys=[packs_id]
-    # )
-    # trigger_types = relationship(
-    #     "TriggerTypeDB",
-    #     secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
-    #     backref=backref("sensor_trigger_types", lazy="joined")
-    #     # foreign_keys=[triggers_types_packs_id]
-    # )
+    # trigger_types = relationship("ultron8.api.db_models.trigger.TriggerTypeDB", back_populates="sensors")
 
-    # FIXME: Recent attempts 8/9/2019
-    # trigger_types = relationship(
-    #     "TriggerTypeDB",
-    #     secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
-    #     backref=backref("sensor_trigger_types", lazy="joined"),
-    # )
-    # trigger_types = relationship(
-    #     "TriggerTypeDB", lazy="joined", cascade="all, delete"
-    # )
-    # trigger_types = relationship(
-    #     "TriggerTypeDB", backref="sensors"
-    # )
-
-    # <><><><><><><><><><><><><><><><><><><>
-    # Sensor = LEFT side of join
-    # TriggerTypeDB = Right side of join
-    # <><><><><><><><><><><><><><><><><><><>
-    # relationship() using explicit foreign_keys, remote_side
-    # HOW TO UNDERSTAND THIS: https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-viii-followers
     trigger_types = relationship(
-        # NOTE: is the right side entity of the relationship (the left side entity is the Sensor class).
-        "TriggerTypeDB",
-        # NOTE: Configures the association table that is used for this relationship, which I defined right above this class.
+        "ultron8.api.db_models.trigger.TriggerTypeDB",
         secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
-        # NOTE: indicates the condition that links the left side entity (the sensor) with the association table. The join condition for the left side of the relationship is the user ID matching the sensors_packs_id field of the association table. The SENSORS_TRIGGER_TYPES_ASSOCIATION.c.sensors_packs_id expression references the sensors_packs_id column of the association table.
-        primaryjoin=(
-            SENSORS_TRIGGER_TYPES_ASSOCIATION.c.trigger_types_packs_id == packs_id
-        ),
-        # NOTE: indicates the condition that links the right side entity (the trigger_type) with the association table. This condition is similar to the one for primaryjoin, with the only difference that now I'm using sensors_packs_id, which is the other foreign key in the association table.
-        secondaryjoin=(
-            SENSORS_TRIGGER_TYPES_ASSOCIATION.c.sensors_packs_id == packs_id
-        ),
-        # NOTE: defines how this relationship will be accessed from the right side entity. From the left side, the relationship is named trigger_types, so from the right side I am going to use the name sensors to represent all the left side sensors that are linked to the trigger types in the right side. The additional lazy argument indicates the execution mode for this query. A mode of dynamic sets up the query to not run until specifically requested, which is also how I set up the posts one-to-many relationship.
-        backref=backref("sensors", lazy="dynamic"),
-        # backref=backref("sensors"),
-        # foreign_keys=[packs_id],
-        # foreign_keys=[packs_id],
-        # foreign_keys=[SENSORS_TRIGGER_TYPES_ASSOCIATION.c.trigger_types_packs_id,
-        # SENSORS_TRIGGER_TYPES_ASSOCIATION.c.sensors_packs_id],
-        # NOTE: is similar to the parameter of the same name in the backref, but this one applies to the left side query instead of the right side.
-        lazy="dynamic",
+        back_populates="sensors",
     )
 
-    # # SOURCE: https://stackoverflow.com/questions/28503656/attributeerror-list-object-has-no-attribute-sa-instance-state/28503775#28503775
-    # # is_bestfriend = db.relationship( 'Users', uselist=False, remote_side=[id], post_update=True)
-    # trigger_types = relationship('TriggerTypeDB', #defining the relationship, Users is left side entity
-    #     secondary = SENSORS_TRIGGER_TYPES_ASSOCIATION, #indecates association table
-    #     primaryjoin = (SENSORS_TRIGGER_TYPES_ASSOCIATION.c.triggers_types_packs_id == packs_id), #condition linking the left side entity
-    #     # secondaryjoin = (SENSORS_TRIGGER_TYPES_ASSOCIATION.c.friend_id == id),#cond if link right.s ent. with assoc table
-    #     backref = backref('sensors_trigger_types_association', lazy = 'dynamic'),#how accessed from right
-    #     lazy = 'dynamic'
-    # )
-
-    # trigger_types = relationship("TriggerTypeDB", backref=backref("sensor_trigger_types", lazy="joined"), foreign_keys=[triggers_types_packs_id])
-
+    # # <><><><><><><><><><><><><><><><><><><>
+    # # Sensor = LEFT side of join
+    # # TriggerTypeDB = Right side of join
+    # # <><><><><><><><><><><><><><><><><><><>
+    # # relationship() using explicit foreign_keys, remote_side
+    # # HOW TO UNDERSTAND THIS: https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-viii-followers
     # trigger_types = relationship(
-    #     "TriggerTypeDB", cascade="all, delete-orphan", backref="trigger_type"
+    #     # NOTE: is the right side entity of the relationship (the left side entity is the Sensor class).
+    #     "TriggerTypeDB",
+    #     # NOTE: Configures the association table that is used for this relationship, which I defined right above this class.
+    #     secondary=SENSORS_TRIGGER_TYPES_ASSOCIATION,
+    #     # NOTE: indicates the condition that links the left side entity (the sensor) with the association table. The join condition for the left side of the relationship is the user ID matching the sensors_packs_id field of the association table. The SENSORS_TRIGGER_TYPES_ASSOCIATION.c.sensors_packs_id expression references the sensors_packs_id column of the association table.
+    #     primaryjoin=(
+    #         SENSORS_TRIGGER_TYPES_ASSOCIATION.c.trigger_types_packs_id == packs_id
+    #     ),
+    #     # NOTE: indicates the condition that links the right side entity (the trigger_type) with the association table. This condition is similar to the one for primaryjoin, with the only difference that now I'm using sensors_packs_id, which is the other foreign key in the association table.
+    #     secondaryjoin=(
+    #         SENSORS_TRIGGER_TYPES_ASSOCIATION.c.sensors_packs_id == packs_id
+    #     ),
+    #     # NOTE: defines how this relationship will be accessed from the right side entity. From the left side, the relationship is named trigger_types, so from the right side I am going to use the name sensors to represent all the left side sensors that are linked to the trigger types in the right side. The additional lazy argument indicates the execution mode for this query. A mode of dynamic sets up the query to not run until specifically requested, which is also how I set up the posts one-to-many relationship.
+    #     backref=backref("sensors", lazy="dynamic"),
+    #     # backref=backref("sensors"),
+    #     # foreign_keys=[packs_id],
+    #     # foreign_keys=[packs_id],
+    #     # foreign_keys=[SENSORS_TRIGGER_TYPES_ASSOCIATION.c.trigger_types_packs_id,
+    #     # SENSORS_TRIGGER_TYPES_ASSOCIATION.c.sensors_packs_id],
+    #     # NOTE: is similar to the parameter of the same name in the backref, but this one applies to the left side query instead of the right side.
+    #     lazy="dynamic",
     # )
 
-    # Column(
-    #     "trigger_types_id", Integer, ForeignKey("trigger_types.id")
-    # ),
-    # Column(
-    #     "triggers_types_packs_id", Integer, ForeignKey("trigger_types.packs_id")
-    # ),
+    # # SOURCE: https://stackoverflow.com/questions/28503656/attributeerror-list-object-has-no-attribute-sa-instance-state/28503775#28503775
 
     # # ---
     # # class_name: "SampleSensor"
@@ -227,45 +169,6 @@ class Sensors(UIDFieldMixin, Base):
         self.created_at = str(datetime.datetime.utcnow())
         self.updated_at = str(datetime.datetime.utcnow())
         # self.triggers_types_packs_id = self.packs_id
-
-    def get_trigger_types(self):
-        """ Return list of Trigger Types associated with this Sensor. """
-        # trigger_types = TriggerTypeDB.query.join(Sensors.packs_id == self.packs_id).all()
-        #
-        return self.trigger_types.filter(
-            SENSORS_TRIGGER_TYPES_ASSOCIATION.c.trigger_types_packs_id == self.packs_id
-        ).all()
-
-    # def add_or_update_pattern_score(self, account_type, field, pattern, score):
-    #     db_pattern_score = self.get_account_pattern_audit_score(account_type, field, pattern)
-    #     if db_pattern_score is not None:
-    #         db_pattern_score.score = score
-    #     else:
-    #         db_pattern_score = AccountPatternAuditScore(account_type=account_type,
-    #                                                     account_field=field,
-    #                                                     account_pattern=pattern,
-    #                                                     score=score)
-
-    #         self.account_pattern_scores.append(db_pattern_score)
-
-    # def get_account_pattern_audit_score(self, account_type, field, pattern):
-    #     for db_pattern_score in self.account_pattern_scores:
-    #         if db_pattern_score.account_field == field and \
-    #                 db_pattern_score.account_pattern == pattern and db_pattern_score.account_type == account_type:
-    #             return db_pattern_score
-
-    # def get_reference(self):
-    #     """
-    #     Retrieve referene object for this model.
-
-    #     :rtype: :class:`ResourceReference`
-    #     """
-    #     if getattr(self, "ref", None):
-    #         ref = ResourceReference.from_string_reference(ref=self.ref)
-    #     else:
-    #         ref = ResourceReference(pack=self.pack, name=self.name)
-
-    #     return ref
 
     def __repr__(self):
         return (

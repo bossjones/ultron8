@@ -1,8 +1,8 @@
 """Initial commit: item user packs action trigger trigger_types trigger_tags trigger_instance sensors
 
-Revision ID: 185a3440e659
+Revision ID: 03ad3d6d483d
 Revises:
-Create Date: 2019-08-11 20:09:17.972757
+Create Date: 2019-08-12 21:09:41.284096
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "185a3440e659"
+revision = "03ad3d6d483d"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -154,11 +154,11 @@ def upgrade():
     op.create_index(op.f("ix_triggers_id"), "triggers", ["id"], unique=False)
     op.create_table(
         "sensors_trigger_types_association",
-        sa.Column("sensors_packs_id", sa.Integer(), nullable=False),
-        sa.Column("trigger_types_packs_id", sa.Integer(), nullable=False),
-        sa.ForeignKeyConstraint(["sensors_packs_id"], ["sensors.packs_id"]),
-        sa.ForeignKeyConstraint(["trigger_types_packs_id"], ["trigger_types.packs_id"]),
-        sa.PrimaryKeyConstraint("sensors_packs_id", "trigger_types_packs_id"),
+        sa.Column("sensors_id", sa.Integer(), nullable=False),
+        sa.Column("trigger_types_id", sa.Integer(), nullable=False),
+        sa.ForeignKeyConstraint(["sensors_id"], ["sensors.id"]),
+        sa.ForeignKeyConstraint(["trigger_types_id"], ["trigger_types.id"]),
+        sa.PrimaryKeyConstraint("sensors_id", "trigger_types_id"),
     )
     op.create_table(
         "trigger_tags",

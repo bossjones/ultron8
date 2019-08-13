@@ -16,6 +16,7 @@ from ultron8.api.models.sensors import SensorInDB
 from ultron8.api.db_models.sensors import Sensors
 from ultron8.api.db_models.sensors import SENSORS_TRIGGER_TYPES_ASSOCIATION
 from ultron8.api.db_models.trigger import TriggerTypeDB
+from ultron8.api.models.trigger import TriggerTypeInDBModel
 
 from tests.utils.packs import create_random_packs
 from tests.utils.trigger_instance import create_random_trigger_instance_name
@@ -25,6 +26,8 @@ from tests.utils.trigger import create_random_trigger
 from freezegun import freeze_time
 from ultron8.debugger import debug_dump_exclude
 
+from ultron8.api.models import orm_to_model
+
 
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.sensorsonly
@@ -33,10 +36,15 @@ def test_create_sensors():
     # Step 1 - create pack
     packs = create_random_packs()
 
+    # FIXME: Something about this still doesn't work!
     # Step 2 - create trigger_type
-    trigger_type1 = create_random_trigger_type(packs=packs)
-    trigger_type2 = create_random_trigger_type(packs=packs)
-    trigger_type3 = create_random_trigger_type(packs=packs)
+    trigger_type1_orm = create_random_trigger_type(packs=packs)
+    trigger_type2_orm = create_random_trigger_type(packs=packs)
+    trigger_type3_orm = create_random_trigger_type(packs=packs)
+
+    trigger_type1 = TriggerTypeInDBModel.from_orm(trigger_type1_orm)
+    trigger_type2 = TriggerTypeInDBModel.from_orm(trigger_type2_orm)
+    trigger_type3 = TriggerTypeInDBModel.from_orm(trigger_type3_orm)
 
     # Step 3 - create trigger
     trigger1 = create_random_trigger(packs=packs, trigger_type=trigger_type1)
@@ -55,7 +63,8 @@ def test_create_sensors():
     sensors_entry_point = "file_watch_sensor.py"
     sensors_description = "Sensor which monitors files for new lines"
     sensors_trigger_types = []
-    sensors_trigger_types.extend(trigger_type_list)
+    # sensors_trigger_types.extend(trigger_type_list)
+    # sensors_trigger_types.append(trigger1)
     # sensors_trigger_types.append(trigger2)
     # sensors_trigger_types.append(trigger3)
     #     {
@@ -91,7 +100,7 @@ def test_create_sensors():
         entry_point=sensors_entry_point,
         description=sensors_description,
         packs_name=sensors_packs_name,
-        # trigger_types=sensors_trigger_types,
+        trigger_types=sensors_trigger_types,
     )
 
     sensors = crud.sensors.create(db_session, sensors_in=sensors_in, packs_id=packs.id)

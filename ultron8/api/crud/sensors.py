@@ -58,6 +58,10 @@ def update(
     return sensors
 
 
+# def create_or_update(db_session: Session, *, sensors_in: SensorsCreate, packs_id: int, sensors_id: int):
+#     existing_sensors = get()
+
+
 def remove(db_session: Session, *, sensors_id: int):
     sensors = db_session.query(Sensors).filter(Sensors.id == sensors_id).first()
     db_session.delete(sensors)
