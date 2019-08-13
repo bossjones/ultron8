@@ -53,7 +53,7 @@ WGET = wget
 CRUD_INTERFACES:=$(shell $(SCRIPT_DIR)/get_crud_interfaces)
 
 # Bin scripts
-PYENV_SETUP = $(shell) $(SCRIPT_DIR)/pyenv_setup.sh
+# PYENV_SETUP = $(shell) $(SCRIPT_DIR)/pyenv_setup.sh
 
 ONLY_RUN ?= packsonly
 
@@ -1290,5 +1290,5 @@ open-coverage: ## Open coverage report inside of web browser
 	./script/open-browser.py file://$(CURRENT_DIR)/htmlcov/index.html
 
 
-environment: ## setup pyenv environment
-	$(PYENV_SETUP)
+# environment: ## setup pyenv environment
+# 	$(PYENV_SETUP)
