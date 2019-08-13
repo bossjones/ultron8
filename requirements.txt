@@ -42,6 +42,8 @@ dataclasses==0.6          # via pydantic
 dnspython==1.16.0         # via email-validator
 email-validator==1.0.4
 emails==0.5.15
+factory-boy==2.12.0
+faker==2.0.0
 fastapi==0.35.0
 gunicorn==19.9.0
 h11==0.8.1                # via uvicorn
@@ -70,7 +72,7 @@ pyconfig==3.2.3
 pycparser==2.19           # via cffi
 pydantic==0.30            # via fastapi
 pyjwt==1.7.1
-python-dateutil==2.8.0    # via alembic, emails, pandas, ruamel.yaml.convert
+python-dateutil==2.8.0    # via alembic, emails, faker, pandas, ruamel.yaml.convert
 python-editor==1.0.4      # via alembic
 python-multipart==0.0.5
 pytool==3.15.0            # via pyconfig
@@ -83,12 +85,13 @@ ruamel.yaml.cmd==0.5.3
 ruamel.yaml.convert==0.3.0  # via ruamel.yaml.cmd
 ruamel.yaml==0.15.96
 simplejson==3.16.0        # via pytool
-six==1.12.0               # via bcrypt, configobj, cryptography, pyconfig, python-dateutil, python-multipart, pytool, sqlalchemy-utils, tenacity
+six==1.12.0               # via bcrypt, configobj, cryptography, faker, pyconfig, python-dateutil, python-multipart, pytool, sqlalchemy-utils, tenacity
 sqlalchemy-utils==0.33.11
 sqlalchemy==1.3.4
 starlette-prometheus==0.2.0
 starlette==0.12.0         # via fastapi, starlette-prometheus
 tenacity==5.0.4
+text-unidecode==1.2       # via faker
 typing-extensions==3.7.2  # via aiohttp
 typing==3.6.6             # via aiodns
 ujson==1.35

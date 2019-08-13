@@ -64,3 +64,6 @@ when-changed==0.3.0
 wmctrl==0.3               # via pdbpp
 wrapt==1.11.1             # via astroid
 zipp==0.5.1               # via importlib-metadata
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools==41.0.1        # via ipython
