@@ -28,6 +28,14 @@ from ultron8.debugger import debug_dump_exclude
 
 from ultron8.api.models import orm_to_model
 
+import json
+
+from pydantic.json import pydantic_encoder
+
+
+def pretty_lenient_json(data):
+    return json.dumps(data, indent=2, default=pydantic_encoder) + "\n"
+
 
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.sensorsonly
@@ -42,9 +50,23 @@ def test_create_sensors():
     trigger_type2_orm = create_random_trigger_type(packs=packs)
     trigger_type3_orm = create_random_trigger_type(packs=packs)
 
+    # trigger_type1_orm_data = jsonable_encoder(trigger_type1_orm)
+
+    # import pdb;pdb.set_trace()
+
     trigger_type1 = TriggerTypeInDBModel.from_orm(trigger_type1_orm)
     trigger_type2 = TriggerTypeInDBModel.from_orm(trigger_type2_orm)
     trigger_type3 = TriggerTypeInDBModel.from_orm(trigger_type3_orm)
+
+    # ValidationError: 4 validation errors
+    # parameters_schema
+    #   str type expected (type=type_error.str)
+    # parameters_schema
+    #   value is not none (type=type_error.none.allowed)
+    # payload_schema
+    #   str type expected (type=type_error.str)
+    # payload_schema
+    #   value is not none (type=type_error.none.allowed)
 
     # Step 3 - create trigger
     trigger1 = create_random_trigger(packs=packs, trigger_type=trigger_type1)
@@ -100,8 +122,13 @@ def test_create_sensors():
         entry_point=sensors_entry_point,
         description=sensors_description,
         packs_name=sensors_packs_name,
-        trigger_types=sensors_trigger_types,
+        # trigger_types=sensors_trigger_types,
     )
+
+    # import pdb;pdb.set_trace()
+    sensors_in.trigger_types.append(trigger_type1)
+    sensors_in.trigger_types.append(trigger_type2)
+    sensors_in.trigger_types.append(trigger_type3)
 
     sensors = crud.sensors.create(db_session, sensors_in=sensors_in, packs_id=packs.id)
 
