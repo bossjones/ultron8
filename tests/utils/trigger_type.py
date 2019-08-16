@@ -37,10 +37,12 @@ def build_random_trigger_type_create_model(packs=None):
         "properties": {"url": {"type": "string", "required": True}},
         "type": "object",
     }
-    trigger_type_parameters_schema = ujson.dumps(trigger_type_parameters_schema_dict)
+    # trigger_type_parameters_schema = ujson.dumps(trigger_type_parameters_schema_dict)
+    trigger_type_parameters_schema = trigger_type_parameters_schema_dict
 
     trigger_type_payload_schema_dict = {"type": "object"}
     trigger_type_payload_schema = ujson.dumps(trigger_type_payload_schema_dict)
+    trigger_type_payload_schema = trigger_type_payload_schema_dict
 
     folder_name = trigger_type_name.split(".")
 

@@ -70,8 +70,8 @@ class TriggerTypeDB(UIDFieldMixin, Base):
     ref = Column("ref", String(255))
     uid = Column("uid", String(255), nullable=True)
     description = Column("description", String(255))
-    payload_schema = Column("payload_schema", JSON)
-    parameters_schema = Column("parameters_schema", JSON)
+    payload_schema = Column("payload_schema", String(255))
+    parameters_schema = Column("parameters_schema", String(255))
     packs_id = Column("packs_id", Integer, ForeignKey("packs.id"), nullable=True)
 
     # Path to the metadata file relative to the pack directory.
