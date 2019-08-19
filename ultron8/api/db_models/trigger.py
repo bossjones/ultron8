@@ -10,6 +10,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import JSON
+from sqlalchemy import orm
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -175,6 +176,9 @@ class TriggerDB(UIDFieldMixin, Base):
 
     #     return ref
 
+    # SOURCE: https://docs.sqlalchemy.org/en/13/orm/constructors.html
+    # EXAMPLE: https://github.com/haobin12358/Weidian/blob/6c1b0fd54b1ed964f4b22a356a2a66cab9d91851/WeiDian/models/model.py
+    @orm.reconstructor
     def get_uid(self):
         # Note: Trigger is uniquely identified using name + pack + parameters attributes
         # pylint: disable=no-member
@@ -189,6 +193,9 @@ class TriggerDB(UIDFieldMixin, Base):
         uid = uid + self.UID_SEPARATOR + parameters
         return uid
 
+    # SOURCE: https://docs.sqlalchemy.org/en/13/orm/constructors.html
+    # EXAMPLE: https://github.com/haobin12358/Weidian/blob/6c1b0fd54b1ed964f4b22a356a2a66cab9d91851/WeiDian/models/model.py
+    @orm.reconstructor
     def has_valid_uid(self):
         parts = self.get_uid_parts()
         # Note: We add 1 for parameters field which is not part of self.UID_FIELDS

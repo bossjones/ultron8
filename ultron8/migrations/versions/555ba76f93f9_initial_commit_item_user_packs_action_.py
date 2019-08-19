@@ -1,8 +1,8 @@
 """Initial commit: item user packs action trigger trigger_types trigger_tags trigger_instance sensors
 
-Revision ID: 07724ff4109f
+Revision ID: 555ba76f93f9
 Revises:
-Create Date: 2019-08-15 20:26:13.015040
+Create Date: 2019-08-16 00:29:53.124079
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "07724ff4109f"
+revision = "555ba76f93f9"
 down_revision = None
 branch_labels = None
 depends_on = None

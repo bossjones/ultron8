@@ -130,6 +130,8 @@ def test_create_sensors():
     sensors_in.trigger_types.append(trigger_type2)
     sensors_in.trigger_types.append(trigger_type3)
 
+    # import pdb;pdb.set_trace()
+
     sensors = crud.sensors.create(db_session, sensors_in=sensors_in, packs_id=packs.id)
 
     sensors_get = crud.sensors.get(db_session=db_session, sensors_id=sensors.id)
