@@ -19,8 +19,42 @@ from sqlalchemy import orm
 
 # from ultron8.api.models.system.base import DictSerializableClassMixin
 # from sqlalchemy.orm import relationship
+# from ultron8.api.db.u_sqlite.session import db_session
 
 JSON_UNFRIENDLY_TYPES = datetime.datetime
+
+# SOURCE: https://github.com/cburmeister/flask-bones/blob/master/app/database.py
+# class CRUDMixin(object):
+#     __table_args__ = {'extend_existing': True}
+
+#     id = db.Column(db.Integer, primary_key=True)
+
+#     @classmethod
+#     def get_by_id(cls, id):
+#         if any((isinstance(id, str) and id.isdigit(),
+#                 isinstance(id, (int, float))),):
+#             return cls.query.get(int(id))
+#         return None
+
+#     @classmethod
+#     def create(cls, **kwargs):
+#         instance = cls(**kwargs)
+#         return instance.save()
+
+#     def update(self, commit=True, **kwargs):
+#         for attr, value in kwargs.items():
+#             setattr(self, attr, value)
+#         return commit and self.save() or self
+
+#     def save(self, commit=True):
+#         db.session.add(self)
+#         if commit:
+#             db.session.commit()
+#         return self
+
+#     def delete(self, commit=True):
+#         db.session.delete(self)
+#         return commit and db.session.commit()
 
 
 class UltronFoundationDB(ProxiedDictMixin):
@@ -140,7 +174,7 @@ class UIDFieldMixin(object):
     the system.
     """
 
-    UID_SEPARATOR = ":"  # TODO: Move to constants
+    UID_SEPARATOR = ":"
 
     RESOURCE_TYPE = abc.abstractproperty
     UID_FIELDS = abc.abstractproperty
