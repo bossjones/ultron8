@@ -55,8 +55,8 @@ class TriggerTypeBase(BaseModel):
     ref: Optional[str] = None
     packs_name: Optional[str] = None
     description: Optional[str] = None
-    parameters_schema: Optional[str] = ""
-    payload_schema: Optional[str] = ""
+    parameters_schema: Optional[dict] = {}
+    payload_schema: Optional[dict] = {}
 
 
 class TriggerTypeBaseInDB(TriggerTypeBase):
@@ -75,8 +75,8 @@ class TriggerTypeBaseInDB(TriggerTypeBase):
     ref: Optional[str] = None
     name: str
     packs_name: str
-    parameters_schema: Optional[str] = ""
-    payload_schema: Optional[str] = ""
+    parameters_schema: Optional[dict] = {}
+    payload_schema: Optional[dict] = {}
     metadata_file: Optional[str] = None
 
 
@@ -93,8 +93,8 @@ class TriggerTypeInDBModel(BaseModel):
     # If you know that the JSON value would be a dict, you could declare a dict there. If you knew it was a list you could declare that.
     # In this case, as we don't know the final value, and any valid JSON data would be accepted, you can use Any.
     # Here's a single file working example (just tested it with SQLite, that now also supports JSON columns):
-    parameters_schema: Optional[str] = ""
-    payload_schema: Optional[str] = ""
+    parameters_schema: Optional[dict] = {}
+    payload_schema: Optional[dict] = {}
     metadata_file: Optional[str] = None
 
     class Config:
@@ -106,8 +106,8 @@ class TriggerTypeCreate(TriggerTypeBaseInDB):
     uid: str = None
     name: str
     packs_name: str
-    parameters_schema: Optional[str] = ""
-    payload_schema: Optional[str] = ""
+    parameters_schema: Optional[dict] = {}
+    payload_schema: Optional[dict] = {}
     metadata_file: Optional[str] = None
 
 
