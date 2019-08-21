@@ -1,8 +1,8 @@
 """Initial commit: item user packs action trigger trigger_types trigger_tags trigger_instance sensors
 
-Revision ID: 469a65c3c022
+Revision ID: 78022fca74da
 Revises:
-Create Date: 2019-08-19 20:28:37.757324
+Create Date: 2019-08-20 21:52:11.462503
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "469a65c3c022"
+revision = "78022fca74da"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -129,8 +129,8 @@ def upgrade():
         sa.Column("ref", sa.String(length=255), nullable=True),
         sa.Column("uid", sa.String(length=255), nullable=True),
         sa.Column("description", sa.String(length=255), nullable=True),
-        sa.Column("payload_schema", sa.String(length=255), nullable=True),
-        sa.Column("parameters_schema", sa.String(length=255), nullable=True),
+        sa.Column("payload_schema", sa.JSON(), nullable=True),
+        sa.Column("parameters_schema", sa.JSON(), nullable=True),
         sa.Column("packs_id", sa.Integer(), nullable=True),
         sa.Column("metadata_file", sa.String(length=255), nullable=True),
         sa.ForeignKeyConstraint(["packs_id"], ["packs.id"]),

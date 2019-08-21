@@ -1215,6 +1215,7 @@ ci-experimental: ci-build ci-test # Testing out new build to see if faster than 
 .PHONY: migration-clean
 migration-clean: ## Nuke all migrations scripts in the versions directory, nuke the local sqlite db then autogenerate again using shell command that greps all models together space delimited
 	rm -rfv ultron8/migrations/versions/*.py
+	git rm -rf ultron8/migrations/versions/*.py
 	-rm test.db || true
 	pipenv run alembic revision --autogenerate -m "Initial commit: $(CRUD_INTERFACES)"
 	pipenv run alembic --raiseerr upgrade head
