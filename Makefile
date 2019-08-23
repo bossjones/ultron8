@@ -106,6 +106,7 @@ MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_FOLDER := $(notdir $(patsubst %/,%,$(dir $(MKFILE_PATH))))
 CURRENT_DIR := $(shell pwd)
 MAKE := make
+PY_MODULE_NAME := ultron8
 
 list_allowed_args := product ip command role tier cluster non_root_user host
 
@@ -848,12 +849,6 @@ travis-ci:
 	.ci/docker-test-build.sh
 	.ci/docker-test.sh
 
-
-.PHONY: stubgen
-stubgen:
-	stubgen --recursive -o stubs/ ultron8
-
-
 # NUKE THE WORLD
 .PHONY: nuke
 nuke:
@@ -1293,3 +1288,15 @@ open-coverage: ## Open coverage report inside of web browser
 
 # environment: ## setup pyenv environment
 # 	$(PYENV_SETUP)
+
+
+stubs: ## create stubs dir if it doesn't exist, used to provide type hinting
+	mkdir stubs
+
+.PHONY: stubgen
+stubgen:
+	stubgen --recursive -o stubs/ $(PY_MODULE_NAME)
+
+.PHONY: travis-runner
+travis-runner: ## mock run of entire travis run
+	.ci/travis_runner.sh

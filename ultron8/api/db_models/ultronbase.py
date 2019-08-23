@@ -198,7 +198,7 @@ class UIDFieldMixin(object):
 
     # SOURCE: https://docs.sqlalchemy.org/en/13/orm/constructors.html
     # EXAMPLE: https://github.com/haobin12358/Weidian/blob/6c1b0fd54b1ed964f4b22a356a2a66cab9d91851/WeiDian/models/model.py
-    @orm.reconstructor
+    # @orm.reconstructor
     def get_uid(self):
         """
         Return an object UID constructed from the object properties / fields.
@@ -217,7 +217,7 @@ class UIDFieldMixin(object):
 
     # SOURCE: https://docs.sqlalchemy.org/en/13/orm/constructors.html
     # EXAMPLE: https://github.com/haobin12358/Weidian/blob/6c1b0fd54b1ed964f4b22a356a2a66cab9d91851/WeiDian/models/model.py
-    @orm.reconstructor
+    # @orm.reconstructor
     def get_uid_parts(self):
         """
         Return values for fields which make up the UID.
@@ -230,7 +230,7 @@ class UIDFieldMixin(object):
 
     # SOURCE: https://docs.sqlalchemy.org/en/13/orm/constructors.html
     # EXAMPLE: https://github.com/haobin12358/Weidian/blob/6c1b0fd54b1ed964f4b22a356a2a66cab9d91851/WeiDian/models/model.py
-    @orm.reconstructor
+    # @orm.reconstructor
     def has_valid_uid(self):
         """
         Return True if object contains a valid id (aka all parts contain a valid value).
