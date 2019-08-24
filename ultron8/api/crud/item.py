@@ -50,7 +50,7 @@ def update(db_session: Session, *, item: Item, item_in: ItemUpdate) -> Item:
     return item
 
 
-def remove(db_session: Session, *, id: int):
+def remove(db_session: Session, *, id: int) -> Item:
     item = db_session.query(Item).filter(Item.id == id).first()
     db_session.delete(item)
     db_session.commit()

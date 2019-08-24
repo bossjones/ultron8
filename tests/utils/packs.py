@@ -4,9 +4,11 @@ from tests.utils.utils import random_lower_string
 from ultron8.api import crud
 from ultron8.api.db.u_sqlite.session import db_session
 from ultron8.api.models.packs import PacksCreate
+from ultron8.api.db_models.packs import Packs
+from typing import Optional
 
 
-def create_random_packs():
+def create_random_packs() -> Packs:
     shared_name = random_lower_string()
     name = shared_name
     description = random_lower_string()

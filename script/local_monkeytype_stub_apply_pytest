@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+echo " [run] check environment variables\n\n\n"
+source .env.dist
+
+
+echo " [run] override env vars 'SERVER_NAME' and 'SERVER_HOST' - We don't want to mess w/ ''.env.dist' for this situation \n\n"
+echo " [run] manually set env: SERVER_NAME=localhost:11267 \n\n"
+export SERVER_NAME=localhost:11267
+echo " [run] manually set env: SERVER_HOST=http://localhost:11267 \n\n"
+export SERVER_HOST=http://localhost:11267
+
+
+python script/envvar_check.py
+
+# Description: run pytest using 'pipenv run', think ci-local
+
+echo -e " [run] alembic upgrade head\n\n\n"
+alembic upgrade head
+
+echo -e " [run] kick off ultron8/api/tests_pre_start.py\n\n\n"
+python ultron8/api/tests_pre_start.py
+
+set -eo pipefail
+
+monkeytype run "`command -v pytest`" --cov-config .coveragerc --verbose --cov-append --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests
+
+modules_array=()
+while IFS= read -r line; do
+    modules_array+=( "$line" )
+done < <( monkeytype list-modules | grep -v "pytestipdb" )
+
+echo "Stub all modules using monkeytype"
+for element in "${modules_array[@]}"
+do
+    monkeytype stub ${element}
+done
+
+echo "apply all modules using monkeytype"
+for element in "${modules_array[@]}"
+do
+    monkeytype apply ${element}
+done

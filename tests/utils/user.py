@@ -7,7 +7,14 @@ from ultron8.api.db.u_sqlite.session import db_session
 from ultron8.api.models.user import UserCreate
 
 
-def user_authentication_headers(server_api, email, password):
+from typing import Dict
+from ultron8.api.db_models.user import User
+from typing import Optional
+
+
+def user_authentication_headers(
+    server_api: str, email: str, password: str
+) -> Dict[str, str]:
     data = {"username": email, "password": password}
 
     r = requests.post(
@@ -19,7 +26,7 @@ def user_authentication_headers(server_api, email, password):
     return headers
 
 
-def create_random_user():
+def create_random_user() -> User:
     email = random_lower_string()
     password = random_lower_string()
     user_in = UserCreate(username=email, email=email, password=password)

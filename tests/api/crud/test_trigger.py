@@ -77,7 +77,7 @@ TRIGGERTYPE_2 = {
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_create_trigger():
+def test_create_trigger() -> None:
     packs_name = "dummy_pack_1"
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -132,7 +132,7 @@ def test_create_trigger():
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_trigger():
+def test_get_trigger() -> None:
     packs_name = "dummy_pack_1"
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -183,7 +183,7 @@ def test_get_trigger():
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_by_ref_trigger():
+def test_get_by_ref_trigger() -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -236,7 +236,7 @@ def test_get_by_ref_trigger():
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_by_name_trigger():
+def test_get_by_name_trigger() -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -288,7 +288,7 @@ def test_get_by_name_trigger():
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_multi_trigger():
+def test_get_multi_trigger() -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -361,7 +361,7 @@ def test_get_multi_trigger():
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_multi_by_packs_id_trigger():
+def test_get_multi_by_packs_id_trigger() -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -438,7 +438,7 @@ def test_get_multi_by_packs_id_trigger():
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_update_trigger():
+def test_update_trigger() -> None:
     packs_name = "dummy_pack_1"
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -498,7 +498,7 @@ def test_update_trigger():
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_delete_trigger():
+def test_delete_trigger() -> None:
     packs_name = "dummy_pack_1"
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()

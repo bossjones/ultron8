@@ -28,11 +28,11 @@ def authenticate(db_session: Session, *, email: str, password: str) -> Optional[
     return user
 
 
-def is_active(user) -> bool:
+def is_active(user: User) -> bool:
     return user.is_active
 
 
-def is_superuser(user) -> bool:
+def is_superuser(user: User) -> bool:
     return user.is_superuser
 
 

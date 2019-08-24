@@ -11,15 +11,20 @@ from fastapi.encoders import jsonable_encoder
 import random
 import string
 import ujson
+from typing import Optional
+from ultron8.api.db_models.packs import Packs
+from ultron8.api.db_models.trigger import TriggerTypeDB
 
 
-def create_random_trigger_type_name():
+def create_random_trigger_type_name() -> str:
     trigger_name_base = "ultron8"
     trigger_name_end = "".join(random.choices(string.ascii_lowercase, k=32))
     return "{}.{}".format(trigger_name_base, trigger_name_end)
 
 
-def build_random_trigger_type_create_model(packs=None):
+def build_random_trigger_type_create_model(
+    packs: Optional[Packs] = None
+) -> TriggerTypeCreate:
     """Produces a pydantic model for TriggerTypeCreate
 
     Keyword Arguments:
@@ -65,7 +70,7 @@ def build_random_trigger_type_create_model(packs=None):
     return trigger_type_in
 
 
-def create_random_trigger_type(packs=None):
+def create_random_trigger_type(packs: Optional[Packs] = None) -> TriggerTypeDB:
     """Creates a pydantic TriggerTypeCreate then commits it to the database
 
     Keyword Arguments:

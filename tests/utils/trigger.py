@@ -9,6 +9,12 @@ from tests.utils.user import create_random_user
 import random
 import string
 
+from typing import Optional
+from typing import Union
+from ultron8.api.db_models.packs import Packs
+from ultron8.api.db_models.trigger import TriggerDB, TriggerTypeDB
+from ultron8.api.models.trigger import TriggerTypeInDBModel
+
 
 def create_random_trigger_name():
     trigger_name_base = "ultron8"
@@ -55,7 +61,10 @@ def create_trigger_type_from_name(pack_name="", trigger_name=""):
 #     return trigger
 
 
-def create_random_trigger(packs=None, trigger_type=None):
+def create_random_trigger(
+    packs: Optional[Packs] = None,
+    trigger_type: Optional[Union[TriggerTypeDB, TriggerTypeInDBModel]] = None,
+) -> TriggerDB:
     """Create a random trigger db object
 
     Returns:

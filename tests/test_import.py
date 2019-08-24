@@ -4,7 +4,7 @@ from pytest import approx
 from pytest import raises
 
 
-def test():
+def test() -> None:
     import ultron8
 
     pass

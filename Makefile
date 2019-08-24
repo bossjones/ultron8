@@ -1264,6 +1264,12 @@ serve-daemon: ## serve the web daemon from 'pipenv run'
 ci-local: ## run pytest using 'pipenv run'
 	pipenv run bash script/local_pytest
 
+ci-monkeytype-local: ## run pytest using 'pipenv run'
+	pipenv run bash script/local_monkeytype_pytest
+
+ci-monkeytype-stub-apply-local: ## run pytest stub as much as we can, then run apply those types to everything using 'pipenv run'
+	pipenv run bash script/local_monkeytype_stub_apply_pytest
+
 ci-local-only: ## run pytest using 'pipenv run'
 	pipenv run bash script/local_pytest_with_args $(ONLY_RUN)
 
