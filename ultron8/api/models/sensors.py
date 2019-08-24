@@ -57,6 +57,9 @@ class SensorsBase(BaseModel):
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
 
+    class Config:
+        orm_mode = True
+
 
 class SensorsBaseInDB(SensorsBase):
     id: int = None

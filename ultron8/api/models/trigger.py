@@ -24,6 +24,9 @@ class TriggerTagsBase(BaseModel):
     tag: Optional[str] = None
     trigger_name: Optional[str] = None
 
+    class Config:
+        orm_mode = True
+
 
 class TriggerTagsBaseInDB(TriggerTagsBase):
     id: int = None
@@ -57,6 +60,9 @@ class TriggerTypeBase(BaseModel):
     description: Optional[str] = None
     parameters_schema: Optional[Any] = None
     payload_schema: Optional[Any] = None
+
+    class Config:
+        orm_mode = True
 
 
 class TriggerTypeBaseInDB(TriggerTypeBase):
@@ -142,6 +148,9 @@ class TriggerBaseDB(BaseModel):
     parameters: Optional[dict] = {}
     ref_count: Optional[int] = 0
 
+    class Config:
+        orm_mode = True
+
 
 class TriggerBaseInDB(TriggerBaseDB):
     """
@@ -185,6 +194,9 @@ class TriggerInstanceBaseDB(BaseModel):
     payload: Optional[dict] = {}
     occurrence_time: datetime = None
     status: Optional[str] = None
+
+    class Config:
+        orm_mode = True
 
 
 class TriggerInstanceBaseInDB(TriggerInstanceBaseDB):

@@ -95,6 +95,9 @@ class PacksBase(BaseModel):
 
     contributors: Optional[str] = None
 
+    class Config:
+        orm_mode = True
+
 
 class PacksBaseInDB(PacksBase):
     id: int = None

@@ -53,6 +53,9 @@ class ActionBase(BaseModel):
     # notify : Optional[Optional[str]
     tags: Optional[List[str]] = []
 
+    class Config:
+        orm_mode = True
+
 
 class ActionBaseInDB(ActionBase):
     """Data Object describing Actions
