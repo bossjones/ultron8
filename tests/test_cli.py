@@ -14,11 +14,13 @@ from ultron8.paths import Paths
 
 # from .conftest import fixtures_path
 
+from typing import Iterator
+
 paths = Paths()
 
 
 @contextmanager
-def project_runner(fixture="simple"):
+def project_runner(fixture: str = "simple") -> Iterator[CliRunner]:
     fixture_path = fixtures_path / fixture
     runner = CliRunner()
     with runner.isolated_filesystem():
@@ -80,7 +82,7 @@ def project_runner(fixture="simple"):
 #         assert "Usage: ultronctl [OPTIONS] COMMAND [ARGS]..." in runner.output_of('info')
 
 
-def test_cli_dummp():
+def test_cli_dummp() -> None:
     with project_runner() as runner:
         assert "Dummy command, doesn't do anything." in runner.output_of("dummy")
 

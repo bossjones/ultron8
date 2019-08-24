@@ -12,6 +12,8 @@ from tests.utils.utils import get_superuser_token_headers
 # from ultron8.api import settings
 # from ultron8.web import app
 
+from typing import Dict
+
 here = os.path.abspath(os.path.dirname(__file__))
 
 print("here: {}".format(here))
@@ -29,7 +31,7 @@ def server_api():
 
 
 @pytest.fixture(scope="module")
-def superuser_token_headers():
+def superuser_token_headers() -> Dict[str, str]:
     return get_superuser_token_headers()
 
 

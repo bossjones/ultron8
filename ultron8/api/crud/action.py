@@ -134,7 +134,7 @@ def update(db_session: Session, *, action: Action, action_in: ActionUpdate) -> A
     return action
 
 
-def remove(db_session: Session, *, action_id: int):
+def remove(db_session: Session, *, action_id: int) -> Action:
     """[summary]
 
     Arguments:

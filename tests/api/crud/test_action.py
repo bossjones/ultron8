@@ -98,7 +98,7 @@ from freezegun import freeze_time
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.actiononly
 @pytest.mark.unittest
-def test_create_action():
+def test_create_action() -> None:
     packs_name = random_lower_string()
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -167,7 +167,7 @@ def test_create_action():
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.actiononly
 @pytest.mark.unittest
-def test_get_action():
+def test_get_action() -> None:
     packs_name = random_lower_string()
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -229,7 +229,7 @@ def test_get_action():
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.actiononly
 @pytest.mark.unittest
-def test_update_action():
+def test_update_action() -> None:
     packs_name = random_lower_string()
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -303,7 +303,7 @@ def test_update_action():
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.actiononly
 @pytest.mark.unittest
-def test_delete_action():
+def test_delete_action() -> None:
     packs_name = random_lower_string()
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()

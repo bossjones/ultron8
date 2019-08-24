@@ -82,7 +82,7 @@ def update(db_session: Session, *, packs: Packs, packs_in: PacksUpdate) -> Packs
     return packs
 
 
-def remove(db_session: Session, *, id: int):
+def remove(db_session: Session, *, id: int) -> Packs:
     packs = db_session.query(Packs).filter(Packs.id == id).first()
     db_session.delete(packs)
     db_session.commit()

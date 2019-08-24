@@ -129,7 +129,7 @@ def update(
     return trigger_instance
 
 
-def remove(db_session: Session, *, trigger_instance_id: int):
+def remove(db_session: Session, *, trigger_instance_id: int) -> TriggerInstanceDB:
     """Remove TriggerInstanceDB object
 
     Arguments:

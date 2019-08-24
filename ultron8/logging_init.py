@@ -17,6 +17,8 @@ from typing import Coroutine
 from typing import List
 from typing import Optional
 
+from better_exceptions.log import BetExcLogger
+
 emitted_warnings: List[str] = []
 
 if "ULTRON_DEBUG" in environ and environ["ULTRON_DEBUG"].lower() == "true":
@@ -44,7 +46,7 @@ config = {
 }
 
 
-def getLogger(name=None):
+def getLogger(name: Optional[str] = None) -> BetExcLogger:
     logging.config.dictConfig(config)
     logger = logging.getLogger(name)
     logger.warn_once = warn_once
@@ -85,7 +87,7 @@ class AsyncHandler:
         """Initialize async logging handler wrapper."""
         self.handler = handler
         self.loop = loop
-        self._queue = asyncio.Queue(loop=loop)  # type: asyncio.Queue
+        self._queue = asyncio.Queue(loop=loop)
         self._thread = threading.Thread(target=self._process)
 
         # Delegate from handler

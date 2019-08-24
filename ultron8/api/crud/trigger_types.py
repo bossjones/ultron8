@@ -190,7 +190,7 @@ def update(
 #     pass
 
 
-def remove(db_session: Session, *, trigger_type_id: int):
+def remove(db_session: Session, *, trigger_type_id: int) -> TriggerTypeDB:
     """[summary]
 
     Arguments:

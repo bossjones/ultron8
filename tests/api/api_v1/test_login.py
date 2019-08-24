@@ -6,12 +6,14 @@ from tests.utils.utils import get_server_api
 from ultron8.api import settings
 import pytest
 
+from typing import Dict
+
 logger = logging.getLogger(__name__)
 
 
 @pytest.mark.loginonly
 @pytest.mark.unittest
-def test_get_access_token():
+def test_get_access_token() -> None:
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)
     login_data = {
@@ -29,7 +31,7 @@ def test_get_access_token():
 
 @pytest.mark.loginonly
 @pytest.mark.unittest
-def test_use_access_token(superuser_token_headers):
+def test_use_access_token(superuser_token_headers: Dict[str, str]) -> None:
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)
     logger.debug("r = {server_api}{settings.API_V1_STR}/login/test-token")

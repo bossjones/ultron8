@@ -6,7 +6,7 @@ from ultron8.api.models.item import ItemCreate
 from ultron8.api.models.item import ItemUpdate
 
 
-def test_create_item():
+def test_create_item() -> None:
     title = random_lower_string()
     description = random_lower_string()
     item_in = ItemCreate(title=title, description=description)
@@ -17,7 +17,7 @@ def test_create_item():
     assert item.owner_id == user.id
 
 
-def test_get_item():
+def test_get_item() -> None:
     title = random_lower_string()
     description = random_lower_string()
     item_in = ItemCreate(title=title, description=description)
@@ -30,7 +30,7 @@ def test_get_item():
     assert item.owner_id == stored_item.owner_id
 
 
-def test_update_item():
+def test_update_item() -> None:
     title = random_lower_string()
     description = random_lower_string()
     item_in = ItemCreate(title=title, description=description)
@@ -45,7 +45,7 @@ def test_update_item():
     assert item.owner_id == item2.owner_id
 
 
-def test_delete_item():
+def test_delete_item() -> None:
     title = random_lower_string()
     description = random_lower_string()
     item_in = ItemCreate(title=title, description=description)

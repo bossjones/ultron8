@@ -21,6 +21,8 @@ from sqlalchemy import orm
 # from sqlalchemy.orm import relationship
 # from ultron8.api.db.u_sqlite.session import db_session
 
+from typing import List
+
 JSON_UNFRIENDLY_TYPES = datetime.datetime
 
 # SOURCE: https://github.com/cburmeister/flask-bones/blob/master/app/database.py
@@ -199,7 +201,7 @@ class UIDFieldMixin(object):
     # SOURCE: https://docs.sqlalchemy.org/en/13/orm/constructors.html
     # EXAMPLE: https://github.com/haobin12358/Weidian/blob/6c1b0fd54b1ed964f4b22a356a2a66cab9d91851/WeiDian/models/model.py
     # @orm.reconstructor
-    def get_uid(self):
+    def get_uid(self) -> str:
         """
         Return an object UID constructed from the object properties / fields.
 
@@ -218,7 +220,7 @@ class UIDFieldMixin(object):
     # SOURCE: https://docs.sqlalchemy.org/en/13/orm/constructors.html
     # EXAMPLE: https://github.com/haobin12358/Weidian/blob/6c1b0fd54b1ed964f4b22a356a2a66cab9d91851/WeiDian/models/model.py
     # @orm.reconstructor
-    def get_uid_parts(self):
+    def get_uid_parts(self) -> List[str]:
         """
         Return values for fields which make up the UID.
 

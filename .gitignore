@@ -341,3 +341,4 @@ dev.db
 test.db
 .vscode
 !.vscode/launch.json
+monkeytype.sqlite3

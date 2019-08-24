@@ -11,12 +11,14 @@ from ultron8.api.db.u_sqlite.session import db_session
 from ultron8.api.models.user import UserCreate
 import pytest
 
+from typing import Dict
+
 logger = logging.getLogger(__name__)
 
 
 @pytest.mark.usersonly
 @pytest.mark.unittest
-def test_get_users_superuser_me(superuser_token_headers):
+def test_get_users_superuser_me(superuser_token_headers: Dict[str, str]) -> None:
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)
     r = requests.get(
@@ -31,7 +33,7 @@ def test_get_users_superuser_me(superuser_token_headers):
 
 @pytest.mark.usersonly
 @pytest.mark.unittest
-def test_create_user_new_email(superuser_token_headers):
+def test_create_user_new_email(superuser_token_headers: Dict[str, str]) -> None:
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)
     username = random_lower_string()
@@ -50,7 +52,7 @@ def test_create_user_new_email(superuser_token_headers):
 
 @pytest.mark.usersonly
 @pytest.mark.unittest
-def test_get_existing_user(superuser_token_headers):
+def test_get_existing_user(superuser_token_headers: Dict[str, str]) -> None:
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)
     username = random_lower_string()
@@ -70,7 +72,7 @@ def test_get_existing_user(superuser_token_headers):
 
 @pytest.mark.usersonly
 @pytest.mark.unittest
-def test_create_user_existing_username(superuser_token_headers):
+def test_create_user_existing_username(superuser_token_headers: Dict[str, str]) -> None:
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)
     username = random_lower_string()
@@ -91,7 +93,7 @@ def test_create_user_existing_username(superuser_token_headers):
 
 @pytest.mark.usersonly
 @pytest.mark.unittest
-def test_create_user_by_normal_user():
+def test_create_user_by_normal_user() -> None:
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)
     username = random_lower_string()
@@ -110,7 +112,7 @@ def test_create_user_by_normal_user():
 
 @pytest.mark.usersonly
 @pytest.mark.unittest
-def test_retrieve_users(superuser_token_headers):
+def test_retrieve_users(superuser_token_headers: Dict[str, str]) -> None:
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)
     username = random_lower_string()

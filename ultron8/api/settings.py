@@ -21,7 +21,7 @@ LOG_LEVEL_MAP = {
 }
 
 
-def getenv_boolean(var_name, default_value=False):
+def getenv_boolean(var_name: str, default_value: bool = False) -> bool:
     result = default_value
     env_value = os.getenv(var_name)
     if env_value is not None:

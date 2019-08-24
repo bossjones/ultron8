@@ -181,7 +181,7 @@ class TriggerDB(UIDFieldMixin, Base):
     # SOURCE: https://docs.sqlalchemy.org/en/13/orm/constructors.html
     # EXAMPLE: https://github.com/haobin12358/Weidian/blob/6c1b0fd54b1ed964f4b22a356a2a66cab9d91851/WeiDian/models/model.py
     @orm.reconstructor
-    def get_uid(self):
+    def get_uid(self) -> str:
         # Note: Trigger is uniquely identified using name + pack + parameters attributes
         # pylint: disable=no-member
         uid = super(TriggerDB, self).get_uid()
@@ -198,7 +198,7 @@ class TriggerDB(UIDFieldMixin, Base):
     # SOURCE: https://docs.sqlalchemy.org/en/13/orm/constructors.html
     # EXAMPLE: https://github.com/haobin12358/Weidian/blob/6c1b0fd54b1ed964f4b22a356a2a66cab9d91851/WeiDian/models/model.py
     @orm.reconstructor
-    def has_valid_uid(self):
+    def has_valid_uid(self) -> bool:
         parts = self.get_uid_parts()
         # Note: We add 1 for parameters field which is not part of self.UID_FIELDS
         return len(parts) == len(self.UID_FIELDS) + 1 + 1

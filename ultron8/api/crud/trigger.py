@@ -153,7 +153,7 @@ def update(
     return trigger
 
 
-def remove(db_session: Session, *, trigger_id: int):
+def remove(db_session: Session, *, trigger_id: int) -> TriggerDB:
     """[summary]
 
     Arguments:

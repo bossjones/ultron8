@@ -31,7 +31,7 @@ from freezegun import freeze_time
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.packsonly
 @pytest.mark.unittest
-def test_create_packs():
+def test_create_packs() -> None:
     name = "linuxtest"
     description = "TEST Generic Linux actions"
     keywords = "linux"
@@ -77,7 +77,7 @@ def test_create_packs():
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.packsonly
 @pytest.mark.unittest
-def test_get_packs():
+def test_get_packs() -> None:
     name = random_lower_string()
     description = random_lower_string()
     keywords = random_lower_string()
@@ -111,7 +111,7 @@ def test_get_packs():
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.packsonly
 @pytest.mark.unittest
-def test_update_packs():
+def test_update_packs() -> None:
     name = random_lower_string()
     description = random_lower_string()
     keywords = random_lower_string()
@@ -162,7 +162,7 @@ def test_update_packs():
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.packsonly
 @pytest.mark.unittest
-def test_delete_packs():
+def test_delete_packs() -> None:
     name = random_lower_string()
     description = random_lower_string()
     keywords = random_lower_string()
