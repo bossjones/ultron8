@@ -23,7 +23,7 @@ python ultron8/api/tests_pre_start.py
 
 set -eo pipefail
 
-# monkeytype run "`command -v pytest`" --cov-config .coveragerc --verbose --cov-append --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests
+monkeytype run "`command -v pytest`" --cov-config .coveragerc --verbose --cov-append --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests
 
 modules_array=()
 while IFS= read -r line; do
