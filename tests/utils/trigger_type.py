@@ -6,8 +6,11 @@ from ultron8.api.db.u_sqlite.session import db_session
 from ultron8.api.models.trigger import TriggerTypeCreate
 from tests.utils.user import create_random_user
 
+from fastapi.encoders import jsonable_encoder
+
 import random
 import string
+import ujson
 
 
 def create_random_trigger_type_name():
@@ -29,13 +32,20 @@ def build_random_trigger_type_create_model(packs=None):
     trigger_type_name = create_random_trigger_type_name()
     trigger_type_packs_name = packs.name
     trigger_type_description = random_lower_string()
-    trigger_type_parameters_schema = {
+    trigger_type_parameters_schema_dict = {
         "additionalProperties": False,
         "properties": {"url": {"type": "string", "required": True}},
         "type": "object",
     }
+    trigger_type_payload_schema_dict = {"type": "object"}
 
-    trigger_type_payload_schema = {"type": "object"}
+    # FIXME: This needs to be fixed, are we turning it into a string or not 8/19/2019
+    # trigger_type_parameters_schema = ujson.dumps(trigger_type_parameters_schema_dict)
+    trigger_type_parameters_schema = trigger_type_parameters_schema_dict
+
+    # FIXME: This needs to be fixed, are we turning it into a string or not 8/19/2019
+    # trigger_type_payload_schema = ujson.dumps(trigger_type_payload_schema_dict)
+    trigger_type_payload_schema = trigger_type_payload_schema_dict
 
     folder_name = trigger_type_name.split(".")
 

@@ -120,6 +120,7 @@ def create(
     Returns:
         TriggerDB -- Returns a TriggerDB object
     """
+    # import pdb;pdb.set_trace()
     trigger_in_data = jsonable_encoder(trigger_in)
     trigger = TriggerDB(**trigger_in_data, packs_id=packs_id)
     db_session.add(trigger)

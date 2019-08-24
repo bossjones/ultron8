@@ -53,7 +53,7 @@ WGET = wget
 CRUD_INTERFACES:=$(shell $(SCRIPT_DIR)/get_crud_interfaces)
 
 # Bin scripts
-PYENV_SETUP = $(shell) $(SCRIPT_DIR)/pyenv_setup.sh
+# PYENV_SETUP = $(shell) $(SCRIPT_DIR)/pyenv_setup.sh
 
 ONLY_RUN ?= packsonly
 
@@ -106,6 +106,7 @@ MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_FOLDER := $(notdir $(patsubst %/,%,$(dir $(MKFILE_PATH))))
 CURRENT_DIR := $(shell pwd)
 MAKE := make
+PY_MODULE_NAME := ultron8
 
 list_allowed_args := product ip command role tier cluster non_root_user host
 
@@ -848,12 +849,6 @@ travis-ci:
 	.ci/docker-test-build.sh
 	.ci/docker-test.sh
 
-
-.PHONY: stubgen
-stubgen:
-	stubgen --recursive -o stubs/ ultron8
-
-
 # NUKE THE WORLD
 .PHONY: nuke
 nuke:
@@ -1215,6 +1210,7 @@ ci-experimental: ci-build ci-test # Testing out new build to see if faster than 
 .PHONY: migration-clean
 migration-clean: ## Nuke all migrations scripts in the versions directory, nuke the local sqlite db then autogenerate again using shell command that greps all models together space delimited
 	rm -rfv ultron8/migrations/versions/*.py
+	git rm -rf ultron8/migrations/versions/*.py
 	-rm test.db || true
 	pipenv run alembic revision --autogenerate -m "Initial commit: $(CRUD_INTERFACES)"
 	pipenv run alembic --raiseerr upgrade head
@@ -1290,5 +1286,17 @@ open-coverage: ## Open coverage report inside of web browser
 	./script/open-browser.py file://$(CURRENT_DIR)/htmlcov/index.html
 
 
-environment: ## setup pyenv environment
-	$(PYENV_SETUP)
+# environment: ## setup pyenv environment
+# 	$(PYENV_SETUP)
+
+
+stubs: ## create stubs dir if it doesn't exist, used to provide type hinting
+	mkdir stubs
+
+.PHONY: stubgen
+stubgen:
+	stubgen --recursive -o stubs/ $(PY_MODULE_NAME)
+
+.PHONY: travis-runner
+travis-runner: ## mock run of entire travis run
+	.ci/travis_runner.sh

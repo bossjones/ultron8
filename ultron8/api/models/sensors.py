@@ -16,6 +16,7 @@ from pydantic import EmailStr
 from pydantic import Schema
 
 from ultron8.api.models.trigger import TriggerTypeInDBModel
+from ultron8.api.db_models.trigger import TriggerTypeDB
 
 # The ellipsis ... just means "Required" same as annotation only declarations above.
 
@@ -55,6 +56,9 @@ class SensorsBase(BaseModel):
     trigger_types: Optional[List[TriggerTypeInDBModel]] = []
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
+
+    class Config:
+        orm_mode = True
 
 
 class SensorsBaseInDB(SensorsBase):

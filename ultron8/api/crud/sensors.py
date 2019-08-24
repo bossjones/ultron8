@@ -35,6 +35,47 @@ def get_multi_by_packs_id(
     )
 
 
+# def create(db_session: Session, *, sensors_in: SensorsCreate, packs_id: int) -> Sensors:
+#     import pdb;pdb.set_trace()
+#     trigger_type_data = []
+#     sensors_in_data = jsonable_encoder(sensors_in)
+#     if len(sensors_in_data.trigger_types) > 0:
+#         for trigger_type in sensors_in_data.trigger_types:
+#             trigger_type_data.append(jsonable_encoder(trigger_type))
+#     import pdb;pdb.set_trace()
+#     # setattr()
+
+#     sensors = Sensors(**sensors_in_data, packs_id=packs_id)
+#     db_session.add(sensors)
+#     db_session.commit()
+#     db_session.refresh(sensors)
+#     return sensors
+
+# def sync(self, account_type, name, active, third_party, notes, identifier, custom_fields):
+#         """
+#         Syncs the account with the database. If account does not exist it is created. Other attributes
+#         including account name are updated to conform with the third-party data source.
+#         """
+#         account_type_result = _get_or_create_account_type(account_type)
+
+#         account = Account.query.filter(Account.identifier == identifier).first()
+
+#         if not account:
+#             account = Account()
+
+#         account = self._populate_account(account, account_type_result.id, self.sanitize_account_name(name),
+#                                          active, third_party, notes,
+#                                          self.sanitize_account_identifier(identifier),
+#                                          custom_fields)
+
+#         db.session.add(account)
+#         db.session.commit()
+#         db.session.refresh(account)
+#         account = self._load(account)
+#         db.session.expunge(account)
+#         return account
+
+
 def create(db_session: Session, *, sensors_in: SensorsCreate, packs_id: int) -> Sensors:
     sensors_in_data = jsonable_encoder(sensors_in)
     sensors = Sensors(**sensors_in_data, packs_id=packs_id)

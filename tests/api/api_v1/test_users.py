@@ -9,10 +9,13 @@ from ultron8.api import crud
 from ultron8.api import settings
 from ultron8.api.db.u_sqlite.session import db_session
 from ultron8.api.models.user import UserCreate
+import pytest
 
 logger = logging.getLogger(__name__)
 
 
+@pytest.mark.usersonly
+@pytest.mark.unittest
 def test_get_users_superuser_me(superuser_token_headers):
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)
@@ -26,6 +29,8 @@ def test_get_users_superuser_me(superuser_token_headers):
     assert current_user["email"] == settings.FIRST_SUPERUSER
 
 
+@pytest.mark.usersonly
+@pytest.mark.unittest
 def test_create_user_new_email(superuser_token_headers):
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)
@@ -43,6 +48,8 @@ def test_create_user_new_email(superuser_token_headers):
     assert user.email == created_user["email"]
 
 
+@pytest.mark.usersonly
+@pytest.mark.unittest
 def test_get_existing_user(superuser_token_headers):
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)
@@ -61,6 +68,8 @@ def test_get_existing_user(superuser_token_headers):
     assert user.email == api_user["email"]
 
 
+@pytest.mark.usersonly
+@pytest.mark.unittest
 def test_create_user_existing_username(superuser_token_headers):
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)
@@ -80,6 +89,8 @@ def test_create_user_existing_username(superuser_token_headers):
     assert "_id" not in created_user
 
 
+@pytest.mark.usersonly
+@pytest.mark.unittest
 def test_create_user_by_normal_user():
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)
@@ -97,6 +108,8 @@ def test_create_user_by_normal_user():
     assert r.status_code == 400
 
 
+@pytest.mark.usersonly
+@pytest.mark.unittest
 def test_retrieve_users(superuser_token_headers):
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)

@@ -4,10 +4,13 @@ import requests
 
 from tests.utils.utils import get_server_api
 from ultron8.api import settings
+import pytest
 
 logger = logging.getLogger(__name__)
 
 
+@pytest.mark.loginonly
+@pytest.mark.unittest
 def test_get_access_token():
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)
@@ -24,6 +27,8 @@ def test_get_access_token():
     assert tokens["access_token"]
 
 
+@pytest.mark.loginonly
+@pytest.mark.unittest
 def test_use_access_token(superuser_token_headers):
     server_api = get_server_api()
     logger.debug("server_api : %s", server_api)

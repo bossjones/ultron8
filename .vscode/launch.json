@@ -12,6 +12,20 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "WITH ENV Python: Current File (Integrated Terminal)",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "env": {
+                "DEBUG": "1",
+                "TESTING": "1",
+                "BETTER_EXCEPTIONS": "1",
+                "DATABASE_URL": "sqlite:///sensors.db",
+                "TEST_DATABASE_URL": "sqlite:///sensors.db",
+            },
+        },
+        {
             "name": "Python: Remote Attach",
             "type": "python",
             "request": "attach",

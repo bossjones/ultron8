@@ -22,6 +22,8 @@ from ultron8.api.db_models.trigger import TriggerTypeDB
 from sqlalchemy import and_
 from ultron8.debugger import debug_dump_exclude
 
+from sqlalchemy import orm
+
 from ultron8.api.db_models.sensors_trigger_types_association import (
     SENSORS_TRIGGER_TYPES_ASSOCIATION,
 )
@@ -113,6 +115,8 @@ class Sensors(UIDFieldMixin, Base):
         back_populates="sensors",
     )
 
+    # __table_args__ = {'extend_existing': True}
+
     # # <><><><><><><><><><><><><><><><><><><>
     # # Sensor = LEFT side of join
     # # TriggerTypeDB = Right side of join
@@ -161,6 +165,9 @@ class Sensors(UIDFieldMixin, Base):
     # #           format: "date-time"
     # #           default: "2014-07-30 05:04:24.578325"
 
+    # SOURCE: https://docs.sqlalchemy.org/en/13/orm/constructors.html
+    # EXAMPLE: https://github.com/haobin12358/Weidian/blob/6c1b0fd54b1ed964f4b22a356a2a66cab9d91851/WeiDian/models/model.py
+    # @orm.reconstructor
     def __init__(self, *args, packs_name=None, **values):
         super(Sensors, self).__init__(*args, **values)
         self.packs_name = packs_name
@@ -169,6 +176,26 @@ class Sensors(UIDFieldMixin, Base):
         self.created_at = str(datetime.datetime.utcnow())
         self.updated_at = str(datetime.datetime.utcnow())
         # self.triggers_types_packs_id = self.packs_id
+
+    # # FIXME: Get this working 8/19/2019
+    # def add_trigger_types(self, packs_id, data):
+    #     self.trigger_types.filter_by(packs_id=packs_id).delete()
+    #     tt = TriggerTypeDB(packs_name=data["name"],)
+
+    # NOTE: source microblog
+    # def add_notification(self, name, data):
+    #     self.notifications.filter_by(name=name).delete()
+    #     n = Notification(name=name, payload_json=json.dumps(data), user=self)
+    #     db.session.add(n)
+    #     return n
+
+    # @orm.reconstructor
+    # def init_on_load(self):
+    #     self.packs_name = packs_name
+    #     self.ref = "{}.{}".format(self.packs_name, self.class_name)
+    #     self.uid = self.get_uid()
+    #     self.created_at = str(datetime.datetime.utcnow())
+    #     self.updated_at = str(datetime.datetime.utcnow())
 
     def __repr__(self):
         return (
@@ -190,101 +217,182 @@ class Sensors(UIDFieldMixin, Base):
 MODELS = [Sensors]
 
 
-# # smoke-tests
-# if "__main__" == __name__:
-#     # Initial - Setup environment vars before testing anything
-#     import os
-#     from sqlalchemy import inspect
+# smoke-tests
+if "__main__" == __name__:
+    # from fastapi.encoders import jsonable_encoder
 
-#     # import better_exceptions; better_exceptions.hook()
+    # from ultron8.api import crud
+    from ultron8.api.db.u_sqlite.session import db_session
 
-#     import sys
+    # from ultron8.api.models.sensors import SensorsBase
+    # from ultron8.api.models.sensors import SensorsBaseInDB
+    # from ultron8.api.models.sensors import SensorsCreate
+    # from ultron8.api.models.sensors import SensorsUpdate
+    # from ultron8.api.models.sensors import Sensor
+    # from ultron8.api.models.sensors import SensorInDB
 
-#     from IPython.core.debugger import Tracer  # noqa
-#     from IPython.core import ultratb
+    # from ultron8.api.db_models.sensors import Sensors
+    # from ultron8.api.db_models.sensors import SENSORS_TRIGGER_TYPES_ASSOCIATION
+    # from ultron8.api.db_models.trigger import TriggerTypeDB
+    # from ultron8.api.models.trigger import TriggerTypeInDBModel
 
-#     sys.excepthook = ultratb.FormattedTB(
-#         mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
-#     )
+    # from tests.utils.packs import create_random_packs
+    # from tests.utils.trigger_instance import create_random_trigger_instance_name
+    # from tests.utils.trigger_type import create_random_trigger_type
+    # from tests.utils.trigger import create_random_trigger
 
-#     os.environ["DEBUG"] = "1"
-#     os.environ["TESTING"] = "0"
-#     os.environ["BETTER_EXCEPTIONS"] = "1"
+    # from freezegun import freeze_time
+    # from ultron8.debugger import debug_dump_exclude
 
-#     # os.environ["DATABASE_URL"] = "sqlite:///:memory:"
-#     # os.environ["TEST_DATABASE_URL"] = "sqlite:///:memory:"
+    # from ultron8.api.models import orm_to_model
 
-#     os.environ["DATABASE_URL"] = "sqlite:///test.db"
-#     os.environ["TEST_DATABASE_URL"] = "sqlite:///test.db"
+    import json
 
-#     def debug_dump(obj):
-#         for attr in dir(obj):
-#             if hasattr(obj, attr):
-#                 print("obj.%s = %s" % (attr, getattr(obj, attr)))
+    from pydantic.json import pydantic_encoder
 
-#     import logging
+    #     # Initial - Setup environment vars before testing anything
+    import os
+    from sqlalchemy import inspect
 
-#     from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
+    #     # import better_exceptions; better_exceptions.hook()
 
-#     from ultron8.api.db.u_sqlite.session import db_session
+    import sys
 
-#     logging.basicConfig(level=logging.INFO)
-#     logger = logging.getLogger(__name__)
+    # from IPython.core.debugger import Tracer  # noqa
+    # from IPython.core import ultratb
 
-#     max_tries = 60 * 5  # 5 minutes
-#     wait_seconds = 1
+    # sys.excepthook = ultratb.FormattedTB(
+    #     mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
+    # )
 
-#     @retry(
-#         stop=stop_after_attempt(max_tries),
-#         wait=wait_fixed(wait_seconds),
-#         before=before_log(logger, logging.INFO),
-#         after=after_log(logger, logging.WARN),
-#     )
-#     def init():
-#         try:
-#             # Try to create session to check if DB is awake
-#             # pylint: disable=no-member
-#             db_session.execute("SELECT 1")
-#         except Exception as e:
-#             logger.error(e)
-#             raise e
+    os.environ["DEBUG"] = "1"
+    os.environ["TESTING"] = "1"
+    os.environ["BETTER_EXCEPTIONS"] = "1"
 
-#     # Get sqlalchemy classes/objects
+    os.environ["DATABASE_URL"] = "sqlite:///sensors.db"
+    os.environ["TEST_DATABASE_URL"] = "sqlite:///sensors.db"
 
-#     from ultron8.api.db.u_sqlite.init_db import init_db
-#     from ultron8.api.db.u_sqlite.session import db_session, engine, Session
+    import logging
 
-#     # make sure all SQL Alchemy models are imported before initializing DB
-#     # otherwise, SQL Alchemy might fail to initialize properly relationships
-#     # for more details: https://github.com/tiangolo/full-stack-fastapi-postgresql/issues/28
-#     from ultron8.api.db.u_sqlite.base import Base
+    from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
 
-#     import pandas as pd
+    # from ultron8.api.db.u_sqlite.session import db_session
 
-#     from ultron8.api.db_models.packs import Packs
-#     from ultron8.api.db_models.action import Action
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
 
-#     # Tables should be created with Alembic migrations
-#     # But if you don't want to use migrations, create
-#     # the tables un-commenting the next line
-#     # 2 - generate database schema
-#     Base.metadata.create_all(bind=engine)
+    max_tries = 60 * 5  # 5 minutes
+    wait_seconds = 1
 
-#     # 3 - create a new session
-#     session = Session()
+    @retry(
+        stop=stop_after_attempt(max_tries),
+        wait=wait_fixed(wait_seconds),
+        before=before_log(logger, logging.INFO),
+        after=after_log(logger, logging.WARN),
+    )
+    def init():
+        try:
+            # Try to create session to check if DB is awake
+            # pylint: disable=no-member
+            db_session.execute("SELECT 1")
+        except Exception as e:
+            logger.error(e)
+            raise e
 
-#     # Try initializing everything now
-#     logger.info("Initializing service")
-#     init()
-#     logger.info("Service finished initializing")
+    #     # Get sqlalchemy classes/objects
 
-#     logger.info("Creating initial data")
-#     init_db(db_session)
-#     logger.info("Initial data created")
+    from ultron8.api.db.u_sqlite.init_db import init_db
+    from ultron8.api.db.u_sqlite.session import engine
 
-#     ##########################################
-#     # packs
-#     ##########################################
+    # from ultron8.api.db.u_sqlite.session import Session
+
+    #     # make sure all SQL Alchemy models are imported before initializing DB
+    #     # otherwise, SQL Alchemy might fail to initialize properly relationships
+    #     # for more details: https://github.com/tiangolo/full-stack-fastapi-postgresql/issues/28
+    # from ultron8.api.db.u_sqlite.base import Base
+
+    import pandas as pd
+
+    # from ultron8.api.db_models.sensors import Sensors
+    # from ultron8.api.db_models.trigger import TriggerTypeDB
+    from ultron8.api.db_models.packs import Packs
+
+    # from ultron8.api.db_models.action import Action
+
+    print("testing")
+
+    from faker import Faker as RealFaker
+    from faker.providers import internet, file, person, lorem
+
+    fake = RealFaker()
+    fake.add_provider(internet)
+    fake.add_provider(file)
+    fake.add_provider(person)
+    fake.add_provider(lorem)
+
+    # import pdb
+
+    # pdb.set_trace()
+    #     # Tables should be created with Alembic migrations
+    #     # But if you don't want to use migrations, create
+    #     # the tables un-commenting the next line
+    #     # 2 - generate database schema
+    # Base.metadata.create_all(bind=engine)
+
+    #     # 3 - create a new session
+    session = db_session
+
+    # Try initializing everything now
+    # logger.info("Initializing service")
+    # init()
+    # logger.info("Service finished initializing")
+
+    logger.info("Creating initial data")
+    init_db(db_session)
+    logger.info("Initial data created")
+
+    import factory
+    from factory import Faker
+
+    ##########################################
+    # packs
+    ##########################################
+    # import pdb;pdb.set_trace()
+
+    class BaseFactory(factory.alchemy.SQLAlchemyModelFactory):
+        class Meta:
+            abstract = True
+            sqlalchemy_session = session
+            sqlalchemy_session_persistence = "commit"
+
+    shared_packs_name = Faker("first_name").lower()
+
+    class PacksFactory(factory.alchemy.SQLAlchemyModelFactory):
+        class Meta:
+            model = Packs
+
+        # email = Faker("email")
+        # hashed_password = hash_password("password123")
+        # email_verified = True
+        # mfa_secret = ""
+        # is_active = True
+        # is_superuser = False
+        # id = factory.Sequence(lambda n: n)
+        # name = factory.Sequence(lambda n: u'User %d' % n)
+        name = Faker("first_name")
+        description = Faker("sentence", nb_words=4)
+        keywords = shared_packs_name
+        version = "0.1.0"
+        python_versions = "3"
+        author = "Jarvis"
+        email = Faker("email")
+        contributors = "bossjones"
+        files = "./tests/fixtures/simple/packs/{}".format(shared_packs_name)
+        path = "./tests/fixtures/simple/packs/{}".format(shared_packs_name)
+        ref = shared_packs_name
+
+    print("try it")
+    pack_random = PacksFactory()
 
 #     # Create - packs
 #     pack_linux = Packs(

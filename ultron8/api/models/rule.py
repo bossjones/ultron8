@@ -20,15 +20,24 @@ class RuleTypeDB(BaseModel):
     enabled: bool
     parameters: dict = {}
 
+    class Config:
+        orm_mode = True
+
 
 class RuleTypeSpecDB(BaseModel):
     ref: str
     parameters: dict = {}
 
+    class Config:
+        orm_mode = True
+
 
 class ActionExecutionSpecDB(BaseModel):
     ref: str
     parameters: dict = {}
+
+    class Config:
+        orm_mode = True
 
 
 class RuleBase(BaseModel):
@@ -52,6 +61,9 @@ class RuleBase(BaseModel):
     enabled: bool = True
     trigger: dict = {}
     action: dict = {}
+
+    class Config:
+        orm_mode = True
 
 
 ## SOURCE: https://docs.stackstorm.com/rules.html

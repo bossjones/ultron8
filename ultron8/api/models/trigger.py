@@ -7,9 +7,12 @@ from typing import Sequence
 from typing import Set
 from typing import Tuple
 from typing import Union
+from typing import Any
 
 from pydantic import BaseModel
 from pydantic import Schema
+
+from pydantic import Json
 
 ######################################################################
 # trigger_tags - START
@@ -20,6 +23,9 @@ class TriggerTagsBase(BaseModel):
     trigger_type_id: Optional[int] = None
     tag: Optional[str] = None
     trigger_name: Optional[str] = None
+
+    class Config:
+        orm_mode = True
 
 
 class TriggerTagsBaseInDB(TriggerTagsBase):
@@ -52,8 +58,11 @@ class TriggerTypeBase(BaseModel):
     ref: Optional[str] = None
     packs_name: Optional[str] = None
     description: Optional[str] = None
-    parameters_schema: Optional[dict] = {}
-    payload_schema: Optional[dict] = {}
+    parameters_schema: Optional[Any] = None
+    payload_schema: Optional[Any] = None
+
+    class Config:
+        orm_mode = True
 
 
 class TriggerTypeBaseInDB(TriggerTypeBase):
@@ -72,8 +81,8 @@ class TriggerTypeBaseInDB(TriggerTypeBase):
     ref: Optional[str] = None
     name: str
     packs_name: str
-    parameters_schema: Optional[dict] = {}
-    payload_schema: Optional[dict] = {}
+    parameters_schema: Optional[Any] = None
+    payload_schema: Optional[Any] = None
     metadata_file: Optional[str] = None
 
 
@@ -85,8 +94,13 @@ class TriggerTypeInDBModel(BaseModel):
     ref: Optional[str] = None
     name: str
     packs_name: str
-    parameters_schema: Optional[dict] = {}
-    payload_schema: Optional[dict] = {}
+    # SOURCE: https://github.com/tiangolo/fastapi/issues/211#issuecomment-491506412
+    # @ebreton Pydantic's Json type expects a str containing valid JSON. Not a JSON-serializable-object.
+    # If you know that the JSON value would be a dict, you could declare a dict there. If you knew it was a list you could declare that.
+    # In this case, as we don't know the final value, and any valid JSON data would be accepted, you can use Any.
+    # Here's a single file working example (just tested it with SQLite, that now also supports JSON columns):
+    parameters_schema: Optional[Any] = None
+    payload_schema: Optional[Any] = None
     metadata_file: Optional[str] = None
 
     class Config:
@@ -98,8 +112,8 @@ class TriggerTypeCreate(TriggerTypeBaseInDB):
     uid: str = None
     name: str
     packs_name: str
-    parameters_schema: Optional[dict] = {}
-    payload_schema: Optional[dict] = {}
+    parameters_schema: Optional[Any] = None
+    payload_schema: Optional[Any] = None
     metadata_file: Optional[str] = None
 
 
@@ -133,6 +147,9 @@ class TriggerBaseDB(BaseModel):
     type: Optional[str] = None
     parameters: Optional[dict] = {}
     ref_count: Optional[int] = 0
+
+    class Config:
+        orm_mode = True
 
 
 class TriggerBaseInDB(TriggerBaseDB):
@@ -177,6 +194,9 @@ class TriggerInstanceBaseDB(BaseModel):
     payload: Optional[dict] = {}
     occurrence_time: datetime = None
     status: Optional[str] = None
+
+    class Config:
+        orm_mode = True
 
 
 class TriggerInstanceBaseInDB(TriggerInstanceBaseDB):

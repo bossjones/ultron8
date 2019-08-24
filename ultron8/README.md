@@ -47,3 +47,21 @@ As part of the entity classes, a repo class is a helper class that allows for ea
 ### DB
 
 The DB directory contains database models, migrations, factories, queries, and db instances (utility methods).
+
+
+
+### Debugging info
+
+```
+# NOTE: There is an error while doing a query on a declarative base model where you add a column that evaluates to a `JSON` value.
+# import pdb;pdb.set_trace()
+
+# FIXME: Errors are coming from here somewhere
+# {'values': {'id': None, 'class_name': 'FileWatchSensor', 'ref': None, 'uid': None, 'artifact_uri': None, 'poll_interval': None, 'enabled': True, 'entry_point': 'file_watch_sensor.py', 'description': 'Sensor which monitors files for new lines', 'trigger_types': [{'name': 'ultron8.elqcogmwpqkurswfftynaxmdkposmmpe', 'packs_name': 'yzcqwlysdciotypgyyngpunlfemknfcw', 'parameters_schema': {'additionalProperties': False, 'properties': {'url': {'type': 'string', 'required': True}}, 'type': 'object'}, 'payload_schema': {'type': 'object'}, 'id': 50, 'uid': 'trigger_type:yzcqwlysdciotypgyyngpunlfemknfcw:ultron8.elqcogmwpqkurswfftynaxmdkposmmpe', 'ref': 'yzcqwlysdciotypgyyngpunlfemknfcw.ultron8.elqcogmwpqkurswfftynaxmdkposmmpe', 'metadata_file': './tests/fixtures/simple/packs/elqcogmwpqkurswfftynaxmdkposmmpe'}, {'name': 'ultron8.wpixtxghfvzaqxxsudukordacamvqcyf', 'packs_name': 'yzcqwlysdciotypgyyngpunlfemknfcw', 'parameters_schema': {'additionalProperties': False, 'properties': {'url': {'type': 'string', 'required': True}}, 'type': 'object'}, 'payload_schema': {'type': 'object'}, 'id': 51, 'uid': 'trigger_type:yzcqwlysdciotypgyyngpunlfemknfcw:ultron8.wpixtxghfvzaqxxsudukordacamvqcyf', 'ref': 'yzcqwlysdciotypgyyngpunlfemknfcw.ultron8.wpixtxghfvzaqxxsudukordacamvqcyf', 'metadata_file': './tests/fixtures/simple/packs/wpixtxghfvzaqxxsudukordacamvqcyf'}, {'name': 'ultron8.ulorbvxxscwbmwwhnwipjktxgejljkyw', 'packs_name': 'yzcqwlysdciotypgyyngpunlfemknfcw', 'parameters_schema': {'additionalProperties': False, 'properties': {'url': {'type': 'string', 'required': True}}, 'type': 'object'}, 'payload_schema': {'type': 'object'}, 'id': 52, 'uid': 'trigger_type:yzcqwlysdciotypgyyngpunlfemknfcw:ultron8.ulorbvxxscwbmwwhnwipjktxgejljkyw', 'ref': 'yzcqwlysdciotypgyyngpunlfemknfcw.ultron8.ulorbvxxscwbmwwhnwipjktxgejljkyw', 'metadata_file': './tests/fixtures/simple/packs/ulorbvxxscwbmwwhnwipjktxgejljkyw'}], 'created_at': None, 'updated_at': None, 'packs_id': 23}, 'args': (), 'packs_name': 'yzcqwlysdciotypgyyngpunlfemknfcw', 'self': Sensor<class_name=FileWatchSensor,ref=None,uid=None,artifact_uri=None,poll_interval=None,enabled=True,entry_point=file_watch_sensor.py>, '__class__': <class 'ultron8.api.db_models.sensors.Sensors'>}
+```
+
+
+# TODO
+
+- [ ] Add a service layer, this will handle business logic, manipulations and everything in between. See: https://stackoverflow.com/questions/5702391/mvcs-model-view-controller-service
+- [ ] Repository pattern https://medium.com/aeturnuminc/repository-pattern-with-dependency-injection-mvc-ef-code-first-91344413ba1c

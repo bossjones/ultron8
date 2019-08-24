@@ -108,9 +108,9 @@ pandas
 # factory_boy is a fixtures replacement based on thoughtbot's factory_bot.
 # As a fixtures replacement tool, it aims to replace static, hard to maintain fixtures with easy-to-use factories for complex object.
 # https://pypi.org/project/factory-boy/
-# factory-boy
+factory-boy
 
 
 # https://github.com/joke2k/faker
 # Faker is a Python package that generates fake data for you. http://faker.rtfd.org
-# faker
+Faker
