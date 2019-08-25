@@ -145,6 +145,10 @@ class PacksUpdate(PacksBaseInDB):
 # class PacksInDB(PacksBaseInDB):
 
 
+class PacksData(PacksCreate):
+    pass
+
+
 # smoke-tests
 # if "__main__" == __name__:
 # external_data = {
