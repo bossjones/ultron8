@@ -1,10 +1,11 @@
 from typing import Optional
 
 from pydantic import BaseModel
+from ultron8.api.models.base import BaseDataModel
 
 
 # Shared properties
-class UserBase(BaseModel):
+class UserBase(BaseDataModel):
     email: Optional[str] = None
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False

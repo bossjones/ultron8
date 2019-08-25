@@ -1,10 +1,11 @@
 from pydantic import BaseModel
+from ultron8.api.models.base import BaseDataModel
 
 
-class Token(BaseModel):
+class Token(BaseDataModel):
     access_token: str
     token_type: str
 
 
-class TokenPayload(BaseModel):
+class TokenPayload(BaseDataModel):
     user_id: int = None

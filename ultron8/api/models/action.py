@@ -14,6 +14,8 @@ from pydantic import BaseModel
 from pydantic import EmailStr
 from pydantic import Schema
 
+from ultron8.api.models.base import BaseDataModel
+
 # from ultron8.api.models.packs import
 
 log = logging.getLogger(__name__)
@@ -38,7 +40,7 @@ class RunnerTypeModel(str, Enum):
     inquirer = "inquirer"
 
 
-class ActionBase(BaseModel):
+class ActionBase(BaseDataModel):
     # Pack reference. It can only contain letters, digits and underscores.
     name: Optional[str] = None
     ref: Optional[str] = None

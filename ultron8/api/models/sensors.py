@@ -17,11 +17,12 @@ from pydantic import Schema
 
 from ultron8.api.models.trigger import TriggerTypeInDBModel
 from ultron8.api.db_models.trigger import TriggerTypeDB
+from ultron8.api.models.base import BaseDataModel
 
 # The ellipsis ... just means "Required" same as annotation only declarations above.
 
 
-class SensorsBase(BaseModel):
+class SensorsBase(BaseDataModel):
     """Sensor Data Model.
 
     name: "SampleSensor"

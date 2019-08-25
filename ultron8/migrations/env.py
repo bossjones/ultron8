@@ -25,6 +25,7 @@ log.setup_logging()
 
 # NOTE: If debug logging is enabled, then turn on debug logging for everything in app
 if settings.LOG_LEVEL == logging.DEBUG:
+
     # Enable connection pool logging
     # SOURCE: https://docs.sqlalchemy.org/en/13/core/engines.html#dbengine-logging
     SQLALCHEMY_POOL_LOGGER = logging.getLogger("sqlalchemy.pool")
@@ -35,6 +36,15 @@ if settings.LOG_LEVEL == logging.DEBUG:
     SQLALCHEMY_ENGINE_LOGGER.setLevel(logging.DEBUG)
     SQLALCHEMY_ORM_LOGGER.setLevel(logging.DEBUG)
     SQLALCHEMY_DIALECTS_LOGGER.setLevel(logging.DEBUG)
+
+if settings.DEBUG_REQUESTS:
+    # import requests.packages.urllib3.connectionpool as http_client
+    # http_client.HTTPConnection.debuglevel = 1
+    REQUESTS_LOGGER = logging.getLogger("requests")
+    REQUESTS_LOGGER.setLevel(logging.DEBUG)
+    REQUESTS_LOGGER.propagate = True
+    URLLIB3_LOGGER = logging.getLogger("urllib3")
+    URLLIB3_LOGGER.setLevel(logging.DEBUG)
 
 LOGGER = logging.getLogger(__name__)
 

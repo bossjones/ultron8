@@ -102,10 +102,26 @@ class TriggerTypeDB(UIDFieldMixin, Base):
     def __init__(self, *args, packs_name=None, **values):
         super(TriggerTypeDB, self).__init__(*args, **values)
         self.packs_name = packs_name
-        # self.ref = self.get_reference().ref
-        self.ref = "{}.{}".format(self.packs_name, self.name)
+        self.ref = self.get_reference().ref
+        # self.ref = "{}.{}".format(self.packs_name, self.name)
         # pylint: disable=no-member
         self.uid = self.get_uid()
+
+    # @property
+    # def args(self):
+    #     return json.loads(self.arguments)
+
+    # @args.setter
+    # def args(self, value):
+    #     self.arguments = json.dumps(value)
+
+    # @property
+    # def kwargs(self):
+    #     return json.loads(self.keyword_arguments)
+
+    # @kwargs.setter
+    # def kwargs(self, kwargs_):
+    #     self.keyword_arguments = json.dumps(kwargs_)
 
     # def get_reference(self):
     #     """

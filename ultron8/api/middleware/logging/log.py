@@ -41,6 +41,13 @@ def setup_logging(level=None, outputs=None, fmt=FMT_SIMPLE):
     daiquiri.setup(level=level, outputs=outputs)
 
 
+def get_logger_modules():
+    import logging
+
+    for key in logging.Logger.manager.loggerDict:
+        print(key)
+
+
 # datefmt='%Y-%m-%d %H:%M:%S'
 
 logger = daiquiri.getLogger(__name__)

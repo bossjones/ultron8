@@ -1,8 +1,9 @@
 from pydantic import BaseModel
+from ultron8.api.models.base import BaseDataModel
 
 
 # Shared properties
-class ItemBase(BaseModel):
+class ItemBase(BaseDataModel):
     title: str = None
     description: str = None
 

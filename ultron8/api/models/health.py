@@ -8,7 +8,7 @@ from pydantic import BaseModel
 logger = logging.getLogger(__name__)
 
 
-class HealthOut(BaseModel):
+class HealthOut(BaseDataModel):
     """
     Schema for Health.
     """
