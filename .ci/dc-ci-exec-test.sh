@@ -30,7 +30,7 @@ _NUM_STOPPED_CONTAINER=$(docker ps -a| grep -v PORTS | grep Exited | awk '{print
 header " [info] _NUM_STOPPED_CONTAINER=${_NUM_STOPPED_CONTAINER}"
 
 if [[ "${_NUM_STOPPED_CONTAINER}" -gt "0" ]]; then
-    _CONTAINER_ID=$(docker ps -a| grep -v PORTS | awk '{print $1}')
+    _CONTAINER_ID=$(docker ps -a| grep -v PORTS | awk '{print $1}| head -1')
     docker logs ${_CONTAINER_ID}
 fi
 

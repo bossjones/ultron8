@@ -1314,3 +1314,7 @@ lintcheck: ## lintcheck
 .PHONY: get-token
 get-token: ## get token using httpie
 	http -f POST http://localhost:11267/v1/login/access-token username=admin@ultron8.com password=password
+
+.PHONY: open-openapi
+open-openapi: ## Open browser with openapi
+	./script/open-browser.py ${SERVER_HOST}/docs
