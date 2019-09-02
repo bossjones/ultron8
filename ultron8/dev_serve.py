@@ -41,6 +41,7 @@ from ultron8.api.api_v1.endpoints import login
 from ultron8.api.api_v1.endpoints import token
 from ultron8.api.api_v1.endpoints import users
 from ultron8.api.api_v1.endpoints import version
+from ultron8.api.api_v1.endpoints import loggers as log_endpoint
 from ultron8.api.db.u_sqlite import close_database_connection_pool
 from ultron8.api.db.u_sqlite import open_database_connection_pool
 from ultron8.api.db.u_sqlite.session import Session
@@ -118,6 +119,9 @@ app.include_router(version.router, tags=["version"], prefix=f"{settings.API_V1_S
 app.include_router(login.router, tags=["login"], prefix=f"{settings.API_V1_STR}")
 app.include_router(users.router, tags=["users"], prefix=f"{settings.API_V1_STR}/users")
 app.include_router(items.router, prefix=f"{settings.API_V1_STR}/items", tags=["items"])
+app.include_router(
+    log_endpoint.router, tags=["loggers"], prefix=f"{settings.API_V1_STR}/loggers"
+)
 
 
 @app.middleware("http")

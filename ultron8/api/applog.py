@@ -30,3 +30,8 @@ def setup_logging(logging_config, default_level=logging.INFO):
 # from applog.utils import read_logging_config, setup_logging
 # logconfig_dict = read_logging_config("applog/logging.yml")
 # setup_logging(logconfig_dict)
+
+
+class HealthCheckFilter(logging.Filter):
+    def filter(self, record):
+        return record.getMessage().find("/healthcheck") == -1
