@@ -342,3 +342,4 @@ test.db
 .vscode
 !.vscode/launch.json
 monkeytype.sqlite3
+sensor_test.db

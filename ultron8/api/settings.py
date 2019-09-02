@@ -105,6 +105,7 @@ FIRST_SUPERUSER_PASSWORD = os.getenv("FIRST_SUPERUSER_PASSWORD", "password")
 _USER_LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 LOG_LEVEL = LOG_LEVEL_MAP[_USER_LOG_LEVEL]
 MASK_SECRETS = getenv_boolean("MASK_SECRETS", default_value=True)
+DEBUG_REQUESTS = getenv_boolean("DEBUG_REQUESTS", default_value=False)
 
 
 class SettingsConfig:
@@ -138,6 +139,7 @@ class SettingsConfig:
     FIRST_SUPERUSER_PASSWORD = FIRST_SUPERUSER_PASSWORD
     LOG_LEVEL = LOG_LEVEL
     MASK_SECRETS = MASK_SECRETS
+    DEBUG_REQUESTS = DEBUG_REQUESTS
 
 
 if __name__ == "__main__":

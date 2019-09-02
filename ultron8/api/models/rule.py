@@ -14,9 +14,10 @@ from typing import Union
 from pydantic import BaseModel
 from pydantic import EmailStr
 from pydantic import Schema
+from ultron8.api.models.base import BaseDataModel
 
 
-class RuleTypeDB(BaseModel):
+class RuleTypeDB(BaseDataModel):
     enabled: bool
     parameters: dict = {}
 
@@ -24,7 +25,7 @@ class RuleTypeDB(BaseModel):
         orm_mode = True
 
 
-class RuleTypeSpecDB(BaseModel):
+class RuleTypeSpecDB(BaseDataModel):
     ref: str
     parameters: dict = {}
 
@@ -32,7 +33,7 @@ class RuleTypeSpecDB(BaseModel):
         orm_mode = True
 
 
-class ActionExecutionSpecDB(BaseModel):
+class ActionExecutionSpecDB(BaseDataModel):
     ref: str
     parameters: dict = {}
 
@@ -40,7 +41,7 @@ class ActionExecutionSpecDB(BaseModel):
         orm_mode = True
 
 
-class RuleBase(BaseModel):
+class RuleBase(BaseDataModel):
     """Rule Data Model.
     =======================
     name: on_hello_event1

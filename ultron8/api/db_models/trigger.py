@@ -107,6 +107,22 @@ class TriggerTypeDB(UIDFieldMixin, Base):
         # pylint: disable=no-member
         self.uid = self.get_uid()
 
+    # @property
+    # def args(self):
+    #     return json.loads(self.arguments)
+
+    # @args.setter
+    # def args(self, value):
+    #     self.arguments = json.dumps(value)
+
+    # @property
+    # def kwargs(self):
+    #     return json.loads(self.keyword_arguments)
+
+    # @kwargs.setter
+    # def kwargs(self, kwargs_):
+    #     self.keyword_arguments = json.dumps(kwargs_)
+
     # def get_reference(self):
     #     """
     #     Retrieve referene object for this model.

@@ -7,6 +7,7 @@ from typing import Optional
 from pydantic import BaseModel
 from pydantic import EmailStr
 from pydantic import Schema
+from ultron8.api.models.base import BaseDataModel
 
 log = logging.getLogger(__name__)
 
@@ -41,7 +42,7 @@ log = logging.getLogger(__name__)
 #
 
 # SOURCE: https://docs.stackstorm.com/reference/packs.html
-class PacksBase(BaseModel):
+class PacksBase(BaseDataModel):
     """[summary]
 
     === Schema example:
@@ -142,6 +143,10 @@ class PacksUpdate(PacksBaseInDB):
 
 # DB representation of Pack, with correctly scoped types etc
 # class PacksInDB(PacksBaseInDB):
+
+
+class PacksData(PacksCreate):
+    pass
 
 
 # smoke-tests

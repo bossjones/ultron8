@@ -208,3 +208,7 @@ def remove(db_session: Session, *, trigger_type_id: int) -> TriggerTypeDB:
     db_session.delete(trigger)
     db_session.commit()
     return trigger
+
+
+# https://github.com/StackStorm/st2/blob/9edc3fb6da7f12515f6011960f1b72538e53368e/st2common/st2common/models/utils/sensor_type_utils.py
+# https://github.com/StackStorm/st2/blob/9edc3fb6da7f12515f6011960f1b72538e53368e/st2common/st2common/services/triggers.py

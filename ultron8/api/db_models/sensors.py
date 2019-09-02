@@ -97,8 +97,8 @@ class Sensors(UIDFieldMixin, Base):
     class_name = Column("class_name", String(255))
     ref = Column("ref", String(255))
     uid = Column("uid", String(255), nullable=True)
-    artifact_uri = Column("artifact_uri", String(255))
-    poll_interval = Column("poll_interval", Integer)
+    artifact_uri = Column("artifact_uri", String(255), nullable=True)
+    poll_interval = Column("poll_interval", Integer, nullable=True)
     enabled = Column("enabled", Boolean)
     entry_point = Column("entry_point", String(255))
     description = Column("description", String(255))
@@ -176,6 +176,22 @@ class Sensors(UIDFieldMixin, Base):
         self.created_at = str(datetime.datetime.utcnow())
         self.updated_at = str(datetime.datetime.utcnow())
         # self.triggers_types_packs_id = self.packs_id
+
+    # @property
+    # def args(self):
+    #     return json.loads(self.arguments)
+
+    # @args.setter
+    # def args(self, value):
+    #     self.arguments = json.dumps(value)
+
+    # @property
+    # def kwargs(self):
+    #     return json.loads(self.keyword_arguments)
+
+    # @kwargs.setter
+    # def kwargs(self, kwargs_):
+    #     self.keyword_arguments = json.dumps(kwargs_)
 
     # # FIXME: Get this working 8/19/2019
     # def add_trigger_types(self, packs_id, data):

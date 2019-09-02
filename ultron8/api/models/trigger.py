@@ -13,13 +13,14 @@ from pydantic import BaseModel
 from pydantic import Schema
 
 from pydantic import Json
+from ultron8.api.models.base import BaseDataModel
 
 ######################################################################
 # trigger_tags - START
 ######################################################################
 
 
-class TriggerTagsBase(BaseModel):
+class TriggerTagsBase(BaseDataModel):
     trigger_type_id: Optional[int] = None
     tag: Optional[str] = None
     trigger_name: Optional[str] = None
@@ -52,7 +53,7 @@ class TriggerTagsUpdate(TriggerTagsBaseInDB):
 ######################################################################
 # trigger_types - START
 ######################################################################
-class TriggerTypeBase(BaseModel):
+class TriggerTypeBase(BaseDataModel):
     uid: Optional[str] = None
     name: Optional[str] = None
     ref: Optional[str] = None
@@ -86,7 +87,7 @@ class TriggerTypeBaseInDB(TriggerTypeBase):
     metadata_file: Optional[str] = None
 
 
-class TriggerTypeInDBModel(BaseModel):
+class TriggerTypeInDBModel(BaseDataModel):
     """ CONVERSION: Model used for converting SQLAlchemy Orm objects to pydantic Model. """
 
     id: int = None
@@ -130,7 +131,7 @@ class TriggerTypeUpdate(TriggerTypeBaseInDB):
 ######################################################################
 
 
-class TriggerBaseDB(BaseModel):
+class TriggerBaseDB(BaseDataModel):
     """
     Attribute:
         name - Trigger name.
@@ -182,7 +183,7 @@ class TriggerUpdate(TriggerBaseInDB):
 ######################################################################
 # trigger_events - START
 ######################################################################
-class TriggerInstanceBaseDB(BaseModel):
+class TriggerInstanceBaseDB(BaseDataModel):
     """An instance or occurrence of a type of Trigger.
     Attribute:
         trigger: Reference to the Trigger object.

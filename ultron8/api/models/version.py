@@ -15,11 +15,12 @@ from typing import Union
 from pydantic import BaseModel
 from pydantic import EmailStr
 from pydantic import Schema
+from ultron8.api.models.base import BaseDataModel
 
 logger = logging.getLogger(__name__)
 
 
-class VersionOut(BaseModel):
+class VersionOut(BaseDataModel):
     """
     Schema for Version.
     """

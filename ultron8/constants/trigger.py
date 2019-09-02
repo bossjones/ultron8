@@ -30,7 +30,7 @@ __all__ = [
 # Action resource triggers
 ACTION_SENSOR_TRIGGER = {
     "name": "ultron8.generic.actiontrigger",
-    "pack": SYSTEM_PACK_NAME,
+    "packs_name": SYSTEM_PACK_NAME,
     "description": "Trigger encapsulating the completion of an action execution.",
     "payload_schema": {
         "type": "object",
@@ -49,7 +49,7 @@ ACTION_SENSOR_TRIGGER = {
 
 ACTION_FILE_WRITTEN_TRIGGER = {
     "name": "ultron8.action.file_writen",
-    "pack": SYSTEM_PACK_NAME,
+    "packs_name": SYSTEM_PACK_NAME,
     "description": "Trigger encapsulating action file being written on disk.",
     "payload_schema": {
         "type": "object",
@@ -59,7 +59,7 @@ ACTION_FILE_WRITTEN_TRIGGER = {
 
 NOTIFY_TRIGGER = {
     "name": "ultron8.generic.notifytrigger",
-    "pack": SYSTEM_PACK_NAME,
+    "packs_name": SYSTEM_PACK_NAME,
     "description": "Notification trigger.",
     "payload_schema": {
         "type": "object",
@@ -80,7 +80,7 @@ NOTIFY_TRIGGER = {
 
 INQUIRY_TRIGGER = {
     "name": "ultron8.generic.inquiry",
-    "pack": SYSTEM_PACK_NAME,
+    "packs_name": SYSTEM_PACK_NAME,
     "description": 'Trigger indicating a new "inquiry" has entered "pending" status',
     "payload_schema": {
         "type": "object",
@@ -104,14 +104,14 @@ INQUIRY_TRIGGER = {
 # Sensor spawn/exit triggers.
 SENSOR_SPAWN_TRIGGER = {
     "name": "ultron8.sensor.process_spawn",
-    "pack": SYSTEM_PACK_NAME,
+    "packs_name": SYSTEM_PACK_NAME,
     "description": "Trigger indicating sensor process is started up.",
     "payload_schema": {"type": "object", "properties": {"object": {}}},
 }
 
 SENSOR_EXIT_TRIGGER = {
     "name": "ultron8.sensor.process_exit",
-    "pack": SYSTEM_PACK_NAME,
+    "packs_name": SYSTEM_PACK_NAME,
     "description": "Trigger indicating sensor process is stopped.",
     "payload_schema": {"type": "object", "properties": {"object": {}}},
 }
@@ -119,21 +119,21 @@ SENSOR_EXIT_TRIGGER = {
 # KeyValuePair resource triggers
 KEY_VALUE_PAIR_CREATE_TRIGGER = {
     "name": "ultron8.key_value_pair.create",
-    "pack": SYSTEM_PACK_NAME,
+    "packs_name": SYSTEM_PACK_NAME,
     "description": "Trigger encapsulating datastore item creation.",
     "payload_schema": {"type": "object", "properties": {"object": {}}},
 }
 
 KEY_VALUE_PAIR_UPDATE_TRIGGER = {
     "name": "ultron8.key_value_pair.update",
-    "pack": SYSTEM_PACK_NAME,
+    "packs_name": SYSTEM_PACK_NAME,
     "description": "Trigger encapsulating datastore set action.",
     "payload_schema": {"type": "object", "properties": {"object": {}}},
 }
 
 KEY_VALUE_PAIR_VALUE_CHANGE_TRIGGER = {
     "name": "ultron8.key_value_pair.value_change",
-    "pack": SYSTEM_PACK_NAME,
+    "packs_name": SYSTEM_PACK_NAME,
     "description": "Trigger encapsulating a change of datastore item value.",
     "payload_schema": {
         "type": "object",
@@ -143,7 +143,7 @@ KEY_VALUE_PAIR_VALUE_CHANGE_TRIGGER = {
 
 KEY_VALUE_PAIR_DELETE_TRIGGER = {
     "name": "ultron8.key_value_pair.delete",
-    "pack": SYSTEM_PACK_NAME,
+    "packs_name": SYSTEM_PACK_NAME,
     "description": "Trigger encapsulating datastore item deletion.",
     "payload_schema": {"type": "object", "properties": {"object": {}}},
 }
@@ -184,7 +184,7 @@ WEBHOOKS_PAYLOAD_SCHEMA = {
 WEBHOOK_TRIGGER_TYPES = {
     ResourceReference.to_string_reference(SYSTEM_PACK_NAME, "ultron8.webhook"): {
         "name": "ultron8.webhook",
-        "pack": SYSTEM_PACK_NAME,
+        "packs_name": SYSTEM_PACK_NAME,
         "description": (
             "Trigger type for registering webhooks that can consume"
             " arbitrary payload."
@@ -288,14 +288,14 @@ CRON_TIMER_TRIGGER_REF = ResourceReference.to_string_reference(
 TIMER_TRIGGER_TYPES = {
     INTERVAL_TIMER_TRIGGER_REF: {
         "name": "ultron8.IntervalTimer",
-        "pack": SYSTEM_PACK_NAME,
+        "packs_name": SYSTEM_PACK_NAME,
         "description": "Triggers on specified intervals. e.g. every 30s, 1week etc.",
         "payload_schema": TIMER_PAYLOAD_SCHEMA,
         "parameters_schema": INTERVAL_PARAMETERS_SCHEMA,
     },
     DATE_TIMER_TRIGGER_REF: {
         "name": "ultron8.DateTimer",
-        "pack": SYSTEM_PACK_NAME,
+        "packs_name": SYSTEM_PACK_NAME,
         "description": "Triggers exactly once when the current time matches the specified time. "
         "e.g. timezone:UTC date:2014-12-31 23:59:59.",
         "payload_schema": TIMER_PAYLOAD_SCHEMA,
@@ -303,7 +303,7 @@ TIMER_TRIGGER_TYPES = {
     },
     CRON_TIMER_TRIGGER_REF: {
         "name": "ultron8.CronTimer",
-        "pack": SYSTEM_PACK_NAME,
+        "packs_name": SYSTEM_PACK_NAME,
         "description": "Triggers whenever current time matches the specified time constaints like "
         "a UNIX cron scheduler.",
         "payload_schema": TIMER_PAYLOAD_SCHEMA,

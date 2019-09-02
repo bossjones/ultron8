@@ -10,16 +10,17 @@ from typing import Union
 
 from pydantic import BaseModel
 from pydantic import validator
+from ultron8.api.models.base import BaseDataModel
 
 log = logging.getLogger(__name__)
 
 
 # Properties to receive on item creation
-class GuidCreate(BaseModel):
+class GuidCreate(BaseDataModel):
     name: str
 
 
-class GuidIn(BaseModel):
+class GuidIn(BaseDataModel):
     """
     Serializer for creating a record.
 
@@ -44,7 +45,7 @@ class GuidIn(BaseModel):
         return v.replace(tzinfo=timezone.utc)
 
 
-class GuidUpdate(BaseModel):
+class GuidUpdate(BaseDataModel):
     """
     Serializer for updating a record.
 
@@ -55,7 +56,7 @@ class GuidUpdate(BaseModel):
     name: str = None
 
 
-class GuidOut(BaseModel):
+class GuidOut(BaseDataModel):
     """Serialize output, that'll be sent to the end user properly."""
 
     id: str

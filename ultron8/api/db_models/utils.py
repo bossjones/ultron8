@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import six
+import json
 
 # SOURCE: https://docs.sqlalchemy.org/en/13/_modules/examples/vertical/dictlike.html
 
@@ -43,3 +44,29 @@ def key_not_string(d):
             isinstance(v, dict) and key_not_string(v)
         ):
             return True
+
+
+# class AlchemyJsonEncoder(json.JSONEncoder):
+#     """
+#     Class for serializing SQLAlchemy class. It will serialize SQLAlchemy object to a json object.
+#     """
+#     def default(self, obj):
+#         if isinstance(obj.__class__, DeclarativeMeta):
+#             # an SQLAlchemy class
+#             fields = {}
+#             for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata']:
+#                 data = obj.__getattribute__(field)
+#                 try:
+#                     # convert timestamp to unix timestamp to avoid type error Exception
+#                     if isinstance(data, datetime):
+#                         data = time.mktime(data.timetuple())
+#                     # this will fail on non-encodable values, like other classes
+#                     json.dumps(data)
+#                     fields[field] = data
+#                 except TypeError:
+#                     logger.info("Unsupported data type when dumping to json!")
+#                     fields[field] = None
+
+#             return fields
+
+#         return json.JSONEncoder.default(self, obj)

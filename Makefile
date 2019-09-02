@@ -1306,3 +1306,7 @@ stubgen:
 .PHONY: travis-runner
 travis-runner: ## mock run of entire travis run
 	.ci/travis_runner.sh
+
+.PHONY: get-token
+get-token: ## get token using httpie
+	http -f POST http://localhost:11267/v1/login/access-token username=admin@ultron8.com password=password
