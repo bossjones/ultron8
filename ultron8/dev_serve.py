@@ -44,13 +44,16 @@ from ultron8.api.api_v1.endpoints import version
 from ultron8.api.db.u_sqlite import close_database_connection_pool
 from ultron8.api.db.u_sqlite import open_database_connection_pool
 from ultron8.api.db.u_sqlite.session import Session
-from ultron8.api.middleware.logging import log
 
-# from ultron8.api.routers import items, users, home, version, guid, alive
+# from ultron8.api.middleware.logging import log
+# # TODO: As soon as we merge web.py into the MCP, we will want to nuke this setup_logging line!!!
+# log.setup_logging()
 
+from ultron8.api.applog import read_logging_config, setup_logging
 
-# TODO: As soon as we merge web.py into the MCP, we will want to nuke this setup_logging line!!!
-log.setup_logging()
+logconfig_dict = read_logging_config("logging.yml")
+
+setup_logging(logconfig_dict)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -128,7 +131,6 @@ async def db_session_middleware(request: Request, call_next):
 if __name__ == "__main__":
     import os
 
-    # HOST = os.environ.get("HOST", "localhost")
     HOST = "localhost"
     PORT = int(os.environ.get("PORT", 11267))
     print(f" [HOST] {HOST}")
