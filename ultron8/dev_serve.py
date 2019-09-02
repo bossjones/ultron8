@@ -44,15 +44,43 @@ from ultron8.api.middleware.logging import log
 
 # from ultron8.api.routers import items, users, home, version, guid, alive
 
-logger = logging.getLogger(__name__)
 
 # TODO: As soon as we merge web.py into the MCP, we will want to nuke this setup_logging line!!!
 log.setup_logging()
 
+LOGGER = logging.getLogger(__name__)
+
+LOGGER.setLevel(settings.LOG_LEVEL)
+
+# # NOTE: If debug logging is enabled, then turn on debug logging for everything in app
+# if settings.LOG_LEVEL == logging.DEBUG:
+
+#     # Enable connection pool logging
+#     # SOURCE: https://docs.sqlalchemy.org/en/13/core/engines.html#dbengine-logging
+#     SQLALCHEMY_POOL_LOGGER = logging.getLogger("sqlalchemy.pool")
+#     SQLALCHEMY_ENGINE_LOGGER = logging.getLogger("sqlalchemy.engine")
+#     SQLALCHEMY_ORM_LOGGER = logging.getLogger("sqlalchemy.orm")
+#     SQLALCHEMY_DIALECTS_LOGGER = logging.getLogger("sqlalchemy.dialects")
+#     UVICORN_LOGGER = logging.getLogger("uvicorn")
+#     SQLALCHEMY_POOL_LOGGER.setLevel(logging.DEBUG)
+#     SQLALCHEMY_ENGINE_LOGGER.setLevel(logging.DEBUG)
+#     SQLALCHEMY_ORM_LOGGER.setLevel(logging.DEBUG)
+#     SQLALCHEMY_DIALECTS_LOGGER.setLevel(logging.DEBUG)
+#     UVICORN_LOGGER.setLevel(logging.DEBUG)
+
+# if settings.DEBUG_REQUESTS:
+#     # import requests.packages.urllib3.connectionpool as http_client
+#     # http_client.HTTPConnection.debuglevel = 1
+#     REQUESTS_LOGGER = logging.getLogger("requests")
+#     REQUESTS_LOGGER.setLevel(logging.DEBUG)
+#     REQUESTS_LOGGER.propagate = True
+#     URLLIB3_LOGGER = logging.getLogger("urllib3")
+#     URLLIB3_LOGGER.setLevel(logging.DEBUG)
+
 # SOURCE: https://github.com/nwcell/guid_tracker/blob/aef948336ba268aa06df7cc9e7e6768b08d0f363/src/guid/main.py
 app = FastAPI(title="Ultron-8 Web Server")
 
-logger.info(f" [DEBUG] {settings.DEBUG}")
+LOGGER.info(f" [DEBUG] {settings.DEBUG}")
 
 app.debug = settings.DEBUG
 app.mount(
@@ -101,4 +129,6 @@ if __name__ == "__main__":
     PORT = int(os.environ.get("PORT", 11267))
     print(f" [HOST] {HOST}")
     print(f" [PORT] {PORT}")
-    uvicorn.run(app, host=HOST, port=PORT)
+    uvicorn.run(
+        app, host=HOST, port=PORT, logger=LOGGER, log_level=settings._USER_LOG_LEVEL
+    )
