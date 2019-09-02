@@ -2,7 +2,7 @@
 import logging
 from fastapi import APIRouter
 from fastapi import HTTPException
-from ultron8.api.models.log import LoggerModel, LoggerPatch
+from ultron8.api.models.loggers import LoggerModel, LoggerPatch
 
 LOG_LEVELS = {
     "critical": logging.CRITICAL,
