@@ -85,6 +85,7 @@ def test_create_sensors() -> None:
     sensors_enabled = True
     sensors_entry_point = "file_watch_sensor.py"
     sensors_description = "Sensor which monitors files for new lines"
+    # sensors_poll_interval = None
     # sensors_trigger_types = []
     # sensors_trigger_types.extend(trigger_type_list)
     # sensors_trigger_types.append(trigger_type1)
