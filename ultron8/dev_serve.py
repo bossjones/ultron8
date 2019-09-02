@@ -2,6 +2,10 @@
 
 import sys
 
+# FIXME: Don't forget to comment this out
+# import hunter
+# hunter.trace(module='gi', action=hunter.CallPrinter)
+
 # import better_exceptions; better_exceptions.hook()
 
 # from IPython.core.debugger import Tracer  # noqa

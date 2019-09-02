@@ -68,3 +68,11 @@ vulture
 
 # FreezeGun is a library that allows your Python tests to travel through time by mocking the datetime module.
 freezegun
+
+# Hunter is a flexible code tracing toolkit, not for measuring coverage, but for debugging, logging, inspection and other nefarious purposes. It has a simple Python API, a convenient terminal API and a CLI tool to attach to processes.
+# SOURCE: https://pypi.org/project/hunter/
+hunter
+
+# a utility for debugging stuck python programs
+# SOURCE: https://github.com/alonho/pystuck
+pystuck

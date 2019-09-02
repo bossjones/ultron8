@@ -116,3 +116,12 @@ def dump_all(obj):
     d = dump_dict(obj)
     print("[run]--------------[pp.pprint(vars(obj))]--------------")
     v = dump_vars(obj)
+
+
+def enable_remote_debugging():
+    try:
+        import pystuck
+
+        pystuck.run_server()
+    except ImportError:
+        print("No socket opened for debugging -> please install pystuck")

@@ -24,6 +24,10 @@
 .. image:: https://img.shields.io/badge/STAR_Me_on_GitHub!--None.svg?style=social
     :target: https://github.com/bossjones/ultron8
 
+.. image:: https://requires.io/github/bossjones/ultron8/requirements.svg?branch=master
+     :target: https://requires.io/github/bossjones/ultron8/requirements/?branch=master
+     :alt: Requirements Status
+
 ------
 
 
