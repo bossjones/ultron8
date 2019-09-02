@@ -332,7 +332,7 @@ tox: ## ** Run tox
 	${BIN_PIP} install tox
 	( \
 		cd ${PROJECT_ROOT_DIR}; \
-		pyenv local 3.6.8 3.7.3; \
+		pyenv local 3.7.4 3.7.3; \
 		${BIN_TOX}; \
 	)
 

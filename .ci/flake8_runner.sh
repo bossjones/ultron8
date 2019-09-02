@@ -18,7 +18,7 @@ echo -e "\n\n"
 
 pushd /home/developer/app
 
-pyenv shell 3.6.8
+pyenv shell 3.7.4
 
 pip install -e .
 

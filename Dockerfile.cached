@@ -4,7 +4,7 @@ FROM bossjones/ultron8-hacking:0.1.0 as base
 ARG CONTAINER_GID=501
 ARG CONTAINER_UID=501
 ARG CONTAINER_USER=developer
-ARG PYENV_VERSION=3.6.8
+ARG PYENV_VERSION=3.7.4
 
 # host ip address
 ARG HOST_IP
@@ -48,7 +48,7 @@ COPY --chown=developer:developer ultron8/__init__.py ultron8/__init__.py
 ARG ENABLE_TOX='False'
 ENV ENABLE_TOX=${ENABLE_TOX}
 RUN if [ $ENABLE_TOX == 'True' ] ; then \
-    tox -e py36 --notest; \
+    tox -e py37 --notest; \
     echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run." \
     ; fi
 
@@ -58,7 +58,7 @@ FROM bossjones/ultron8-hacking:0.1.0 as runtime-image
 ARG CONTAINER_GID=501
 ARG CONTAINER_UID=501
 ARG CONTAINER_USER=developer
-ARG PYENV_VERSION=3.6.8
+ARG PYENV_VERSION=3.7.4
 
 # host ip address
 ARG HOST_IP
@@ -114,7 +114,7 @@ RUN set -x; pyenv global ${PYENV_VERSION} && \
     pyenv rehash && \
     rm -rf /home/${CONTAINER_USER}/.cache
 
-# RUN set -x; tree; tox -e py36 --notest; echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run."
+# RUN set -x; tree; tox -e py37 --notest; echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run."
 
 # ENV PATH="/home/${CONTAINER_USER}/.local/bin:${PATH}"
 

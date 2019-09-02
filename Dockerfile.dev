@@ -4,7 +4,7 @@ FROM bossjones/ultron8-hacking:0.1.0
 ARG CONTAINER_GID=501
 ARG CONTAINER_UID=501
 ARG CONTAINER_USER=developer
-ARG PYENV_VERSION=3.6.8
+ARG PYENV_VERSION=3.7.4
 
 # host ip address
 ARG HOST_IP
@@ -39,6 +39,6 @@ COPY --chown=developer:developer ultron8/__init__.py ultron8/__init__.py
 COPY --chown=developer:developer dev-bashrc.sh .
 RUN "./dev-bashrc.sh"
 
-RUN pyenv shell 3.6.8; pipenv --python 3.6.8 && pipenv install --dev --deploy
+RUN pyenv shell 3.7.4; pipenv --python 3.7.4 && pipenv install --dev --deploy
 
 ENV PATH="/home/${CONTAINER_USER}/.local/bin:${PATH}"

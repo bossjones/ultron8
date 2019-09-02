@@ -76,3 +76,7 @@ hunter
 # a utility for debugging stuck python programs
 # SOURCE: https://github.com/alonho/pystuck
 pystuck
+
+# Template Engine for Docker Images
+# SOURCE: https://github.com/elastic/tedi
+# tedi

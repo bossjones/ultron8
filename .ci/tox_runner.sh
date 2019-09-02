@@ -2,4 +2,4 @@
 
 set -x
 
-pyenv local 3.6.8;tox -e py36,lint,pylint,cov
+pyenv local 3.7.4;tox -e py37,lint,pylint,cov

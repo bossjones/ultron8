@@ -2,10 +2,10 @@
 
 _PYTHON_VERSION=$(python --version)
 
-if [ "$_PYTHON_VERSION" != "Python 3.6.8" ]; then
-    echo "ERROR, Not using the correct version of python, please run 'pyenv shell 3.6.8'"
+if [ "$_PYTHON_VERSION" != "Python 3.7.4" ]; then
+    echo "ERROR, Not using the correct version of python, please run 'pyenv shell 3.7.4'"
     exit 2
 else
-    echo "GOOD, Using Python 3.6.8"
+    echo "GOOD, Using Python 3.7.4"
     exit 0
 fi

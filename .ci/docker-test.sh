@@ -17,7 +17,7 @@ docker run  -i -t \
     --rm \
     --privileged \
     -u ${_UID}:${_GID} \
-    -e "PYENV_VERSION=3.6.8" \
+    -e "PYENV_VERSION=3.7.4" \
     --volume "$(pwd)/:/home/developer/app:rw" \
     --workdir "/home/developer/app" \
     --entrypoint "bash" \

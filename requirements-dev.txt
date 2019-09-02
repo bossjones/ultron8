@@ -26,7 +26,6 @@ freezegun==0.3.12
 hunter==3.0.1
 identify==1.4.7           # via pre-commit
 importlib-metadata==0.20  # via pre-commit
-importlib-resources==1.0.2  # via pre-commit
 ipython-genutils==0.2.0   # via traitlets
 ipython==7.8.0
 isort==4.3.21

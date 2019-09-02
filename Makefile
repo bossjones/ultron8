@@ -687,10 +687,10 @@ docker-version:
 pipenv-init: ## Run `pipenv install --dev` to create dev environment
 ifeq (${DETECTED_OS}, Darwin)
 	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install pipenv --upgrade
-	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pipenv --python 3.6.8
+	PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pipenv --python 3.7.4
 else
 	pip install pipenv --upgrade
-	pipenv --python 3.6.8
+	pipenv --python 3.7.4
 endif
 
 .PHONY: pipenv-dev
@@ -870,7 +870,7 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 
 travis-pdb:
-	tox -e py36 -- --pdb --showlocals
+	tox -e py37 -- --pdb --showlocals
 
 
 .PHONY: clean-cache
@@ -952,11 +952,11 @@ certificate:
 # -----------------------------------------------------------------------------
 .PHONY: local-black-check
 local-black-check: ## CHECK MODE: sensible pylint ( Lots of press over this during pycon 2018 )
-	pipenv run black --check --exclude="/\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|build|dist|ultron8_venv/" --verbose .
+	pipenv run black --check --exclude="/\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|build|dist|ultron8_venv*/" --verbose .
 
 .PHONY: local-black
 local-black: ## sensible pylint ( Lots of press over this during pycon 2018 )
-	pipenv run black --verbose --exclude="/\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|build|dist|ultron8_venv/" .
+	pipenv run black --verbose --exclude="/\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|build|dist|ultron8_venv*" .
 
 .PHONY: black
 black: local-black ## sensible pylint ( Lots of press over this during pycon 2018 )
