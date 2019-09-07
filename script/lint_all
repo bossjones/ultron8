@@ -5,7 +5,7 @@
 
 cd "$(dirname "$0")/.."
 
-export files="$(find `pwd`/moonbeam_cli -name \"*.py\" -print)"
+export files="$(find $(pwd)/ultron8 -name \"*.py\" -print)"
 echo '================================================='
 echo '=                FILES CHANGED                  ='
 echo '================================================='

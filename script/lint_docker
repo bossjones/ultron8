@@ -8,6 +8,6 @@ cd "$(dirname "$0")/.."
 
 docker build -t ultron8-ci .
 docker run --rm \
-    -v `pwd`/.tox/:/usr/src/app/.tox/ \
+    -v $(pwd)/.tox/:/usr/src/app/.tox/ \
     -t -i ultron8-ci \
     tox -e lint

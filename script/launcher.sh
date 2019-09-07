@@ -4,13 +4,13 @@
 
 SSHAGENT=/usr/bin/ssh-agent
 SSHAGENTARGS="-s"
-eval `$SSHAGENT $SSHAGENTARGS`
+eval $($SSHAGENT $SSHAGENTARGS)
 trap "kill $SSH_AGENT_PID" 0
 
 setup_ssh_agent() {
   SSHAGENT=/usr/bin/ssh-agent
   SSHAGENTARGS="-s"
-  eval `$SSHAGENT $SSHAGENTARGS`
+  eval $($SSHAGENT $SSHAGENTARGS)
   ssh-add ~/.ssh/id_rsa
   trap "kill $SSH_AGENT_PID" 0
 }

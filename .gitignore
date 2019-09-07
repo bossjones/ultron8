@@ -343,3 +343,4 @@ test.db
 !.vscode/launch.json
 monkeytype.sqlite3
 sensor_test.db
+ultron8-pipenv.*

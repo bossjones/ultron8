@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
+set -x
+
 pushd "$(dirname "$0")/.."
 
-_TEMPDIR=`mktemp -t -d ultron8-pipenv.XXXXXXXXXX` || exit 1
-_FILE="$_TEMPDIR/ultron8-pipenv.txt"
+_TEMPDIR="$(/usr/bin/mktemp -t -d ultron8-pipenv.XXXXXXXXXX || exit 1)"
+_FILE="${_TEMPDIR}/ultron8-pipenv.txt"
 
 cat <<EOF > ${_FILE}
 [[source]]
