@@ -29,10 +29,14 @@ _NUM_STOPPED_CONTAINER=$(docker ps -a| grep -v PORTS | grep Exited | awk '{print
 
 header " [info] _NUM_STOPPED_CONTAINER=${_NUM_STOPPED_CONTAINER}"
 
+set -x
+
 if [[ "${_NUM_STOPPED_CONTAINER}" -gt "0" ]]; then
-    _CONTAINER_ID=$(docker ps -a| grep -v PORTS | awk '{print $1}'| head -1)
+    _CONTAINER_ID=$(docker ps -a| grep -v PORTS | awk '{print $1}'| head -2)
     docker logs ${_CONTAINER_ID}
 fi
+
+set +x
 
 header " [run] test container <ultron8_ci> using /home/developer/app/.ci/pytest_runner.sh"
 # -T Disable pseudo-tty allocation. By default `docker-compose exec` allocates a TTY.
