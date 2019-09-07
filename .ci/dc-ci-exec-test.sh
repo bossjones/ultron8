@@ -32,7 +32,7 @@ header " [info] _NUM_STOPPED_CONTAINER=${_NUM_STOPPED_CONTAINER}"
 set -x
 
 if [[ "${_NUM_STOPPED_CONTAINER}" -gt "0" ]]; then
-    _CONTAINER_ID=$(docker ps -a| grep -v PORTS | cut -d" " -f1| head -2)
+    _CONTAINER_ID=$(docker ps -a -q | head -1)
     docker logs ${_CONTAINER_ID}
 fi
 
