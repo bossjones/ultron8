@@ -13,7 +13,7 @@ TAG="${IMAGE_TAG}"
 
 export CACHE_IMAGE=bossjones/ultron8-ci
 export PYTHON="python3"
-export TOXENV=py36
+export TOXENV=py37
 export IS_CI_ENVIRONMENT="true"
 
 # BEFORE INSTALL

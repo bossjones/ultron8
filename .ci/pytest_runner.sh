@@ -24,14 +24,14 @@ eval $( fixuid -q )
 echo " [run] UID/GID now match user/group, \$HOME has been set to user's home directory"
 echo -e "\n\n"
 
-# gosu developer pyenv shell 3.6.8
+# gosu developer pyenv shell 3.7.4
 # gosu developer pip install -e .
 # gosu developer py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
 
 set -x
 pushd /home/developer/app
 
-pyenv shell 3.6.8
+pyenv shell 3.7.4
 
 pip install -e .
 

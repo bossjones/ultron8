@@ -6,7 +6,7 @@ set -x
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $_DIR/utility.sh
 
-export TOXENV=py36
+export TOXENV=py37
 export DOCKER_COMPOSE_VERSION=1.24.0
 export DOCKER_VERSION=18.09
 export IS_CI_ENVIRONMENT="true"

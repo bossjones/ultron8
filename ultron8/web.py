@@ -14,6 +14,7 @@ from starlette.responses import RedirectResponse
 from starlette.responses import UJSONResponse
 from starlette.staticfiles import StaticFiles
 
+
 from ultron8.api import settings
 from ultron8.api.api_v1.endpoints import alive
 from ultron8.api.api_v1.endpoints import guid
@@ -23,6 +24,7 @@ from ultron8.api.api_v1.endpoints import login
 from ultron8.api.api_v1.endpoints import token
 from ultron8.api.api_v1.endpoints import users
 from ultron8.api.api_v1.endpoints import version
+from ultron8.api.api_v1.endpoints import loggers as log_endpoint
 from ultron8.api.db.u_sqlite import close_database_connection_pool
 from ultron8.api.db.u_sqlite import open_database_connection_pool
 from ultron8.api.db.u_sqlite.session import Session
@@ -130,6 +132,7 @@ app.add_middleware(starlette_prometheus.PrometheusMiddleware)
 
 app.add_route(f"{settings.API_V1_STR}/metrics", starlette_prometheus.metrics)
 
+app.include_router(log_endpoint.router, tags=["log"], prefix=f"{settings.API_V1_STR}")
 app.include_router(token.router, tags=["token"], prefix=f"{settings.API_V1_STR}")
 app.include_router(home.router, tags=["home"], prefix=f"{settings.API_V1_STR}")
 app.include_router(alive.router, tags=["alive"], prefix=f"{settings.API_V1_STR}")

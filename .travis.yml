@@ -3,7 +3,7 @@
 # language: python
 
 # python:
-#   - "3.6"
+#   - "3.7"
 #   - "3.7"
 
 # install:
@@ -22,7 +22,7 @@
 env:
   global:
     - PYTHON="python3"
-    - TOXENV=py36
+    - TOXENV=py37
     - PYTHON="python3"
     - DOCKER_COMPOSE_VERSION=1.24.0
     - DOCKER_VERSION=18.09
@@ -36,11 +36,11 @@ env:
 matrix:
   fast_finish: true
   include:
-  - name: "Python 3.6 w/ Docker Compose 1.24.0 and Docker 18.09"
-    python: '3.6'
+  - name: "Python 3.7 w/ Docker Compose 1.24.0 and Docker 18.09"
+    python: '3.7'
     env:
-      # TOX_ENV: py36 # from airflowci
-      TOXENV: py36
+      # TOX_ENV: py37 # from airflowci
+      TOXENV: py37
       PYTHON: "python3"
       # DOCKER_COMPOSE_VERSION: 1.17.1
       DOCKER_COMPOSE_VERSION: 1.24.0
@@ -54,7 +54,7 @@ matrix:
     language: python
     group: edge
   allow_failures:
-  - python: '3.6'
+  - python: '3.7'
     env:
       TOXENV: typing
 
@@ -69,7 +69,7 @@ stages:
 jobs:
   include:
     # - name: Flake8
-    #   python: '3.6'
+    #   python: '3.7'
     #   sudo: required
     #   dist: xenial
     #   language: python
@@ -81,7 +81,7 @@ jobs:
     #   script: flake8
 
     - name: mypy
-      python: '3.6'
+      python: '3.7'
       sudo: required
       dist: xenial
       language: python
@@ -93,7 +93,7 @@ jobs:
       script: mypy ultron8 tests
 
     # - name: Lint Dockerfile
-    #   python: '3.6'
+    #   python: '3.7'
     #   sudo: required
     #   dist: xenial
     #   language: python
@@ -105,7 +105,7 @@ jobs:
     #   script: .ci/ci_lint_dockerfile.sh
 
     # - name: Check docs
-    #   python: '3.6'
+    #   python: '3.7'
     #   sudo: required
     #   dist: xenial
     #   language: python
@@ -117,7 +117,7 @@ jobs:
     #   script: make build_doc
 
     - name: Pylint
-      python: '3.6'
+      python: '3.7'
       sudo: required
       dist: xenial
       language: python
@@ -130,7 +130,7 @@ jobs:
       cache: false
 
     - name: Black
-      python: '3.6'
+      python: '3.7'
       sudo: required
       dist: xenial
       language: python
@@ -143,7 +143,7 @@ jobs:
       cache: false
 
     - name: Pytest
-      python: '3.6'
+      python: '3.7'
       sudo: required
       dist: xenial
       language: python

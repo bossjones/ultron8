@@ -40,7 +40,7 @@ $(grep -v "#" requirements-experimental.in | grep -v "^$" | grep -v "pytest-ipdb
 allow_prereleases = true
 
 [requires]
-python_version = "3.6.8"
+python_version = "3.7.4"
 EOF
 
 echo -e "\n Here is the newly rendered Pipfile file for you\n\n"

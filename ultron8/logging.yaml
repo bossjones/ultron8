@@ -11,23 +11,31 @@ handlers:
         level: DEBUG
         formatter: simple
         stream: ext://sys.stdout
-    info_file_handler:
-        class: logging.handlers.RotatingFileHandler
-        level: INFO
-        formatter: simple
-        filename: applog/info.log
-        maxBytes: 10485760 # 10MB
-        backupCount: 20
-        encoding: utf8
-    error_file_handler:
-        class: logging.handlers.RotatingFileHandler
-        level: ERROR
-        formatter: simple
-        filename: applog/errors.log
-        maxBytes: 10485760 # 10MB
-        backupCount: 20
-        encoding: utf8
+    # info_file_handler:
+    #     class: logging.handlers.RotatingFileHandler
+    #     level: INFO
+    #     formatter: simple
+    #     filename: applog/info.log
+    #     maxBytes: 10485760 # 10MB
+    #     backupCount: 20
+    #     encoding: utf8
+    # error_file_handler:
+    #     class: logging.handlers.RotatingFileHandler
+    #     level: ERROR
+    #     formatter: simple
+    #     filename: applog/errors.log
+    #     maxBytes: 10485760 # 10MB
+    #     backupCount: 20
+    #     encoding: utf8
 loggers:
+    ultron8:
+        level: DEBUG
+        handlers: [console]
+        propagate: no
+    starlette:
+        level: DEBUG
+        handlers: [console]
+        propagate: no
     uvicorn:
         level: INFO
         handlers: [console]

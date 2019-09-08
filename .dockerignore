@@ -54,3 +54,4 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+ultron8-pipenv.*

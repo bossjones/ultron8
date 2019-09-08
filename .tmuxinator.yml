@@ -15,7 +15,7 @@ on_project_start: make environment
 # Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
 pre_window:
   - exec zsh -l
-  - pyenv activate ultron8_venv
+  - pyenv activate ultron8_venv37
 
 # Optional tmux socket
 # socket_name: foo
@@ -60,10 +60,10 @@ windows:
           - neofetch
         - pwd:
           - exec zsh -l
-          - pyenv activate ultron8_venv
+          - pyenv activate ultron8_venv37
         - pwd:
           - exec zsh -l
-          - pyenv activate ultron8_venv
+          - pyenv activate ultron8_venv37
   # - editor:
   #     layout: even-horizontal
   #     panes:

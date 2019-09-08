@@ -14,7 +14,7 @@ SCRIPT=${BASH_SOURCE[0]:-$0}
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 _UID=$(id -u)
 
-tox -e py36 --notest && \
+tox -e py37 --notest && \
 make install && \
 pyenv rehash
 

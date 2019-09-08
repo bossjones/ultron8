@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
+set -x
+
 pushd "$(dirname "$0")/.."
 
-_TEMPDIR=`mktemp -t -d ultron8-pipenv.XXXXXXXXXX` || exit 1
-_FILE="$_TEMPDIR/ultron8-pipenv.txt"
+_TEMPDIR="$(/usr/bin/mktemp -t -d ultron8-pipenv.XXXXXXXXXX || exit 1)"
+_FILE="${_TEMPDIR}/ultron8-pipenv.txt"
 
 cat <<EOF > ${_FILE}
 [[source]]
@@ -40,7 +42,7 @@ $(grep -v "#" requirements-experimental.in | grep -v "^$" | grep -v "pytest-ipdb
 allow_prereleases = true
 
 [requires]
-python_version = "3.6.8"
+python_version = "3.7.4"
 EOF
 
 echo -e "\n Here is the newly rendered Pipfile file for you\n\n"

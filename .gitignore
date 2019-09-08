@@ -110,7 +110,7 @@ venv.bak/
 ########################################################################################################################################################
 
 # User Settings
-ultron8_venv/
+ultron8_venv*/
 ultron8.egg-info/
 ultron8-*/
 
@@ -343,3 +343,4 @@ test.db
 !.vscode/launch.json
 monkeytype.sqlite3
 sensor_test.db
+ultron8-pipenv.*

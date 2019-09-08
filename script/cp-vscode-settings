@@ -90,7 +90,7 @@ cat <<EOF > ${_FILE}
         ".ropeproject": true,
         "site": true,
         ".mypy_cache/": true,
-        "ultron8_venv/": true,
+        "ultron8_venv*/": true,
         "ultron8.egg-info/": true,
         "ultron8-*/": true,
         ".idea/": true,

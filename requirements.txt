@@ -5,7 +5,6 @@
 #    pip-compile --output-file=requirements.txt requirements.in
 #
 aiocache==0.11.1
-aiocontextvars==0.2.2     # via databases
 aiodns==2.0.0
 aiodocker==0.14.0
 aiofiles==0.4.0
@@ -15,7 +14,7 @@ aiojobs==0.2.2
 aioredis==1.2.0
 aiorwlock==0.6.0
 aiosqlite==0.10.0
-alembic==1.0.11
+alembic==1.1.0
 amqp==2.5.1               # via kombu
 argcomplete==1.10.0
 asn1crypto==0.24.0        # via cryptography
@@ -32,27 +31,23 @@ chardet==3.0.4            # via aiohttp, emails, requests
 click==7.0
 colorama==0.4.1           # via loggerfactory
 configobj==5.0.6          # via ruamel.yaml.cmd
-contextvars==2.4          # via aiocontextvars
 cryptography==2.7
 cssselect==1.1.0          # via premailer
 cssutils==1.0.2           # via emails, premailer
 daiquiri==1.6.0
 databases==0.2.5
-dataclasses==0.6          # via pydantic
 dnspython==1.16.0         # via email-validator
 email-validator==1.0.4
 emails==0.5.15
 factory-boy==2.12.0
 faker==2.0.1
-fastapi==0.35.0
+fastapi==0.38.1
 gunicorn==19.9.0
 h11==0.8.1                # via uvicorn
 hiredis==1.0.0            # via aioredis
 httptools==0.0.13         # via uvicorn
-idna-ssl==1.1.0           # via aiohttp
-idna==2.8                 # via email-validator, idna-ssl, requests, yarl
-immutables==0.9           # via contextvars
-importlib-metadata==0.19  # via kombu
+idna==2.8                 # via email-validator, requests, yarl
+importlib-metadata==0.20  # via kombu
 janus==0.4.0
 jinja2-cli[yaml]==0.7.0
 jinja2==2.10.1            # via aiohttp-jinja2, jinja2-cli
@@ -61,17 +56,18 @@ loggerfactory==0.0.5
 lxml==4.4.1               # via emails, premailer
 mako==1.1.0               # via alembic
 markupsafe==1.1.1         # via jinja2, mako
+more-itertools==7.2.0     # via zipp
 msgpack==0.6.1
 multidict==4.5.2
-numpy==1.17.0             # via pandas
-pandas==0.25.0
+numpy==1.17.1             # via pandas
+pandas==0.25.1
 passlib[bcrypt]==1.7.1
-premailer==3.6.0          # via emails
+premailer==3.6.1          # via emails
 prometheus-client==0.7.1  # via starlette-prometheus
 pycares==3.0.0            # via aiodns
 pyconfig==3.2.3
 pycparser==2.19           # via cffi
-pydantic==0.30            # via fastapi
+pydantic==0.32.2          # via fastapi
 pyjwt==1.7.1
 python-dateutil==2.8.0    # via alembic, emails, faker, pandas, ruamel.yaml.convert
 python-editor==1.0.4      # via alembic
@@ -89,13 +85,11 @@ ruamel.yaml==0.16.5
 simplejson==3.16.0        # via pytool
 six==1.12.0               # via bcrypt, configobj, cryptography, faker, pyconfig, python-dateutil, python-multipart, pytool, sqlalchemy-utils, tenacity
 sqlalchemy-utils==0.34.2
-sqlalchemy==1.3.7
+sqlalchemy==1.3.8
 starlette-prometheus==0.3.0
-starlette==0.12.7         # via fastapi, starlette-prometheus
+starlette==0.12.8         # via fastapi, starlette-prometheus
 tenacity==5.1.1
 text-unidecode==1.2       # via faker
-typing-extensions==3.7.4  # via aiohttp
-typing==3.7.4             # via aiodns
 ujson==1.35
 urllib3==1.25.3           # via requests
 uvicorn==0.8.6
@@ -104,4 +98,4 @@ vine==1.3.0               # via amqp, celery
 websockets==7.0           # via uvicorn
 wget==3.2
 yarl==1.3.0
-zipp==0.5.2               # via importlib-metadata
+zipp==0.6.0               # via importlib-metadata

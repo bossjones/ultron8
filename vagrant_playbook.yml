@@ -163,11 +163,11 @@
       pyenv_update_git_install: no
       pyenv_enable_autocompletion: yes
       pyenv_python_versions:
-        - "3.6.8"
+        - "3.7.4"
         - "3.7.3"
       pyenv_virtualenvs:
         - venv_name: "env368"
-          py_version: "3.6.8"
+          py_version: "3.7.4"
 
         - venv_name: "env373"
           py_version: "3.7.3"
@@ -288,7 +288,7 @@
     - name: install tox
       pip:
         name: "{{item}}"
-        executable: "{{pyenv_root}}/versions/3.6.8/bin/pip"
+        executable: "{{pyenv_root}}/versions/3.7.4/bin/pip"
       with_items:
         - tox
         - docker-compose
