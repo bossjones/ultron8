@@ -1,4 +1,4 @@
-FROM bossjones/ultron8-hacking:0.1.0
+FROM bossjones/ultron8-hacking:0.2.0
 
 # container user
 ARG CONTAINER_GID=501

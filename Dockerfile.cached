@@ -1,4 +1,4 @@
-FROM bossjones/ultron8-hacking:0.1.0 as base
+FROM bossjones/ultron8-hacking:0.2.0 as base
 
 # container user
 ARG CONTAINER_GID=501
@@ -52,7 +52,7 @@ RUN if [ $ENABLE_TOX == 'True' ] ; then \
     echo "NOTE: This most likely produced a stack trace, and that is ok! The full install will happen when you call docker run." \
     ; fi
 
-FROM bossjones/ultron8-hacking:0.1.0 as runtime-image
+FROM bossjones/ultron8-hacking:0.2.0 as runtime-image
 
 # container user
 ARG CONTAINER_GID=501
