@@ -899,7 +899,8 @@ docker-bash:
 	.ci/docker-bash.sh
 
 local-ci: clean-test
-	pipenv run python setup.py test
+# pipenv run python setup.py test
+	bash .ci/local-ci.sh
 
 open-coverage-local:
 	./script/open-browser.py htmlcov/index.html
