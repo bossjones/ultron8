@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+export _PY_VER_MAJOR="3"
+export _PY_VER_MINOR="7"
+export _PY_VER_MICRO="4"
+
 # SOURCE: https://github.com/jiansoung/issues-list/issues/13
 # Fixes: zipimport.ZipImportError: can't decompress data; zlib not available
 export LDFLAGS="${LDFLAGS} -L/usr/local/opt/zlib/lib"
@@ -45,7 +49,12 @@ export PROFILE_TASK='-m test.regrtest --pgo \
       test_unicode \
 '
 
-env PYTHON_CONFIGURE_OPTS="--enable-shared --enable-optimizations --enable-ipv6 --with-dtrace" pyenv install -v 3.7.4
+if [ ! -d "${PYENV_ROOT}/versions/${_PY_VER_MAJOR}.${_PY_VER_MINOR}.${_PY_VER_MICRO}" ]; then
+  # Control will enter here if $DIRECTORY exists.
+  env PYTHON_CONFIGURE_OPTS="--enable-shared --enable-optimizations --enable-ipv6 --with-dtrace" pyenv install -v ${_PY_VER_MAJOR}.${_PY_VER_MINOR}.${_PY_VER_MICRO}
+else
+  echo " [pyenv_compile_env_brew] python version ${_PY_VER_MAJOR}.${_PY_VER_MINOR}.${_PY_VER_MICRO} already installed, skipping"
+fi
 
 alias compile_pyenv_env='LDFLAGS="${LDFLAGS} -L/usr/local/opt/zlib/lib -L/usr/local/opt/sqlite/lib" CPPFLAGS="${CPPFLAGS} -I/usr/local/opt/zlib/include -I/usr/local/opt/sqlite/include" PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/zlib/lib/pkgconfig /usr/local/opt/sqlite/lib/pkgconfig" pyenv'
 
@@ -58,4 +67,4 @@ echo "PKG_CONFIG_PATH: ${PKG_CONFIG_PATH}"
 echo "alias compile_pyenv_env: $(type compile_pyenv_env)"
 echo "----------------------"
 
-pyenv virtualenv 3.7.4 ultron8_venv37
+pyenv virtualenv ${_PY_VER_MAJOR}.${_PY_VER_MINOR}.${_PY_VER_MICRO} ultron8_venv${_PY_VER_MAJOR}${_PY_VER_MINOR}${_PY_VER_MICRO}
