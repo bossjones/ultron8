@@ -114,3 +114,5 @@ factory-boy
 # https://github.com/joke2k/faker
 # Faker is a Python package that generates fake data for you. http://faker.rtfd.org
 Faker
+# keyring
+# keyrings.cryptfile

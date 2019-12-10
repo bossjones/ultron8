@@ -5,6 +5,9 @@ import logging
 import copy
 import os
 import sys
+from getpass import getpass
+
+# from keyrings.cryptfile.cryptfile import CryptFileKeyring
 
 
 logger = logging.getLogger(__name__)
@@ -70,3 +73,49 @@ def confirm():
     while answer not in ["y", "n"]:
         answer = input("Are you sure you want to execute this command [Y/N]? ").lower()
     return answer == "y"
+
+
+# SOURCE: https://git.corp.adobe.com/Evergreen/pops/blob/master/src/pops/tasks/libs/utils.py
+# def confirm(ctx, msg="Are you sure you want to execute this command?"):
+#     """
+#     Ask user to enter Y or N (case-insensitive).
+#     :return: True if the answer is Y.
+#     :rtype: bool
+#     """
+#     if not ctx.ask_confirmation:
+#         return True
+#     answer = None
+#     acceptable_answers = ["y", "n", ""] if ctx.default_confirmation else ["y", "n"]
+#     display_options = "[Y/n]" if ctx.default_confirmation else "[y/n]"
+#     while answer not in acceptable_answers:
+#         answer = input(f"{msg}\n{display_options} ").lower()
+#         if ctx.default_confirmation and answer == "":
+#             answer = "y"
+#     return answer == "y"
+
+# def get_keyring():
+#     """
+#     Build a CryptFileKeyring object
+#     """
+#     if os.environ.get('KEYRING_PASS', None) is None:
+#         logger.error('KEYRING_PASS env variable not found')
+#         raise RuntimeError('KEYRING_PASS environment variable was not defined')
+#     cfk = CryptFileKeyring()
+#     cfk.keyring_key = os.environ.get('KEYRING_PASS')
+#     # this is needed for the keyring command
+#     cfk.set_password('keyring-setting', 'password reference', 'password reference value')
+#     return cfk
+
+# def get_secret(env_var_name, message):
+#     """
+#     Ask the user to provide a secret.
+#     If the environment variable with the name of `env_var_name` exists, the secret is set to that value
+#     """
+#     if os.environ.get(env_var_name, None) is None:
+#         secret = getpass(message)
+#         if not secret:
+#             logger.error('Empty input.')
+#             sys.exit(1)
+#     else:
+#         secret = os.environ.get(env_var_name)
+#     return secret
