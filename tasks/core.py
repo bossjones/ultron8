@@ -32,7 +32,17 @@ LOGGER.setLevel("DEBUG")
 
 
 @task
-def clean(ctx, docs=False, bytecode=False, extra=""):
+def clean(ctx, docs=False, bytecode=False, extra="", dry_run=False):
+    """Clean up build directory and artifacts
+
+    Arguments:
+        ctx {[type]} -- [description]
+
+    Keyword Arguments:
+        docs {bool} -- [description] (default: {False})
+        bytecode {bool} -- [description] (default: {False})
+        extra {str} -- [description] (default: {""})
+    """
     patterns = []
     if docs:
         patterns.append("docs/_build")
@@ -41,7 +51,10 @@ def clean(ctx, docs=False, bytecode=False, extra=""):
     if extra:
         patterns.append(extra)
     for pattern in patterns:
-        ctx.run("find . -name '{}' -delete".format(pattern))
+        if dry_run:
+            ctx.run("find . -name '{}' -print".format(pattern))
+        else:
+            ctx.run("find . -name '{}' -delete".format(pattern))
 
 
 @task
