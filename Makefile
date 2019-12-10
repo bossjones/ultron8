@@ -494,11 +494,11 @@ travis: travis-pull travis-build dc-up-web ci-test ## Bring up web server using 
 
 .PHONY: run-black-check
 run-black-check: ## CHECK MODE: sensible pylint ( Lots of press over this during pycon 2018 )
-	pipenv run black --check --exclude=ultron8_venv* --verbose .
+	black --check --exclude=ultron8_venv*,*.eggs --verbose .
 
 .PHONY: run-black
 run-black: ## sensible pylint ( Lots of press over this during pycon 2018 )
-	pipenv run black --verbose --exclude=ultron8_venv* .
+	black --verbose --exclude=ultron8_venv*,*.eggs .
 
 .PHONY: pip-tools
 pip-tools:
@@ -1419,3 +1419,7 @@ get-token: ## get token using httpie
 .PHONY: open-openapi
 open-openapi: ## Open browser with openapi
 	./script/open-browser.py ${SERVER_HOST}/docs
+
+.PHONY: completion
+completion: ## Regenerate invoke auto completion see http://docs.pyinvoke.org/en/1.3/invoke.html#shell-tab-completion
+	inv --print-completion-script zsh > ./contrib/invoke-completion.sh
