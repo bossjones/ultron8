@@ -344,3 +344,4 @@ test.db
 monkeytype.sqlite3
 sensor_test.db
 ultron8-pipenv.*
+temp.json
