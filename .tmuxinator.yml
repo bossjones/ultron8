@@ -10,12 +10,10 @@ tmux_options: -2
 # set-option -g default-shell /usr/local/bin/zsh
 
 # Runs on project start, always
-on_project_start: make environment
+# on_project_start: make environment
 
 # Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
-pre_window:
-  - exec zsh -l
-  - pyenv activate ultron8_venv37
+pre_window: exec zsh
 
 # Optional tmux socket
 # socket_name: foo
@@ -58,24 +56,3 @@ windows:
       panes:
         - neofetch:
           - neofetch
-        - pwd:
-          - exec zsh -l
-          - pyenv activate ultron8_venv37
-        - pwd:
-          - exec zsh -l
-          - pyenv activate ultron8_venv37
-  # - editor:
-  #     layout: even-horizontal
-  #     panes:
-  #       - editor:
-  #       - pwd:
-  #       - pwd:
-  # - python:
-  #     layout: main-vertical
-  #     panes:
-  #       - ipython:
-  # - docker:
-  #     layout: main-vertical
-  #     panes:
-  #       - webserver:
-  #       - databases:

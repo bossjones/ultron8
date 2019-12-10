@@ -52,6 +52,7 @@ ptyprocess==0.6.0         # via pexpect
 pycodestyle==2.5.0        # via autopep8
 pyflakes==2.1.1           # via autoflake
 pygments==2.5.1           # via ipython, pdbpp
+pyinvoke==1.0.4
 pylint==2.4.4
 pystuck==0.8.5
 python-dateutil==2.8.1    # via freezegun

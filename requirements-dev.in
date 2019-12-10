@@ -80,3 +80,6 @@ pystuck
 # Template Engine for Docker Images
 # SOURCE: https://github.com/elastic/tedi
 # tedi
+
+# https://www.pyinvoke.org/
+pyinvoke
