@@ -95,10 +95,10 @@ export BLUE
 
 # verify that certain variables have been defined off the bat
 check_defined = \
-    $(foreach 1,$1,$(__check_defined))
+		$(foreach 1,$1,$(__check_defined))
 __check_defined = \
-    $(if $(value $1),, \
-      $(error Undefined $1$(if $(value 2), ($(strip $2)))))
+		$(if $(value $1),, \
+			$(error Undefined $1$(if $(value 2), ($(strip $2)))))
 
 export PATH := ./script:./bin:./bash:./venv/bin:$(PATH)
 
@@ -188,12 +188,12 @@ PACKAGE_NAME="ultron8"
 
 # Python version Used for Development
 PY_VER_MAJOR="3"
-PY_VER_MINOR="6"
-PY_VER_MICRO="8"
+PY_VER_MINOR="7"
+PY_VER_MICRO="4"
 
 #  Other Python Version You Want to Test With
 # (Only useful when you use tox locally)
-TEST_PY_VER3="3.7.3"
+TEST_PY_VER3="3.7.4"
 
 # If you use pyenv-virtualenv, set to "Y"
 USE_PYENV="Y"
@@ -205,7 +205,7 @@ DOC_HOST_BUCKET_NAME="NoBucket"
 #--- Derive Other Variable ---
 
 # Virtualenv Name
-VENV_NAME="${PACKAGE_NAME}_venv"
+VENV_NAME="${PACKAGE_NAME}_venv${PY_VER_MAJOR}${PY_VER_MINOR}${PY_VER_MICRO}"
 
 # Project Root Directory
 GIT_ROOT_DIR=${shell git rev-parse --show-toplevel}
@@ -214,9 +214,9 @@ PROJECT_ROOT_DIR=${shell pwd}
 OS=${shell uname -s}
 
 ifeq (${OS}, Windows_NT)
-    DETECTED_OS := Windows
+		DETECTED_OS := Windows
 else
-    DETECTED_OS := $(shell uname -s)
+		DETECTED_OS := $(shell uname -s)
 endif
 
 
@@ -224,15 +224,15 @@ endif
 
 # Windows
 ifeq (${DETECTED_OS}, Windows)
-    USE_PYENV="N"
+		USE_PYENV="N"
 
-    VENV_DIR_REAL="${PROJECT_ROOT_DIR}/${VENV_NAME}"
-    BIN_DIR="${VENV_DIR_REAL}/Scripts"
-    SITE_PACKAGES="${VENV_DIR_REAL}/Lib/site-packages"
-    SITE_PACKAGES64="${VENV_DIR_REAL}/Lib64/site-packages"
+		VENV_DIR_REAL="${PROJECT_ROOT_DIR}/${VENV_NAME}"
+		BIN_DIR="${VENV_DIR_REAL}/Scripts"
+		SITE_PACKAGES="${VENV_DIR_REAL}/Lib/site-packages"
+		SITE_PACKAGES64="${VENV_DIR_REAL}/Lib64/site-packages"
 
-    GLOBAL_PYTHON="/c/Python${PY_VER_MAJOR}${PY_VER_MINOR}/python.exe"
-    OPEN_COMMAND="start"
+		GLOBAL_PYTHON="/c/Python${PY_VER_MAJOR}${PY_VER_MINOR}/python.exe"
+		OPEN_COMMAND="start"
 endif
 
 
@@ -240,50 +240,50 @@ endif
 ifeq (${DETECTED_OS}, Darwin)
 
 ifeq ($(USE_PYENV), "Y")
-    ARCHFLAGS="-arch x86_64"
-    PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig
-    LDFLAGS="-L/usr/local/opt/openssl/lib"
-    CFLAGS="-I/usr/local/opt/openssl/include"
-    VENV_DIR_REAL="${HOME}/.pyenv/versions/${PY_VERSION}/envs/${VENV_NAME}"
-    VENV_DIR_LINK="${HOME}/.pyenv/versions/${VENV_NAME}"
-    BIN_DIR="${VENV_DIR_REAL}/bin"
-    SITE_PACKAGES="${VENV_DIR_REAL}/lib/python${PY_VER_MAJOR}.${PY_VER_MINOR}/site-packages"
-    SITE_PACKAGES64="${VENV_DIR_REAL}/lib64/python${PY_VER_MAJOR}.${PY_VER_MINOR}/site-packages"
+		ARCHFLAGS="-arch x86_64"
+		PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig
+		LDFLAGS="-L/usr/local/opt/openssl/lib"
+		CFLAGS="-I/usr/local/opt/openssl/include"
+		VENV_DIR_REAL="${HOME}/.pyenv/versions/${PY_VERSION}/envs/${VENV_NAME}"
+		VENV_DIR_LINK="${HOME}/.pyenv/versions/${VENV_NAME}"
+		BIN_DIR="${VENV_DIR_REAL}/bin"
+		SITE_PACKAGES="${VENV_DIR_REAL}/lib/python${PY_VER_MAJOR}.${PY_VER_MINOR}/site-packages"
+		SITE_PACKAGES64="${VENV_DIR_REAL}/lib64/python${PY_VER_MAJOR}.${PY_VER_MINOR}/site-packages"
 else
-    ARCHFLAGS="-arch x86_64"
-    PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig
-    LDFLAGS="-L/usr/local/opt/openssl/lib"
-    CFLAGS="-I/usr/local/opt/openssl/include"
-    # VENV_DIR_REAL="${PROJECT_ROOT_DIR}/${VENV_NAME}"
-    # VENV_DIR_LINK="./${VENV_NAME}"
-    VENV_DIR_REAL="${HOME}/.pyenv/versions/${PY_VERSION}/envs/${VENV_NAME}"
-    VENV_DIR_LINK="${HOME}/.pyenv/versions/${VENV_NAME}"
-    BIN_DIR="${VENV_DIR_REAL}/bin"
-    SITE_PACKAGES="${VENV_DIR_REAL}/lib/python${PY_VER_MAJOR}.${PY_VER_MINOR}/site-packages"
-    SITE_PACKAGES64="${VENV_DIR_REAL}/lib64/python${PY_VER_MAJOR}.${PY_VER_MINOR}/site-packages"
+		ARCHFLAGS="-arch x86_64"
+		PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig
+		LDFLAGS="-L/usr/local/opt/openssl/lib"
+		CFLAGS="-I/usr/local/opt/openssl/include"
+		# VENV_DIR_REAL="${PROJECT_ROOT_DIR}/${VENV_NAME}"
+		# VENV_DIR_LINK="./${VENV_NAME}"
+		VENV_DIR_REAL="${HOME}/.pyenv/versions/${PY_VERSION}/envs/${VENV_NAME}"
+		VENV_DIR_LINK="${HOME}/.pyenv/versions/${VENV_NAME}"
+		BIN_DIR="${VENV_DIR_REAL}/bin"
+		SITE_PACKAGES="${VENV_DIR_REAL}/lib/python${PY_VER_MAJOR}.${PY_VER_MINOR}/site-packages"
+		SITE_PACKAGES64="${VENV_DIR_REAL}/lib64/python${PY_VER_MAJOR}.${PY_VER_MINOR}/site-packages"
 endif
-    ARCHFLAGS="-arch x86_64"
-    PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig
-    LDFLAGS="-L/usr/local/opt/openssl/lib"
-    CFLAGS="-I/usr/local/opt/openssl/include"
+		ARCHFLAGS="-arch x86_64"
+		PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig
+		LDFLAGS="-L/usr/local/opt/openssl/lib"
+		CFLAGS="-I/usr/local/opt/openssl/include"
 
-    GLOBAL_PYTHON="python${PY_VER_MAJOR}.${PY_VER_MINOR}"
-    OPEN_COMMAND="open"
+		GLOBAL_PYTHON="python${PY_VER_MAJOR}.${PY_VER_MINOR}"
+		OPEN_COMMAND="open"
 endif
 
 
 # Linux
 ifeq (${DETECTED_OS}, Linux)
-    USE_PYENV="N"
+		USE_PYENV="N"
 
-    VENV_DIR_REAL="${PROJECT_ROOT_DIR}/${VENV_NAME}"
-    VENV_DIR_LINK="${PROJECT_ROOT_DIR}/${VENV_NAME}"
-    BIN_DIR="${VENV_DIR_REAL}/bin"
-    SITE_PACKAGES="${VENV_DIR_REAL}/lib/python${PY_VER_MAJOR}.${PY_VER_MINOR}/site-packages"
-    SITE_PACKAGES64="${VENV_DIR_REAL}/lib64/python${PY_VER_MAJOR}.${PY_VER_MINOR}/site-packages"
+		VENV_DIR_REAL="${PROJECT_ROOT_DIR}/${VENV_NAME}"
+		VENV_DIR_LINK="${PROJECT_ROOT_DIR}/${VENV_NAME}"
+		BIN_DIR="${VENV_DIR_REAL}/bin"
+		SITE_PACKAGES="${VENV_DIR_REAL}/lib/python${PY_VER_MAJOR}.${PY_VER_MINOR}/site-packages"
+		SITE_PACKAGES64="${VENV_DIR_REAL}/lib64/python${PY_VER_MAJOR}.${PY_VER_MINOR}/site-packages"
 
-    GLOBAL_PYTHON="python${PY_VER_MAJOR}.${PY_VER_MINOR}"
-    OPEN_COMMAND="open"
+		GLOBAL_PYTHON="python${PY_VER_MAJOR}.${PY_VER_MINOR}"
+		OPEN_COMMAND="open"
 endif
 
 
@@ -355,33 +355,21 @@ bootstrap: pip-tools bootstrap_venv
 .PHONY: init_venv
 init_venv: ## ** Initiate Virtual Environment
 ifeq (${USE_PYENV}, "Y")
-	# Install pyenv
-	#-brew install pyenv
-	#-brew install pyenv-virtualenv
-
-	# # Edit Config File
-	# if ! grep -q 'export PYENV_ROOT="$$HOME/.pyenv"' "${BASH_PROFILE_FILE}" ; then\
-	#     echo 'export PYENV_ROOT="$$HOME/.pyenv"' >> "${BASH_PROFILE_FILE}" ;\
-	# fi
-	# if ! grep -q 'export PATH="$$PYENV_ROOT/bin:$$PATH"' "${BASH_PROFILE_FILE}" ; then\
-	#     echo 'export PATH="$$PYENV_ROOT/bin:$$PATH"' >> "${BASH_PROFILE_FILE}" ;\
-	# fi
-	# if ! grep -q 'eval "$$(pyenv init -)"' "${BASH_PROFILE_FILE}" ; then\
-	#     echo 'eval "$$(pyenv init -)"' >> "${BASH_PROFILE_FILE}" ;\
-	# fi
-	# if ! grep -q 'eval "$$(pyenv virtualenv-init -)"' "${BASH_PROFILE_FILE}" ; then\
-	#     echo 'eval "$$(pyenv virtualenv-init -)"' >> "${BASH_PROFILE_FILE}" ;\
-	# fi
-
-	# pyenv install ${PY_VERSION} -s
-	# pyenv rehash
-
+ifneq ("$(wildcard $(VENV_DIR_REAL))","")
 	@printf "=======================================\n"
-	@printf "$$GREEN Creating virtualenv ${VENV_NAME}:$$NC
+	@printf "$$GREEN virtualenv alredy exists ${VENV_NAME}:$$NC\n"
+	@printf "=======================================\n"
+else
+	@printf "=======================================\n"
+	@printf "$$GREEN Creating virtualenv ${VENV_NAME}:$$NC\n"
 	-pyenv virtualenv ${PY_VERSION} ${VENV_NAME}
 	@printf "FINISHED:\n"
 	@printf "=======================================\n"
 	@printf "$$GREEN Run to activate virtualenv:$$NC                               pyenv activate ${VENV_NAME}\n"
+	@printf "$$GREEN After you activate run the following:$$NC                               pyenv rehash\n"
+	-pyenv rehash
+endif
+
 else
 
 ifeq ($(HAVE_BREW), 0)
@@ -445,6 +433,7 @@ else
 	)
 endif
 
+.PHONY: install-dev
 install-dev: dev_dep ## ** Install Development Dependencies
 
 
@@ -475,24 +464,31 @@ show_venv_activate_cmd: ## ** Show activate command when finished
 # SOURCE: https://github.com/MacHu-GWU/learn_datasette-project/blob/120b45363aa63bdffe2f1933cf2d4e20bb6cbdb8/make/python_env.mk
 ###########################################################
 
+.PHONY: list
 list:
 	@$(MAKE) -qp | awk -F':' '/^[a-zA-Z0-9][^$#\/\t=]*:([^=]|$$)/ {split($$1,A,/ /);for(i in A)print A[i]}' | sort
 
 # Compile python modules against homebrew openssl. The homebrew version provides a modern alternative to the one that comes packaged with OS X by default.
 # OS X's older openssl version will fail against certain python modules, namely "cryptography"
 # Taken from this git issue pyca/cryptography#2692
+.PHONY: install-virtualenv-osx
 install-virtualenv-osx:
 	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install -r requirements.txt
-pre_commit_install:
-	-cp git_hooks/.pre-commit-config.yaml .git/hooks/pre-commit
 
+.PHONY: pre_commit_install
+pre_commit_install: pre-commit-install
+# -cp git_hooks/.pre-commit-config.yaml .git/hooks/pre-commit
+
+.PHONY: travis-pull
 travis-pull: ## pull base and run-image tags
 	docker pull $(CI_IMAGE):base || true
 	docker pull $(CI_IMAGE):runtime-image || true
 
+.PHONY: travis-build
 travis-build: ## simply build docker image using docker-compose
 	docker-compose -f docker-compose.ci.yml build
 
+.PHONY: travis
 travis: travis-pull travis-build dc-up-web ci-test ## Bring up web server using docker-compose, then exec into container and run pytest
 # tox
 
@@ -512,7 +508,6 @@ else
 	pip install pip-tools pipdeptree
 endif
 
-
 .PHONY: pip-tools-osx
 pip-tools-osx: pip-tools
 
@@ -523,7 +518,6 @@ ifeq (${DETECTED_OS}, Darwin)
 else
 	pip install pip-tools pipdeptree --upgrade
 endif
-
 
 .PHONY: pip-compile-upgrade-all
 pip-compile-upgrade-all: pip-tools
@@ -571,12 +565,15 @@ pip-compile-and-install: pip-compile install-deps-all ## generate requirement.tx
 .PHONY: install-all
 install-all: install-deps-all
 
+.PHONY: yamllint-role
 yamllint-role:
 	bash -c "find .* -type f -name '*.y*ml' ! -name '*.venv' -print0 | xargs -I FILE -t -0 -n1 yamllint FILE"
 
+.PHONY: install-ip-cmd-osx
 install-ip-cmd-osx:
 	brew install iproute2mac
 
+.PHONY: flush-cache
 flush-cache:
 	@sudo killall -HUP mDNSResponder
 
@@ -587,6 +584,7 @@ flush-cache:
 
 .PHONY: git-clean git-env pipenv-test pipenv-test-cover pipenv-test-cli help2
 
+.PHONY: git-clean
 git-clean: ## Remove files and directories ignored by git
 	git clean -d -X -f
 
@@ -604,80 +602,99 @@ else
 	pipenv install --dev
 endif
 
+.PHONY: pipenv-test
 pipenv-test: ## Run tests
 	pipenv run py.test
 
+.PHONY: pipenv-test-cover
 pipenv-test-cover: ## Run tests - with coverage report
 	pipenv run py.test --cov=. --cov-report=term-missing
 
+.PHONY: pipenv-test-cli
 pipenv-test-cli: ## Run CLI with example Via JSON data
 	pipenv run image-annotation-convert tests/annotation-data/via_example.json --output-format=sensei_csv
 
+.PHONY: help2
 help2:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+.PHONY: docker-pyenv-cli
 docker-pyenv-cli:
 	docker run --rm -it \
 	-w /mnt \
 	-v $(CURRENT_DIR):/mnt \
 	$(CI_PYENV_DOCKER_IMAGE) bash
 
+.PHONY: download-roles
 download-roles: ## Download ansible roles in local directory ./roles/
 	ansible-galaxy install -r requirements.yml --roles-path ./roles/
 
-download-roles-force: ## FORCE: Download ansible roles in local directory ./roles/
+.PHONY: download-roles-force
+download-roles-force: ## FORCE Download ansible roles in local directory ./roles/
 	ansible-galaxy --force install -r requirements.yml --roles-path ./roles/
 
+.PHONY: download-roles-global
 download-roles-global: ## Download ansible roles in global directory /etc/ansible/roles
 	ansible-galaxy install -r requirements.yml --roles-path=/etc/ansible/roles
 
-download-roles-global-force: ## FORCE: Download ansible roles in global directory /etc/ansible/roles
+.PHONY: download-roles-global-force
+download-roles-global-force: ## FORCE Download ansible roles in global directory /etc/ansible/roles
 	ansible-galaxy install --force -r requirements.yml --roles-path=/etc/ansible/roles
 
+.PHONY: vagrant-ansible-provision
 vagrant-ansible-provision: download-roles-global
 	ansible-playbook -vv -c local -i inventory.ini vagrant_playbook.yml
 
 
+.PHONY: docker-compose-build
 docker-compose-build:
 	@docker-compose -f hacking/docker-compose.yml build
 
+.PHONY: docker-compose-build-playground
 docker-compose-build-playground:
 	@docker-compose -f hacking/docker-compose.yml build playground
 
+.PHONY: docker-compose-run-playground-bash
 docker-compose-run-playground-bash:
 	@docker-compose -f hacking/docker-compose.yml run --name ultron_playground --rm playground bash
 
+.PHONY: docker-compose-run-playground
 docker-compose-run-playground:
 	-@docker-compose -f hacking/docker-compose.yml rm --force playground
 	@docker-compose -f hacking/docker-compose.yml run -d --name ultron_playground --rm playground
 
+.PHONY: docker-compose-build-master
 docker-compose-build-master:
 	@docker-compose -f hacking/docker-compose.yml build master
 
+.PHONY: docker-compose-run-master
 docker-compose-run-master:
 	@docker-compose -f hacking/docker-compose.yml run --name ultron_master --rm master bash
 
+.PHONY: docker-compose-run-test
 docker-compose-run-test:
 	@docker-compose -f hacking/docker-compose.yml run --name ultron_test --rm test bash python3 --version
 
+.PHONY: docker-compose-up
 docker-compose-up:
 	@docker-compose -f hacking/docker-compose.yml up -d
 
+.PHONY: docker-compose-up-build
 docker-compose-up-build:
 	@docker-compose -f hacking/docker-compose.yml up --build
 
+.PHONY: docker-compose-up-build-d
 docker-compose-up-build-d:
 	@docker-compose -f hacking/docker-compose.yml up -d --build
 
+.PHONY: docker-compose-down
 docker-compose-down:
 	@docker-compose -f hacking/docker-compose.yml down
 
+.PHONY: docker-version
 docker-version:
 	@docker --version
 	@docker-compose --version
-
-
-
 
 # --------------------------------------------------------------------------------------------------------------------
 # SOURCE: https://github.com/kennethreitz/requests
@@ -713,11 +730,14 @@ else
 	pipenv install -e .
 endif
 
+.PHONY: pipenv-bootstrap
 pipenv-bootstrap: pipenv-init pipenv-dev
 
+.PHONY: pipenv-activate
 pipenv-activate:
 	@echo "Run: pipenv shell"
 
+.PHONY: test-coverage
 test-coverage:
 	pytest --capture=no --cov-report html --cov=. tests
 
@@ -738,6 +758,7 @@ test-coverage:
 # 	--cov=ultron8 \
 # 	tests
 
+.PHONY: ci
 ci:
 	echo " [run] alembic upgrade head"
 	pipenv run alembic upgrade head
@@ -753,19 +774,24 @@ ci:
 	--cov=ultron8 \
 	tests
 
+.PHONY: test-readme
 test-readme:
 	@pipenv run python setup.py check --restructuredtext --strict && ([ $$? -eq 0 ] && echo "README.rst and HISTORY.rst ok") || echo "Invalid markup in README.rst or HISTORY.rst!"
 
+.PHONY: flake8
 flake8:
 # pipenv run flake8 --config=$(CURRENT_DIR)/lint-configs-python/.flake8 --ignore=E501,F401,E128,E402,E731,F821 ultron8
 	pipenv run flake8 --config=$(CURRENT_DIR)/lint-configs-python/python/.flake8 $(PACKAGE_NAME)
 
+.PHONY: coverage
 coverage:
 	pipenv run py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=$(PACKAGE_NAME) tests
 
+.PHONY: lint-configs-subtree
 lint-configs-subtree:
 	git subtree add --prefix lint-configs-python https://github.com/bossjones/lint-configs-python.git master --squash
 
+.PHONY: docker-machine-create
 docker-machine-create:
 	docker-machine create \
 	--driver generic \
@@ -773,6 +799,7 @@ docker-machine-create:
 	--generic-ssh-key ~/.ssh/vagrant_id_rsa \
 	$(PACKAGE_NAME)
 
+.PHONY: docker-machine-env-print
 docker-machine-env-print:
 	@printf "=======================================\n"
 	@printf "$$GREEN docker-machine $(PACKAGE_NAME) created:$$NC\n"
@@ -781,34 +808,42 @@ docker-machine-env-print:
 	@printf "=======================================\n"
 	@printf "$$ORNG     [RUN] $$(print-dm-eval) $$NC\n"
 
+.PHONY: install-poetry
 install-poetry:
 	curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
 
+.PHONY: install-debug-tools
 install-debug-tools:
 	[ -d /usr/local/src/debug-tools ] || sudo git clone https://github.com/bossjones/debug-tools /usr/local/src/debug-tools
 	sudo chown -R vagrant:vagrant /usr/local/src/debug-tools
 	sudo /usr/local/src/debug-tools/update-bossjones-debug-tools
 
-
+.PHONY: bandit
 bandit:
 # pipenv run bandit -r ./create_aio_app -x create_aio_app/template -s B101
 	pipenv run bandit -r ./ultron8 -s B101
 
+.PHONY: checkrst
 checkrst:
 	pipenv run python setup.py check --restructuredtext
 
+.PHONY: pyroma
 pyroma:
 	pipenv run pyroma -d .
 
+.PHONY: flake
 flake: checkrst bandit pyroma
 	pipenv run flake8 ultron8 setup.py
 
+.PHONY: pipenv-lock
 pipenv-lock:
 	pipenv lock
 
+.PHONY: copy-contrib
 copy-contrib:
 	copy-contrib
 
+.PHONY: generate-new-pipefile
 generate-new-pipefile:
 	bash script/generate-new-pipefile
 
@@ -817,26 +852,35 @@ generate-new-pipefile:
 # python dev work
 ##############################################################################################
 # SOURCE: https://pypi.org/project/pipenv-to-requirements/
+
+.PHONY: py-dev
 py-dev:
 	pipenv install --dev
 	pipenv run pip install -e .
 
+.PHONY: py-dists
 py-dists: py-sdist py-bdist py-wheels
 
+.PHONY: dist-build
 dist-build: clean ## setup.py - create source distribution (taken directly from twine docs)
 	python setup.py sdist bdist_wheel
 
+.PHONY: create-dist
 create-dist: py-dists  ## setup.py - create source distribution
 
+.PHONY: upload-twine
 upload-twine: ## twine - upload to pypi
 	twine upload dist/*
 
+.PHONY: py-sdist
 py-sdist:
 	pipenv run python setup.py sdist
 
+.PHONY: py-bdist
 py-bdist:
 	pipenv run python setup.py bdist
 
+.PHONY: py-wheels
 py-wheels:
 	pipenv run python setup.py bdist_wheel
 ##############################################################################################
@@ -869,15 +913,16 @@ clean-test: ## remove test and coverage artifacts
 	rm -f .coverage
 	rm -fr htmlcov/
 
+.PHONY: travis-pdb
 travis-pdb:
 	tox -e py37 -- --pdb --showlocals
-
 
 .PHONY: clean-cache
 clean-cache: ## clear all python cached bytecode eg *.pyc and __pycache__
 	find . -name '*.pyc' | xargs rm
 	find . -name '__pycache__' | xargs rm -rf
 
+.PHONY: clean-coverge-files
 clean-coverge-files:
 	-rm -rf htmlcov/
 	-rm -rf cov_annotate/
@@ -895,52 +940,67 @@ test:
 install-twine:
 	pip install twine
 
+.PHONY: docker-bash
 docker-bash:
 	.ci/docker-bash.sh
 
+.PHONY: local-ci
 local-ci: clean-test
 # pipenv run python setup.py test
 	bash .ci/local-ci.sh
 
+.PHONY: open-coverage-local
 open-coverage-local:
 	./script/open-browser.py htmlcov/index.html
 
+.PHONY: docker-dev-build
 docker-dev-build:
 	.ci/docker-dev-build.sh
 
+.PHONY: docker-dev-bash
 docker-dev-bash:
 	.ci/docker-dev-bash.sh
 
+.PHONY: docker-test-build
 docker-test-build:
 	.ci/docker-test-build.sh
 
+.PHONY: docker-test-bash
 docker-test-bash:
 	.ci/docker-test-bash.sh
 
+.PHONY: docker-test
 docker-test: clean-test docker-test-build
 	.ci/docker-test.sh
 
+.PHONY: dc-ci-build
 dc-ci-build: clean-test
 	.ci/dc-ci-build.sh
 
+.PHONY: dc-ci-run
 dc-ci-run: dc-ci-build
 	.ci/dc-ci-run.sh
 
+.PHONY: dc-ci-run-all
 dc-ci-run-all: dc-ci-build
 	.ci/dc-ci-run-all.sh
 
+.PHONY: vscode-settings
 vscode-settings:
 	cp -a contrib/settings.json .vscode/settings.json
 
+.PHONY: cp-vscode-settings
 cp-vscode-settings:
 	bash script/cp-vscode-settings
 
 # -----------------------------------------------------------------------------
 # SOURCE: https://github.com/aio-libs/aioredis/blob/master/Makefile
 # -----------------------------------------------------------------------------
+.PHONY: ultron8.egg-info
 ultron8.egg-info:
 	pip install -Ue .
 
+.PHONY: devel
 devel: ultron8.egg-info
 	pip install -U pip
 	pip install -U \
@@ -948,8 +1008,11 @@ devel: ultron8.egg-info
 		sphinx_rtd_theme \
 		bumpversion \
 		wheel
+
+.PHONY: certificate
 certificate:
 	$(MAKE) -C tests/ssl
+
 # -----------------------------------------------------------------------------
 .PHONY: local-black-check
 local-black-check: ## CHECK MODE: sensible pylint ( Lots of press over this during pycon 2018 )
@@ -962,6 +1025,7 @@ local-black: ## sensible pylint ( Lots of press over this during pycon 2018 )
 .PHONY: black
 black: local-black ## sensible pylint ( Lots of press over this during pycon 2018 )
 
+.PHONY: local-dev
 local-dev: pipenv-dev ## Run `pipenv install --dev` to create dev environment
 
 .PHONY: local-reformat
@@ -1045,27 +1109,33 @@ local-pytest-watch:
 # -------------------------------------------------------------------------------------------
 # SOURCE: https://github.com/ethereum/lahja/blob/master/Makefile - START
 # -------------------------------------------------------------------------------------------
-# Whole bunch of python make tasks for updating and changing things like docs, tags for releases, publishes, etc
+
+.PHONY: clean-build# Whole bunch of python make tasks for updating and changing things like docs, tags for releases, publishes, etc
 clean-build: ## remove build artifacts
 	rm -fr build/
 	rm -fr dist/
 	rm -fr *.egg-info
 
+.PHONY: clean-pyc
 clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
 
+.PHONY: clean
 clean: clean-build clean-pyc ## clean build artifacts and python file artifacts
 
+.PHONY: build-docs
 build-docs:
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(MAKE) -C docs doctest
 
+.PHONY: docs
 docs: build-docs
 	open docs/_build/html/index.html
 
+.PHONY: release
 release: clean
 # git config commit.gpgSign true
 	bumpversion $(bump)
@@ -1074,11 +1144,13 @@ release: clean
 	twine upload dist/*
 # git config commit.gpgSign "$(CURRENT_SIGN_SETTING)"
 
+.PHONY: publish
 publish: clean
 	git push upstream master && git push upstream --tags
 	python setup.py sdist bdist_wheel
 	twine upload dist/*
 
+.PHONY: dist
 dist: clean
 	python setup.py sdist bdist_wheel
 	ls -l dist
@@ -1172,41 +1244,53 @@ local-pylint-error:
 local-pytest:
 	pipenv run py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=ultron8 tests
 
+.PHONY: local-lint
 local-lint: clean-test local-mypy local-pylint local-black local-pytest
 
+.PHONY: dc-up-web
 dc-up-web: dc-ci-build
 	bash script/dc-up-web
 
+.PHONY: dc-run-web
 dc-run-web: dc-ci-build
 	bash script/dc-run-web
 
+.PHONY: dc-logs
 dc-logs: ## Tail docker-compose logs
 	bash script/dc-logs
 
+.PHONY: dc-ci-exec-test
 dc-ci-exec-test: dc-ci-build dc-up-web # Main entrypoint for running tests inside of docker-compose
 	.ci/dc-ci-exec-test.sh
 
+.PHONY: dc-ci-tail-dev-null
 dc-ci-tail-dev-null: dc-ci-build # Starts up docker container via docker-compose using tail -f /dev/null
 	.ci/dc-ci-tail-dev-null.sh
 
+.PHONY: dc-build-cache-base
 dc-build-cache-base: # build docker cache base and send up to docker hub
 	.ci/dc-build-cache-base.sh
 
+.PHONY: ci-before_install
 ci-before_install: ## ci: docker container/image from gnzip tar file in $HOME/.cache/docker
 	.ci/dc-build-gunzip-travis-stage-before_install.sh
 
+.PHONY: ci-build
 ci-build: ci-before_install dc-build-cache-base dc-up-web ci-gunzip # build docker cache base, cache it locally on machine and send up to docker hub etc
 
+.PHONY: ci-gunzip
 ci-gunzip: ## take contents of dockerfile and cache it locally into $HOME/.cache/docker
 	.ci/dc-build-gunzip-travis-stage-install.sh
 
+.PHONY: ci-bleeding
 ci-bleeding: ci-build ci-gunzip ci-test
 
+.PHONY: ci-test
 ci-test: # Testing out new build to see if faster than before
 	.ci/dc-ci-exec-test.sh
 
+.PHONY: ci-experimental
 ci-experimental: ci-build ci-test # Testing out new build to see if faster than before
-
 
 .PHONY: migration-clean
 migration-clean: ## Nuke all migrations scripts in the versions directory, nuke the local sqlite db then autogenerate again using shell command that greps all models together space delimited
@@ -1242,61 +1326,77 @@ migration-restart: ## Downgrade alembic database to base migration, then upgrade
 	pipenv run alembic downgrade base
 	pipenv run alembic upgrade head
 
+.PHONY: build-cached
 build-cached: ## docker-compose build wheelhouse version
 	docker-compose -f docker-compose.cached.yml build | gnomon
 
+.PHONY: pipenv_activate
 pipenv_activate: ## Activate pipenv shell
 	pipenv shell
 
+.PHONY: pipenv_shell
 pipenv_shell: pipenv_activate ## (alias) Activate pipenv shell
 
+.PHONY: pre-commit-run
 pre-commit-run: ## run pre-commit hooks across all files
 	pre-commit run --all-files
 
+.PHONY: pre-commit-install
 pre-commit-install: ## install all pre-commit hooks
 	pre-commit install -f --install-hooks
 
+.PHONY: serve-daemon-pipenv
 serve-daemon-pipenv: ## serve the web daemon from 'pipenv run'
 	pipenv run serve-daemon
 
+.PHONY: serve-daemon
 serve-daemon: ## serve the web daemon from 'pipenv run'
 	bash script/serve-daemon
 
+.PHONY: ci-local
 ci-local: ## run pytest using 'pipenv run'
 	pipenv run bash script/local_pytest
 
+.PHONY: ci-monkeytype-local
 ci-monkeytype-local: ## run pytest using 'pipenv run'
 	pipenv run bash script/local_monkeytype_pytest
 
+.PHONY: ci-monkeytype-stub-apply-local
 ci-monkeytype-stub-apply-local: ## run pytest stub as much as we can, then run apply those types to everything using 'pipenv run'
 	pipenv run bash script/local_monkeytype_stub_apply_pytest
 
+.PHONY: ci-local-only
 ci-local-only: ## run pytest using 'pipenv run'
 	pipenv run bash script/local_pytest_with_args $(ONLY_RUN)
 
+.PHONY: local_pytest
 local_pytest: ci-local ## [ALIAS for ci-local] run pytest using 'pipenv run'
 local-pytest: ci-local ## [ALIAS for ci-local] run pytest using 'pipenv run'
 
+.PHONY: ci-local-pdb
 ci-local-pdb: ## run pytest WITH PDB using 'pipenv run'
 	pipenv run bash script/local_pytest_pdb
 
+.PHONY: ci-local-pdb-only
 ci-local-pdb-only: ## run pytest using 'pipenv run' limited by ONLY_RUN=<pytest tag> with pdb enabled. Example: make ci-local-pdb-only ONLY_RUN=triggeronly
 	pipenv run bash script/local_pytest_pdb_with_args $(ONLY_RUN)
 
+.PHONY: local_pytest_pdb_with_args
 local_pytest_pdb_with_args: ci-local-pdb-only ## run pytest using 'pipenv run' limited by ONLY_RUN=<pytest tag> with pdb enabled
 local-pytest-pdb-with-args: ci-local-pdb-only ## run pytest using 'pipenv run' limited by ONLY_RUN=<pytest tag> with pdb enabled
 
+.PHONY: local_pytest_pdb
 local_pytest_pdb: ci-local-pdb ## [ALIAS for ci-local-pdb] run pytest WITH PDB using 'pipenv run'
 local-pytest-pdb: ci-local-pdb ## [ALIAS for ci-local-pdb] run pytest WITH PDB using 'pipenv run'
 
+.PHONY: open-coverage
 open-coverage: ## Open coverage report inside of web browser
 	./script/open-browser.py file://$(CURRENT_DIR)/htmlcov/index.html
-
 
 # environment: ## setup pyenv environment
 # 	$(PYENV_SETUP)
 
-
+.PHONY: stubs
 stubs: ## create stubs dir if it doesn't exist, used to provide type hinting
 	mkdir stubs
 

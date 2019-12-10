@@ -6,14 +6,15 @@
 #
 bandit==1.6.2
 docutils==0.15.2          # via pyroma
-gitdb2==2.0.5             # via gitpython
-gitpython==3.0.2          # via bandit
-pbr==5.4.2                # via stevedore
-pyroma==2.5
+gitdb2==2.0.6             # via gitpython
+gitpython==3.0.5          # via bandit
+pbr==5.4.4                # via stevedore
+pygments==2.5.1           # via pyroma
+pyroma==2.6
 pyyaml==5.1.2             # via bandit
-six==1.12.0               # via bandit, stevedore
+six==1.13.0               # via bandit, stevedore
 smmap2==2.0.5             # via gitdb2
-stevedore==1.30.1         # via bandit
+stevedore==1.31.0         # via bandit
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools==41.2.0        # via pyroma
+# setuptools
