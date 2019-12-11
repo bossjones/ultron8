@@ -44,11 +44,11 @@ logger.setLevel("DEBUG")
 
 
 @task
-def get_env(c):
+def get_env(c, loc="local"):
     """
     Get environment vars necessary to run fastapi
     Usage: inv local.get-env
     """
-    env = get_compose_env(c)
+    env = get_compose_env(c, loc=loc)
     for key in env:
         print("{0}={1}".format(key, env[key]))
