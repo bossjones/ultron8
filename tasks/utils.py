@@ -16,7 +16,7 @@ logger.setLevel("DEBUG")
 
 # https://stackoverflow.com/questions/1871549/determine-if-python-is-running-inside-virtualenv
 def is_venv():
-    """[summary]
+    """Check to see if we are currently in a virtual environment
 
     Returns:
         [type] -- [description]
@@ -26,14 +26,11 @@ def is_venv():
     )
 
 
-def get_version(name):
-    """[summary]
-
-    Arguments:
-        name {[type]} -- [description]
+def get_version():
+    """Get current version of Ultron8
 
     Returns:
-        [type] -- [description]
+        Str -- Returns current version of application
     """
     from ultron8 import __version__
 
@@ -48,7 +45,7 @@ def get_compose_env(c, loc="docker", name=None):
     Vault variables
     """
     env = copy.copy(c[loc]["env"])
-    env["VERSION"] = get_version(c["name"])
+    env["VERSION"] = get_version()
     env["NAME"] = c["name"]
 
     # environment variables have priority over what's inside invoke.yaml

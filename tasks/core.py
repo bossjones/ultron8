@@ -74,7 +74,7 @@ def lint_tests(ctx):
 @task
 def test(ctx):
     """
-    Check Python code style
+    Run pytest
     Usage: inv docker.test or inv local.test
     """
     env = get_compose_env(ctx)
@@ -88,7 +88,7 @@ def test(ctx):
 @task
 def test_pdb(ctx):
     """
-    Check Python code style
+    Run pytest with pdb enabled
     Usage: inv docker.test-pdb or inv local.test-pdb
     """
     env = get_compose_env(ctx)
@@ -102,7 +102,7 @@ def test_pdb(ctx):
 @task
 def coverage_run(ctx):
     """
-    Check Python code style
+    Check Python code coverage
     Usage: inv docker.coverage-run or inv local.coverage-run
     """
     env = get_compose_env(ctx)
@@ -116,7 +116,7 @@ def coverage_run(ctx):
 @task
 def setup_test(ctx):
     """
-    Check Python code style
+    Setup python tests
     Usage: inv docker.setup-test or inv local.setup-test
     """
     env = get_compose_env(ctx)
@@ -127,7 +127,7 @@ def setup_test(ctx):
 @task
 def run_pytest(ctx):
     """
-    Check Python code style
+    Pytest Runner w/ coverage
     Usage: inv docker.run-pytest or inv local.run-pytest
     """
     env = get_compose_env(ctx)
@@ -141,7 +141,7 @@ def run_pytest(ctx):
 @task
 def serve(ctx):
     """
-    Check Python code style
+    Start up fastapi server
     Usage: inv docker.serve or inv local.serve
     """
     env = get_compose_env(ctx)
@@ -152,7 +152,7 @@ def serve(ctx):
 @task
 def serve_daemon(ctx):
     """
-    Check Python code style
+    Start up fastapi server (daemonized)
     Usage: inv docker.serve-daemon or inv local.serve-daemon
     """
     env = get_compose_env(ctx)
@@ -163,7 +163,7 @@ def serve_daemon(ctx):
 @task
 def backend_pre_start(ctx):
     """
-    Check Python code style
+    Docker backend steps
     Usage: inv docker.backend-pre-start or inv local.backend-pre-start
     """
     env = get_compose_env(ctx)
@@ -174,7 +174,7 @@ def backend_pre_start(ctx):
 @task
 def initial_data(ctx):
     """
-    Check Python code style
+    Seed db data
     Usage: inv docker.initial-data or inv local.initial-data
     """
     env = get_compose_env(ctx)

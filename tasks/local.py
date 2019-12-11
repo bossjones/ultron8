@@ -31,11 +31,11 @@ logger.setLevel("DEBUG")
 
 
 # @task
-# def reset_test_db(c, loc='dev'):
+# def reset_test_db(c, loc='local'):
 #     """
 #     Reset the test database
 #     """
-#     conn_string = c.dev['env']['TEST_SQLALCHEMY_DATABASE_URI']
+#     conn_string = c.local['env']['TEST_SQLALCHEMY_DATABASE_URI']
 #     db = make_url(conn_string)
 #     sql1 = f'DROP DATABASE IF EXISTS {db.database}'
 #     sql2 = f'CREATE DATABASE {db.database}'
@@ -46,7 +46,7 @@ logger.setLevel("DEBUG")
 @task
 def get_env(c):
     """
-    Get environment vars necessary to run flask
+    Get environment vars necessary to run fastapi
     Usage: inv local.get-env
     """
     env = get_compose_env(c)
