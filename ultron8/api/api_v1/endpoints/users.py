@@ -5,7 +5,7 @@ from fastapi import Body
 from fastapi import Depends
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
-from pydantic.types import EmailStr
+from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
 from ultron8.api import crud

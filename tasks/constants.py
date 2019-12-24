@@ -127,3 +127,40 @@ SCRIPT_DIR = os.path.join(ROOT_DIR, "script")
 
 
 # PY_VERSION="${PY_VER_MAJOR}.${PY_VER_MINOR}.${PY_VER_MICRO}"
+
+# https://github.com/bossjones/pocketsphinx-build/blob/master/pocketsphinx_build/build.py
+# ENVRC_BUILD_TEMPLATE = """
+# export CFLAGS = '{CFLAGS}'
+# export PYTHON = 'python'
+# export GSTREAMER = '1.0'
+# export ENABLE_PYTHON3 = 'yes'
+# export ENABLE_GTK = 'yes'
+# export PYTHON_VERSION = '{PYTHON_VERSION}'
+# export PATH = '{PATH}'
+# export LD_LIBRARY_PATH = '{LD_LIBRARY_PATH}'
+# export PYTHONPATH = '{PYTHONPATH}'
+# export PKG_CONFIG_PATH = '{PKG_CONFIG_PATH}'
+# export XDG_DATA_DIRS = '{XDG_DATA_DIRS}'
+# export XDG_CONFIG_DIRS = '{XDG_CONFIG_DIRS}'
+# export CC = 'gcc'
+# export PROJECT_HOME = '{PROJECT_HOME}'
+# export PYTHONSTARTUP = '{PYTHONSTARTUP}'
+# """
+
+# ENVRC_RUN_TEMPLATE = """
+# export CFLAGS = '{CFLAGS}'
+# export PYTHON = 'python'
+# export GSTREAMER = '1.0'
+# export ENABLE_PYTHON3 = 'yes'
+# export ENABLE_GTK = 'yes'
+# export PYTHON_VERSION = '{PYTHON_VERSION}'
+# export PATH = '{PATH}'
+# export LD_LIBRARY_PATH = '{LD_LIBRARY_PATH}'
+# export PYTHONPATH = '{PYTHONPATH}'
+# export PKG_CONFIG_PATH = '{PKG_CONFIG_PATH}'
+# export XDG_DATA_DIRS = '{XDG_DATA_DIRS}'
+# export XDG_CONFIG_DIRS = '{XDG_CONFIG_DIRS}'
+# export CC = 'gcc'
+# export PROJECT_HOME = '{PROJECT_HOME}'
+# export PYTHONSTARTUP = '{PYTHONSTARTUP}'
+# """

@@ -66,3 +66,21 @@ def black(ctx, loc="local"):
         ctx.config["run"]["env"][k] = v
 
     ctx.run("black --check --exclude=ultron8_venv* --verbose ultron8")
+
+
+@task
+def isort(ctx, loc="local"):
+    """
+    isort ultron8 folder
+    Usage: inv ci.isort
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    ctx.run("isort --recursive --check-only --diff --verbose ultron8 tests")
