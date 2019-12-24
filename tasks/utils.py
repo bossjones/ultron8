@@ -1,17 +1,101 @@
 """
 supporting task functions
 """
-import logging
+
+# Passing an environment variable containing unicode literals to a subprocess
+# on Windows and Python2 raises a TypeError. Since there is no unicode
+# string in this script, we don't import unicode_literals to avoid the issue.
+from __future__ import absolute_import, division, print_function
+
+import argparse
+import contextlib
 import copy
-import os
-import sys
+from distutils import sysconfig
+import errno
+import getpass
 from getpass import getpass
+import hashlib
+import io
+import logging
+import multiprocessing
+import os
+import os.path as p
+import platform
+import re
+import select
+import shlex
+import shutil
+from shutil import rmtree
+from shutil import which
+import stat
+import subprocess
+import sys
+import tarfile
+import tempfile
+from tempfile import mkdtemp
+import time
+
+from invoke import Exit
 
 # from keyrings.cryptfile.cryptfile import CryptFileKeyring
-
+ENV_WHITELIST = [
+    "DEBUG",
+    "TESTING",
+    "SECRET_KEY",
+    "REDIS_URL",
+    "REDIS_ENDPOINT",
+    "REDIS_PORT",
+    "REDIS_DB",
+    "DATABASE_URL",
+    "TEST_DATABASE_URL",
+    "DEFAULT_MODULE_NAME",
+    "VARIABLE_NAME",
+    "MODULE_NAME",
+    "APP_MODULE",
+    "DEFAULT_GUNICORN_CONF",
+    "PRE_START_PATH",
+    "DOMAIN",
+    "HOST",
+    "PORT",
+    "LOG_LEVEL",
+    "BETTER_EXCEPTIONS",
+    "SERVER_NAME",
+    "SERVER_HOST",
+    "ULTRON_ENABLE_WEB",
+    "JUPYTER",
+    "PROJECT_NAME",
+    "DOMAIN_MAIN",
+    "FIRST_SUPERUSER",
+    "FIRST_SUPERUSER_PASSWORD",
+    "SMTP_TLS",
+    "SMTP_PORT",
+    "SMTP_EMAILS_FROM_EMAIL",
+    "FLOWER_AUTH",
+    "USERS_OPEN_REGISTRATION",
+    "BACKEND_CORS_ORIGINS",
+    "VERSION",
+    "NAME",
+    "BETTER_EXCEPTIONS",
+    "HOME",
+    "LANG",
+    "LANGUAGE",
+    "PATH",
+    "PYENV_",
+    "VIRTUALENVWRAPPER_",
+    "WORKON_HOME",
+    "VIRTUAL_ENV",
+]
 
 logger = logging.getLogger(__name__)
 logger.setLevel("DEBUG")
+
+
+def _check_exe(exe):
+    """ Look for executable """
+    exe_path = which(exe)
+    if not exe_path:
+        msg = "Couldn't find `{}`.\n".format(exe)
+        raise Exit(msg)
 
 
 # https://stackoverflow.com/questions/1871549/determine-if-python-is-running-inside-virtualenv
@@ -51,11 +135,18 @@ def get_compose_env(c, loc="docker", name=None):
     # environment variables have priority over what's inside invoke.yaml
     for key in env:
         if key in os.environ:
-            env[key] = os.getenv(key)
+            env[key] = "{}".format(os.getenv(key))
+
+    for key in env.keys():
+        # print("ENV: {}".format(key))
+        if key not in ENV_WHITELIST:
+            del env[key]
 
     if name:
         if name in env:
             return env[name]
+
+    # print("type(ENV) = {}".format(type(env)))
 
     return env
 
@@ -116,3 +207,189 @@ def confirm():
 #     else:
 #         secret = os.environ.get(env_var_name)
 #     return secret
+
+# SOURCE: https://github.com/bossjones/pocketsphinx-build/blob/master/pocketsphinx_build/build.py
+
+# SOURCE: https://github.com/ARMmbed/mbed-cli/blob/f168237fabd0e32edcb48e214fc6ce2250046ab3/test/util.py
+# Process execution
+class ProcessException(Exception):
+    pass
+
+
+class Console:  # pylint: disable=too-few-public-methods
+
+    quiet = False
+
+    @classmethod
+    def message(cls, str_format, *args):
+        if cls.quiet:
+            return
+
+        if args:
+            print(str_format % args)
+        else:
+            print(str_format)
+
+        # Flush so that messages are printed at the right time
+        # as we use many subprocesses.
+        sys.stdout.flush()
+
+
+def pquery(command, stdin=None, **kwargs):
+    # SOURCE: https://github.com/ARMmbed/mbed-cli/blob/f168237fabd0e32edcb48e214fc6ce2250046ab3/test/util.py
+    # Example:
+    print(" ".join(command))
+    proc = subprocess.Popen(
+        command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs
+    )
+    stdout, _ = proc.communicate(stdin)
+
+    if proc.returncode != 0:
+        raise ProcessException(proc.returncode)
+
+    return stdout.decode("utf-8")
+
+
+# Directory navigation
+@contextlib.contextmanager
+def cd(newdir):
+    prevdir = os.getcwd()
+    os.chdir(newdir)
+    try:
+        yield
+    finally:
+        os.chdir(prevdir)
+
+
+def scm(dir=None):
+    if not dir:
+        dir = os.getcwd()
+
+    if os.path.isdir(os.path.join(dir, ".git")):
+        return "git"
+    elif os.path.isdir(os.path.join(dir, ".hg")):
+        return "hg"
+
+
+def _popen(cmd_arg):
+    devnull = open("/dev/null")
+    cmd = subprocess.Popen(cmd_arg, stdout=subprocess.PIPE, stderr=devnull, shell=True)
+    retval = cmd.stdout.read().strip()
+    err = cmd.wait()
+    cmd.stdout.close()
+    devnull.close()
+    if err:
+        raise RuntimeError("Failed to close %s stream" % cmd_arg)
+    return retval
+
+
+def _popen_stdout(cmd_arg, cwd=None):
+    # if passing a single string, either shell mut be True or else the string must simply name the program to be executed without specifying any arguments
+    cmd = subprocess.Popen(
+        cmd_arg,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        cwd=cwd,
+        bufsize=4096,
+        shell=True,
+    )
+    Console.message("BEGIN: {}".format(cmd_arg))
+    # output, err = cmd.communicate()
+
+    for line in iter(cmd.stdout.readline, b""):
+        # Print line
+        _line = line.rstrip()
+        Console.message(">>> {}".format(_line.decode("utf-8")))
+
+    Console.message("END: {}".format(cmd_arg))
+
+
+# Higher level functions
+def remove(path):
+    def remove_readonly(func, path, _):
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
+
+    shutil.rmtree(path, onerror=remove_readonly)
+
+
+def move_f(src, dst):
+    shutil.move(src, dst)
+
+
+def copy_f(src, dst):
+    shutil.copytree(src, dst)
+
+
+def git_clone(repo_url, dest, sha="master"):
+    # First check if folder exists
+    if not os.path.exists(dest):
+        # check if folder is a git repo
+        if scm(dest) != "git":
+            clone_cmd = "git clone {repo} {dest}".format(repo=repo_url, dest=dest)
+            _popen_stdout(clone_cmd)
+
+            # CD to directory
+            with cd(dest):
+                checkout_cmd = "git checkout {sha}".format(sha=sha)
+                _popen_stdout(checkout_cmd)
+
+
+def whoami():
+    whoami = _popen("who")
+    return whoami
+
+
+def environ_append(key, value, separator=" ", force=False):
+    old_value = os.environ.get(key)
+    if old_value is not None:
+        value = old_value + separator + value
+    os.environ[key] = value
+
+
+def environ_prepend(key, value, separator=" ", force=False):
+    old_value = os.environ.get(key)
+    if old_value is not None:
+        value = value + separator + old_value
+    os.environ[key] = value
+
+
+def environ_remove(key, value, separator=":", force=False):
+    old_value = os.environ.get(key)
+    if old_value is not None:
+        old_value_split = old_value.split(separator)
+        value_split = [x for x in old_value_split if x != value]
+        value = separator.join(value_split)
+    os.environ[key] = value
+
+
+def environ_set(key, value):
+    os.environ[key] = value
+
+
+def environ_get(key):
+    return os.environ.get(key)
+
+
+def path_append(value):
+    if os.path.exists(value):
+        environ_append("PATH", value, ":")
+
+
+def path_prepend(value, force=False):
+    if os.path.exists(value):
+        environ_prepend("PATH", value, ":", force)
+
+
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+
+
+def dump_env_var(var):
+    Console.message("Env Var:{}={}".format(var, os.environ.get(var, "<EMPTY>")))

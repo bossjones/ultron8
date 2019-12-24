@@ -180,3 +180,12 @@ def initial_data(ctx):
     env = get_compose_env(ctx)
 
     ctx.run(f"python ultron8/initial_data.py", env=env)
+
+
+# def _debugger():
+#     import ipdb; ipdb.set_trace()
+
+
+# Dump keys in dict
+# for key, value in env.items() :
+#     print (key)

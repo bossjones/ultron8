@@ -8,6 +8,7 @@ run:
     pty:  true
     encoding: "utf_8"
     warn: true
+    replace_env: true
 
 # log_level: "CRITICAL"
 # ask_confirmation: true
@@ -16,13 +17,13 @@ run:
 docker:
   env:
     # env vars for the flask app
-    DEBUG: True
-    TESTING: True
+    DEBUG: 'True'
+    TESTING: 'True'
     SECRET_KEY: 43n080musdfjt54t-09sdgr
     REDIS_URL: "redis://localhost"
     REDIS_ENDPOINT: 127.0.0.1
-    REDIS_PORT: 6379
-    REDIS_DB: 0
+    REDIS_PORT: '6379'
+    REDIS_DB: '0'
     DATABASE_URL: "sqlite:///dev.db"
     TEST_DATABASE_URL: "sqlite:///test.db"
     DEFAULT_MODULE_NAME: "ultron8.web"
@@ -32,19 +33,19 @@ docker:
     DEFAULT_GUNICORN_CONF: /gunicorn_conf.py
     PRE_START_PATH: "/home/developer/app/ultron8/migrations/gunicorn-prestart.sh"
     HOST: 0.0.0.0
-    PORT: 11267
+    PORT: '11267'
     LOG_LEVEL: info
 
 local:
   env:
     # env vars for the flask app
-    DEBUG: True
-    TESTING: True
+    DEBUG: 'True'
+    TESTING: 'True'
     SECRET_KEY: 43n080musdfjt54t-09sdgr
     REDIS_URL: "redis://localhost"
     REDIS_ENDPOINT: 127.0.0.1
-    REDIS_PORT: 6379
-    REDIS_DB: 0
+    REDIS_PORT: '6379'
+    REDIS_DB: '0'
     DATABASE_URL: "sqlite:///dev.db"
     TEST_DATABASE_URL: "sqlite:///test.db"
     DEFAULT_MODULE_NAME: "ultron8.web"
@@ -55,20 +56,20 @@ local:
     PRE_START_PATH: /Users/malcolm/dev/bossjones/ultron8/migrations/gunicorn-prestart.sh
     DOMAIN: localhost
     HOST: localhost
-    PORT: 11267
+    PORT: '11267'
     LOG_LEVEL: DEBUG
     BETTER_EXCEPTIONS: 1
     SERVER_NAME: 'localhost:11267'
     SERVER_HOST: http://localhost:11267
-    ULTRON_ENABLE_WEB: False
+    ULTRON_ENABLE_WEB: 'False'
     JUPYTER: "jupyter lab --ip=0.0.0.0 --allow-root --NotebookApp.custom_display_url=http://127.0.0.1:8888"
     PROJECT_NAME: ultron8
     DOMAIN_MAIN: ultron8.com
     FIRST_SUPERUSER: 'admin@ultron8.com'
     FIRST_SUPERUSER_PASSWORD: 'password'
-    SMTP_TLS: True
-    SMTP_PORT: 587
+    SMTP_TLS: 'True'
+    SMTP_PORT: '587'
     SMTP_EMAILS_FROM_EMAIL: 'info@ultron8.com'
     FLOWER_AUTH: 'admin:password'
-    USERS_OPEN_REGISTRATION: False
+    USERS_OPEN_REGISTRATION: 'False'
     BACKEND_CORS_ORIGINS: '*'
