@@ -37,6 +37,13 @@ import time
 
 from invoke import Exit
 
+COLOR_WARNING = "red"
+COLOR_DANGER = "red"
+COLOR_SUCCESS = "green"
+COLOR_CAUTION = "yellow"
+COLOR_STABLE = "blue"
+
+
 # from keyrings.cryptfile.cryptfile import CryptFileKeyring
 ENV_WHITELIST = [
     "DEBUG",
@@ -84,6 +91,10 @@ ENV_WHITELIST = [
     "VIRTUALENVWRAPPER_",
     "WORKON_HOME",
     "VIRTUAL_ENV",
+    "DOCKER_TLS_VERIFY",
+    "DOCKER_HOST",
+    "DOCKER_CERT_PATH",
+    "DOCKER_MACHINE_NAME",
 ]
 
 logger = logging.getLogger(__name__)

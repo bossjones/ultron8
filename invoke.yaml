@@ -8,7 +8,7 @@ run:
     pty:  true
     encoding: "utf_8"
     warn: true
-    replace_env: true
+    # replace_env: true
 
 # log_level: "CRITICAL"
 # ask_confirmation: true

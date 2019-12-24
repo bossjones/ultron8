@@ -26,6 +26,10 @@ def pr_sha(ctx, loc="local"):
     # Only display result
     ctx.config["run"]["echo"] = False
 
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
     res = ctx.run("git rev-parse HEAD")
 
     return res.stdout
