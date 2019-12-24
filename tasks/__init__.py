@@ -28,7 +28,7 @@ from . import core
 from . import local
 from . import travis
 from . import ci
-from . import app
+from . import program
 from .git import pr_sha
 
 LOGGER = logging.getLogger()

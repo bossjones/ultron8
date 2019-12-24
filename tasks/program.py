@@ -1,5 +1,5 @@
 """
-app tasks
+program tasks
 """
 import logging
 from invoke import task
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 def get_crud_interfaces(ctx, loc="local"):
     """
     Display all crud interfactes for ultron8
-    Usage: inv app.get-crud-interfaces
+    Usage: inv program.get-crud-interfaces
     """
     env = get_compose_env(ctx, loc=loc)
 
@@ -31,7 +31,7 @@ def get_crud_interfaces(ctx, loc="local"):
 def env(ctx, loc="local"):
     """
     Display shell env
-    Usage: inv app.env
+    Usage: inv program.env
     """
     env = get_compose_env(ctx, loc=loc)
 
