@@ -27,6 +27,7 @@ from .constants import ROOT_DIR, PROJECT_BIN_DIR, DATA_DIR, SCRIPT_DIR
 from . import core
 from . import local
 from . import travis
+from . import ci
 from . import app
 from .git import pr_sha
 
@@ -36,6 +37,7 @@ ns = Collection()
 ns.add_collection(core)
 ns.add_collection(local)
 ns.add_collection(travis)
+ns.add_collection(ci)
 ns.add_collection(app)
 # ns.add_collection(git)
 ns.add_task(pr_sha)
