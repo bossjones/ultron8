@@ -11,7 +11,13 @@ from typing import Tuple
 from typing import Union
 
 from pydantic import BaseModel
-from pydantic import EmailStr
+
+# SOURCE: https://github.com/tiangolo/fastapi/issues/634
+try:
+    from pydantic import EmailStr
+except ImportError:
+    from pydantic.networks import EmailStr
+
 from pydantic import Schema
 
 from ultron8.api.models.base import BaseDataModel

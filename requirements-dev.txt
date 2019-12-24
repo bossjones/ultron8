@@ -18,28 +18,28 @@ backcall==0.1.0           # via ipython
 black==19.10b0
 cfgv==2.0.1               # via pre-commit
 click==7.0                # via black, retype
-colorama==0.4.1           # via hunter
+colorama==0.4.3           # via hunter
 decorator==4.4.1          # via ipython, traitlets
 docutils==0.15.2          # via restructuredtext-lint
 fancycompleter==0.8       # via pdbpp
 freezegun==0.3.12
-hunter==3.0.4
-identify==1.4.7           # via pre-commit
-importlib-metadata==0.23  # via pre-commit
+hunter==3.0.5
+identify==1.4.9           # via pre-commit
+importlib-metadata==1.3.0  # via pre-commit
 invoke==1.3.0
 ipython-genutils==0.2.0   # via traitlets
-ipython==7.10.0
+ipython==7.10.2
 isort==4.3.21
-jedi==0.15.1              # via ipython
+jedi==0.15.2              # via ipython
 lazy-object-proxy==1.4.3
 manhole==1.6.0            # via hunter
 mccabe==0.6.1
-monkeytype==19.11.1
-more-itertools==7.2.0     # via zipp
+monkeytype==19.11.2
+more-itertools==8.0.2     # via zipp
 mypy-extensions==0.4.3    # via monkeytype
 nodeenv==1.3.3            # via pre-commit
 notify-send==0.0.13
-parso==0.5.1              # via jedi
+parso==0.5.2              # via jedi
 pathlib-mate==0.0.15
 pathspec==0.6.0           # via black, retype
 pathtools==0.1.2          # via watchdog
@@ -48,16 +48,16 @@ pexpect==4.7.0            # via ipython
 pickleshare==0.7.5        # via ipython
 plumbum==1.6.8            # via rpyc
 pre-commit==1.20.0
-prompt-toolkit==3.0.1     # via ipython
+prompt-toolkit==3.0.2     # via ipython
 ptyprocess==0.6.0         # via pexpect
 pycodestyle==2.5.0        # via autopep8
 pyflakes==2.1.1           # via autoflake
-pygments==2.5.1           # via ipython, pdbpp
+pygments==2.5.2           # via ipython, pdbpp
 pylint==2.4.4
 pystuck==0.8.5
 python-dateutil==2.8.1    # via freezegun
-pyyaml==5.1.2             # via aspy.yaml, pre-commit, watchdog
-regex==2019.11.1          # via black
+pyyaml==5.2               # via aspy.yaml, pre-commit, watchdog
+regex==2019.12.20         # via black
 restructuredtext-lint==1.3.0
 retype==19.9.0            # via monkeytype
 rpyc==4.1.2               # via pystuck
@@ -67,7 +67,7 @@ terminaltables==3.1.0     # via aiomonitor
 toml==0.10.0              # via black, pre-commit
 traitlets==4.3.3          # via ipython
 typed-ast==1.4.0          # via astroid, black, retype
-virtualenv==16.7.8        # via pre-commit
+virtualenv==16.7.9        # via pre-commit
 vulture==1.2
 watchdog==0.9.0           # via when-changed
 wcwidth==0.1.7            # via prompt-toolkit

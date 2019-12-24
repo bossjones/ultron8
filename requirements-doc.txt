@@ -12,7 +12,9 @@ babel==2.7.0              # via sphinx
 certifi==2019.11.28       # via requests
 chardet==3.0.4            # via requests
 docfly==0.0.17
-docutils==0.15.2          # via m2r, sphinx
+docutils==0.15.2          # via flit, m2r, sphinx
+flit-core==2.1.0          # via flit
+flit==2.1.0               # via sphinx-copybutton
 idna==2.8                 # via requests
 imagesize==1.1.0          # via sphinx
 jinja2==2.10.3            # via docfly, rstobj, sphinx
@@ -22,17 +24,18 @@ mistune==0.8.4            # via m2r
 packaging==19.2           # via sphinx
 pathlib-mate==0.0.15      # via docfly
 pycodestyle==2.5.0        # via autopep8
-pygments==2.5.1
+pygments==2.5.2
 pyparsing==2.4.5          # via packaging
+pytoml==0.1.21            # via flit, flit-core
 pytz==2019.3              # via babel
-requests==2.22.0          # via sphinx
+requests==2.22.0          # via flit, sphinx
 rstobj==0.0.7
 six==1.13.0               # via packaging, pathlib-mate, rstobj
 snowballstemmer==2.0.0    # via sphinx
-sphinx-copybutton==0.2.5
+sphinx-copybutton==0.2.6
 sphinx-jinja==1.1.0
 sphinx-rtd-theme==0.4.3
-sphinx==2.2.1
+sphinx==2.3.1
 sphinxcontrib-applehelp==1.0.1  # via sphinx
 sphinxcontrib-devhelp==1.0.1  # via sphinx
 sphinxcontrib-htmlhelp==1.0.2  # via sphinx
@@ -40,6 +43,7 @@ sphinxcontrib-jsmath==1.0.1  # via sphinx
 sphinxcontrib-qthelp==1.0.2  # via sphinx
 sphinxcontrib-serializinghtml==1.1.3  # via sphinx
 urllib3==1.25.7           # via requests
+wheel==0.33.6             # via sphinx-copybutton
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

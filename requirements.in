@@ -76,7 +76,8 @@ tenacity
 
 pyjwt
 python-multipart
-email_validator
+# email_validator
+pydantic[email,typing_extensions]
 
 passlib[bcrypt]
 
