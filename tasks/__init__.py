@@ -38,7 +38,7 @@ ns.add_collection(core)
 ns.add_collection(local)
 ns.add_collection(travis)
 ns.add_collection(ci)
-ns.add_collection(app)
+ns.add_collection(program)
 # ns.add_collection(git)
 ns.add_task(pr_sha)
 
