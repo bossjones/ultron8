@@ -51,9 +51,9 @@ def mypy(ctx, loc="local"):
 
 
 @task
-def black(ctx, loc="local"):
+def black(ctx, loc="local", check=True, debug=False):
     """
-    black ultron8 folder
+    Run black code formatter
     Usage: inv ci.black
     """
     env = get_compose_env(ctx, loc=loc)
@@ -65,14 +65,20 @@ def black(ctx, loc="local"):
     for k, v in env.items():
         ctx.config["run"]["env"][k] = v
 
-    ctx.run("black --check --exclude=ultron8_venv* --verbose ultron8")
+    _cmd = ""
+
+    if check:
+        _cmd = "black --check --exclude=ultron8_venv* --verbose ultron8"
+    else:
+        _cmd = "black --exclude=ultron8_venv* --verbose ultron8"
+
+    ctx.run(_cmd)
 
 
 @task
-def isort(ctx, loc="local"):
+def isort(ctx, loc="local", check=True, debug=False):
     """
-    isort ultron8 folder
-    Usage: inv ci.isort
+    isort ultron8 module
     """
     env = get_compose_env(ctx, loc=loc)
 
@@ -83,4 +89,11 @@ def isort(ctx, loc="local"):
     for k, v in env.items():
         ctx.config["run"]["env"][k] = v
 
-    ctx.run("isort --recursive --check-only --diff --verbose ultron8 tests")
+    _cmd = ""
+
+    if check:
+        _cmd = "isort --recursive --check-only --diff --verbose ultron8 tests"
+    else:
+        _cmd = "isort --recursive --diff --verbose ultron8 tests"
+
+    ctx.run(_cmd)

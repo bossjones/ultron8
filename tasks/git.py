@@ -32,4 +32,9 @@ def pr_sha(ctx, loc="local"):
 
     res = ctx.run("git rev-parse HEAD")
 
-    return res.stdout
+    # override CI_IMAGE value
+    ctx.config["run"]["env"]["PR_SHA"] = "{}".format(res.stdout)
+    ctx.config["run"]["env"]["REPO_NAME"] = "bossjones/ultron8-ci"
+    ctx.config["run"]["env"]["IMAGE_TAG"] = "{}:{}".format(
+        ctx.config["run"]["env"]["REPO_NAME"], ctx.config["run"]["env"]["PR_SHA"]
+    )
