@@ -51,7 +51,7 @@ repos:
     rev: stable
     hooks:
     - id: black
-      language_version: python3
+      language_version: python3.7
 # A tool (and pre-commit hook) to automatically upgrade syntax for newer versions of the language.
 # -   repo: https://github.com/asottile/pyupgrade
 #     rev: v1.21.0
