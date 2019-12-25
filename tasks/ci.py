@@ -4,6 +4,7 @@ ci tasks
 import os
 import logging
 from invoke import task
+import click
 from tasks.utils import get_compose_env
 
 # from tasks.core import clean, execute_sql
@@ -50,8 +51,8 @@ def mypy(ctx, loc="local"):
     ctx.run("mypy --config-file ./lint-configs-python/python/mypy.ini ultron8 tests")
 
 
-@task
-def black(ctx, loc="local", check=True, debug=False):
+@task(incrementable=["verbose"])
+def black(ctx, loc="local", check=True, debug=False, verbose=0):
     """
     Run black code formatter
     Usage: inv ci.black
@@ -65,12 +66,16 @@ def black(ctx, loc="local", check=True, debug=False):
     for k, v in env.items():
         ctx.config["run"]["env"][k] = v
 
+    _black_excludes = r"/(\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|dist|ultron8_venv*)/"
     _cmd = ""
 
     if check:
         _cmd = "black --check --exclude=ultron8_venv* --verbose ultron8"
     else:
-        _cmd = "black --exclude=ultron8_venv* --verbose ultron8"
+        if verbose >= 1:
+            msg = "[black] check mode disabled"
+            click.secho(msg, fg="green")
+        _cmd = r"black --exclude='{}' --verbose ultron8".format(_black_excludes)
 
     ctx.run(_cmd)
 

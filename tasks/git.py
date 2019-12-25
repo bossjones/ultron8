@@ -4,6 +4,7 @@ git tasks
 import logging
 from invoke import task
 import os
+import click
 from tasks.utils import get_compose_env, is_venv
 
 # from tasks.core import clean, execute_sql
@@ -15,8 +16,8 @@ logger.setLevel("DEBUG")
 # git rev-parse HEAD
 
 
-@task
-def pr_sha(ctx, loc="local"):
+@task(incrementable=["verbose"])
+def pr_sha(ctx, loc="local", quiet=False, verbose=0):
     """
     Return `git rev-parse HEAD` for project.
     Usage: inv docker.lint-test or inv local.lint-test
@@ -38,3 +39,8 @@ def pr_sha(ctx, loc="local"):
     ctx.config["run"]["env"]["IMAGE_TAG"] = "{}:{}".format(
         ctx.config["run"]["env"]["REPO_NAME"], ctx.config["run"]["env"]["PR_SHA"]
     )
+    ctx.config["run"]["env"]["TAG"] = ctx.config["run"]["env"]["IMAGE_TAG"]
+
+    if verbose >= 1:
+        msg = "[PR_SHA] {}".format(ctx.config["run"]["env"]["PR_SHA"])
+        click.secho(msg, fg="green")
