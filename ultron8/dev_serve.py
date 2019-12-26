@@ -139,6 +139,4 @@ if __name__ == "__main__":
     PORT = int(os.environ.get("PORT", 11267))
     print(f" [HOST] {HOST}")
     print(f" [PORT] {PORT}")
-    uvicorn.run(
-        app, host=HOST, port=PORT, logger=LOGGER, log_level=settings._USER_LOG_LEVEL
-    )
+    uvicorn.run(app, host=HOST, port=PORT, log_level=settings._USER_LOG_LEVEL.lower())

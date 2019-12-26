@@ -1,7 +1,7 @@
 from app.utils import send_test_email
 from fastapi import APIRouter
 from fastapi import Depends
-from pydantic.types import EmailStr
+from pydantic import EmailStr
 
 from ultron8.api.core.celery_app import celery_app
 from ultron8.api.models.msg import Msg

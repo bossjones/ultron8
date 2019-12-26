@@ -2,7 +2,7 @@
 
 pushd "$(dirname "$0")/.."
 
-_PATH_TO_PYENV_PYTHON=$(pipenv run which python)
+_PATH_TO_PYENV_PYTHON=$(python -c "import sys;print(sys.executable)")
 _BASE_PATH_PYENV_FOLDER=$(dirname -- "$_PATH_TO_PYENV_PYTHON")
 _PATH_TO_MYPY="${_BASE_PATH_PYENV_FOLDER}/mypy"
 _PATH_TO_PYLINT="${_BASE_PATH_PYENV_FOLDER}/pylint"
@@ -208,6 +208,7 @@ cat <<EOF > ${_FILE}
     "python.linting.pylintCategorySeverity.warning":"Warning",
     "python.linting.pylintUseMinimalCheckers": false,
     "python.linting.pydocstyleEnabled":false,
+    "python.linting.pylintArgs": ["--rcfile", "\${workspaceFolder}/lint-configs-python/python/pylintrc"],
     "python.terminal.activateEnvironment":true,
     "python.terminal.executeInFileDir":true,
     "python.terminal.launchArgs":[],
@@ -234,7 +235,11 @@ cat <<EOF > ${_FILE}
     "python.linting.pylintEnabled": true,
     "[python]": {
         "editor.formatOnPaste": false
-    }
+    },
+    "terminal.integrated.shell.linux": "/usr/local/bin/zsh",
+    "shellcheck.executablePath": "/usr/local/bin/shellcheck",
+    "terminal.integrated.setLocaleVariables": true,
+    "terminal.integrated.shell.osx": "/usr/local/bin/zsh"
 }
 EOF
 
