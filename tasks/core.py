@@ -5,7 +5,8 @@ import logging
 from pathlib import Path
 import invoke
 from invoke import task
-from sqlalchemy.engine.url import make_url
+
+# from sqlalchemy.engine.url import make_url
 from tasks.utils import get_version, get_compose_env, confirm
 
 PROJROOT = str(Path(__file__).parent)

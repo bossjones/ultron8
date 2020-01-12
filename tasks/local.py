@@ -4,7 +4,8 @@ local tasks
 import logging
 from invoke import task, call
 import os
-from sqlalchemy.engine.url import make_url
+
+# from sqlalchemy.engine.url import make_url
 import click
 from tasks.utils import get_compose_env, is_venv
 
@@ -53,7 +54,7 @@ logger.setLevel("DEBUG")
 #                 conn_string=conn_string, database='template1')
 
 
-@task(incrementable=["verbose"],)
+@task(incrementable=["verbose"])
 def get_env(ctx, loc="local", verbose=0):
     """
     Get environment vars necessary to run fastapi
@@ -72,7 +73,7 @@ def get_env(ctx, loc="local", verbose=0):
         print("{0}={1}".format(key, env[key]))
 
 
-@task(incrementable=["verbose"],)
+@task(incrementable=["verbose"])
 def get_python_path(ctx, loc="local", verbose=0):
     """
     Get environment vars necessary to run fastapi
@@ -88,7 +89,7 @@ def get_python_path(ctx, loc="local", verbose=0):
     ctx.run(_cmd)
 
 
-@task(incrementable=["verbose"],)
+@task(incrementable=["verbose"])
 def detect_os(ctx, loc="local", verbose=0):
     """
     detect what type of os we are using
@@ -122,9 +123,7 @@ def detect_os(ctx, loc="local", verbose=0):
         ctx.config["run"]["env"]["CFLAGS"] = "-I/usr/local/opt/openssl/include"
 
 
-@task(
-    pre=[call(detect_os, loc="local"),], incrementable=["verbose"],
-)
+@task(pre=[call(detect_os, loc="local")], incrementable=["verbose"])
 def serve(ctx, loc="local", verbose=0, cleanup=False):
     """
     start up fastapi application
