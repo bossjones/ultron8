@@ -107,8 +107,7 @@ def detect_os(ctx, loc="local", verbose=0):
     if ctx.config["run"]["env"]["OS"] == "Windows_NT":
         ctx.config["run"]["env"]["DETECTED_OS"] = "Windows"
     else:
-        res_detected_os = ctx.run("uname -s")
-        ctx.config["run"]["env"]["DETECTED_OS"] = "{}".format(res_detected_os.stdout)
+        ctx.config["run"]["env"]["DETECTED_OS"] = ctx.config["run"]["env"]["OS"]
 
     if verbose >= 1:
         msg = "[detect-os] Detected: {}".format(ctx.config["run"]["env"]["DETECTED_OS"])
@@ -163,3 +162,41 @@ pgrep -f "ultron8/dev_serve.py" || true
     ctx.run("python ./ultron8/api/backend_pre_start.py")
     ctx.run("python ./ultron8/initial_data.py")
     ctx.run("python ultron8/dev_serve.py")
+
+
+@task(pre=[call(detect_os, loc="local")], incrementable=["verbose"])
+def bootstrap(ctx, loc="local", verbose=0, cleanup=False):
+    """
+    start up fastapi application
+    Usage: inv local.serve
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    if verbose >= 1:
+        msg = "[install] Create virtual environment, initialize it, install packages, and remind user to activate after make is done"
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    # pip install pre-commit
+    # pre-commit install -f --install-hooks
+    _cmd = r"""
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+pip install -r requirements-test.txt
+pip install -r requirements-doc.txt
+    """
+
+    if verbose >= 1:
+        msg = "[install] Install dependencies: "
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run(_cmd)
+
+    click.secho("[install] install editable version of ultron8", fg=COLOR_SUCCESS)
+    ctx.run("pip install -e .")
