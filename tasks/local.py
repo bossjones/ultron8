@@ -164,8 +164,10 @@ pgrep -f "ultron8/dev_serve.py" || true
     ctx.run("python ultron8/dev_serve.py")
 
 
-@task(pre=[call(detect_os, loc="local")], incrementable=["verbose"])
-def bootstrap(ctx, loc="local", verbose=0, cleanup=False):
+@task(
+    pre=[call(detect_os, loc="local")], incrementable=["verbose"], aliases=["install"]
+)
+def bootstrap(ctx, loc="local", verbose=0, cleanup=False, upgrade=False):
     """
     start up fastapi application
     Usage: inv local.serve
@@ -182,12 +184,20 @@ def bootstrap(ctx, loc="local", verbose=0, cleanup=False):
 
     # pip install pre-commit
     # pre-commit install -f --install-hooks
-    _cmd = r"""
+    if upgrade:
+        _cmd = r"""
+pip install -r -U requirements.txt
+pip install -r -U requirements-dev.txt
+pip install -r -U requirements-test.txt
+pip install -r -U requirements-doc.txt
+        """
+    else:
+        _cmd = r"""
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
 pip install -r requirements-test.txt
 pip install -r requirements-doc.txt
-    """
+        """
 
     if verbose >= 1:
         msg = "[install] Install dependencies: "
@@ -200,3 +210,46 @@ pip install -r requirements-doc.txt
 
     click.secho("[install] install editable version of ultron8", fg=COLOR_SUCCESS)
     ctx.run("pip install -e .")
+
+
+@task(pre=[call(detect_os, loc="local")], incrementable=["verbose"])
+def freeze(ctx, loc="local", verbose=0, after=False, diff=False):
+    """
+    Write freeze.before.txt or freeze.after.txt
+    Usage: inv local.freeze
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    if verbose >= 1:
+        msg = "[freeze] Create virtual environment, initialize it, install packages, and remind user to activate after make is done"
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    if after:
+        _cmd = r"""
+pip freeze > freeze.after.txt
+        """
+    else:
+        _cmd = r"""
+pip freeze > freeze.before.txt
+        """
+
+    if verbose >= 1:
+        msg = "[freeze] freeze deps: "
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run(_cmd)
+
+    if diff:
+        res = ctx.run(
+            "diff -y --suppress-common-lines freeze.before.txt freeze.after.txt"
+        )
+        msg = "[freeze] diff between two freeze files: "
+        click.secho(msg, fg=COLOR_SUCCESS)
+        print(res.stdout)

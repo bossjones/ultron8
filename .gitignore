@@ -345,3 +345,5 @@ monkeytype.sqlite3
 sensor_test.db
 ultron8-pipenv.*
 temp.json
+freeze.before.txt
+freeze.after.txt
