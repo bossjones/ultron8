@@ -186,10 +186,10 @@ def bootstrap(ctx, loc="local", verbose=0, cleanup=False, upgrade=False):
     # pre-commit install -f --install-hooks
     if upgrade:
         _cmd = r"""
-pip install -r -U requirements.txt
-pip install -r -U requirements-dev.txt
-pip install -r -U requirements-test.txt
-pip install -r -U requirements-doc.txt
+pip install -U -r requirements.txt
+pip install -U -r requirements-dev.txt
+pip install -U -r requirements-test.txt
+pip install -U -r requirements-doc.txt
         """
     else:
         _cmd = r"""
