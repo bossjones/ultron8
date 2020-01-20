@@ -102,3 +102,26 @@ def isort(ctx, loc="local", check=True, debug=False):
         _cmd = "isort --recursive --diff --verbose ultron8 tests"
 
     ctx.run(_cmd)
+
+
+@task(incrementable=["verbose"])
+def pytest(ctx, loc="local", check=True, debug=False, verbose=0):
+    """
+    Run pytest
+    Usage: inv ci.pytest
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    if verbose >= 1:
+        msg = "[pytest] check mode disabled"
+        click.secho(msg, fg="green")
+    _cmd = r"py.test --cov-config .coveragerc --verbose --cov-append --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"
+
+    ctx.run(_cmd)
