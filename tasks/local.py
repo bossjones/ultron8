@@ -253,3 +253,39 @@ pip freeze > freeze.before.txt
         msg = "[freeze] diff between two freeze files: "
         click.secho(msg, fg=COLOR_SUCCESS)
         print(res.stdout)
+
+
+@task(
+    pre=[call(detect_os, loc="local")],
+    incrementable=["verbose"],
+    aliases=["pip_compile"],
+)
+def pip_deps(ctx, loc="local", verbose=0, cleanup=False):
+    """
+    lock flask pip dependencies
+    Usage: inv local.pip_deps
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    if verbose >= 1:
+        msg = "[pip-deps] Create virtual environment, initialize it, install packages, and remind user to activate after make is done"
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    _cmd = r"""
+pip-compile --output-file requirements.txt requirements.in --upgrade
+pip-compile --output-file requirements-dev.txt requirements-dev.in --upgrade
+pip-compile --output-file requirements-test.txt requirements-test.in --upgrade
+    """
+
+    if verbose >= 1:
+        msg = "[pip-deps] Install dependencies: "
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run(_cmd)
