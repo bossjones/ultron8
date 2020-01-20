@@ -25,3 +25,11 @@ TAG="${IMAGE_TAG}"
 header " [run] travis 'before_install:' section"
 if [ -f ${CACHE_FILE_BASE} ]; then gunzip -c ${CACHE_FILE_BASE} | docker load || true; fi
 if [ -f ${CACHE_FILE_RUNTIME} ]; then gunzip -c ${CACHE_FILE_RUNTIME} | docker load || true; fi
+
+header " [run] travis 'before_install:' section docker ps"
+docker ps -a
+echo ""
+echo ""
+docker images
+echo ""
+echo ""
