@@ -381,7 +381,8 @@ if "__main__" == __name__:
             sqlalchemy_session = session
             sqlalchemy_session_persistence = "commit"
 
-    shared_packs_name = Faker("first_name").lower()
+    # shared_packs_name = Faker("first_name").lower()
+    shared_packs_name = Faker("first_name")
 
     class PacksFactory(factory.alchemy.SQLAlchemyModelFactory):
         class Meta:

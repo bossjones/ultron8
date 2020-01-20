@@ -1,6 +1,9 @@
 import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 
+# pylint: disable=no-member
+# pylint: disable=no-self-argument
+
 
 class CustomBase(object):
     # Generate __tablename__ automatically

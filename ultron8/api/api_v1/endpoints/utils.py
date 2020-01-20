@@ -1,4 +1,5 @@
-from app.utils import send_test_email
+# from app.utils import send_test_email
+from ultron8.api.utils import send_test_email
 from fastapi import APIRouter
 from fastapi import Depends
 from pydantic import EmailStr
