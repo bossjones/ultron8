@@ -58,7 +58,7 @@ local:
     HOST: localhost
     PORT: '11267'
     LOG_LEVEL: DEBUG
-    BETTER_EXCEPTIONS: 1
+    BETTER_EXCEPTIONS: '1'
     SERVER_NAME: 'localhost:11267'
     SERVER_HOST: http://localhost:11267
     ULTRON_ENABLE_WEB: 'False'

@@ -4,7 +4,8 @@ local tasks
 import logging
 from invoke import task, call
 import os
-from sqlalchemy.engine.url import make_url
+
+# from sqlalchemy.engine.url import make_url
 import click
 from tasks.utils import get_compose_env, is_venv
 
@@ -53,7 +54,7 @@ logger.setLevel("DEBUG")
 #                 conn_string=conn_string, database='template1')
 
 
-@task(incrementable=["verbose"],)
+@task(incrementable=["verbose"])
 def get_env(ctx, loc="local", verbose=0):
     """
     Get environment vars necessary to run fastapi
@@ -72,7 +73,7 @@ def get_env(ctx, loc="local", verbose=0):
         print("{0}={1}".format(key, env[key]))
 
 
-@task(incrementable=["verbose"],)
+@task(incrementable=["verbose"])
 def get_python_path(ctx, loc="local", verbose=0):
     """
     Get environment vars necessary to run fastapi
@@ -88,7 +89,7 @@ def get_python_path(ctx, loc="local", verbose=0):
     ctx.run(_cmd)
 
 
-@task(incrementable=["verbose"],)
+@task(incrementable=["verbose"])
 def detect_os(ctx, loc="local", verbose=0):
     """
     detect what type of os we are using
@@ -106,8 +107,7 @@ def detect_os(ctx, loc="local", verbose=0):
     if ctx.config["run"]["env"]["OS"] == "Windows_NT":
         ctx.config["run"]["env"]["DETECTED_OS"] = "Windows"
     else:
-        res_detected_os = ctx.run("uname -s")
-        ctx.config["run"]["env"]["DETECTED_OS"] = "{}".format(res_detected_os.stdout)
+        ctx.config["run"]["env"]["DETECTED_OS"] = ctx.config["run"]["env"]["OS"]
 
     if verbose >= 1:
         msg = "[detect-os] Detected: {}".format(ctx.config["run"]["env"]["DETECTED_OS"])
@@ -122,9 +122,7 @@ def detect_os(ctx, loc="local", verbose=0):
         ctx.config["run"]["env"]["CFLAGS"] = "-I/usr/local/opt/openssl/include"
 
 
-@task(
-    pre=[call(detect_os, loc="local"),], incrementable=["verbose"],
-)
+@task(pre=[call(detect_os, loc="local")], incrementable=["verbose"])
 def serve(ctx, loc="local", verbose=0, cleanup=False):
     """
     start up fastapi application
@@ -164,3 +162,41 @@ pgrep -f "ultron8/dev_serve.py" || true
     ctx.run("python ./ultron8/api/backend_pre_start.py")
     ctx.run("python ./ultron8/initial_data.py")
     ctx.run("python ultron8/dev_serve.py")
+
+
+@task(pre=[call(detect_os, loc="local")], incrementable=["verbose"])
+def bootstrap(ctx, loc="local", verbose=0, cleanup=False):
+    """
+    start up fastapi application
+    Usage: inv local.serve
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    if verbose >= 1:
+        msg = "[install] Create virtual environment, initialize it, install packages, and remind user to activate after make is done"
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    # pip install pre-commit
+    # pre-commit install -f --install-hooks
+    _cmd = r"""
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+pip install -r requirements-test.txt
+pip install -r requirements-doc.txt
+    """
+
+    if verbose >= 1:
+        msg = "[install] Install dependencies: "
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run(_cmd)
+
+    click.secho("[install] install editable version of ultron8", fg=COLOR_SUCCESS)
+    ctx.run("pip install -e .")
