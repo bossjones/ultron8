@@ -63,7 +63,7 @@ def _info() -> None:
 
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.option("--working-dir", envvar="ULTRON_WORKING_DIR", default="working_dir")
-@click.option("--config-dir", envvar="ULTRON_CONFIG_DIR", default="config")
+@click.option("--config-dir", envvar="ULTRON_CONFIG_DIR", default=".config")
 @click.option("--debug", is_flag=True, envvar="ULTRON_DEBUG")
 @click.option("-v", "--verbose", count=True, help="Enables verbose mode.")
 @click.pass_context
@@ -81,6 +81,11 @@ def cli(ctx, working_dir: str, config_dir: str, debug: bool, verbose: int):
     set_flag("debug", debug)
     set_flag("verbose", verbose)
 
+    ctx.obj["working_dir"] = working_dir
+    ctx.obj["config_dir"] = config_dir
+    ctx.obj["debug"] = debug
+    ctx.obj["verbose"] = verbose
+
     # pass
 
 
@@ -97,9 +102,12 @@ def dummy(ctx):
         click.echo("Debug mode initiated")
         set_trace()
 
-    click.echo("Dummy command, doesn't do anything.")
+    if get_flag("debug"):
+        click.echo("[DUMP ctx]: ")
+        for k, v in ctx.obj.items():
+            click.echo(f"  {k} -> {v}")
 
-    click.echo(f"get_flag={get_flag('debug')}")
+    click.echo("Dummy command, doesn't do anything.")
 
 
 @cli.command()
