@@ -1,53 +1,119 @@
 from typing import Any
 from typing import Tuple
 
+import os
+import sys
+
+# import pdb
 import click
 import pyconfig
 
-from . import commands
 from .logging_init import getLogger
 from .process import fail
 
+# from click.testing import CliRunner
+
 logger = getLogger(__name__)
+
+stdin, stdout = sys.stdin, sys.stdout
+
+
+def set_trace():
+    """[Use this to set pdb trace for debugging]
+    """
+    # SOURCE: https://github.com/pallets/click/issues/1121
+    # pdb.Pdb(stdin=stdin, stdout=stdout).set_trace()
+    pass
+
 
 # http://click.palletsprojects.com/en/5.x/options/
 # http://click.palletsprojects.com/en/5.x/complex/#complex-guide
 # http://click.palletsprojects.com/en/5.x/commands/
+# https://github.com/pallets/click/blob/master/examples/complex/complex/cli.py
 
 
-@click.group()
+CONTEXT_SETTINGS = dict(auto_envvar_prefix="ULTRON8_CLI")
+
+
+class Environment(object):
+    def __init__(self):
+        self.verbose = False
+        self.home = os.getcwd()
+
+    def log(self, msg, *args):
+        """Logs a message to stderr."""
+        if args:
+            msg %= args
+        click.echo(msg, file=sys.stderr)
+
+    def vlog(self, msg, *args):
+        """Logs a message to stderr only if verbose is enabled."""
+        if self.verbose:
+            self.log(msg, *args)
+
+
+pass_environment = click.make_pass_decorator(Environment, ensure=True)
+cmd_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "commands"))
+
+
+def _info() -> None:
+    """Get Info on Ultron"""
+    logger.info("Ultron8 is running")
+
+
+@click.group(context_settings=CONTEXT_SETTINGS)
 @click.option("--working-dir", envvar="ULTRON_WORKING_DIR", default="working_dir")
 @click.option("--config-dir", envvar="ULTRON_CONFIG_DIR", default="config")
 @click.option("--debug", is_flag=True, envvar="ULTRON_DEBUG")
+@click.option("-v", "--verbose", count=True, help="Enables verbose mode.")
 @click.pass_context
-def cli(ctx, working_dir: str, config_dir: str, debug: bool):
+def cli(ctx, working_dir: str, config_dir: str, debug: bool, verbose: int):
     """
     Ultronctl - Client Side CLI tool to manage an Ultron8 Cluster.
     """
-    click.echo(f"debug={debug}")
+    # SOURCE: http://click.palletsprojects.com/en/7.x/commands/?highlight=__main__
+    # ensure that ctx.obj exists and is a dict (in case `cli()` is called
+    # by means other than the `if` block below
+    ctx.ensure_object(dict)
 
     set_flag("working-dir", working_dir)
     set_flag("config-dir", config_dir)
     set_flag("debug", debug)
+    set_flag("verbose", verbose)
+
     # pass
 
 
+# SOURCE: https://kite.com/blog/python/python-command-line-click-tutorial/
+
+
 @cli.command()
-def dummy():
+@click.pass_context
+def dummy(ctx):
     """
     Dummy command, doesn't do anything.
     """
+    if get_flag("debug"):
+        click.echo("Debug mode initiated")
+        set_trace()
 
     click.echo("Dummy command, doesn't do anything.")
+
+    click.echo(f"get_flag={get_flag('debug')}")
 
 
 @cli.command()
 @click.option("--fact", multiple=True, help="Set a fact, like --fact=color:blue.")
-def info(fact: Tuple[str]):
+@click.pass_context
+def info(ctx, fact: Tuple[str]):
     """Get info on running Ultron8 process."""
+    if get_flag("debug"):
+        click.echo("Debug mode initiated")
+        set_trace()
+
     logger.debug("info subcommand called from cli")
     set_fact_flags(fact)
-    commands.info()
+    _info()
 
 
 # @cli.command()
@@ -133,3 +199,55 @@ def set_fact_flags(flag_args: Tuple[str]) -> None:
         facts[fact] = value
 
     set_flag("fact", facts)
+
+
+# import logging
+# import random
+# import string
+
+# import requests
+
+# from ultron8.api import settings
+
+# from typing import Dict
+
+# logger = logging.getLogger(__name__)
+
+
+# def random_lower_string() -> str:
+#     return "".join(random.choices(string.ascii_lowercase, k=32))
+
+
+# def get_server_api() -> str:
+#     server_name = f"http://{settings.SERVER_NAME}"
+#     logger.debug("server_name: '%s'", server_name)
+#     return server_name
+
+
+# def get_superuser_token_headers() -> Dict[str, str]:
+#     server_api = get_server_api()
+#     login_data = {
+#         "username": settings.FIRST_SUPERUSER,
+#         "password": settings.FIRST_SUPERUSER_PASSWORD,
+#     }
+#     r = requests.post(
+#         f"{server_api}{settings.API_V1_STR}/login/access-token", data=login_data
+#     )
+#     tokens = r.json()
+#     a_token = tokens["access_token"]
+#     headers = {"Authorization": f"Bearer {a_token}"}
+#     # superuser_token_headers = headers
+#     return headers
+
+# if __name__ == '__main__':
+#     cli()
+
+# if __name__ == '__main__':
+#     print(sys.argv[1:])
+#     runner = CliRunner()
+#     print(runner.invoke(cli))
+if __name__ == "__main__":
+    # print(sys.argv[1:])
+    # runner = CliRunner()
+    # print(runner.invoke(cli, args=sys.argv[1:]))
+    cli(sys.argv[1:])
