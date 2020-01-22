@@ -1,8 +1,11 @@
 from typing import Any
 from typing import Tuple
 
+import json
 import os
 import sys
+import shutil
+import codecs
 
 # import pdb
 import click
@@ -11,11 +14,11 @@ import pyconfig
 from .logging_init import getLogger
 from .process import fail
 
-# from click.testing import CliRunner
-
 logger = getLogger(__name__)
 
 stdin, stdout = sys.stdin, sys.stdout
+
+CONTEXT_SETTINGS = dict(auto_envvar_prefix="ULTRON8_CLI")
 
 
 def set_trace():
@@ -32,7 +35,146 @@ def set_trace():
 # https://github.com/pallets/click/blob/master/examples/complex/complex/cli.py
 
 
-CONTEXT_SETTINGS = dict(auto_envvar_prefix="ULTRON8_CLI")
+def write_file(file_path, contents, mode="w"):
+    with open(file_path, mode, encoding="utf-8") as file_handle:
+        file_handle.write(contents)
+
+
+def load_json_file(file_path):
+    with open(file_path, "r", encoding="utf-8") as file_handle:
+        content = file_handle.read().replace("\n", "")
+    return json.loads(content)
+
+
+def write_json_file(file_path, data):
+    write_file(file_path, json.dumps(data))
+
+
+class NullConfig(object):
+    def __getattr__(self, name):
+        return self
+
+    def __call__(self):
+        return None
+
+    def exists(self):
+        return False
+
+
+class ConfigManager(object):
+    def __init__(self, data):
+        self.__data = data
+
+    def __getattr__(self, name):
+        if name in self.__data:
+            return ConfigManager(self.__data[name])
+        return NullConfig()
+
+    def __call__(self):
+        return self.__data
+
+    def exists(self):
+        return True
+
+
+def app_home():
+    try:
+        return os.path.join(os.environ["HOME"], ".ultron8")
+    except KeyError:
+        raise "HOME environment variable not set?"
+
+
+def mkdir_if_dne(target):
+    if not os.path.isdir(target):
+        os.makedirs(target)
+
+
+def prep_default_config():
+    home = app_home()
+    if not os.path.exists(home):
+        os.makedirs(home)
+    default_cfg = os.path.join(home, "config.json")
+    if not os.path.exists(default_cfg):
+        file = open(default_cfg, "w")
+        file.write("{}")
+        file.close()
+    return default_cfg
+
+
+class Workspace:
+    def __init__(self, wdir=None, libdir=None):
+        self._wdir = None
+        if wdir is None:
+            wdir = self._default_workspace()
+        self.set_dir(wdir)
+        self._lib_dir = None
+        if libdir is None:
+            libdir = self._default_libdir()
+        mkdir_if_dne(libdir)
+        self._lib_dir = libdir
+
+    def clean(self):
+        shutil.rmtree(self._wdir)
+        self.set_dir(self._wdir)
+
+    def set_dir(self, d):
+        """
+        Sets the directory that this object is tied to. If the
+        directory given actually is different, the contents will be
+        copied over
+        """
+        mkdir_if_dne(d)
+        old_workspace = self._wdir
+        self._wdir = d
+        if not d == old_workspace and old_workspace is not None:
+            self.copy_contents(old_workspace)
+
+    def copy_libs(self):
+        self.copy_contents(self._lib_dir, subdir=os.path.join("templates", "libs"))
+
+    def copy_templates(self, in_dir):
+        """
+        copy over lib files, and THEN user files to ensure overwrites
+        """
+        self.copy_contents(in_dir, subdir="templates")
+
+    def copy_contents(self, source, subdir="", sourcedir=None):
+        if sourcedir is None:
+            sourcedir = self._wdir
+        subdir_fp = os.path.join(sourcedir, subdir)
+        mkdir_if_dne(subdir_fp)
+        if os.path.isfile(source) and not os.path.isdir(source):
+            shutil.copy(source, subdir_fp)
+            return
+        # because shutil.copytree fails when sourcedir exists and
+        # is given as the destination
+        for fi in os.listdir(source):
+            fpath = os.path.join(source, fi)
+            # listed dir IS the target dir - skip to prevent infinite recursion
+            if fpath in os.path.join(sourcedir, fi):
+                continue
+            if os.path.isdir(fpath):
+                shutil.copytree(fpath, os.path.join(subdir_fp, fi))
+                continue
+            shutil.copy(fpath, subdir_fp)
+
+    def create_subdir(self, subdir):
+        full_path = os.path.join(self._wdir, subdir)
+        if os.path.isdir(full_path):
+            return
+        os.mkdir(full_path)
+
+    def write_template(self, path, contents):
+        write_file(os.path.join(self._wdir, path), contents, mode="a")
+
+    def template_subdir(self):
+        return os.path.join(self._wdir, "templates")
+
+    def _default_workspace(self):
+        return os.path.join(app_home(), "workspace")
+
+    def _default_libdir(self):
+        return os.path.join(app_home(), "libs")
 
 
 class Environment(object):
@@ -50,6 +192,15 @@ class Environment(object):
         """Logs a message to stderr only if verbose is enabled."""
         if self.verbose:
             self.log(msg, *args)
+
+
+DEFAULT_CONFIG = """
+clusters:
+    instances:
+        local:
+            url: "http://localhost:11267"
+            token: ""
+"""
 
 
 pass_environment = click.make_pass_decorator(Environment, ensure=True)
@@ -84,9 +235,10 @@ def cli(ctx, working_dir: str, config_dir: str, debug: bool, verbose: int):
     ctx.obj["working_dir"] = working_dir
     ctx.obj["config_dir"] = config_dir
     ctx.obj["debug"] = debug
+    ctx.obj["cfg_file"] = prep_default_config()
     ctx.obj["verbose"] = verbose
-
-    # pass
+    ctx.obj["workspace"] = Workspace()
+    ctx.obj["configmanager"] = ConfigManager(load_json_file(ctx.obj["cfg_file"]))
 
 
 # SOURCE: https://kite.com/blog/python/python-command-line-click-tutorial/
@@ -108,6 +260,8 @@ def dummy(ctx):
             click.echo(f"  {k} -> {v}")
 
     click.echo("Dummy command, doesn't do anything.")
+
+    click.echo("Ran [{}]| test".format(sys._getframe().f_code.co_name))
 
 
 @cli.command()
