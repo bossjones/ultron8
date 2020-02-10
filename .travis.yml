@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+language: python
+
+dist: xenial
+
+group: edge
+
 env:
   global:
     - PYTHON="python3"
@@ -14,33 +20,39 @@ env:
     # REGISTRY_PASS
     - secure: ePCBKvfKcZMhIXihNw0s3ZVpHoEId7Ig5uBtgQTNoJ7WqrtZY32Or52kNcJTSj0wQEwbXS+Miw5wGTqFPKxsmhMiPEE9IcTIh4expZ1oHjoh8ANHxZow2KfBj7bwjeNZkMUwGn/FcAZ/wDl4He7Xw/jtTI0k3N1f3l/dumIeCu49Ta7YUKDXnlfMVLvfovmXNlDlurYamHIeaxcaayUGSKB3mrPITEjib35m3I+mKw/DfXqt/jdWSuPGI6h2VmwYAjFWO0ZNri6zOt44IcUj3vJ+gaxTMAgmMii62NpXzSZpr8lAbBx4fSnZRisz1zIu3VuBLxw6cV+WN7cdwl42LGYkntZdmk1jRyGxEnint+yuU6kLKWKWwy1iW2ZXJBKXxP0ekhZ/KiTCw2qNxnv+86RjHhP905hw4kE6+iQdXCZrKl5frlH+4k1ngQF9UG+qFW94sAtI0WLaWf2PfhayKuwyvbc5m1fKlFFYZDHOZNM8S2gxsxUZo9DBiVowFzrKHullvpsbGJg9BXPtKAj5uj0qp4MoWI5uMqn4RxFL2sfNMSDEH7HEj7Lphqx1PEK5yzYRMgvKNswneGSKDT4TqtnYnYALi+g5Jly0pI4xd+VnJW5ds34smnas6pCYZH/fCAjf/Yjw8mlObEoFNGElzYWahgd6JINsjcrMuT5a3c8=
 
-matrix:
-  fast_finish: true
-  include:
-  - name: "Python 3.7 w/ Docker Compose 1.24.0 and Docker 18.09"
-    python: '3.7'
-    env:
-      # TOX_ENV: py37 # from airflowci
-      TOXENV: py37
-      PYTHON: "python3"
-      # DOCKER_COMPOSE_VERSION: 1.17.1
-      DOCKER_COMPOSE_VERSION: 1.24.0
-      # TEST_TARGET: default
-      # DOCKER_DATA: "$HOME/docker_data"
-      # DOCKER_VERSION: 18.09.1~3-0~ubuntu-xenial
-      DOCKER_VERSION: 18.09
-      IS_CI_ENVIRONMENT: "true"
-    sudo: required
-    dist: xenial
-    language: python
-    group: edge
-  allow_failures:
-  - python: '3.7'
-    env:
-      TOXENV: typing
+    # - TOXENV=py37
+    # - PYTHON="python3"
+    # - DOCKER_COMPOSE_VERSION=1.24.0
+    # - DOCKER_VERSION=18.09
+    # - IS_CI_ENVIRONMENT="true"
+
+# matrix:
+#   fast_finish: true
+#   include:
+#   - name: "Python 3.7 w/ Docker Compose 1.24.0 and Docker 18.09"
+#     python: '3.7'
+#     env:
+#       # TOX_ENV: py37 # from airflowci
+#       TOXENV: py37
+#       PYTHON: "python3"
+#       # DOCKER_COMPOSE_VERSION: 1.17.1
+#       DOCKER_COMPOSE_VERSION: 1.24.0
+#       # TEST_TARGET: default
+#       # DOCKER_DATA: "$HOME/docker_data"
+#       # DOCKER_VERSION: 18.09.1~3-0~ubuntu-xenial
+#       DOCKER_VERSION: 18.09
+#       IS_CI_ENVIRONMENT: "true"
+#     sudo: required
+#     dist: xenial
+#     language: python
+#     group: edge
+#   allow_failures:
+#   - python: '3.7'
+#     env:
+#       TOXENV: typing
 
 services:
-  - docker
+  - 'docker'
 
 stages:
   - pre-test
@@ -48,6 +60,7 @@ stages:
 
 # SOURCE: https://github.com/apache/airflow/blob/669b026c0bed36572ff0c5ab2eaf3f6d2c845577/.travis.yml
 jobs:
+  fast_finish: true
   include:
     # - name: Flake8
     #   python: '3.7'
