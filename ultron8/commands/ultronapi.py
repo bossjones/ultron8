@@ -1,7 +1,7 @@
 import requests
 import time
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
+from requests.packages.urllib3.util.retry import Retry  # pylint: disable=import-error
 import os
 
 

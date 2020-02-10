@@ -445,4 +445,5 @@ if __name__ == "__main__":
     # print(sys.argv[1:])
     # runner = CliRunner()
     # print(runner.invoke(cli, args=sys.argv[1:]))
+    # pylint: disable=no-value-for-parameter
     cli(sys.argv[1:])

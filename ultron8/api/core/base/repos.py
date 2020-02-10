@@ -1,4 +1,5 @@
 # Shamlessly borrowed from bountydns, trying to understand how to write better web applications
+# https://github.com/3lpsy/boucanpy
 from typing import Optional, List
 from fastapi import Depends
 
@@ -263,7 +264,8 @@ class BaseRepo:
             searchable = self.model().__searchable__
 
         if not searchable:
-            raise Exception(f"No search models found for query: {search_qs}")
+            # DISABLED: # raise Exception(f"No search models found for query: {search_qs}")
+            raise Exception(f"No search models found for query: {search}")
 
         # TODO: implement search functionality in elasticsearch
         clauses = []
