@@ -408,6 +408,39 @@ def set_fact_flags(flag_args: Tuple[str]) -> None:
 #     print(sys.argv[1:])
 #     runner = CliRunner()
 #     print(runner.invoke(cli))
+
+
+@cli.command()
+@click.pass_context
+def login(ctx):
+    """
+    Login CLI. Used to interact with ultron8 api.
+    """
+    if get_flag("debug"):
+        click.echo("Debug mode initiated")
+        set_trace()
+
+    click.echo("BLAH")
+
+
+@cli.command()
+@click.option(
+    "-m",
+    "--method",
+    type=click.Choice(["GET", "POST", "PUT", "DELETE"], case_sensitive=False),
+)
+@click.pass_context
+def user(ctx, method):
+    """
+    User CLI. Used to interact with ultron8 api.
+    """
+    if get_flag("debug"):
+        click.echo("Debug mode initiated")
+        set_trace()
+
+    click.echo("BLAH")
+
+
 if __name__ == "__main__":
     # print(sys.argv[1:])
     # runner = CliRunner()
