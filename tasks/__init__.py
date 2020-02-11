@@ -29,6 +29,7 @@ from . import local
 from . import travis
 from . import ci
 from . import program
+from . import db
 from .git import pr_sha
 
 LOGGER = logging.getLogger()
@@ -39,6 +40,7 @@ ns.add_collection(local)
 ns.add_collection(travis)
 ns.add_collection(ci)
 ns.add_collection(program)
+ns.add_collection(db)
 # ns.add_collection(git)
 ns.add_task(pr_sha)
 
