@@ -262,7 +262,7 @@ pip freeze > freeze.before.txt
 )
 def pip_deps(ctx, loc="local", verbose=0, cleanup=False):
     """
-    lock flask pip dependencies
+    lock fastapi pip dependencies [requirements, dev, test]
     Usage: inv local.pip_deps
     """
     env = get_compose_env(ctx, loc=loc)

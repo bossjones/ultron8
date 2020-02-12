@@ -3,8 +3,11 @@ db tasks
 """
 import logging
 from invoke import task, call
+from invoke.exceptions import Exit, Failure
 import os
 import glob
+import sys
+import traceback
 
 from urllib.parse import urlparse
 
@@ -19,7 +22,6 @@ from .utils import (
     COLOR_CAUTION,
     COLOR_STABLE,
 )
-
 
 # from tasks.core import clean, execute_sql
 
@@ -195,6 +197,162 @@ grep "," ultron8/api/crud/__init__.py | grep -v "^#" | tr ',' '\n' | xargs
 
     if verbose >= 1:
         msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    if not dry_run:
+        ctx.run(_cmd)
+    else:
+        _msg = "[autogen] (dry-run) would run -> {_cmd}".format(_cmd=_cmd)
+        click.secho(_msg, fg=COLOR_CAUTION)
+
+
+@task(pre=[call(detect_os, loc="local")], incrementable=["verbose"])
+def alembic(
+    ctx, loc="local", verbose=0, clean=False, dry_run=True, comment="", run=None
+):
+    """
+    Invoke alembic commands <OPTIONS> [upgrade, autogenerate, show, history, status, downgrade]
+
+    Examples:
+        # upgrade migrations
+        $ invoke db.alembic --run=upgrade -v
+
+        # autogenerate
+        $ invoke db.alembic --run=autogenerate -v
+
+        # show
+        $ invoke db.alembic --run=show -v
+
+        # history
+        $ invoke db.alembic --run=history -v
+
+        # history
+        $ invoke db.alembic --run=history -v
+
+        # status
+        $ invoke db.alembic --run=status -v
+
+        # downgrade
+        $ invoke db.alembic --run=downgrade -v
+    """
+
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    if verbose >= 1:
+        msg = """
+[alembic] override env vars 'SERVER_NAME' and 'SERVER_HOST' - We don't want to mess w/ '.env.dist' for this situation
+"""
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    if clean:
+        if dry_run:
+            msg = "[alembic] dry-run mode enabled"
+            click.secho(msg, fg=COLOR_CAUTION)
+        if verbose >= 1:
+            msg = "[alembic] removing existing db first along with items in migration folder"
+            click.secho(msg, fg=COLOR_SUCCESS)
+
+        if (
+            ctx.config["run"]["env"]["TESTING"]
+            and ctx.config["run"]["env"]["TEST_DATABASE_URL"]
+        ):
+            DATABASE_URL = ctx.config["run"]["env"]["TEST_DATABASE_URL"]
+        else:
+            DATABASE_URL = ctx.config["run"]["env"]["DATABASE_URL"]
+
+        # get file name, eg dev.db
+        dbfile = urlparse(DATABASE_URL).path.replace("/", "")
+
+        # if it exists, nuke it
+        if os.path.isfile(dbfile):
+            if verbose >= 1:
+                _msg = "[alembic] deleting file '{dbfile}'".format(dbfile=dbfile)
+                click.secho(_msg, fg=COLOR_SUCCESS)
+
+            if not dry_run:
+                ctx.run("rm -fv {dbfile}".format(dbfile=dbfile))
+            else:
+                _msg = "[alembic] (dry-run) would run rm -fv {dbfile}".format(
+                    dbfile=dbfile
+                )
+                click.secho(_msg, fg=COLOR_CAUTION)
+
+        # open alembic.ini and get path to migration
+
+        versions = glob.glob("ultron8/migrations/versions/*.py")
+
+        if len(versions) > 0:
+            for i in versions:
+                if verbose >= 1:
+                    _msg = "[alembic] git deleting file '{i}'".format(i=i)
+                    click.secho(_msg, fg=COLOR_SUCCESS)
+                if not dry_run:
+                    ctx.run("git rm --force {i}".format(i=i))
+                else:
+                    _msg = "[alembic] (dry-run) would run git rm -v {i}".format(i=i)
+                    click.secho(_msg, fg=COLOR_CAUTION)
+
+    if verbose >= 2:
+        _msg = "ctx.config.run.env.TESTING: {}".format(
+            ctx.config["run"]["env"]["TESTING"]
+        )
+        click.secho(_msg, fg=COLOR_SUCCESS)
+        _msg = "ctx.config.run.env.TEST_DATABASE_URL: {}".format(
+            ctx.config["run"]["env"]["TEST_DATABASE_URL"]
+        )
+        click.secho(_msg, fg=COLOR_SUCCESS)
+        _msg = "ctx.config.run.env.DATABASE_URL: {}".format(
+            ctx.config["run"]["env"]["DATABASE_URL"]
+        )
+        click.secho(_msg, fg=COLOR_SUCCESS)
+
+    _cmd = ""
+
+    # upgrade, autogenerate, show, history, status, downgrade
+    try:
+        if run == "upgrade":
+            _cmd = "echo upgrade"
+        elif run == "autogenerate":
+            _crud_models_cmd = r"""grep "," ultron8/api/crud/__init__.py | grep -v "^#" | tr ',' '\n' | xargs
+"""
+            res = ctx.run(_crud_models_cmd)
+            _cmd = r"alembic revision --autogenerate -m 'Initial: {comment}'".format(
+                comment=res.stdout.rstrip()
+            )
+        elif run == "show":
+            _cmd = "alembic show"
+        elif run == "history":
+            _cmd = "alembic history"
+        elif run == "status":
+            _cmd = "alembic status"
+        elif run == "downgrade":
+            _cmd = "alembic downgrade -1"
+        else:
+            _msg = "Invalid alemic command specified."
+            click.secho(_msg, fg=COLOR_DANGER)
+    except Failure:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        logger.debug(
+            "Ran {}| exc_type={}".format(sys._getframe().f_code.co_name, exc_type)
+        )
+        logger.debug(
+            "Ran {}| exc_value={}".format(sys._getframe().f_code.co_name, exc_value)
+        )
+        traceback.print_tb(exc_traceback)
+
+    ####################################################
+    # Now actually run the command
+    ####################################################
+    if verbose >= 1:
+        msg = """
+CMD: {}
+""".format(
+            _cmd
+        )
         click.secho(msg, fg=COLOR_SUCCESS)
 
     if not dry_run:

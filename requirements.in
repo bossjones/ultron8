@@ -117,3 +117,6 @@ factory-boy
 Faker
 # keyring
 # keyrings.cryptfile
+
+# Introspect and display the logger tree inside "logging"
+logging_tree

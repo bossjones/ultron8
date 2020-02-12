@@ -14,18 +14,18 @@ aiojobs==0.2.2
 aioredis==1.3.1
 aiorwlock==0.6.0
 aiosqlite==0.11.0
-alembic==1.3.2
+alembic==1.4.0
 amqp==2.5.2               # via kombu
 argcomplete==1.11.1
 async-timeout==3.0.1
 attrs==19.3.0             # via aiohttp
 bcrypt==3.1.7             # via passlib
 better-exceptions==0.2.2
-billiard==3.6.1.0         # via celery
+billiard==3.6.2.0         # via celery
 cachetools==4.0.0         # via premailer
 celery==4.4.0
 certifi==2019.11.28       # via requests
-cffi==1.13.2              # via bcrypt, cryptography, pycares
+cffi==1.14.0              # via bcrypt, cryptography, pycares
 chardet==3.0.4            # via aiohttp, emails, requests
 click==7.0
 colorama==0.4.3           # via loggerfactory
@@ -40,33 +40,33 @@ email-validator==1.0.5    # via pydantic
 emails==0.5.15
 factory-boy==2.12.0
 faker==4.0.0
-fastapi==0.47.1
+fastapi==0.48.0
 gunicorn==20.0.4
 h11==0.9.0                # via uvicorn
 hiredis==1.0.1            # via aioredis
 httptools==0.0.13         # via uvicorn
 idna==2.8                 # via email-validator, requests, yarl
-importlib-metadata==1.4.0  # via argcomplete, kombu
+importlib-metadata==1.5.0  # via argcomplete, kombu
 janus==0.4.0
 jinja2-cli[yaml]==0.7.0
-jinja2==2.10.3            # via aiohttp-jinja2, jinja2-cli
+jinja2==2.11.1            # via aiohttp-jinja2, jinja2-cli
 kombu==4.6.7              # via celery
 loggerfactory==0.0.5
-lxml==4.4.2               # via emails, premailer
+logging-tree==1.8.1
+lxml==4.5.0               # via emails, premailer
 mako==1.1.1               # via alembic
 markupsafe==1.1.1         # via jinja2, mako
-more-itertools==8.1.0     # via zipp
 msgpack==0.6.2
 multidict==4.7.4
 numpy==1.18.1             # via pandas
-pandas==0.25.3
+pandas==1.0.1
 passlib[bcrypt]==1.7.2
 premailer==3.6.1          # via emails
 prometheus-client==0.7.1  # via starlette-prometheus
 pycares==3.1.1            # via aiodns
 pyconfig==3.2.3
 pycparser==2.19           # via cffi
-pydantic[email,typing_extensions]==1.3
+pydantic[email,typing_extensions]==1.4
 pyjwt==1.7.1
 python-dateutil==2.8.1    # via alembic, emails, faker, pandas, ruamel.yaml.convert
 python-editor==1.0.4      # via alembic
@@ -81,25 +81,25 @@ ruamel.std.argparse==0.8.1  # via ruamel.yaml.cmd
 ruamel.yaml.clib==0.2.0   # via ruamel.yaml
 ruamel.yaml.cmd==0.5.5
 ruamel.yaml.convert==0.3.2  # via ruamel.yaml.cmd
-ruamel.yaml==0.16.6
+ruamel.yaml==0.16.9
 simplejson==3.17.0        # via pytool
 six==1.14.0               # via bcrypt, configobj, cryptography, pyconfig, python-dateutil, python-multipart, pytool, sqlalchemy-utils, tenacity
 sqlalchemy-utils==0.36.1
-sqlalchemy==1.3.12
+sqlalchemy==1.3.13
 starlette-prometheus==0.5.0
 starlette==0.12.9         # via fastapi, starlette-prometheus
 tenacity==6.0.0
 text-unidecode==1.3       # via faker
 typing-extensions==3.7.4.1  # via pydantic
 ujson==1.35
-urllib3==1.25.7           # via requests
+urllib3==1.25.8           # via requests
 uvicorn==0.11.2
 uvloop==0.14.0            # via uvicorn
 vine==1.3.0               # via amqp, celery
 websockets==8.1           # via uvicorn
 wget==3.2
 yarl==1.4.2
-zipp==2.0.0               # via importlib-metadata
+zipp==2.2.0               # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
