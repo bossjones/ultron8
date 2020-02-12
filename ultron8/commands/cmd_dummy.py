@@ -35,4 +35,5 @@ def cli(ctx):
 
     click.echo("Dummy command, doesn't do anything.")
 
-    click.echo("Ran [{}]| test".format(sys._getframe().f_code.co_name))
+    if ctx.obj["verbose"] > 0:
+        click.echo("Ran [{}]| test".format(sys._getframe().f_code.co_name))
