@@ -211,4 +211,16 @@ if __name__ == "__main__":
 
     HOST = os.environ.get("HOST", "0.0.0.0")
     PORT = os.environ.get("PORT", 11267)
-    uvicorn.run(app, host=HOST, port=PORT)
+    # uvicorn.run(app, host=HOST, port=PORT)
+
+    # uvicorn.run(app, host=HOST, port=PORT, log_level=settings._USER_LOG_LEVEL.lower(), reload=True, workers=settings.WORKERS)
+    # uvicorn.run(app, host=HOST, port=PORT, log_level=settings._USER_LOG_LEVEL.lower(), reload=True)
+    APP_MODULE_STR = os.environ.get("APP_MODULE")
+    app_import_str = f"{APP_MODULE_STR}"
+    uvicorn.run(
+        app_import_str,
+        host=HOST,
+        port=PORT,
+        log_level=settings._USER_LOG_LEVEL.lower(),
+        reload=True,
+    )
