@@ -77,7 +77,6 @@ def get_yaml_config():
 
 def setup_logging():
     """Configure logging."""
-    level = settings.LOG_LEVEL
     log_config = get_yaml_config()
 
     # set up proper logging. This one disables the previously configured loggers.
@@ -86,6 +85,8 @@ def setup_logging():
 
 # create the logger object
 logger = logging.getLogger(__name__)
+# https://stackoverflow.com/questions/1987468/determining-if-root-logger-is-set-to-debug-level-in-python
+root_logger = logging.getLogger().isEnabledFor(settings.LOG_LEVEL)
 logger.info("It works with a custom format!")
 
 # SMOKE-TESTS
