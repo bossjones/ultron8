@@ -1,7 +1,7 @@
 # SOURCE: https://blog.bartab.fr/fastapi-logging-on-the-fly/
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, Optional, Any
 
 from pydantic import BaseModel
 
@@ -14,7 +14,9 @@ class LoggerPatch(BaseModel):
 class LoggerModel(BaseModel):
     name: str
     level: Optional[int]
-    children: Optional[List["LoggerModel"]] = None
+    # children: Optional[List["LoggerModel"]] = None
+    # fixes: https://github.com/samuelcolvin/pydantic/issues/545
+    children: Optional[List[Any]] = None
 
 
 LoggerModel.update_forward_refs()

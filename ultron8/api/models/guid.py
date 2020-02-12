@@ -12,6 +12,8 @@ from pydantic import BaseModel
 from pydantic import validator
 from ultron8.api.models.base import BaseDataModel
 
+# pylint: disable=no-self-argument
+
 log = logging.getLogger(__name__)
 
 

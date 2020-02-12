@@ -1,104 +1,104 @@
-import logging
-import operator
-import pickle
-import shelve
-import sys
-from io import BytesIO
+# import logging
+# import operator
+# import pickle
+# import shelve
+# import sys
+# from io import BytesIO
 
-import bsddb3
+# import bsddb3
 
-from ultron8.utils import maybe_decode
+# from ultron8.utils import maybe_decode
 
-log = logging.getLogger(__name__)
+# log = logging.getLogger(__name__)
 
-# SOURCE: https://github.com/robertmrk/aiosfstream/blob/2f1407d17608f332340a47449813fbf9b93afce5/docs/source/advanced.rst
-# FIXME: FYI, We prob need to figure this out
-# with shelve.open("replay.db") as replay:
+# # SOURCE: https://github.com/robertmrk/aiosfstream/blob/2f1407d17608f332340a47449813fbf9b93afce5/docs/source/advanced.rst
+# # FIXME: FYI, We prob need to figure this out
+# # with shelve.open("replay.db") as replay:
 
-#     async with SalesforceStreamingClient(
-#         consumer_key="<consumer key>",
-#         consumer_secret="<consumer secret>",
-#         username="<username>",
-#         password="<password>",
-#         replay=replay) as client:
+# #     async with SalesforceStreamingClient(
+# #         consumer_key="<consumer key>",
+# #         consumer_secret="<consumer secret>",
+# #         username="<username>",
+# #         password="<password>",
+# #         replay=replay) as client:
 
-#         await client.subscribe("/topic/foo")
+# #         await client.subscribe("/topic/foo")
 
-#         async for message in client:
-#             # process message
-
-
-class Py2Shelf(shelve.Shelf):
-    def __init__(self, filename, flag="c", protocol=2, writeback=False):
-        db = bsddb3.hashopen(filename, flag)
-        args = [self, db, protocol, writeback]
-        if sys.version_info[0] == 3:
-            args.append("utf8")
-        shelve.Shelf.__init__(*args)
-
-    def __getitem__(self, key):
-        try:
-            value = self.cache[key]
-        except KeyError:
-            f = BytesIO(self.dict[key.encode("utf8")])
-            if sys.version_info[0] == 3:
-                value = pickle.load(f, encoding="bytes")
-            else:
-                value = pickle.load(f)
-            if self.writeback:
-                self.cache[key] = value
-        return value
-
-    def __setitem__(self, key, value):
-        if self.writeback:
-            self.cache[key] = value
-        f = BytesIO()
-        pickle.dump(obj=value, file=f, protocol=self._protocol)
-        self.dict[key.encode("utf8")] = f.getvalue()
+# #         async for message in client:
+# #             # process message
 
 
-class ShelveKey(object):
-    __slots__ = ["type", "iden"]
+# class Py2Shelf(shelve.Shelf):
+#     def __init__(self, filename, flag="c", protocol=2, writeback=False):
+#         db = bsddb3.hashopen(filename, flag)
+#         args = [self, db, protocol, writeback]
+#         if sys.version_info[0] == 3:
+#             args.append("utf8")
+#         shelve.Shelf.__init__(*args)
 
-    def __init__(self, type, iden):
-        self.type = maybe_decode(type)
-        self.iden = maybe_decode(iden)
+#     def __getitem__(self, key):
+#         try:
+#             value = self.cache[key]
+#         except KeyError:
+#             f = BytesIO(self.dict[key.encode("utf8")])
+#             if sys.version_info[0] == 3:
+#                 value = pickle.load(f, encoding="bytes")
+#             else:
+#                 value = pickle.load(f)
+#             if self.writeback:
+#                 self.cache[key] = value
+#         return value
 
-    @property
-    def key(self):
-        return "%s___%s" % (self.type, self.iden)
-
-    def __str__(self):
-        return "%s %s" % (self.type, self.iden)
-
-    def __eq__(self, other):
-        return self.type == other.type and self.iden == other.iden
-
-    def __hash__(self):
-        return hash(self.key)
+#     def __setitem__(self, key, value):
+#         if self.writeback:
+#             self.cache[key] = value
+#         f = BytesIO()
+#         pickle.dump(obj=value, file=f, protocol=self._protocol)
+#         self.dict[key.encode("utf8")] = f.getvalue()
 
 
-class ShelveStateStore(object):
-    """Persist state using `shelve`."""
+# class ShelveKey(object):
+#     __slots__ = ["type", "iden"]
 
-    def __init__(self, filename):
-        self.filename = filename
-        self.shelve = Py2Shelf(self.filename)
+#     def __init__(self, type, iden):
+#         self.type = maybe_decode(type)
+#         self.iden = maybe_decode(iden)
 
-    def build_key(self, type, iden):
-        return ShelveKey(type, iden)
+#     @property
+#     def key(self):
+#         return "%s___%s" % (self.type, self.iden)
 
-    def save(self, key_value_pairs):
-        for key, state_data in key_value_pairs:
-            self.shelve[str(key.key)] = state_data
-        self.shelve.sync()
+#     def __str__(self):
+#         return "%s %s" % (self.type, self.iden)
 
-    def restore(self, keys):
-        items = zip(keys, (self.shelve.get(str(key.key)) for key in keys))
-        return dict(filter(operator.itemgetter(1), items))
+#     def __eq__(self, other):
+#         return self.type == other.type and self.iden == other.iden
 
-    def cleanup(self):
-        self.shelve.close()
+#     def __hash__(self):
+#         return hash(self.key)
 
-    def __repr__(self):
-        return "ShelveStateStore('%s')" % self.filename
+
+# class ShelveStateStore(object):
+#     """Persist state using `shelve`."""
+
+#     def __init__(self, filename):
+#         self.filename = filename
+#         self.shelve = Py2Shelf(self.filename)
+
+#     def build_key(self, type, iden):
+#         return ShelveKey(type, iden)
+
+#     def save(self, key_value_pairs):
+#         for key, state_data in key_value_pairs:
+#             self.shelve[str(key.key)] = state_data
+#         self.shelve.sync()
+
+#     def restore(self, keys):
+#         items = zip(keys, (self.shelve.get(str(key.key)) for key in keys))
+#         return dict(filter(operator.itemgetter(1), items))
+
+#     def cleanup(self):
+#         self.shelve.close()
+
+#     def __repr__(self):
+#         return "ShelveStateStore('%s')" % self.filename

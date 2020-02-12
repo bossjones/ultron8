@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # SOURCE: https://blog.bartab.fr/fastapi-logging-on-the-fly/
 import logging
 from fastapi import APIRouter
@@ -53,6 +55,9 @@ def generate_tree() -> LoggerModel:
     return rootm
 
 
+# Multiple RecursionErrors with self-referencing models
+# https://github.com/samuelcolvin/pydantic/issues/524
+# https://github.com/samuelcolvin/pydantic/issues/531
 @router.get("/{logger_name}", response_model=LoggerModel)
 def logger_get(logger_name: str):
     LOGGER.debug(f"getting logger {logger_name}")

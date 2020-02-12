@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 # from dotenv import load_dotenv
-from .paths import env_dir
+# from .paths import env_dir
 from ultron8.api.middleware.logging.log import logger
 
 

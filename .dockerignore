@@ -56,3 +56,4 @@ wheels/
 *.egg
 ultron8-pipenv.*
 temp.json
+.python-version

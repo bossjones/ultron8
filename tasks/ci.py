@@ -125,3 +125,23 @@ def pytest(ctx, loc="local", check=True, debug=False, verbose=0):
     _cmd = r"py.test --cov-config .coveragerc --verbose --cov-append --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"
 
     ctx.run(_cmd)
+
+
+@task(incrementable=["verbose"])
+def view_coverage(ctx, loc="local"):
+    """
+    Open coverage report inside of browser
+    Usage: inv ci.view-coverage
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    _cmd = r"./script/open-browser.py file://${PWD}/htmlcov/index.html"
+
+    ctx.run(_cmd)

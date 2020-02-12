@@ -41,6 +41,18 @@ class ActionExecutionSpecDB(BaseDataModel):
         orm_mode = True
 
 
+# class _ClassPropertyDescriptor:
+#     __slots__ = ('getter', )
+
+#     def __init__(self, getter):
+#         self.getter = getter
+
+#     def __get__(self, instance, owner):
+#         return self.getter(owner)
+
+# classproperty = _ClassPropertyDescriptor
+
+
 class RuleBase(BaseDataModel):
     """Rule Data Model.
     =======================
@@ -65,6 +77,11 @@ class RuleBase(BaseDataModel):
 
     class Config:
         orm_mode = True
+        # keep_untouched = (classproperty, )
+
+    # @classproperty
+    # def class_name(cls) -> str:
+    #     return cls.__name__
 
 
 ## SOURCE: https://docs.stackstorm.com/rules.html
@@ -130,4 +147,4 @@ if "__main__" == __name__:
     rule = RuleBase(**external_data)
     print(rule)
 
-    print(rule.class_name)
+    # print(rule.class_name)
