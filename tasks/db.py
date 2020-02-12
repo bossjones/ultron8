@@ -155,7 +155,7 @@ def autogen(ctx, loc="local", verbose=0, clean=False, dry_run=True, comment=""):
                     _msg = "[autogen] git deleting file '{i}'".format(i=i)
                     click.secho(_msg, fg=COLOR_SUCCESS)
                 if not dry_run:
-                    ctx.run("git rm -v {i}".format(i=i))
+                    ctx.run("git rm --force {i}".format(i=i))
                 else:
                     _msg = "[autogen] (dry-run) would run git rm -v {i}".format(i=i)
                     click.secho(_msg, fg=COLOR_CAUTION)
