@@ -56,6 +56,18 @@ loggers:
     level: 'WARNING'
     handlers:
       - 'console'
+  starlette:
+      level: 'DEBUG'
+      handlers:
+      - 'console'
+  uvicorn:
+      level: 'INFO'
+      handlers:
+      - 'console'
+  gunicorn:
+      level: 'INFO'
+      handlers:
+      - 'console'
 root:
   level: 'DEBUG'
   handlers:

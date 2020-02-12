@@ -50,6 +50,7 @@ from ultron8.api.db.u_sqlite.session import Session
 # # TODO: As soon as we merge web.py into the MCP, we will want to nuke this setup_logging line!!!
 # log.setup_logging()
 
+# FIXME: 2/11/2020 Stop using the setup_logging function and use the one defined in "from ultron8.api.middleware.logging import log"
 from ultron8.api.applog import read_logging_config, setup_logging
 
 logconfig_dict = read_logging_config("logging.yml")
@@ -139,4 +140,14 @@ if __name__ == "__main__":
     PORT = int(os.environ.get("PORT", 11267))
     print(f" [HOST] {HOST}")
     print(f" [PORT] {PORT}")
-    uvicorn.run(app, host=HOST, port=PORT, log_level=settings._USER_LOG_LEVEL.lower())
+    # uvicorn.run(app, host=HOST, port=PORT, log_level=settings._USER_LOG_LEVEL.lower(), reload=True, workers=settings.WORKERS)
+    # uvicorn.run(app, host=HOST, port=PORT, log_level=settings._USER_LOG_LEVEL.lower(), reload=True)
+    APP_MODULE_STR = os.environ.get("APP_MODULE")
+    app_import_str = f"{APP_MODULE_STR}"
+    uvicorn.run(
+        app_import_str,
+        host=HOST,
+        port=PORT,
+        log_level=settings._USER_LOG_LEVEL.lower(),
+        reload=True,
+    )

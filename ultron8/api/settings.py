@@ -106,6 +106,8 @@ _USER_LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 LOG_LEVEL = LOG_LEVEL_MAP[_USER_LOG_LEVEL]
 MASK_SECRETS = getenv_boolean("MASK_SECRETS", default_value=True)
 DEBUG_REQUESTS = getenv_boolean("DEBUG_REQUESTS", default_value=False)
+# Avoid uvicorn error: https://github.com/simonw/datasette/issues/633
+# WORKERS = os.environ.get("WORKERS", "1")
 
 
 class SettingsConfig:
@@ -140,6 +142,7 @@ class SettingsConfig:
     LOG_LEVEL = LOG_LEVEL
     MASK_SECRETS = MASK_SECRETS
     DEBUG_REQUESTS = DEBUG_REQUESTS
+    # WORKERS = WORKERS
 
 
 if __name__ == "__main__":
