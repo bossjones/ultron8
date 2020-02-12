@@ -17,8 +17,13 @@ stdin, stdout = sys.stdin, sys.stdout
 
 
 @click.command("user", short_help="User CLI. Used to interact with ultron8 api")
+@click.option(
+    "-m",
+    "--method",
+    type=click.Choice(["GET", "POST", "PUT", "DELETE"], case_sensitive=False),
+)
 @click.pass_context
-def cli(ctx):
+def cli(ctx, method):
     """
     User CLI. Used to interact with ultron8 api.
     """
