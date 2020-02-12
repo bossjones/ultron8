@@ -155,7 +155,7 @@ Vagrant.configure(2) do |config|
 
       hostname_with_hyenalab_tld = "#{settings[:hostname]}.bosslab.com"
 
-      aliases = [hostname_with_hyenalab_tld, settings[:hostname]]
+      aliases = [hostname_with_hyenalab_tld, settings[:hostname], "#{settings[:hostname]}.#{stub_name}"]
 
       if Vagrant.has_plugin?('vagrant-hostsupdater')
         puts 'IM HERE BABY'
@@ -175,8 +175,8 @@ Vagrant.configure(2) do |config|
          # pre-configure our playground trond
          vm_config.vm.provision :shell, inline: "install -d -m 2750 -o vagrant -g vagrant /var/lib/ultron8"
          vm_config.vm.provision :shell, inline: "install -d -m 2750 -o vagrant -g vagrant /var/log/ultron8"
-         vm_config.vm.provision :shell, privileged: false, inline: "install -m 600 /vagrant/vagrant/insecure_ultron8_key /home/vagrant/.ssh/id_rsa"
-         vm_config.vm.provision :shell, inline: "install -m 644 /vagrant/vagrant/hosts /etc/hosts"
+         vm_config.vm.provision :shell, privileged: false, inline: "install -m 600 /srv/vagrant_repos/ultron8/vagrant/insecure_ultron8_key /home/vagrant/.ssh/id_rsa"
+         vm_config.vm.provision :shell, inline: "install -m 644 /srv/vagrant_repos/ultron8/vagrant/hosts /etc/hosts"
 
          # Fire up the requisite ssh-agent and load our private key.
          vm_config.vm.provision :shell, privileged: false, inline: "ssh-agent > /var/lib/ultron8/ssh-agent.sh"
@@ -185,10 +185,11 @@ Vagrant.configure(2) do |config|
 
       vm_config.vm.provision 'shell', inline: $configureBox
 
-      vm_config.vm.provision :shell, privileged: false, inline: "cat /vagrant/vagrant/insecure_ultron8_key.pub >> /home/vagrant/.ssh/authorized_keys"
-      vm_config.vm.provision :shell, inline: "install -m 644 /vagrant/vagrant/hosts /etc/hosts"
-      vm_config.vm.provision :shell, inline: "install -m 755 /vagrant/vagrant/sync_code.sh /usr/local/bin/sync_ultron8.sh"
-      vm_config.vm.provision :shell, inline: "install -m 755 /vagrant/vagrant/sync_code.sh /usr/local/bin/sync_code.sh"
+      vm_config.vm.provision :shell, privileged: false, inline: "cat /srv/vagrant_repos/ultron8/vagrant/insecure_ultron8_key.pub >> /home/vagrant/.ssh/authorized_keys"
+      vm_config.vm.provision :shell, inline: "install -m 644 /srv/vagrant_repos/ultron8/vagrant/hosts /etc/hosts"
+      vm_config.vm.provision :shell, inline: "install -m 755 /srv/vagrant_repos/ultron8/vagrant/sync_code.sh /usr/local/bin/sync_ultron8.sh"
+      vm_config.vm.provision :shell, inline: "install -m 755 /srv/vagrant_repos/ultron8/vagrant/sync_code.sh /usr/local/bin/sync_code.sh"
+      vm_config.vm.provision :shell, inline: "cd && rsync -r --exclude .vagrant --exclude .git /srv/vagrant_repos/ultron8/ ~/ultron8/ && cd ~/ultron8 && ls -lta"
     end
   end
 end
