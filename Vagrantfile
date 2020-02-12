@@ -8,6 +8,13 @@ config_yml = YAML.load_file(File.open(__dir__ + '/vagrant-config.yml'))
 
 NON_ROOT_USER = 'vagrant'.freeze
 
+stub_name = "ultron8-v"
+
+base_dir = File.dirname(__FILE__)
+unless File.exists?("#{base_dir}/vagrant/insecure_ultron8_key")
+  system("cd #{base_dir}/vagrant && ssh-keygen -q -t rsa -N '' -f insecure_ultron8_key")
+end
+
 # This script to install k8s using kubeadm will get executed after a box is provisioned
 $configureBox = <<-SCRIPT
     sudo apt-get update
@@ -24,6 +31,12 @@ $configureBox = <<-SCRIPT
 
     # run docker commands as vagrant user (sudo not required)
     sudo usermod -aG docker vagrant
+
+    # install python 3.7
+    sudo DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:deadsnakes/ppa
+    sudo apt-get update
+    sudo apt-get install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget -y
+    sudo apt install python3.7 -y
 
     # install kubeadm
     apt-get install -y apt-transport-https curl
@@ -97,11 +110,14 @@ EOF
     sudo -i -u vagrant git clone https://github.com/samoshkin/tmux-config.git ~vagrant/dev/tmux-config
     echo "------------------Finished------------------"
     echo "Now run ansible-galaxy"
+    echo 'vagrant:vagrant' | chpasswd
 SCRIPT
 
 Vagrant.configure(2) do |config|
   # set auto update to false if you do NOT want to check the correct additions version when booting this machine
   # config.vbguest.auto_update = true
+
+  config.vm.synced_folder ".", "/srv/vagrant_repos/ultron8", disabled: false
 
   config_yml[:vms].each do |name, settings|
     # use the config key as the vm identifier
@@ -116,23 +132,20 @@ Vagrant.configure(2) do |config|
       vm_config.vbguest.auto_update = true
 
       vm_config.vm.box = settings[:box]
-      vm_config.disksize.size = '20GB'
-      # vm_config.disksize.size = settings[:disk]
-      # vm_config.disksize.size = "#{settings[:disk]}"
-      # vm_config.disksize.size = '' + settings[:disk] + ''
+      vm_config.disksize.size = '15GB'
 
-      # config.vm.box_version = settings[:box_version]
+
       vm_config.vm.network 'private_network', ip: settings[:eth1]
 
-      # INFO: Docker ports
-      config.vm.network "forwarded_port", guest: 2375, host: 2375
-      config.vm.network "forwarded_port", guest: 2376, host: 2376
+      # DISABLED:: # # INFO: Docker ports
+      # DISABLED:: # config.vm.network "forwarded_port", guest: 2375, host: settings[:dockerport1]
+      # DISABLED:: # config.vm.network "forwarded_port", guest: 2376, host: settings[:dockerport2]
 
-      vm_config.vm.hostname = settings[:hostname]
+      vm_config.vm.hostname = "#{settings[:hostname]}.#{stub_name}"
 
       config.vm.provider 'virtualbox' do |v|
         # make sure that the name makes sense when seen in the vbox GUI
-        v.name = settings[:hostname]
+        v.name = "#{settings[:hostname]}.#{stub_name}"
 
         v.gui = false
         v.customize ['modifyvm', :id, '--groups', '/Ultron Development']
@@ -158,7 +171,24 @@ Vagrant.configure(2) do |config|
         vm_config.hostmanager.aliases = aliases
       end
 
+      if "#{settings[:hostname]}.#{stub_name}" == "master.#{stub_name}"
+         # pre-configure our playground trond
+         vm_config.vm.provision :shell, inline: "install -d -m 2750 -o vagrant -g vagrant /var/lib/ultron8"
+         vm_config.vm.provision :shell, inline: "install -d -m 2750 -o vagrant -g vagrant /var/log/ultron8"
+         vm_config.vm.provision :shell, privileged: false, inline: "install -m 600 /vagrant/vagrant/insecure_ultron8_key /home/vagrant/.ssh/id_rsa"
+         vm_config.vm.provision :shell, inline: "install -m 644 /vagrant/vagrant/hosts /etc/hosts"
+
+         # Fire up the requisite ssh-agent and load our private key.
+         vm_config.vm.provision :shell, privileged: false, inline: "ssh-agent > /var/lib/ultron8/ssh-agent.sh"
+         vm_config.vm.provision :shell, privileged: false, inline: ". /var/lib/ultron8/ssh-agent.sh && ssh-add /home/vagrant/.ssh/id_rsa"
+      end
+
       vm_config.vm.provision 'shell', inline: $configureBox
+
+      vm_config.vm.provision :shell, privileged: false, inline: "cat /vagrant/vagrant/insecure_ultron8_key.pub >> /home/vagrant/.ssh/authorized_keys"
+      vm_config.vm.provision :shell, inline: "install -m 644 /vagrant/vagrant/hosts /etc/hosts"
+      vm_config.vm.provision :shell, inline: "install -m 755 /vagrant/vagrant/sync_code.sh /usr/local/bin/sync_ultron8.sh"
+      vm_config.vm.provision :shell, inline: "install -m 755 /vagrant/vagrant/sync_code.sh /usr/local/bin/sync_code.sh"
     end
   end
 end

@@ -1,0 +1,4 @@
+127.0.0.1       localhost
+
+192.168.33.40   master.ultron8-v master
+192.168.33.41   node-01.ultron8-v node-01

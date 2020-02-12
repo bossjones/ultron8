@@ -57,3 +57,5 @@ wheels/
 ultron8-pipenv.*
 temp.json
 .python-version
+vagrant/insecure_ultron_key
+vagrant/insecure_ultron_key.pub

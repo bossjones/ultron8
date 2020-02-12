@@ -1,16 +1,32 @@
 # https://gist.github.com/gnarf/b103e77f37236ca72d8e
 # SOURCE: \cat roles/*/vagrant-config.yml | pbcopy
 :vms:
-  ultron8:
-    :hostname: "ultron8"
-    :name: "ultron8"
+  master:
+    :hostname: "master"
+    :name: "master"
     :type: "master"
     :box: "ubuntu/bionic64"
-    :eth1: "192.168.2.8"
-    :ip: "192.168.2.8"
+    :eth1: "192.168.33.40"
+    :ip: "192.168.33.40"
     :mem: 2048
     :ram: 2048
     :cpu: 2
     :id: 10
     :disk: "10gb"
+    :dockerport1: 2375
+    :dockerport2: 2376
     # settings[:disk]
+  node-01:
+    :hostname: "node-01"
+    :name: "node-01"
+    :type: "slave"
+    :box: "ubuntu/bionic64"
+    :eth1: "192.168.33.41"
+    :ip: "192.168.33.41"
+    :mem: 1024
+    :ram: 1024
+    :cpu: 2
+    :id: 11
+    :disk: "10gb"
+    :dockerport1: 3375
+    :dockerport2: 3376
