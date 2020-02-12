@@ -32,11 +32,46 @@ $configureBox = <<-SCRIPT
     # run docker commands as vagrant user (sudo not required)
     sudo usermod -aG docker vagrant
 
+    # fnm
+    curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash
+    eval "`fnm env --multi`"
+    fnm install v10
+    fnm use v10
+
     # install python 3.7
     sudo DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:deadsnakes/ppa
     sudo apt-get update
-    sudo apt-get install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget -y
-    sudo apt install python3.7 -y
+    sudo apt-get install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget unzip -y
+    sudo apt-get install python3.7 -y
+    sudo apt-get install python3.7-venv -y
+
+    sudo apt-get install --no-install-recommends make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev -y
+
+    # python3.7 -m venv ~/.env
+    curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+
+    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+    echo 'export WORKON_HOME="$HOME/.pyenv/versions"' >> ~/.bashrc
+    echo 'export PROJECT_HOME=$HOME/dev' >> ~/.bashrc
+    echo 'export PATH="$HOME/.pyenv/bin:$PATH"' >> ~/.bashrc
+    echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+    echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
+
+    export PYENV_ROOT="$HOME/.pyenv"
+    export WORKON_HOME="$HOME/.pyenv/versions"
+    export PROJECT_HOME=$HOME/dev
+    export PATH="$HOME/.pyenv/bin:$PATH"
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+
+    cat ~/.bashrc
+
+    source ~/.bashrc
+
+    env PYTHON_CONFIGURE_OPTS="--enable-shared --enable-optimizations --enable-ipv6" PROFILE_TASK="-m test.regrtest --pgo test_array test_base64 test_binascii test_binhex test_binop test_bytes test_c_locale_coercion test_class test_cmath test_codecs test_compile test_complex test_csv test_decimal test_dict test_float test_fstring test_hashlib test_io test_iter test_json test_long test_math test_memoryview test_pickle test_re test_set test_slice test_struct test_threading test_time test_traceback test_unicode" pyenv install 3.7.4
+
+    pyenv global 3.7.4
+    pyenv rehash
 
     # install kubeadm
     apt-get install -y apt-transport-https curl
@@ -98,8 +133,8 @@ EOF
     sudo sysctl -w vm.min_free_kbytes=1024000
     sudo sync; sudo sysctl -w vm.drop_caches=3; sudo sync
     sudo mkdir -p ~vagrant/dev
-    sudo -i -u vagrant git clone https://github.com/viasite-ansible/ansible-role-zsh ~vagrant/dev/ansible-role-zsh
     sudo chown vagrant:vagrant -Rv ~vagrant
+    git clone https://github.com/viasite-ansible/ansible-role-zsh ~vagrant/dev/ansible-role-zsh
     sudo apt-get install software-properties-common -y
     sudo apt-add-repository ppa:ansible/ansible -y
     sudo apt-get update
