@@ -53,3 +53,12 @@ class MobilePhone(Base):
     person_id = Column(Integer, ForeignKey('people.id'))
     person = relationship("Person", back_populates="mobile_phone")
 ```
+
+
+# Ready-to-use and customizable users management for FastAPI
+
+```
+pip install fastapi-users
+```
+
+2/11/2020 - INSTALL THIS and give it a try! [fastapi-users](https://frankie567.github.io/fastapi-users/configuration/full_example/)
