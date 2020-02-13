@@ -8,8 +8,8 @@
     :box: "ubuntu/bionic64"
     :eth1: "192.168.33.40"
     :ip: "192.168.33.40"
-    :mem: 2048
-    :ram: 2048
+    :mem: 4048
+    :ram: 4048
     :cpu: 2
     :id: 10
     :disk: "10gb"
@@ -23,8 +23,8 @@
     :box: "ubuntu/bionic64"
     :eth1: "192.168.33.41"
     :ip: "192.168.33.41"
-    :mem: 1024
-    :ram: 1024
+    :mem: 4048
+    :ram: 4048
     :cpu: 2
     :id: 11
     :disk: "10gb"

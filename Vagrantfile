@@ -18,7 +18,7 @@ end
 # This script to install k8s using kubeadm will get executed after a box is provisioned
 $configureBox = <<-SCRIPT
     sudo apt-get update
-    sudo apt-get install -y apt-transport-https curl
+    sudo apt-get install -y apt-transport-https curl unzip wget
     sudo fallocate -l 4G /swapfile
     sudo dd if=/dev/zero of=/swapfile bs=2048 count=1048576
     sudo chmod 600 /swapfile
@@ -29,7 +29,68 @@ $configureBox = <<-SCRIPT
     sudo free -h
 
 
-    sudo apt-get install -y xclip apt-transport-https ca-certificates curl software-properties-common zsh
+    DEBIAN_FRONTEND=noninteractive apt-get upgrade -yqq \
+    && apt-get install -y --no-install-recommends \
+        openssh-client \
+        procps && \
+        apt-get update && apt-get install -y --no-install-recommends \
+        autoconf \
+        automake \
+        bzip2 \
+        file \
+        g++ \
+        gcc \
+        imagemagick \
+        libbz2-dev \
+        libc6-dev \
+        libcurl4-openssl-dev \
+        libdb-dev \
+        libevent-dev \
+        libffi-dev \
+        libgeoip-dev \
+        libglib2.0-dev \
+        libjpeg-dev \
+        libkrb5-dev \
+        liblzma-dev \
+        libmagickcore-dev \
+        libmagickwand-dev \
+        libmysqlclient-dev \
+        libncurses-dev \
+        libpng-dev \
+        libpq-dev \
+        libreadline-dev \
+        libsqlite3-dev \
+        libtool \
+        libwebp-dev \
+        libxml2-dev \
+        libxslt-dev \
+        libyaml-dev \
+        make \
+        patch \
+        xz-utils \
+        zlib1g-dev \
+        bash
+
+    sudo apt-get update && \
+    sudo apt-get install -y \
+      build-essential \
+      cmake \
+      tmux \
+      zsh \
+      clang \
+      manpages-dev
+
+    echo "===> gcc for cgo..." && \
+    sudo apt-get update && \
+    sudo apt-get install -y \
+      g++ \
+      gcc \
+      libc6-dev \
+      make \
+      pkg-config \
+      ninja-build
+
+    sudo apt-get install -y xclip ca-certificates curl software-properties-common zsh
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     sudo add-apt-repository "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
     sudo apt-get update
@@ -37,68 +98,8 @@ $configureBox = <<-SCRIPT
 
     docker info
 
-    # && apt-get install -y docker-ce=$(apt-cache madison docker-ce | grep 17.03 | head -1 | awk '{print $3}')
-    # apt-mark hold docker-ce
-
     # run docker commands as vagrant user (sudo not required)
     sudo usermod -aG docker vagrant
-
-    # fnm
-    curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash
-    eval "$(fnm env --multi)"
-    echo 'eval "$(fnm env --multi)"' >> ~/.bashrc
-    fnm install v10
-    fnm use v10
-    npm install --global pure-prompt
-
-    # install python 3.7
-    sudo DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:deadsnakes/ppa
-    sudo apt-get update
-    sudo apt-get install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget unzip -y
-    sudo apt-get install python3.7 -y
-    sudo apt-get install python3.7-venv -y
-
-    sudo apt-get install --no-install-recommends make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev -y
-
-    sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
-    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-    xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
-
-    export PYENV_DEBUG=1
-    # python3.7 -m venv ~/.env
-    curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
-
-    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
-    echo 'export WORKON_HOME="$HOME/.pyenv/versions"' >> ~/.bashrc
-    echo 'export PROJECT_HOME=$HOME/dev' >> ~/.bashrc
-    echo 'export PATH="$HOME/.pyenv/bin:$PATH"' >> ~/.bashrc
-    echo 'eval "$(pyenv init -)"' >> ~/.bashrc
-    echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
-
-    export PYENV_ROOT="$HOME/.pyenv"
-    export WORKON_HOME="$HOME/.pyenv/versions"
-    export PROJECT_HOME=$HOME/dev
-    export PATH="$HOME/.pyenv/bin:$PATH"
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-
-    cat ~/.bashrc
-
-    source ~/.bashrc
-
-    env MAKE_INSTALL_OPTS="-j2" PYTHON_CFLAGS='-02' PYTHON_CONFIGURE_OPTS="--enable-shared --enable-optimizations --enable-ipv6" PROFILE_TASK="-m test.regrtest --pgo test_array test_base64 test_binascii test_binhex test_binop test_bytes test_c_locale_coercion test_class test_cmath test_codecs test_compile test_complex test_csv test_decimal test_dict test_float test_fstring test_hashlib test_io test_iter test_json test_long test_math test_memoryview test_pickle test_re test_set test_slice test_struct test_threading test_time test_traceback test_unicode" pyenv install 3.7.4
-
-    pyenv virtualenv 3.7.4 tools3
-    pyenv shell tools3
-    mkdir -p ~/.bin ~/.local/bin
-    pip install --user sqliterepl
-
-    pyenv virtualenv 3.7.4 ultron8_venv374
-    pyenv shell ultron8_venv374
-    pyenv global ultron8_venv374
-    pyenv rehash
-
-    sudo apt-get install -y apt-transport-https curl
 
     # ip of this box
     IP_ADDR=`ifconfig enp0s8 | grep Mask | awk '{print $2}'| cut -f2 -d:`
@@ -141,30 +142,123 @@ EOF
 
     sudo sysctl -w vm.min_free_kbytes=1024000
     sudo sync; sudo sysctl -w vm.drop_caches=3; sudo sync
-    sudo mkdir -p ~vagrant/dev
-    sudo chown vagrant:vagrant -Rv ~vagrant
-    git clone https://github.com/viasite-ansible/ansible-role-zsh ~vagrant/dev/ansible-role-zsh
+    sudo mkdir -p \\$HOME/dev
+    sudo chown vagrant:vagrant -R ~vagrant
+    git clone https://github.com/viasite-ansible/ansible-role-zsh \\$HOME/dev/ansible-role-zsh || true
     sudo apt-get install software-properties-common -y
     sudo apt-add-repository ppa:ansible/ansible -y
     sudo apt-get update
     sudo apt-get install ansible -y
     sudo mkdir -p /etc/ansible/roles
-    sudo chown vagrant:vagrant -Rv /etc/ansible/roles
+    sudo chown vagrant:vagrant -R /etc/ansible/roles
 
-    sudo -i -u vagrant git clone https://github.com/samoshkin/tmux-config.git ~vagrant/dev/tmux-config
-    echo "------------------Finished------------------"
-    echo "Now run ansible-galaxy"
-    echo 'vagrant:vagrant' | chpasswd
+    sudo curl -fsSL 'https://github.com/heppu/gkill/releases/download/v1.0.2/gkill-linux-amd64' > /usr/local/bin/gkill
+    sudo chmod +x /usr/local/bin/gkill
+    sudo curl -fsSL 'https://github.com/rgburke/grv/releases/download/v0.3.2/grv_v0.3.2_linux64' > /usr/local/bin/grv
+    sudo chmod +x /usr/local/bin/grv
+    sudo curl --silent -L 'https://github.com/simeji/jid/releases/download/v0.7.6/jid_linux_amd64.zip' > /usr/local/src/jid.zip
+    sudo unzip /usr/local/src/jid.zip -d /usr/local/bin
+    sudo chmod +x /usr/local/bin/jid
 
-    export RBENV_ROOT=/usr/local/rbenv
-    sudo mkdir -p /usr/local/rbenv
-    sudo chmod 777 /usr/local/rbenv
-    curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-installer | bash
+    sudo curl -fsSL 'https://github.com/sharkdp/fd/releases/download/v7.2.0/fd_7.2.0_amd64.deb' > /usr/local/src/fd_7.2.0_amd64.deb; \
+    sudo apt install -y /usr/local/src/fd_7.2.0_amd64.deb
 
-    mkdir -p "$HOME/.zsh"
-    git clone https://github.com/sindresorhus/pure.git "$HOME/.zsh/pure"
+    sudo sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd
+    sudo sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+    sudo sed -ri 's/^#?PubkeyAuthentication\s+.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+    sudo sed -ri 's/requiretty/!requiretty/' /etc/sudoers
+    echo 'root:root' | sudo chpasswd
 
-    sudo git clone https://github.com/bossjones/debug-tools /usr/local/src/debug-tools && /usr/local/src/debug-tools/update-bossjones-debug-tools
+    sudo git clone https://github.com/bossjones/debug-tools /usr/local/src/debug-tools || true
+    sudo /usr/local/src/debug-tools/update-bossjones-debug-tools
+SCRIPT
+
+# This script to install k8s using kubeadm will get executed after a box is provisioned
+$postInstall = <<-SCRIPT
+    cat <<EOF >/home/vagrant/run_as_vagrant.sh
+#!/usr/bin/env bash
+
+set -x
+set -e
+
+export _HOME="~vagrant"
+
+# fnm
+curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash
+export PATH="/home/vagrant/.fnm:$PATH"
+# echo 'eval "\\$(fnm env --multi)"' >> \\$HOME/.bashrc
+eval "\\$(fnm env --multi)"
+fnm install v10
+fnm use v10
+npm install --global pure-prompt
+
+
+sudo apt-get install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget unzip -y
+sudo apt-get install --no-install-recommends make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev -y
+sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git python-virtualenv
+
+curl -fsSL https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+
+echo 'export PYENV_ROOT="\\$HOME/.pyenv"' >> \\$HOME/.bashrc
+echo 'export WORKON_HOME="\\$HOME/.pyenv/versions"' >> \\$HOME/.bashrc
+echo 'export PROJECT_HOME=\\$HOME/dev' >> \\$HOME/.bashrc
+echo 'export PATH="\\$HOME/.pyenv/bin:$PATH"' >> \\$HOME/.bashrc
+echo 'eval "\\$(pyenv init -)"' >> \\$HOME/.bashrc
+# echo 'eval "\\$(pyenv virtualenv-init -)"' >> \\$HOME/.bashrc
+
+export PYENV_ROOT="\\$HOME/.pyenv"
+export WORKON_HOME="\\$HOME/.pyenv/versions"
+export PROJECT_HOME=\\$HOME/dev
+export PATH="\\$HOME/.pyenv/bin:$PATH"
+eval "\\$(pyenv init -)"
+eval "\\$(pyenv virtualenv-init -)"
+
+cat \\$HOME/.bashrc
+
+source \\$HOME/.bashrc
+
+pyenv rehash
+
+env PYTHON_CONFIGURE_OPTS="--enable-shared --enable-optimizations --enable-ipv6" PROFILE_TASK="-m test.regrtest --pgo test_array test_base64 test_binascii test_binhex test_binop test_bytes test_c_locale_coercion test_class test_cmath test_codecs test_compile test_complex test_csv test_decimal test_dict test_float test_fstring test_hashlib test_io test_iter test_json test_long test_math test_memoryview test_pickle test_re test_set test_slice test_struct test_threading test_time test_traceback test_unicode" pyenv install 3.7.4
+
+pyenv virtualenv 3.7.4 tools3
+pyenv shell tools3
+mkdir -p \\$HOME/.bin \\$HOME/.local/bin
+pip install --user sqliterepl
+
+pyenv virtualenv 3.7.4 ultron8_venv374
+pyenv shell ultron8_venv374
+pyenv global ultron8_venv374
+pyenv rehash
+
+export RBENV_ROOT=/usr/local/rbenv
+sudo mkdir -p /usr/local/rbenv
+sudo chmod 777 /usr/local/rbenv
+curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-installer | bash
+
+mkdir -p "\\$HOME/.zsh"
+git clone https://github.com/sindresorhus/pure.git "\\$HOME/.zsh/pure"
+
+git clone https://github.com/zsh-users/antigen.git \\$HOME/.antigen/antigen
+
+# mkdir -p \\$HOME/.fonts \\$HOME/.config/fontconfig/conf.d \
+#   && wget -P \\$HOME/.fonts https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf \
+#   && wget -P \\$HOME/.config/fontconfig/conf.d/ https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf \
+#   && fc-cache -vf \\$HOME/.fonts/
+
+# # # SOURCE: https://github.com/veggiemonk/ansible-dotfiles/blob/master/tasks/fonts.yml
+# git clone https://github.com/powerline/fonts \\$HOME/powerlinefonts && \
+#   cd \\$HOME/powerlinefonts; \\$HOME/powerlinefonts/install.sh \
+#   && fc-cache -f
+
+git clone https://github.com/samoshkin/tmux-config.git \\$HOME/dev/tmux-config
+echo "------------------Finished------------------"
+echo "Now run ansible-galaxy"
+echo 'vagrant:vagrant' | chpasswd
+
+set +x
+
+EOF
 SCRIPT
 
 Vagrant.configure(2) do |config|
@@ -237,14 +331,15 @@ Vagrant.configure(2) do |config|
          vm_config.vm.provision :shell, privileged: false, inline: ". /var/lib/ultron8/ssh-agent.sh && ssh-add /home/vagrant/.ssh/id_rsa"
       end
 
-      vm_config.vm.provision 'shell', inline: $configureBox
+      vm_config.vm.provision 'shell', privileged: true, inline: $configureBox
+      vm_config.vm.provision 'shell', privileged: false, inline: $postInstall
 
       vm_config.vm.provision :shell, privileged: false, inline: "cat /srv/vagrant_repos/ultron8/vagrant/insecure_ultron8_key.pub >> /home/vagrant/.ssh/authorized_keys"
       vm_config.vm.provision :shell, inline: "install -m 644 /srv/vagrant_repos/ultron8/vagrant/hosts /etc/hosts"
       vm_config.vm.provision :shell, inline: "install -m 755 /srv/vagrant_repos/ultron8/vagrant/sync_code.sh /usr/local/bin/sync_ultron8.sh"
       vm_config.vm.provision :shell, inline: "install -m 755 /srv/vagrant_repos/ultron8/vagrant/sync_code.sh /usr/local/bin/sync_code.sh"
-      vm_config.vm.provision :shell, inline: "cd && rsync -r --exclude .vagrant --exclude .git /srv/vagrant_repos/ultron8/ ~/ultron8/ && cd ~/ultron8 && ls -lta"
-      vm_config.vm.provision :shell, inline: "cd && rsync -r --exclude .vagrant --exclude .git /srv/vagrant_repos/ultron8/vagrant/.zsh* ~/ && cd ~/ && ls -lta *.zsh*"
+      vm_config.vm.provision :shell, privileged: false, inline: "cd && rsync -r --exclude .vagrant --exclude .git /srv/vagrant_repos/ultron8/ ~/ultron8/ && sudo chown vagrant:vagrant -R ~vagrant && cd ~/ultron8 && ls -lta"
+      vm_config.vm.provision :shell, privileged: false, inline: "cd && rsync -r --exclude .vagrant --exclude .git /srv/vagrant_repos/ultron8/vagrant/.zsh* ~/ && sudo chown vagrant:vagrant -R ~vagrant && cd ~/ && ls -lta | grep .zsh"
     end
   end
 end
