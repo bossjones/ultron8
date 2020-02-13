@@ -18,7 +18,7 @@ end
 # This script to install k8s using kubeadm will get executed after a box is provisioned
 $configureBox = <<-SCRIPT
     sudo apt-get update
-    sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+    sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common zsh
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     sudo add-apt-repository "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
     sudo apt-get update
@@ -37,6 +37,7 @@ $configureBox = <<-SCRIPT
     eval "`fnm env --multi`"
     fnm install v10
     fnm use v10
+    npm install --global pure-prompt
 
     # install python 3.7
     sudo DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:deadsnakes/ppa
@@ -138,6 +139,7 @@ EOF
     # TODO: Put into playbook
     echo "65535" | sudo tee /proc/sys/fs/file-max
     echo "session required pam_limits.so" | sudo tee -a /etc/pam.d/common-session
+    echo "skip_global_compinit=1" | sudo tee -a /etc/zsh/zshenv
 
     sudo sysctl -w vm.min_free_kbytes=1024000
     sudo sync; sudo sysctl -w vm.drop_caches=3; sudo sync
@@ -155,6 +157,14 @@ EOF
     echo "------------------Finished------------------"
     echo "Now run ansible-galaxy"
     echo 'vagrant:vagrant' | chpasswd
+
+    export RBENV_ROOT=/usr/local/rbenv
+    sudo mkdir -p /usr/local/rbenv
+    sudo chmod 777 /usr/local/rbenv
+    curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-installer | bash
+
+    mkdir -p "$HOME/.zsh"
+    git clone https://github.com/sindresorhus/pure.git "$HOME/.zsh/pure"
 SCRIPT
 
 Vagrant.configure(2) do |config|
@@ -234,6 +244,7 @@ Vagrant.configure(2) do |config|
       vm_config.vm.provision :shell, inline: "install -m 755 /srv/vagrant_repos/ultron8/vagrant/sync_code.sh /usr/local/bin/sync_ultron8.sh"
       vm_config.vm.provision :shell, inline: "install -m 755 /srv/vagrant_repos/ultron8/vagrant/sync_code.sh /usr/local/bin/sync_code.sh"
       vm_config.vm.provision :shell, inline: "cd && rsync -r --exclude .vagrant --exclude .git /srv/vagrant_repos/ultron8/ ~/ultron8/ && cd ~/ultron8 && ls -lta"
+      vm_config.vm.provision :shell, inline: "cd && rsync -r --exclude .vagrant --exclude .git /srv/vagrant_repos/ultron8/vagrant/.zsh* ~/ && cd ~/ && ls -lta *.zsh*"
     end
   end
 end
