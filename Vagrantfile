@@ -64,13 +64,22 @@ $configureBox = <<-SCRIPT
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
 
+    git clone https://github.com/pyenv/pyenv-which-ext.git $(pyenv root)/plugins/pyenv-which-ext || true
+
     cat ~/.bashrc
 
     source ~/.bashrc
 
     env PYTHON_CONFIGURE_OPTS="--enable-shared --enable-optimizations --enable-ipv6" PROFILE_TASK="-m test.regrtest --pgo test_array test_base64 test_binascii test_binhex test_binop test_bytes test_c_locale_coercion test_class test_cmath test_codecs test_compile test_complex test_csv test_decimal test_dict test_float test_fstring test_hashlib test_io test_iter test_json test_long test_math test_memoryview test_pickle test_re test_set test_slice test_struct test_threading test_time test_traceback test_unicode" pyenv install 3.7.4
 
-    pyenv global 3.7.4
+    pyenv virtualenv 3.7.4 tools3
+    pyenv shell tools3
+    mkdir -p ~/.bin ~/.local/bin
+    pip install --user sqliterepl
+
+    pyenv virtualenv 3.7.4 ultron8_venv374
+    pyenv shell ultron8_venv374
+    pyenv global ultron8_venv374
     pyenv rehash
 
     # install kubeadm
