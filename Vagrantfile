@@ -18,7 +18,18 @@ end
 # This script to install k8s using kubeadm will get executed after a box is provisioned
 $configureBox = <<-SCRIPT
     sudo apt-get update
-    sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common zsh
+    sudo apt-get install -y apt-transport-https curl
+    sudo fallocate -l 4G /swapfile
+    sudo dd if=/dev/zero of=/swapfile bs=2048 count=1048576
+    sudo chmod 600 /swapfile
+    sudo mkswap /swapfile
+    sudo swapon /swapfile
+    echo "/swapfile swap swap defaults 0 0" | sudo tee -a /etc/fstab
+    sudo swapon --show
+    sudo free -h
+
+
+    sudo apt-get install -y xclip apt-transport-https ca-certificates curl software-properties-common zsh
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     sudo add-apt-repository "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
     sudo apt-get update
@@ -34,7 +45,8 @@ $configureBox = <<-SCRIPT
 
     # fnm
     curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash
-    eval "`fnm env --multi`"
+    eval "$(fnm env --multi)"
+    echo 'eval "$(fnm env --multi)"' >> ~/.bashrc
     fnm install v10
     fnm use v10
     npm install --global pure-prompt
@@ -48,6 +60,11 @@ $configureBox = <<-SCRIPT
 
     sudo apt-get install --no-install-recommends make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev -y
 
+    sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+    xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+
+    export PYENV_DEBUG=1
     # python3.7 -m venv ~/.env
     curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
 
@@ -65,13 +82,11 @@ $configureBox = <<-SCRIPT
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
 
-    git clone https://github.com/pyenv/pyenv-which-ext.git $(pyenv root)/plugins/pyenv-which-ext || true
-
     cat ~/.bashrc
 
     source ~/.bashrc
 
-    env PYTHON_CONFIGURE_OPTS="--enable-shared --enable-optimizations --enable-ipv6" PROFILE_TASK="-m test.regrtest --pgo test_array test_base64 test_binascii test_binhex test_binop test_bytes test_c_locale_coercion test_class test_cmath test_codecs test_compile test_complex test_csv test_decimal test_dict test_float test_fstring test_hashlib test_io test_iter test_json test_long test_math test_memoryview test_pickle test_re test_set test_slice test_struct test_threading test_time test_traceback test_unicode" pyenv install 3.7.4
+    env MAKE_INSTALL_OPTS="-j2" PYTHON_CFLAGS='-02' PYTHON_CONFIGURE_OPTS="--enable-shared --enable-optimizations --enable-ipv6" PROFILE_TASK="-m test.regrtest --pgo test_array test_base64 test_binascii test_binhex test_binop test_bytes test_c_locale_coercion test_class test_cmath test_codecs test_compile test_complex test_csv test_decimal test_dict test_float test_fstring test_hashlib test_io test_iter test_json test_long test_math test_memoryview test_pickle test_re test_set test_slice test_struct test_threading test_time test_traceback test_unicode" pyenv install 3.7.4
 
     pyenv virtualenv 3.7.4 tools3
     pyenv shell tools3
@@ -83,24 +98,7 @@ $configureBox = <<-SCRIPT
     pyenv global ultron8_venv374
     pyenv rehash
 
-    # install kubeadm
-    apt-get install -y apt-transport-https curl
-    # apt-mark hold kubelet kubeadm kubectl
-
-    # kubelet requires swap off
-    # swapoff -a
-
-    # keep swap off after reboot
-    # sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
-
-    sudo fallocate -l 2G /swapfile
-    sudo dd if=/dev/zero of=/swapfile bs=2048 count=1048576
-    sudo chmod 600 /swapfile
-    sudo mkswap /swapfile
-    sudo swapon /swapfile
-    echo "/swapfile swap swap defaults 0 0" | sudo tee -a /etc/fstab
-    sudo swapon --show
-    sudo free -h
+    sudo apt-get install -y apt-transport-https curl
 
     # ip of this box
     IP_ADDR=`ifconfig enp0s8 | grep Mask | awk '{print $2}'| cut -f2 -d:`
@@ -165,6 +163,8 @@ EOF
 
     mkdir -p "$HOME/.zsh"
     git clone https://github.com/sindresorhus/pure.git "$HOME/.zsh/pure"
+
+    sudo git clone https://github.com/bossjones/debug-tools /usr/local/src/debug-tools && /usr/local/src/debug-tools/update-bossjones-debug-tools
 SCRIPT
 
 Vagrant.configure(2) do |config|
