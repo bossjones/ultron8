@@ -36,6 +36,12 @@ indent_size = 2
 insert_final_newline = ignore
 indent_style = space
 
+# The YML files contain newlines inconsistently
+[Vagrantfile]
+indent_size = 2
+insert_final_newline = ignore
+indent_style = space
+
 
 # The JSON files contain newlines inconsistently
 [*.json]
