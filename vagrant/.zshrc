@@ -15,7 +15,7 @@ export SHELL="/usr/bin/zsh"
 export GOPATH="~/go"
 export TERM="xterm-256color"
 export EDITOR="vim"
-export PATH="/usr/local/rbenv/shims:$HOME/bin:$HOME/.local/bin:$HOME/.pyenv/bin:$HOME/.rbenv/bin:$HOME/.fnm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
+export PATH="$HOME/.rbenv/bin:/usr/local/rbenv/shims:$HOME/bin:$HOME/.local/bin:$HOME/.pyenv/bin:$HOME/.rbenv/bin:$HOME/.fnm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
 
 # SOURCE: https://github.com/ajh/dotfiles/blob/master/configs/zsh/dot_zshrc
 # source "before' config files

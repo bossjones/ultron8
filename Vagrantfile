@@ -8,7 +8,7 @@ config_yml = YAML.load_file(File.open(__dir__ + '/vagrant-config.yml'))
 
 NON_ROOT_USER = 'vagrant'.freeze
 
-stub_name = "ultron8-v"
+stub_name = 'ultron8-v'.freeze
 
 base_dir = File.dirname(__FILE__)
 unless File.exists?("#{base_dir}/vagrant/insecure_ultron8_key")
@@ -43,6 +43,7 @@ $configureBox = <<-SCRIPT
         imagemagick \
         libbz2-dev \
         libc6-dev \
+        direnv \
         libcurl4-openssl-dev \
         libdb-dev \
         libevent-dev \
@@ -142,9 +143,9 @@ EOF
 
     sudo sysctl -w vm.min_free_kbytes=1024000
     sudo sync; sudo sysctl -w vm.drop_caches=3; sudo sync
-    sudo mkdir -p \\$HOME/dev
+    sudo mkdir -p /home/vagrant/dev
     sudo chown vagrant:vagrant -R ~vagrant
-    git clone https://github.com/viasite-ansible/ansible-role-zsh \\$HOME/dev/ansible-role-zsh || true
+    git clone https://github.com/viasite-ansible/ansible-role-zsh /home/vagrant/dev/ansible-role-zsh || true
     sudo apt-get install software-properties-common -y
     sudo apt-add-repository ppa:ansible/ansible -y
     sudo apt-get update
@@ -171,6 +172,8 @@ EOF
 
     sudo git clone https://github.com/bossjones/debug-tools /usr/local/src/debug-tools || true
     sudo /usr/local/src/debug-tools/update-bossjones-debug-tools
+
+    sudo apt install libgirepository1.0-dev ccze -y
 SCRIPT
 
 # This script to install k8s using kubeadm will get executed after a box is provisioned
@@ -178,15 +181,15 @@ $postInstall = <<-SCRIPT
     cat <<EOF >/home/vagrant/run_as_vagrant.sh
 #!/usr/bin/env bash
 
-set -x
-set -e
+# set -x
+# set -e
 
 export _HOME="~vagrant"
 
 # fnm
 curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash
-export PATH="/home/vagrant/.fnm:$PATH"
-# echo 'eval "\\$(fnm env --multi)"' >> \\$HOME/.bashrc
+export PATH="/home/vagrant/.fnm:\\$PATH"
+# echo 'eval "\\$(fnm env --multi)"' >> /home/vagrant/.bashrc
 eval "\\$(fnm env --multi)"
 fnm install v10
 fnm use v10
@@ -199,32 +202,45 @@ sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev li
 
 curl -fsSL https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
 
-echo 'export PYENV_ROOT="\\$HOME/.pyenv"' >> \\$HOME/.bashrc
-echo 'export WORKON_HOME="\\$HOME/.pyenv/versions"' >> \\$HOME/.bashrc
-echo 'export PROJECT_HOME=\\$HOME/dev' >> \\$HOME/.bashrc
-echo 'export PATH="\\$HOME/.pyenv/bin:$PATH"' >> \\$HOME/.bashrc
-echo 'eval "\\$(pyenv init -)"' >> \\$HOME/.bashrc
-# echo 'eval "\\$(pyenv virtualenv-init -)"' >> \\$HOME/.bashrc
+echo 'export PYENV_ROOT="/home/vagrant/.pyenv"' >> /home/vagrant/.bashrc
+echo 'export WORKON_HOME="/home/vagrant/.pyenv/versions"' >> /home/vagrant/.bashrc
+echo 'export PROJECT_HOME=/home/vagrant/dev' >> /home/vagrant/.bashrc
+echo 'export PATH="/home/vagrant/.pyenv/bin:\\$PATH"' >> /home/vagrant/.bashrc
 
-export PYENV_ROOT="\\$HOME/.pyenv"
-export WORKON_HOME="\\$HOME/.pyenv/versions"
-export PROJECT_HOME=\\$HOME/dev
-export PATH="\\$HOME/.pyenv/bin:$PATH"
+export PATH="/home/vagrant/.pyenv/bin:\\$PATH"
+echo 'eval "\\$(pyenv init -)"' >> /home/vagrant/.bashrc
+echo 'eval "\\$(pyenv virtualenv-init -)"' >> /home/vagrant/.bashrc
+
+source /home/vagrant/.bashrc
+
+export PYENV_ROOT="/home/vagrant/.pyenv"
+export WORKON_HOME="/home/vagrant/.pyenv/versions"
+export PROJECT_HOME=/home/vagrant/dev
+export PATH="/home/vagrant/.pyenv/bin:\\$PATH"
 eval "\\$(pyenv init -)"
 eval "\\$(pyenv virtualenv-init -)"
 
-cat \\$HOME/.bashrc
+cat /home/vagrant/.bashrc
 
-source \\$HOME/.bashrc
+source /home/vagrant/.bashrc
 
 pyenv rehash
 
-env PYTHON_CONFIGURE_OPTS="--enable-shared --enable-optimizations --enable-ipv6" PROFILE_TASK="-m test.regrtest --pgo test_array test_base64 test_binascii test_binhex test_binop test_bytes test_c_locale_coercion test_class test_cmath test_codecs test_compile test_complex test_csv test_decimal test_dict test_float test_fstring test_hashlib test_io test_iter test_json test_long test_math test_memoryview test_pickle test_re test_set test_slice test_struct test_threading test_time test_traceback test_unicode" pyenv install 3.7.4
+env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.7.4
 
+pyenv rehash
 pyenv virtualenv 3.7.4 tools3
 pyenv shell tools3
-mkdir -p \\$HOME/.bin \\$HOME/.local/bin
+mkdir -p /home/vagrant/.bin /home/vagrant/.local/bin
+
+export PATH="/home/vagrant/.bin:\\$PATH"
+export PATH="/home/vagrant/.local/bin:\\$PATH"
+
+echo 'export PATH="/home/vagrant/.bin:\\$PATH"' >> /home/vagrant/.bashrc
+echo 'export PATH="/home/vagrant/.local/bin:\\$PATH"' >> /home/vagrant/.bashrc
+
 pip install --user sqliterepl
+pyenv rehash
 
 pyenv virtualenv 3.7.4 ultron8_venv374
 pyenv shell ultron8_venv374
@@ -236,27 +252,31 @@ sudo mkdir -p /usr/local/rbenv
 sudo chmod 777 /usr/local/rbenv
 curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-installer | bash
 
-mkdir -p "\\$HOME/.zsh"
-git clone https://github.com/sindresorhus/pure.git "\\$HOME/.zsh/pure"
+echo 'export PATH="/home/vagrant/.rbenv/bin:\\$PATH"' >> /home/vagrant/.bashrc
+export PATH="/home/vagrant/.rbenv/bin:\\$PATH"
 
-git clone https://github.com/zsh-users/antigen.git \\$HOME/.antigen/antigen
+eval "$(rbenv init -)"
 
-# mkdir -p \\$HOME/.fonts \\$HOME/.config/fontconfig/conf.d \
-#   && wget -P \\$HOME/.fonts https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf \
-#   && wget -P \\$HOME/.config/fontconfig/conf.d/ https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf \
-#   && fc-cache -vf \\$HOME/.fonts/
+mkdir -p "/home/vagrant/.zsh"
+git clone https://github.com/sindresorhus/pure.git "/home/vagrant/.zsh/pure"
 
-# # # SOURCE: https://github.com/veggiemonk/ansible-dotfiles/blob/master/tasks/fonts.yml
-# git clone https://github.com/powerline/fonts \\$HOME/powerlinefonts && \
-#   cd \\$HOME/powerlinefonts; \\$HOME/powerlinefonts/install.sh \
-#   && fc-cache -f
+git clone https://github.com/zsh-users/antigen.git /home/vagrant/.antigen/antigen
 
-git clone https://github.com/samoshkin/tmux-config.git \\$HOME/dev/tmux-config
+mkdir -p /home/vagrant/.fonts /home/vagrant/.config/fontconfig/conf.d \
+  && wget -P /home/vagrant/.fonts https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf \
+  && wget -P /home/vagrant/.config/fontconfig/conf.d/ https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf \
+  && fc-cache -vf /home/vagrant/.fonts/
+
+# # SOURCE: https://github.com/veggiemonk/ansible-dotfiles/blob/master/tasks/fonts.yml
+git clone https://github.com/powerline/fonts /home/vagrant/powerlinefonts && \
+  cd /home/vagrant/powerlinefonts; /home/vagrant/powerlinefonts/install.sh \
+  && fc-cache -f \
+  && \
+  cd /home/vagrant
+
+git clone https://github.com/samoshkin/tmux-config.git /home/vagrant/dev/tmux-config && /home/vagrant/dev/tmux-config/install.sh
 echo "------------------Finished------------------"
-echo "Now run ansible-galaxy"
-echo 'vagrant:vagrant' | chpasswd
-
-set +x
+curl -s https://s3.amazonaws.com/download.draios.com/stable/install-sysdig | sudo bash
 
 EOF
 SCRIPT
@@ -264,12 +284,19 @@ SCRIPT
 Vagrant.configure(2) do |config|
   # set auto update to false if you do NOT want to check the correct additions version when booting this machine
   # config.vbguest.auto_update = true
+  puts "config.class  - #{config.class}"
 
   config.vm.synced_folder ".", "/srv/vagrant_repos/ultron8", disabled: false
 
   config_yml[:vms].each do |name, settings|
+    if settings[:type] == 'master'
+      puts "config_yml  - #{name.to_s}.#{stub_name}"
+    end
     # use the config key as the vm identifier
     config.vm.define name.to_s, autostart: true, primary: true do |vm_config|
+      if settings[:type] == 'master'
+        puts "config.vm.define name.to_s  - #{name.to_s}.#{stub_name}"
+      end
       config.ssh.insert_key = false
       vm_config.vm.usable_port_range = (2200..2250)
 
@@ -289,47 +316,53 @@ Vagrant.configure(2) do |config|
       # DISABLED:: # config.vm.network "forwarded_port", guest: 2375, host: settings[:dockerport1]
       # DISABLED:: # config.vm.network "forwarded_port", guest: 2376, host: settings[:dockerport2]
 
-      vm_config.vm.hostname = "#{settings[:hostname]}.#{stub_name}"
+      puts "vm_config.vm.hostname = #{name.to_s}.#{stub_name}"
+      vm_config.vm.hostname = "#{name.to_s}.#{stub_name}"
 
       config.vm.provider 'virtualbox' do |v|
+        if settings[:type] == 'master'
+          puts "config.vm.provider 'virtualbox'  - #{name.to_s}.#{stub_name}"
+        end
         # make sure that the name makes sense when seen in the vbox GUI
-        v.name = "#{settings[:hostname]}.#{stub_name}"
+        puts "v.name = #{name.to_s}.#{stub_name}"
+        v.name = "#{name.to_s}.#{stub_name}"
 
         v.gui = false
         v.customize ['modifyvm', :id, '--groups', '/Ultron Development']
         v.customize ['modifyvm', :id, '--memory', settings[:mem]]
         v.customize ['modifyvm', :id, '--cpus', settings[:cpu]]
-      end
+      end  # config.vm.provider 'virtualbox' do |v|
 
-      hostname_with_hyenalab_tld = "#{settings[:hostname]}.bosslab.com"
+      hostname_with_hyenalab_tld = "#{name.to_s}.bosslab.com"
 
-      aliases = [hostname_with_hyenalab_tld, settings[:hostname], "#{settings[:hostname]}.#{stub_name}"]
+      aliases = [hostname_with_hyenalab_tld, name.to_s, "#{name.to_s}.#{stub_name}"]
 
       if Vagrant.has_plugin?('vagrant-hostsupdater')
-        puts 'IM HERE BABY'
         config.hostsupdater.aliases = aliases
         vm_config.hostsupdater.aliases = aliases
-      elsif Vagrant.has_plugin?('vagrant-hostmanager')
-        puts 'IM HERE HONEY'
-        vm_config.hostmanager.enabled = true
-        vm_config.hostmanager.manage_host = true
-        vm_config.hostmanager.manage_guests = true
-        vm_config.hostmanager.ignore_private_ip = false
-        vm_config.hostmanager.include_offline = true
-        vm_config.hostmanager.aliases = aliases
-      end
+      end  # if Vagrant.has_plugin?('vagrant-hostsupdater')
 
-      if "#{settings[:hostname]}.#{stub_name}" == "master.#{stub_name}"
-         # pre-configure our playground trond
-         vm_config.vm.provision :shell, inline: "install -d -m 2750 -o vagrant -g vagrant /var/lib/ultron8"
-         vm_config.vm.provision :shell, inline: "install -d -m 2750 -o vagrant -g vagrant /var/log/ultron8"
-         vm_config.vm.provision :shell, privileged: false, inline: "install -m 600 /srv/vagrant_repos/ultron8/vagrant/insecure_ultron8_key /home/vagrant/.ssh/id_rsa"
-         vm_config.vm.provision :shell, inline: "install -m 644 /srv/vagrant_repos/ultron8/vagrant/hosts /etc/hosts"
+      # if settings[:type] == 'master'
+      #    # pre-configure our playground trond
+      #    vm_config.vm.provision :shell, inline: "install -d -m 2750 -o vagrant -g vagrant /var/lib/ultron8"
+      #    vm_config.vm.provision :shell, inline: "install -d -m 2750 -o vagrant -g vagrant /var/log/ultron8"
+      #    vm_config.vm.provision :shell, privileged: false, inline: "install -m 600 /srv/vagrant_repos/ultron8/vagrant/insecure_ultron8_key /home/vagrant/.ssh/id_rsa"
+      #    vm_config.vm.provision :shell, inline: "install -m 644 /srv/vagrant_repos/ultron8/vagrant/hosts /etc/hosts"
 
-         # Fire up the requisite ssh-agent and load our private key.
-         vm_config.vm.provision :shell, privileged: false, inline: "ssh-agent > /var/lib/ultron8/ssh-agent.sh"
-         vm_config.vm.provision :shell, privileged: false, inline: ". /var/lib/ultron8/ssh-agent.sh && ssh-add /home/vagrant/.ssh/id_rsa"
-      end
+      #    # Fire up the requisite ssh-agent and load our private key.
+      #    vm_config.vm.provision :shell, privileged: false, inline: "ssh-agent > /var/lib/ultron8/ssh-agent.sh"
+      #    vm_config.vm.provision :shell, privileged: false, inline: ". /var/lib/ultron8/ssh-agent.sh && ssh-add /home/vagrant/.ssh/id_rsa"
+      # end  # if settings[:type] == 'master'
+
+      # pre-configure our playground trond
+      vm_config.vm.provision :shell, inline: "install -d -m 2750 -o vagrant -g vagrant /var/lib/ultron8"
+      vm_config.vm.provision :shell, inline: "install -d -m 2750 -o vagrant -g vagrant /var/log/ultron8"
+      vm_config.vm.provision :shell, privileged: false, inline: "install -m 600 /srv/vagrant_repos/ultron8/vagrant/insecure_ultron8_key /home/vagrant/.ssh/id_rsa"
+      vm_config.vm.provision :shell, inline: "install -m 644 /srv/vagrant_repos/ultron8/vagrant/hosts /etc/hosts"
+
+      # Fire up the requisite ssh-agent and load our private key.
+      vm_config.vm.provision :shell, privileged: false, inline: "ssh-agent > /var/lib/ultron8/ssh-agent.sh"
+      vm_config.vm.provision :shell, privileged: false, inline: ". /var/lib/ultron8/ssh-agent.sh && ssh-add /home/vagrant/.ssh/id_rsa"
 
       vm_config.vm.provision 'shell', privileged: true, inline: $configureBox
       vm_config.vm.provision 'shell', privileged: false, inline: $postInstall
@@ -340,6 +373,9 @@ Vagrant.configure(2) do |config|
       vm_config.vm.provision :shell, inline: "install -m 755 /srv/vagrant_repos/ultron8/vagrant/sync_code.sh /usr/local/bin/sync_code.sh"
       vm_config.vm.provision :shell, privileged: false, inline: "cd && rsync -r --exclude .vagrant --exclude .git /srv/vagrant_repos/ultron8/ ~/ultron8/ && sudo chown vagrant:vagrant -R ~vagrant && cd ~/ultron8 && ls -lta"
       vm_config.vm.provision :shell, privileged: false, inline: "cd && rsync -r --exclude .vagrant --exclude .git /srv/vagrant_repos/ultron8/vagrant/.zsh* ~/ && sudo chown vagrant:vagrant -R ~vagrant && cd ~/ && ls -lta | grep .zsh"
-    end
-  end
-end
+
+    end  # config.vm.define name.to_s, autostart: true do |vm_config|
+
+  end  # config_yml[:vms].each do |name, settings|
+
+end  # Vagrant.configure(2) do |config|
