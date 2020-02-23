@@ -19,8 +19,21 @@ stdin, stdout = sys.stdin, sys.stdout
 
 
 @click.command("login", short_help="Login to ultron8 cluster")
+@click.option("--user", prompt="Username", help="Username")
+@click.option(
+    "--password",
+    prompt="Password",
+    hide_input=True,
+    confirmation_prompt=True,
+    help="Password",
+)
+@click.option(
+    "--password-stdin",
+    prompt="Take the password from stdin",
+    help="Take the password from stdin",
+)
 @click.pass_context
-def cli(ctx):
+def cli(ctx, user, password, password_stdin):
     """
     Login CLI. Used to interact with ultron8 api.
     """

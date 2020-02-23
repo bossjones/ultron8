@@ -289,3 +289,61 @@ pip-compile --output-file requirements-test.txt requirements-test.in --upgrade
         click.secho(msg, fg=COLOR_SUCCESS)
 
     ctx.run(_cmd)
+
+
+@task(
+    pre=[call(detect_os, loc="local")], incrementable=["verbose"], aliases=["hacking"]
+)
+def contrib(ctx, loc="local", verbose=0, cleanup=False):
+    """
+    Install contrib files in correct places
+    Usage: inv local.contrib
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    if verbose >= 1:
+        msg = "[contrib] Create virtual environment, initialize it, install packages, and remind user to activate after make is done"
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    _cmd = r"""
+cp -fv ./contrib/.pdbrc ~/.pdbrc
+cp -fv ./contrib/.pdbrc.py ~/.pdbrc.py
+mkdir -p ~/ptpython/ || true
+cp -fv ./contrib/.ptpython_config.py ~/ptpython/config.py
+    """
+
+    if verbose >= 1:
+        msg = "[contrib] Install configs: "
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run(_cmd)
+
+
+@task(pre=[call(detect_os, loc="local")], incrementable=["verbose"])
+def rsync(ctx, loc="local", verbose=0, cleanup=False):
+    """
+    rsync over files to ~vagrant/ultron8 folder
+    Usage: inv local.rsync
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    _cmd = r"""
+cd && rsync -r --exclude .vagrant --exclude .git /srv/vagrant_repos/ultron8/ ~/ultron8/ && sudo chown vagrant:vagrant -R ~vagrant && cd ~/ultron8 && ls -lta
+    """
+
+    if verbose >= 1:
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run(_cmd)

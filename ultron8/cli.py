@@ -84,6 +84,13 @@ def app_home():
         raise "HOME environment variable not set?"
 
 
+def cluster_home():
+    try:
+        return os.path.join(app_home(), "clusters")
+    except KeyError:
+        raise "HOME environment variable not set?"
+
+
 def mkdir_if_dne(target):
     if not os.path.isdir(target):
         os.makedirs(target)
