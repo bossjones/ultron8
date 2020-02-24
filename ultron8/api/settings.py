@@ -2,10 +2,13 @@
 import logging
 import os
 import sys
+import uuid
 
 from starlette.config import Config
 from starlette.datastructures import CommaSeparatedStrings
 from starlette.datastructures import Secret
+
+from ultron8.api.utils.parser import get_domain_from_fqdn
 
 log = logging.getLogger(__name__)
 
@@ -108,6 +111,7 @@ MASK_SECRETS = getenv_boolean("MASK_SECRETS", default_value=True)
 DEBUG_REQUESTS = getenv_boolean("DEBUG_REQUESTS", default_value=False)
 # Avoid uvicorn error: https://github.com/simonw/datasette/issues/633
 # WORKERS = os.environ.get("WORKERS", "1")
+CLUSTER_UUID = str(uuid.uuid5(uuid.NAMESPACE_DNS, get_domain_from_fqdn(SERVER_HOST)))
 
 
 class SettingsConfig:
@@ -143,6 +147,7 @@ class SettingsConfig:
     MASK_SECRETS = MASK_SECRETS
     DEBUG_REQUESTS = DEBUG_REQUESTS
     # WORKERS = WORKERS
+    CLUSTER_UUID = CLUSTER_UUID
 
 
 if __name__ == "__main__":
