@@ -31,18 +31,18 @@ stdin, stdout = sys.stdin, sys.stdout
 @click.group("node", short_help="Manage your ultron8 nodes")
 @click.pass_context
 def cli(ctx):
-    """node cmds for ultron8."""
+    """View Ultron8 node information."""
     if get_flag("debug"):
         click.echo("Debug mode initiated")
         set_trace()
 
-    logger.debug("node subcommand called from cli")
+    logger.debug("View Ultron8 node information")
 
 
 @cli.command("show")
 @click.pass_context
 def show(ctx):
-    """Cmd to show workspace etc for ultron8."""
+    """Show Ultron8 node information"""
     if get_flag("debug"):
         click.echo("Debug mode initiated")
         set_trace()
