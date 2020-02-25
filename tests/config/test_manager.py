@@ -1,6 +1,7 @@
 """Test config utils."""
 # pylint: disable=protected-access
 import logging
+import hashlib
 import os
 import shutil
 import tempfile
@@ -18,8 +19,11 @@ from ultron8.yaml import yaml
 from ultron8.yaml import yaml_load
 from ultron8.yaml import yaml_save
 
+from ultron8.utils import maybe_decode
+from ultron8.utils import maybe_encode
 from ultron8.config.manager import NullConfig
 from ultron8.config.manager import ConfigProxy
+from ultron8.config.manager import hash_digest
 
 # from . import helper
 # import helper
@@ -29,6 +33,14 @@ from ultron8.config.manager import ConfigProxy
 def get_fake_config_proxy():
     config_proxy = ConfigProxy({"foo": "bar"})
     return config_proxy
+
+
+@pytest.mark.configonly
+@pytest.mark.unittest
+class TestHashDigest:
+    def test_hash_digest_valid_content(self) -> None:
+        content = "OkOkOk"
+        assert hash_digest(content) == hashlib.sha1(maybe_encode(content)).hexdigest()
 
 
 @pytest.mark.configonly
