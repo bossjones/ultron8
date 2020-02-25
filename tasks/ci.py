@@ -3,14 +3,48 @@ ci tasks
 """
 import os
 import logging
-from invoke import task
+from invoke import task, call
 import click
 from tasks.utils import get_compose_env
 
 # from tasks.core import clean, execute_sql
 
+from .utils import (
+    COLOR_WARNING,
+    COLOR_DANGER,
+    COLOR_SUCCESS,
+    COLOR_CAUTION,
+    COLOR_STABLE,
+)
+
 logger = logging.getLogger(__name__)
 logger.setLevel("DEBUG")
+
+
+@task(incrementable=["verbose"])
+def clean(ctx, loc="local", verbose=0, cleanup=False):
+    """
+    clean compiled python artifacts
+    Usage: inv ci.clean
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    _cmd = r"""
+find . -name '*.pyc' -exec rm -fv {} +
+find . -name '*.pyo' -exec rm -fv {} +
+find . -name '__pycache__' -exec rm -frv {} +
+rm -f .coverage
+    """
+
+    if verbose >= 1:
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run(_cmd)
 
 
 @task
@@ -104,6 +138,43 @@ def isort(ctx, loc="local", check=True, debug=False):
     ctx.run(_cmd)
 
 
+@task
+def verify_python_version(ctx, loc="local", check=True, debug=False):
+    """
+    verify_python_version is 3.7.4
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    # Python 3.7.4
+    res = ctx.run("python --version")
+
+    assert "Python 3.7.4" in res.stdout.rstrip()
+
+
+@task
+def pre_start(ctx, loc="local", check=True, debug=False):
+    """
+    pre_start ultron8 module
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    ctx.run("python ultron8/api/tests_pre_start.py")
+
+
 @task(incrementable=["verbose"])
 def pytest(ctx, loc="local", check=True, debug=False, verbose=0):
     """
@@ -143,5 +214,80 @@ def view_coverage(ctx, loc="local"):
         ctx.config["run"]["env"][k] = v
 
     _cmd = r"./script/open-browser.py file://${PWD}/htmlcov/index.html"
+
+    ctx.run(_cmd)
+
+
+@task(incrementable=["verbose"])
+def alembic_upgrade(ctx, loc="local"):
+    """
+    Run alembic upgrade head
+    Usage: inv ci.alembic-upgrade
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    _cmd = r"alembic upgrade head"
+
+    ctx.run(_cmd)
+
+
+@task(incrementable=["verbose"])
+def editable(ctx, loc="local"):
+    """
+    Run: pip install -e .
+    Usage: inv ci.editable
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    _cmd = r"pip install -e ."
+
+    ctx.run(_cmd)
+
+
+@task(
+    pre=[
+        call(clean, loc="local"),
+        call(verify_python_version, loc="local"),
+        call(pre_start, loc="local"),
+        call(alembic_upgrade, loc="local"),
+        call(pytest, loc="local"),
+    ],
+    incrementable=["verbose"],
+)
+def travis(ctx, loc="local", check=True, debug=False, verbose=0):
+    """
+    Run travis
+    Usage: inv ci.travis
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    if verbose >= 1:
+        msg = "[travis] check mode disabled"
+        click.secho(msg, fg="green")
+    _cmd = r"""
+mv -f .coverage .coverage.tests || true
+coverage combine
+"""
 
     ctx.run(_cmd)
