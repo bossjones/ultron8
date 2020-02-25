@@ -176,7 +176,7 @@ def pre_start(ctx, loc="local", check=True, debug=False):
 
 
 @task(incrementable=["verbose"])
-def pytest(ctx, loc="local", check=True, debug=False, verbose=0):
+def pytest(ctx, loc="local", check=True, debug=False, verbose=0, configonly=False):
     """
     Run pytest
     Usage: inv ci.pytest
@@ -194,6 +194,9 @@ def pytest(ctx, loc="local", check=True, debug=False, verbose=0):
         msg = "[pytest] check mode disabled"
         click.secho(msg, fg="green")
     _cmd = r"py.test --cov-config .coveragerc --verbose --cov-append --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"
+
+    if configonly:
+        _cmd = r"py.test -m configonly --cov-config .coveragerc --verbose --cov-append --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"
 
     ctx.run(_cmd)
 
@@ -264,6 +267,7 @@ def editable(ctx, loc="local"):
         call(verify_python_version, loc="local"),
         call(pre_start, loc="local"),
         call(alembic_upgrade, loc="local"),
+        # call(pytest, loc="local", configonly=True),
         call(pytest, loc="local"),
     ],
     incrementable=["verbose"],

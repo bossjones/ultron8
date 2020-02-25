@@ -18,8 +18,58 @@ from ultron8.yaml import yaml
 from ultron8.yaml import yaml_load
 from ultron8.yaml import yaml_save
 
+from ultron8.config.manager import NullConfig
+from ultron8.config.manager import ConfigProxy
+
 # from . import helper
 # import helper
+
+
+@pytest.fixture(scope="class")
+def get_fake_config_proxy():
+    config_proxy = ConfigProxy({"foo": "bar"})
+    return config_proxy
+
+
+@pytest.mark.configonly
+@pytest.mark.unittest
+class TestNullConfig:
+    def test_NullConfig_getattr_returns_self_test(self) -> None:
+        cfg = NullConfig()
+        assert cfg == cfg.nested_thing
+
+    def test_NullConfig_call_returns_none_test(self) -> None:
+        assert NullConfig().thing() is None
+
+    def test_NullConfig_nothing_exists_test(self) -> None:
+        assert NullConfig().thing.exists() is False
+
+
+@pytest.mark.configonly
+@pytest.mark.unittest
+class TestConfigProxy:
+    def test_ConfigProxy_existing_k_returns_config(self, get_fake_config_proxy):
+        assert type(get_fake_config_proxy.foo) is ConfigProxy
+
+    def test_ConfigProxy_non_existing_k_returns_null_config(
+        self, get_fake_config_proxy
+    ):
+        assert type(get_fake_config_proxy.baz) is NullConfig
+
+    def test_ConfigProxy_kv_get_on_k_returns_v(self, get_fake_config_proxy):
+        assert get_fake_config_proxy.foo() == "bar"
+
+    def test_ConfigProxy_kv_get_on_nonexistant_k_returns_none(
+        self, get_fake_config_proxy
+    ):
+        assert get_fake_config_proxy.baz() is None
+
+    def test_ConfigProxy_real_kv_exist_returns_true(self, get_fake_config_proxy):
+        assert get_fake_config_proxy.foo.exists()
+
+    def test_ConfigProxy_bad_kv_exist_returns_false(self, get_fake_config_proxy):
+        assert get_fake_config_proxy.baz.exists() is False
+
 
 # def create_file(path):
 #     """Create an empty file."""

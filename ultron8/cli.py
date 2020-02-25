@@ -13,6 +13,7 @@ from ultron8.process import fail
 
 from ultron8.core.workspace import Workspace, prep_default_config
 from ultron8.core.files import load_json_file
+from ultron8.config.manager import NullConfig, ConfigProxy
 
 logger = getLogger(__name__)
 
@@ -33,34 +34,6 @@ def set_trace():
 # http://click.palletsprojects.com/en/5.x/complex/#complex-guide
 # http://click.palletsprojects.com/en/5.x/commands/
 # https://github.com/pallets/click/blob/master/examples/complex/complex/cli.py
-
-
-class NullConfig(object):
-    def __getattr__(self, name):
-        return self
-
-    def __call__(self):
-        return None
-
-    def exists(self):
-        return False
-
-
-class ConfigManager(object):
-    def __init__(self, data):
-        self.__data = data
-
-    def __getattr__(self, name):
-        if name in self.__data:
-            return ConfigManager(self.__data[name])
-        return NullConfig()
-
-    def __call__(self):
-        return self.__data
-
-    def exists(self):
-        return True
-
 
 DEFAULT_CONFIG = """
 clusters:
@@ -121,7 +94,7 @@ def cli(ctx, working_dir: str, config_dir: str, debug: bool, verbose: int):
     ctx.obj["cfg_file"] = prep_default_config()
     ctx.obj["verbose"] = verbose
     ctx.obj["workspace"] = Workspace()
-    ctx.obj["configmanager"] = ConfigManager(load_json_file(ctx.obj["cfg_file"]))
+    ctx.obj["configmanager"] = ConfigProxy(load_json_file(ctx.obj["cfg_file"]))
 
 
 # SOURCE: https://kite.com/blog/python/python-command-line-click-tutorial/

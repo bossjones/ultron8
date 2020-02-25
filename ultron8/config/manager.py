@@ -32,6 +32,35 @@ def hash_digest(content):
     return hashlib.sha1(maybe_encode(content)).hexdigest()
 
 
+class NullConfig(object):
+    def __getattr__(self, name):
+        return self
+
+    def __call__(self):
+        return None
+
+    def exists(self):
+        return False
+
+
+class ConfigProxy(object):
+    """A container around configuration fragments"""
+
+    def __init__(self, data):
+        self.__data = data
+
+    def __getattr__(self, name):
+        if name in self.__data:
+            return ConfigProxy(self.__data[name])
+        return NullConfig()
+
+    def __call__(self):
+        return self.__data
+
+    def exists(self):
+        return True
+
+
 class ManifestFile(object):
     """Manage the manifest file, which tracks name to filename."""
 
