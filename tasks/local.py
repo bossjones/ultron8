@@ -90,6 +90,22 @@ def get_python_path(ctx, loc="local", verbose=0):
 
 
 @task(incrementable=["verbose"])
+def ipython(ctx, loc="local", verbose=0):
+    """
+    Start up ipython
+    Usage: inv local.ipython
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    _cmd = "ipython"
+    ctx.run(_cmd)
+
+
+@task(incrementable=["verbose"])
 def detect_os(ctx, loc="local", verbose=0):
     """
     detect what type of os we are using

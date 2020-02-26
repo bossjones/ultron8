@@ -3,6 +3,8 @@ import logging
 import os
 import sys
 import uuid
+from dataclasses import dataclass, field
+from typing import Any
 
 from starlette.config import Config
 from starlette.datastructures import CommaSeparatedStrings
@@ -113,6 +115,111 @@ DEBUG_REQUESTS = getenv_boolean("DEBUG_REQUESTS", default_value=False)
 # WORKERS = os.environ.get("WORKERS", "1")
 CLUSTER_UUID = str(uuid.uuid5(uuid.NAMESPACE_DNS, get_domain_from_fqdn(SERVER_HOST)))
 
+# @dataclass
+# class SettingsConfigProxy:
+#     api_v1_str: str
+#     default_secret_key: bytes
+#     secret_key: bytes
+#     access_token_expire_minutes: int
+#     server_name: str = None
+#     server_host: str = None
+#     project_name: str = None
+#     sentry_dsn: str = None
+#     smtp_tls: bool = False
+#     smtp_port: int = None
+#     smtp_host: str = None
+#     smtp_user: str = None
+#     smtp_password: str = None
+#     emails_from_email: str = None
+#     emails_from_name: str = None
+#     email_reset_token_expire_hours: int = None
+#     email_templates_dir: str
+#     emails_enabled: bool = False
+#     users_open_registration: bool
+#     debug: bool
+#     testing: bool
+#     test_database_url: str = None
+#     database_url: str
+#     backend_cors_origins: str
+#     first_superuser: str
+#     first_superuser_password: str
+#     log_level: int
+#     mask_secrets: bool
+#     debug_requests: bool
+#     cluster_uuid: str
+
+#     @classmethod
+#     def from_env(cls):
+#         """Factory method for creating Settings object from env vars."""
+
+#         kwargs = dict(
+#             api_v1_str=API_V1_STR,
+#             default_secret_key=DEFAULT_SECRET_KEY,
+#             secret_key=SECRET_KEY,
+#             access_token_expire_minutes=ACCESS_TOKEN_EXPIRE_MINUTES,
+#             server_name=SERVER_NAME,
+#             server_host=SERVER_HOST,
+#             project_name=PROJECT_NAME,
+#             sentry_dsn=SENTRY_DSN,
+#             smtp_tls=SMTP_TLS,
+#             smtp_port=SMTP_PORT,
+#             smtp_host=SMTP_HOST,
+#             smtp_user=SMTP_USER,
+#             smtp_password=SMTP_PASSWORD,
+#             emails_from_email=EMAILS_FROM_EMAIL,
+#             emails_from_name=EMAILS_FROM_NAME,
+#             email_reset_token_expire_hours=EMAIL_RESET_TOKEN_EXPIRE_HOURS,
+#             email_templates_dir=EMAIL_TEMPLATES_DIR,
+#             emails_enabled=EMAILS_ENABLED,
+#             users_open_registration=USERS_OPEN_REGISTRATION,
+#             debug=DEBUG,
+#             testing=TESTING,
+#             test_database_url=TEST_DATABASE_URL,
+#             database_url=DATABASE_URL,
+#             backend_cors_origins=BACKEND_CORS_ORIGINS,
+#             first_superuser=FIRST_SUPERUSER,
+#             first_superuser_password=FIRST_SUPERUSER_PASSWORD,
+#             log_level=LOG_LEVEL,
+#             mask_secrets=MASK_SECRETS,
+#             debug_requests=DEBUG_REQUESTS,
+#             cluster_uuid=CLUSTER_UUID,
+#         )
+
+#         return cls(**kwargs)
+
+# def __post__init__(self):
+#     self.api_v1_str = API_V1_STR
+#     self.default_secret_key = DEFAULT_SECRET_KEY
+#     self.secret_key = SECRET_KEY
+#     self.access_token_expire_minutes = ACCESS_TOKEN_EXPIRE_MINUTES
+#     self.server_name = SERVER_NAME
+#     self.server_host = SERVER_HOST
+#     self.project_name = PROJECT_NAME
+#     self.sentry_dsn = SENTRY_DSN
+#     self.smtp_tls = SMTP_TLS
+#     self.smtp_port = SMTP_PORT
+#     self.smtp_port = SMTP_PORT
+#     self.smtp_host = SMTP_HOST
+#     self.smtp_user = SMTP_USER
+#     self.smtp_password = SMTP_PASSWORD
+#     self.emails_from_email = EMAILS_FROM_EMAIL
+#     self.emails_from_name = EMAILS_FROM_NAME
+#     self.email_reset_token_expire_hours = EMAIL_RESET_TOKEN_EXPIRE_HOURS
+#     self.email_templates_dir = EMAIL_TEMPLATES_DIR
+#     self.emails_enabled = EMAILS_ENABLED
+#     self.users_open_registration = USERS_OPEN_REGISTRATION
+#     self.debug = DEBUG
+#     self.testing = TESTING
+#     self.test_database_url = TEST_DATABASE_URL
+#     self.database_url = DATABASE_URL
+#     self.backend_cors_origins = BACKEND_CORS_ORIGINS
+#     self.first_superuser = FIRST_SUPERUSER
+#     self.first_superuser_password = FIRST_SUPERUSER_PASSWORD
+#     self.log_level = LOG_LEVEL
+#     self.mask_secrets = MASK_SECRETS
+#     self.debug_requests = DEBUG_REQUESTS
+#     self.cluster_uuid = CLUSTER_UUID
+
 
 class SettingsConfig:
     DEBUG = DEBUG
@@ -125,7 +232,6 @@ class SettingsConfig:
     PROJECT_NAME = PROJECT_NAME
     SENTRY_DSN = SENTRY_DSN
     SMTP_TLS = getenv_boolean("SMTP_TLS", True)
-    SMTP_PORT = None
     SMTP_PORT = SMTP_PORT
     SMTP_HOST = SMTP_HOST
     SMTP_USER = SMTP_USER
