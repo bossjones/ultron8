@@ -64,3 +64,4 @@ class TestClusterConfig:
         assert c.ultron_cluster_url == "http://localhost:11267"
         assert c.ultron_acs_token
         assert c.ultron_uuid == "cd8f5f9f-e3e8-569f-87ef-f03c6cfc29bc"
+        assert str(c) == f"http://localhost:11267{c.ultron_acs_token}"
