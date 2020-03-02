@@ -186,7 +186,7 @@ pgrep -f "ultron8/dev_serve.py" || true
 def bootstrap(ctx, loc="local", verbose=0, cleanup=False, upgrade=False):
     """
     start up fastapi application
-    Usage: inv local.serve
+    Usage: inv local.bootstrap
     """
     env = get_compose_env(ctx, loc=loc)
 
@@ -276,7 +276,7 @@ pip freeze > freeze.before.txt
     incrementable=["verbose"],
     aliases=["pip_compile"],
 )
-def pip_deps(ctx, loc="local", verbose=0, cleanup=False):
+def pip_deps(ctx, loc="local", verbose=0, cleanup=False, upgrade=False):
     """
     lock fastapi pip dependencies [requirements, dev, test]
     Usage: inv local.pip_deps
@@ -291,10 +291,17 @@ def pip_deps(ctx, loc="local", verbose=0, cleanup=False):
         msg = "[pip-deps] Create virtual environment, initialize it, install packages, and remind user to activate after make is done"
         click.secho(msg, fg=COLOR_SUCCESS)
 
-    _cmd = r"""
+    if upgrade:
+        _cmd = r"""
 pip-compile --output-file requirements.txt requirements.in --upgrade
 pip-compile --output-file requirements-dev.txt requirements-dev.in --upgrade
 pip-compile --output-file requirements-test.txt requirements-test.in --upgrade
+    """
+    else:
+        _cmd = r"""
+pip-compile --output-file requirements.txt requirements.in
+pip-compile --output-file requirements-dev.txt requirements-dev.in
+pip-compile --output-file requirements-test.txt requirements-test.in
     """
 
     if verbose >= 1:

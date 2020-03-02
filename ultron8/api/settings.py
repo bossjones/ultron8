@@ -46,7 +46,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 8  # 60 minutes * 24 hours * 8 days = 8 
 
 
 SERVER_NAME = os.getenv("SERVER_NAME")
-SERVER_HOST = os.getenv("SERVER_HOST")
+SERVER_HOST = os.getenv("SERVER_HOST", default="http://localhost:11267")
 PROJECT_NAME = os.getenv("PROJECT_NAME")
 SENTRY_DSN = os.getenv("SENTRY_DSN")
 

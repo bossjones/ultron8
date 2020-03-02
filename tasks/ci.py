@@ -182,6 +182,7 @@ def pytest(
     check=True,
     debug=False,
     verbose=0,
+    pdb=False,
     configonly=False,
     settingsonly=False,
 ):
@@ -198,16 +199,23 @@ def pytest(
     for k, v in env.items():
         ctx.config["run"]["env"][k] = v
 
+    _cmd = r"py.test"
+
     if verbose >= 1:
         msg = "[pytest] check mode disabled"
         click.secho(msg, fg="green")
-    _cmd = r"py.test --cov-config .coveragerc --verbose --cov-append --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"
+        _cmd += r" --verbose "
 
     if configonly:
-        _cmd = r"py.test -m configonly --cov-config .coveragerc --verbose --cov-append --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"
+        _cmd += r" -m configonly "
 
     if settingsonly:
-        _cmd = r"py.test -m settingsonly --cov-config .coveragerc --verbose --cov-append --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"
+        _cmd += r" -m settingsonly "
+
+    if pdb:
+        _cmd += r" --pdb "
+
+    _cmd += r" --cov-config .coveragerc --verbose --cov-append --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"
 
     ctx.run(_cmd)
 

@@ -10,3 +10,4 @@ pytest-flake8
 tox-pyenv
 pytest-black
 pytest-watch
+pytest-dotenv
