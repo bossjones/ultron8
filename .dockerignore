@@ -59,3 +59,4 @@ temp.json
 .python-version
 vagrant/insecure_ultron_key
 vagrant/insecure_ultron_key.pub
+.env
