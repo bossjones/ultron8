@@ -185,6 +185,7 @@ def pytest(
     pdb=False,
     configonly=False,
     settingsonly=False,
+    pathsonly=False,
 ):
     """
     Run pytest
@@ -208,6 +209,9 @@ def pytest(
 
     if configonly:
         _cmd += r" -m configonly "
+
+    if pathsonly:
+        _cmd += r" -m pathsonly "
 
     if settingsonly:
         _cmd += r" -m settingsonly "
@@ -288,7 +292,8 @@ def editable(ctx, loc="local"):
         call(alembic_upgrade, loc="local"),
         # call(pytest, loc="local", configonly=True),
         # call(pytest, loc="local", settingsonly=True),
-        call(pytest, loc="local"),
+        call(pytest, loc="local", pathsonly=True),
+        # call(pytest, loc="local"),
     ],
     incrementable=["verbose"],
 )
