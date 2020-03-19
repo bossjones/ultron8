@@ -186,10 +186,32 @@ def touch_empty_file(path):
 # SOURCE: https://raw.githubusercontent.com/GNOME/pitivi/b2bbe6eef6d1e6d0fa5471d60004c62f936b3146/pitivi/utils/misc.py
 
 
+def is_readable_dir(path):
+    """Check whether a path references a readable directory."""
+    if not os.path.exists(path):
+        return {"result": False, "message": "Path does not exist", "path": path}
+    if not os.path.isdir(path):
+        return {"result": False, "message": "Path is not a directory", "path": path}
+    if not os.access(path, os.R_OK):
+        return {"result": False, "message": "Directory is not readable", "path": path}
+    return {"result": True}
+
+
+def is_readable_file(path):
+    """Check whether a path references a readable file."""
+    if not os.path.exists(path):
+        return {"result": False, "message": "Path does not exist", "path": path}
+    if not os.path.isfile(path):
+        return {"result": False, "message": "Path is not a file", "path": path}
+    if not os.access(path, os.R_OK):
+        return {"result": False, "message": "File is not readable", "path": path}
+    return {"result": True}
+
+
 def isWritable(path):
     """Returns whether the file/path is writable."""
     try:
-        if os.path.isdir(path):
+        if is_readable_dir(path):
             # The given path is an existing directory.
             # To properly check if it is writable, you need to use os.access.
             return os.access(path, os.W_OK)
@@ -210,12 +232,19 @@ def isWritable(path):
         unicode_error_dialog()
 
 
-def isReadable(path):
-    """Returns whether the file/path exists and is readable."""
-    try:
-        return os.path.exists(path) and os.access(path, os.R_OK)
-    except UnicodeDecodeError:
-        unicode_error_dialog()
+# def isReadable(path):
+#     """Returns whether the file/path exists and is readable."""
+#     try:
+#         return os.path.exists(path) and os.access(path, os.R_OK)
+#     except UnicodeDecodeError:
+#         # message = _(
+#         #     "The system's locale that you are using is not UTF-8 capable. "
+#         #     "Unicode support is required for Python3 software like Pitivi. "
+#         #     "Please correct your system settings; if you try to use Pitivi "
+#         #     "with a broken locale, weird bugs will happen."
+#         # )
+#         # raise UnicodeDecodeError(message)
+#         unicode_error_dialog()
 
 
 def unicode_error_dialog():

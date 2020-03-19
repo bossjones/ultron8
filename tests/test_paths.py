@@ -18,6 +18,10 @@ from tests.conftest import fixtures_path
 import ultron8
 from ultron8 import paths
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 # from typing import Iterator
 
 # @pytest.mark.parametrize(
@@ -64,261 +68,368 @@ class TestPathToFileURI(object):
 
         assert result == "/opt/ultron8"
 
-    # def test_mkdir_p(self, mocker):
-    #     # mock
-    #     # mock_logger_info = mocker.MagicMock(name="mock_logger_info")
-    #     mock_dir_exists = mocker.MagicMock(name="mock_dir_exists")
-    #     mock_path = mocker.MagicMock(name="mock_path")
-    #     # patch
+    def test_mkdir_p(self, mocker):
+        # mock
+        # mock_logger_info = mocker.MagicMock(name="mock_logger_info")
+        mock_dir_exists = mocker.MagicMock(name="mock_dir_exists")
+        mock_path = mocker.MagicMock(name="mock_path")
+        # patch
 
-    #     mocker.patch.object(
-    #         ultron8.paths, "dir_exists", mock_dir_exists
-    #     )
-    #     mocker.patch.object(ultron8.paths, "Path", mock_path)
+        mocker.patch.object(ultron8.paths, "dir_exists", mock_dir_exists)
+        mocker.patch.object(ultron8.paths, "Path", mock_path)
 
-    #     path = "/opt/ultron8"
+        path = "/opt/ultron8"
 
-    #     mock_dir_exists.return_value = True
+        mock_dir_exists.return_value = True
 
-    #     # run test
-    #     paths.mkdir_p(path)
+        # run test
+        paths.mkdir_p(path)
 
-    #     # assert
-    #     assert mock_logger_info.call_count == 1
-    #     mock_path.assert_called_once_with(path)
-    #     # from scarlett_os.internal.debugger import dump
-    #     mock_path().mkdir.assert_any_call(parents=True, exist_ok=True)
-    #     mock_logger_info.assert_any_call(
-    #         "Verify mkdir_p ran: {}".format(mock_dir_exists.return_value)
-    #     )
+        # assert
+        mock_path.assert_called_once_with(path)
 
-    # def test_dir_exists_false(self, mocker):
-    #     # mock
-    #     mock_logger_error = mocker.MagicMock(name="mock_logger_error")
-    #     mock_path = mocker.MagicMock(name="mock_path")
-    #     # patch
-    #     mocker.patch.object(
-    #         scarlett_os.subprocess.logging.Logger, "error", mock_logger_error
-    #     )
-    #     mocker.patch.object(ultron8.paths, "Path", mock_path)
+        mock_path().mkdir.assert_any_call(parents=True, exist_ok=True)
 
-    #     path = "/opt/ultron8"
+    def test_dir_exists_false(self, mocker):
+        # mock
+        # mock_logger_error = mocker.MagicMock(name="mock_logger_error")
+        mock_path = mocker.MagicMock(name="mock_path")
+        # patch
+        # mocker.patch.object(
+        #     scarlett_os.subprocess.logging.Logger, "error", mock_logger_error
+        # )
+        mocker.patch.object(ultron8.paths, "Path", mock_path)
 
-    #     mock_path_instance = mock_path()
+        path = "/opt/ultron8"
 
-    #     mock_path_instance.is_dir.return_value = False
+        mock_path_instance = mock_path()
 
-    #     # run test
-    #     paths.dir_exists(path)
+        mock_path_instance.is_dir.return_value = False
 
-    #     # assert
-    #     assert mock_logger_error.call_count == 1
-    #     assert mock_path_instance.is_dir.call_count == 2
-    #     mock_logger_error.assert_any_call("This is not a dir: {}".format(path))
+        # run test
+        paths.dir_exists(path)
 
-    # def test_dir_exists_true(self, mocker):
-    #     # mock
-    #     mock_logger_error = mocker.MagicMock(name="mock_logger_error")
-    #     mock_path = mocker.MagicMock(name="mock_path")
-    #     # patch
-    #     mocker.patch.object(
-    #         scarlett_os.subprocess.logging.Logger, "error", mock_logger_error
-    #     )
-    #     mocker.patch.object(ultron8.paths, "Path", mock_path)
+        # assert
+        # assert mock_logger_error.call_count == 1
+        assert mock_path_instance.is_dir.call_count == 2
+        # mock_logger_error.assert_any_call("This is not a dir: {}".format(path))
 
-    #     path = "/opt/ultron8"
+    def test_dir_exists_true(self, mocker):
+        # mock
+        # mock_logger_error = mocker.MagicMock(name="mock_logger_error")
+        mock_path = mocker.MagicMock(name="mock_path")
+        # patch
+        # mocker.patch.object(
+        #     scarlett_os.subprocess.logging.Logger, "error", mock_logger_error
+        # )
+        mocker.patch.object(ultron8.paths, "Path", mock_path)
 
-    #     mock_path_instance = mock_path()
-    #     #
-    #     mock_path_instance.is_dir.return_value = True
+        path = "/opt/ultron8"
 
-    #     # run test
-    #     paths.dir_exists(path)
+        mock_path_instance = mock_path()
+        #
+        mock_path_instance.is_dir.return_value = True
 
-    #     # assert
-    #     assert mock_logger_error.call_count == 0
-    #     assert mock_path_instance.is_dir.call_count == 2
-    #     mock_logger_error.assert_not_called()
+        # run test
+        paths.dir_exists(path)
 
-    # def test_mkdir_if_does_not_exist_false(self, mocker):
-    #     # mock
-    #     mock_mkdir_p = mocker.MagicMock(name="mock_mkdir_p")
-    #     mock_dir_exists = mocker.MagicMock(
-    #         name="mock_dir_exists", return_value=False
-    #     )
-    #     # patch
-    #     mocker.patch.object(
-    #         ultron8.paths, "mkdir_p", mock_mkdir_p
-    #     )
-    #     mocker.patch.object(
-    #         ultron8.paths, "dir_exists", mock_dir_exists
-    #     )
+        # assert
+        # assert mock_logger_error.call_count == 0
+        assert mock_path_instance.is_dir.call_count == 2
+        # mock_logger_error.assert_not_called()
 
-    #     path = "/opt/ultron8"
+    def test_mkdir_if_does_not_exist_false(self, mocker):
+        # mock
+        mock_mkdir_p = mocker.MagicMock(name="mock_mkdir_p")
+        mock_dir_exists = mocker.MagicMock(name="mock_dir_exists", return_value=False)
+        # patch
+        mocker.patch.object(ultron8.paths, "mkdir_p", mock_mkdir_p)
+        mocker.patch.object(ultron8.paths, "dir_exists", mock_dir_exists)
 
-    #     # run test
-    #     result = paths.mkdir_if_does_not_exist(path)
+        path = "/opt/ultron8"
 
-    #     # assert
-    #     assert mock_mkdir_p.call_count == 1
-    #     assert mock_dir_exists.call_count == 1
-    #     assert result == True
+        # run test
+        result = paths.mkdir_if_does_not_exist(path)
 
-    # def test_mkdir_if_does_not_exist_true(self, mocker):
-    #     # mock
-    #     mock_mkdir_p = mocker.MagicMock(name="mock_mkdir_p")
-    #     mock_dir_exists = mocker.MagicMock(
-    #         name="mock_dir_exists", return_value=True
-    #     )
-    #     # patch
-    #     mocker.patch.object(
-    #         ultron8.paths, "mkdir_p", mock_mkdir_p
-    #     )
-    #     mocker.patch.object(
-    #         ultron8.paths, "dir_exists", mock_dir_exists
-    #     )
+        # assert
+        assert mock_mkdir_p.call_count == 1
+        assert mock_dir_exists.call_count == 1
+        assert result == True
 
-    #     path = "/opt/ultron8"
+    def test_mkdir_if_does_not_exist_true(self, mocker):
+        # mock
+        mock_mkdir_p = mocker.MagicMock(name="mock_mkdir_p")
+        mock_dir_exists = mocker.MagicMock(name="mock_dir_exists", return_value=True)
+        # patch
+        mocker.patch.object(ultron8.paths, "mkdir_p", mock_mkdir_p)
+        mocker.patch.object(ultron8.paths, "dir_exists", mock_dir_exists)
 
-    #     # run test
-    #     result = paths.mkdir_if_does_not_exist(path)
+        path = "/opt/ultron8"
 
-    #     # assert
-    #     assert mock_mkdir_p.call_count == 0
-    #     assert mock_dir_exists.call_count == 1
-    #     assert result == False
+        # run test
+        result = paths.mkdir_if_does_not_exist(path)
 
-    # def test_fname_exists_true(self, mocker):
-    #     # mock
-    #     mock_path = mocker.MagicMock(name="mock_path")
-    #     # patch
-    #     mocker.patch.object(ultron8.paths, "Path", mock_path)
+        # assert
+        assert mock_mkdir_p.call_count == 0
+        assert mock_dir_exists.call_count == 1
+        assert result == False
 
-    #     path = "/opt/ultron8/generator.dot"
+    def test_fname_exists_true(self, mocker):
+        # mock
+        mock_path = mocker.MagicMock(name="mock_path")
+        # patch
+        mocker.patch.object(ultron8.paths, "Path", mock_path)
 
-    #     mock_path_instance = mock_path()
+        path = "/opt/ultron8/generator.dot"
 
-    #     mock_path_instance.exists.return_value = True
+        mock_path_instance = mock_path()
 
-    #     # run test
-    #     result = paths.fname_exists(path)
+        mock_path_instance.exists.return_value = True
 
-    #     assert mock_path_instance.exists.call_count == 1
-    #     mock_path.assert_any_call(path)
-    #     assert result == True
+        # run test
+        result = paths.fname_exists(path)
 
-    # def test_fname_exists_false(self, mocker):
-    #     # mock
-    #     mock_path = mocker.MagicMock(name="mock_path")
-    #     # patch
-    #     mocker.patch.object(ultron8.paths, "Path", mock_path)
+        assert mock_path_instance.exists.call_count == 1
+        mock_path.assert_any_call(path)
+        assert result == True
 
-    #     path = "/opt/ultron8/generator.dot"
+    def test_fname_exists_false(self, mocker):
+        # mock
+        mock_path = mocker.MagicMock(name="mock_path")
+        # patch
+        mocker.patch.object(ultron8.paths, "Path", mock_path)
 
-    #     mock_path_instance = mock_path()
+        path = "/opt/ultron8/generator.dot"
 
-    #     mock_path_instance.exists.return_value = False
+        mock_path_instance = mock_path()
 
-    #     # run test
-    #     result = paths.fname_exists(path)
+        mock_path_instance.exists.return_value = False
 
-    #     assert mock_path_instance.exists.call_count == 1
-    #     mock_path_instance.exists.assert_called_once_with()
-    #     mock_path.assert_any_call(path)
-    #     assert result == False
+        # run test
+        result = paths.fname_exists(path)
 
-    # def test_dir_isWritable(self, mocker):
-    #     # mock
-    #     mock_os_access = mocker.MagicMock(name="mock_os_access")
-    #     mock_os_path_isdir = mocker.MagicMock(name="mock_os_path_isdir")
-    #     # patch
-    #     mocker.patch.object(
-    #         ultron8.paths.os, "access", mock_os_access
-    #     )
-    #     mocker.patch.object(
-    #         ultron8.paths.os.path, "isdir", mock_os_path_isdir
-    #     )
+        assert mock_path_instance.exists.call_count == 1
+        mock_path_instance.exists.assert_called_once_with()
+        mock_path.assert_any_call(path)
+        assert result == False
 
-    #     path = "file:///tmp"
+    def test_dir_isWritable(self, mocker):
+        # mock
+        mock_os_access = mocker.MagicMock(name="mock_os_access")
 
-    #     # patch return values
-    #     mock_os_path_isdir.return_value = True
-    #     mock_os_access.return_value = True
+        # patch
+        mocker.patch.object(ultron8.paths.os, "access", mock_os_access)
 
-    #     # run test
-    #     result = paths.isWritable(path)
+        mock_is_readable_dir = mocker.patch.object(
+            ultron8.paths, "is_readable_dir", return_value=True, autospec=True
+        )
 
-    #     # tests
-    #     mock_os_path_isdir.assert_called_once_with("file:///tmp")
-    #     mock_os_access.assert_called_once_with("file:///tmp", os.W_OK)
-    #     assert result == True
+        path = "file:///tmp"
 
-    # def test_file_isWritable(self, mocker):
-    #     # mock
-    #     mock_os_access = mocker.MagicMock(name="mock_os_access")
-    #     mock_os_path_isdir = mocker.MagicMock(name="mock_os_path_isdir")
-    #     # patch
-    #     mocker.patch.object(
-    #         ultron8.paths.os, "access", mock_os_access
-    #     )
-    #     mocker.patch.object(
-    #         ultron8.paths.os.path, "isdir", mock_os_path_isdir
-    #     )
+        mock_os_access.return_value = True
 
-    #     path = "file:///tmp/fake_file"
+        # run test
+        result = paths.isWritable(path)
 
-    #     # patch return values
-    #     mock_os_path_isdir.return_value = False
-    #     mock_os_access.return_value = True
+        # tests
+        mock_is_readable_dir.assert_called_once_with("file:///tmp")
+        mock_os_access.assert_called_once_with("file:///tmp", os.W_OK)
+        assert result == True
 
-    #     # run test
-    #     result = paths.isWritable(path)
+    def test_file_isWritable(self, mocker):
+        # mock
+        mock_os_access = mocker.MagicMock(name="mock_os_access")
+        # patch
+        mocker.patch.object(ultron8.paths.os, "access", mock_os_access)
+        mock_is_readable_dir = mocker.patch.object(
+            ultron8.paths, "is_readable_dir", return_value=False, autospec=True
+        )
 
-    #     # tests
-    #     mock_os_path_isdir.assert_called_once_with("file:///tmp/fake_file")
-    #     mock_os_access.assert_called_once_with("file:///tmp", os.W_OK)
-    #     assert result == True
+        path = "file:///tmp/fake_file"
 
-    # # TODO: Need to figure out how to throw a fake UnicodeDecodeError
-    # # @mock.patch('ultron8.paths.os.access')
-    # # def test_dir_isReadable_unicode_error(self, mock_os_access):
-    # #     # path = u'\x11/ip/addres\xc5\x82/print\x05first\x06second'
-    # #     path = u'file:///tmp/fake_file'
-    # #
-    # #     # b'\x80abc'.decode("utf-8", "strict")
-    # #     # tmpdir = tempfile.mkdtemp('.scarlett_os-tests')
-    # #
-    # #     mock_os_access.name = 'mock_os_access'
-    # #     mock_os_access.side_effect = UnicodeDecodeError('', b'', 1, 0, '')
-    # #
-    # #     with pytest.raises(UnicodeDecodeError):
-    # #         result = paths.isReadable(path)
-    # #
+        # patch return values
+        mock_os_access.return_value = True
 
-    # def test_dir_isReadable(self):
-    #     tmpdir = tempfile.mkdtemp(".scarlett_os-tests")
+        # run test
+        result = paths.isWritable(path)
 
-    #     try:
-    #         # run test
-    #         result = paths.isReadable(tmpdir)
+        # tests
+        mock_is_readable_dir.assert_called_once_with("file:///tmp/fake_file")
+        mock_os_access.assert_called_once_with("file:///tmp", os.W_OK)
+        assert result == True
 
-    #         # tests
-    #         assert result == True
-    #     finally:
-    #         # nuke
-    #         shutil.rmtree(tmpdir, ignore_errors=True)
+    def test_is_readable_dir_does_not_exist(self, mocker):
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "fake"
+        path = os.path.join(fake_dir, full_file_name)
 
-    # def test_file_isReadable(self):
-    #     fd_unused, path = tempfile.mkstemp(suffix=".wav")
+        res = paths.is_readable_dir(path)
+        assert res["result"] == False
+        assert res["message"] == "Path does not exist"
 
-    #     try:
-    #         # run test
-    #         result = paths.isReadable(path)
+    def test_is_readable_dir_does_exist_but_not_dir(self, mocker):
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "fake"
+        path = os.path.join(fake_dir, full_file_name)
 
-    #         # tests
-    #         assert result
-    #     finally:
-    #         os.remove(path)
+        logger.info(f"path: {path}")
+
+        example_data = "fake data"
+
+        try:
+            with open(path, "wt") as f:
+                f.write(example_data)
+
+            res = paths.is_readable_dir(path)
+
+        finally:
+            os.unlink(path)
+
+        assert res["result"] == False
+        assert res["message"] == "Path is not a directory"
+
+    def test_is_readable_dir_exists_is_dir_but_not_readable(self, mocker):
+        # SOURCE: https://docs.openstack.org/ironic/6.2.1/_modules/ironic/tests/unit/common/test_image_service.html
+        mock_os_link = mocker.patch.object(ultron8.paths.os, "link", autospec=True)
+        mock_os_remove = mocker.patch.object(ultron8.paths.os, "remove", autospec=True)
+        mock_os_stat = mocker.patch.object(ultron8.paths.os, "stat", autospec=True)
+        mock_os_isdir = mocker.patch.object(
+            ultron8.paths.os.path, "isdir", autospec=True
+        )
+        mock_os_access = mocker.patch.object(
+            ultron8.paths.os, "access", return_value=False, autospec=True
+        )
+        mock_exists = mocker.patch.object(
+            ultron8.paths.os.path, "exists", return_value=True, autospec=True
+        )
+
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+
+        path = fake_dir
+
+        logger.info(f"path: {path}")
+
+        try:
+
+            res = paths.is_readable_dir(path)
+
+        finally:
+            os.rmdir(path)
+            # shutil.rmtree(tmpdir, ignore_errors=True)
+
+        assert res["result"] == False
+        assert res["message"] == "Directory is not readable"
+        mock_os_access.assert_called_once_with(path, os.R_OK)
+
+    def test_is_readable_dir(self, mocker):
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        path = fake_dir
+
+        try:
+            res = paths.is_readable_dir(path)
+        finally:
+            os.rmdir(path)
+            # shutil.rmtree(tmpdir, ignore_errors=True)
+        assert res["result"] == True
+
+        # def test_file_isReadable(self):
+        #     fd_unused, path = tempfile.mkstemp(suffix=".wav")
+
+        #     try:
+        #         # run test
+        #         result = paths.isReadable(path)
+
+        #         # tests
+        #         assert result
+        #     finally:
+        #         os.remove(path)
+
+    def test_is_readable_file_does_not_exist(self, mocker):
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "fake"
+        path = os.path.join(fake_dir, full_file_name)
+
+        res = paths.is_readable_file(path)
+        assert res["result"] == False
+        assert res["message"] == "Path does not exist"
+
+    def test_is_readable_file_does_exist_but_not_file(self, mocker):
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        path = fake_dir
+
+        logger.info(f"path: {path}")
+
+        try:
+
+            res = paths.is_readable_file(path)
+
+        finally:
+            os.rmdir(path)
+
+        assert res["result"] == False
+        assert res["message"] == "Path is not a file"
+
+    def test_is_readable_file_exists_is_file_but_not_readable(self, mocker):
+        # SOURCE: https://docs.openstack.org/ironic/6.2.1/_modules/ironic/tests/unit/common/test_image_service.html
+        mock_os_link = mocker.patch.object(ultron8.paths.os, "link", autospec=True)
+        mock_os_remove = mocker.patch.object(ultron8.paths.os, "remove", autospec=True)
+        mock_os_stat = mocker.patch.object(ultron8.paths.os, "stat", autospec=True)
+        mock_os_isfile = mocker.patch.object(
+            ultron8.paths.os.path, "isfile", autospec=True
+        )
+        mock_os_access = mocker.patch.object(
+            ultron8.paths.os, "access", return_value=False, autospec=True
+        )
+        mock_exists = mocker.patch.object(
+            ultron8.paths.os.path, "exists", return_value=True, autospec=True
+        )
+
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "fake"
+        path = os.path.join(fake_dir, full_file_name)
+
+        logger.info(f"path: {path}")
+
+        example_data = "test data"
+
+        try:
+            with open(path, "wt") as f:
+                f.write(example_data)
+
+            res = paths.is_readable_file(path)
+
+        finally:
+            os.unlink(path)
+            # shutil.rmtree(tmpdir, ignore_errors=True)
+
+        assert res["result"] == False
+        assert res["message"] == "File is not readable"
+        mock_os_access.assert_called_once_with(path, os.R_OK)
+
+    def test_is_readable_file(self, mocker):
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "fake"
+        path = os.path.join(fake_dir, full_file_name)
+
+        example_data = "test data"
+
+        try:
+            with open(path, "wt") as f:
+                f.write(example_data)
+
+            res = paths.is_readable_file(path)
+        finally:
+            os.unlink(path)
+            # shutil.rmtree(tmpdir, ignore_errors=True)
+        assert res["result"] == True
 
     # def test_unicode_decode_error_isWritable(self, mocker):
 
