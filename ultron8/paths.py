@@ -134,7 +134,11 @@ def ensure_file_exists(path):
     :rtype: None
     """
 
-    if not os.path.exists(path):
+    res = is_readable_file(path)
+    logger.info(f"Res: {res}")
+
+    # if not os.path.exists(path):
+    if not res["result"]:
         try:
             open(path, "w").close()
             os.chmod(path, 0o600)

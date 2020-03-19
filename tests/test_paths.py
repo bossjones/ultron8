@@ -480,6 +480,40 @@ class TestPathToFileURI(object):
             assert "Cannot create directory " in str(excinfo.value)
             mock_os_makedirs.assert_called_once_with(directory, 0o775)
 
+    def test_ensure_file_exists(self, mocker):
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        path = os.path.join(fake_dir, "test.log")
+
+        logger.info(f"path: {path}")
+
+        try:
+
+            paths.ensure_file_exists(path)
+
+            assert oct(stat.S_IMODE(os.stat(path).st_mode)) == oct(384)  # same as 0o600
+
+        finally:
+            os.unlink(path)
+            shutil.rmtree(base, ignore_errors=True)
+
+    # def test_ensure_file_exists_raise_exception(self, mocker):
+    #     mock_os_makedirs = mocker.patch.object(
+    #         ultron8.paths.os, "makedirs", side_effect=OSError, autospec=True
+    #     )
+
+    #     base = tempfile.mkdtemp()
+    #     fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+    #     directory = os.path.join(fake_dir, "fake", "as", "heck")
+
+    #     logger.info(f"directory: {directory}")
+
+    #     with pytest.raises(Exception) as excinfo:
+    #         paths.ensure_file_exists(directory)
+
+    #         assert "Cannot create directory " in str(excinfo.value)
+    #         mock_os_makedirs.assert_called_once_with(directory, 0o775)
+
     # def test_unicode_decode_error_isWritable(self, mocker):
 
     #     # mock
