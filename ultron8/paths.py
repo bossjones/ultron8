@@ -80,6 +80,28 @@ logger = logging.getLogger(__name__)
 #     #     return self.base_path_dir / 'template'
 
 
+def is_readable_dir(path):
+    """Check whether a path references a readable directory."""
+    if not os.path.exists(path):
+        return {"result": False, "message": "Path does not exist", "path": path}
+    if not os.path.isdir(path):
+        return {"result": False, "message": "Path is not a directory", "path": path}
+    if not os.access(path, os.R_OK):
+        return {"result": False, "message": "Directory is not readable", "path": path}
+    return {"result": True}
+
+
+def is_readable_file(path):
+    """Check whether a path references a readable file."""
+    if not os.path.exists(path):
+        return {"result": False, "message": "Path does not exist", "path": path}
+    if not os.path.isfile(path):
+        return {"result": False, "message": "Path is not a file", "path": path}
+    if not os.access(path, os.R_OK):
+        return {"result": False, "message": "File is not readable", "path": path}
+    return {"result": True}
+
+
 ###############################################################################################################
 
 
@@ -91,7 +113,11 @@ def ensure_dir_exists(directory):
     :rtype: None
     """
 
-    if not os.path.exists(directory):
+    res = is_readable_dir(directory)
+    logger.info(f"Res: {res}")
+    # import pdb;pdb.set_trace()
+
+    if not res["result"]:
         logger.debug("Creating directory: %r", directory)
 
         try:
@@ -186,32 +212,11 @@ def touch_empty_file(path):
 # SOURCE: https://raw.githubusercontent.com/GNOME/pitivi/b2bbe6eef6d1e6d0fa5471d60004c62f936b3146/pitivi/utils/misc.py
 
 
-def is_readable_dir(path):
-    """Check whether a path references a readable directory."""
-    if not os.path.exists(path):
-        return {"result": False, "message": "Path does not exist", "path": path}
-    if not os.path.isdir(path):
-        return {"result": False, "message": "Path is not a directory", "path": path}
-    if not os.access(path, os.R_OK):
-        return {"result": False, "message": "Directory is not readable", "path": path}
-    return {"result": True}
-
-
-def is_readable_file(path):
-    """Check whether a path references a readable file."""
-    if not os.path.exists(path):
-        return {"result": False, "message": "Path does not exist", "path": path}
-    if not os.path.isfile(path):
-        return {"result": False, "message": "Path is not a file", "path": path}
-    if not os.access(path, os.R_OK):
-        return {"result": False, "message": "File is not readable", "path": path}
-    return {"result": True}
-
-
 def isWritable(path):
     """Returns whether the file/path is writable."""
     try:
-        if is_readable_dir(path):
+        res = is_readable_dir(path)
+        if res["result"]:
             # The given path is an existing directory.
             # To properly check if it is writable, you need to use os.access.
             return os.access(path, os.W_OK)

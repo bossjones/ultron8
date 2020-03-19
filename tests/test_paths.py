@@ -7,6 +7,7 @@
 import os
 import shutil
 import tempfile
+import stat
 
 # import unittest
 
@@ -221,7 +222,10 @@ class TestPathToFileURI(object):
         mocker.patch.object(ultron8.paths.os, "access", mock_os_access)
 
         mock_is_readable_dir = mocker.patch.object(
-            ultron8.paths, "is_readable_dir", return_value=True, autospec=True
+            ultron8.paths,
+            "is_readable_dir",
+            return_value={"result": True},
+            autospec=True,
         )
 
         path = "file:///tmp"
@@ -241,8 +245,14 @@ class TestPathToFileURI(object):
         mock_os_access = mocker.MagicMock(name="mock_os_access")
         # patch
         mocker.patch.object(ultron8.paths.os, "access", mock_os_access)
+        # mock_is_readable_dir = mocker.patch.object(
+        #     ultron8.paths, "is_readable_dir", return_value=False, autospec=True
+        # )
         mock_is_readable_dir = mocker.patch.object(
-            ultron8.paths, "is_readable_dir", return_value=False, autospec=True
+            ultron8.paths,
+            "is_readable_dir",
+            return_value={"result": False},
+            autospec=True,
         )
 
         path = "file:///tmp/fake_file"
@@ -430,6 +440,45 @@ class TestPathToFileURI(object):
             os.unlink(path)
             # shutil.rmtree(tmpdir, ignore_errors=True)
         assert res["result"] == True
+
+    def test_ensure_dir_exists(self, mocker):
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        directory = os.path.join(fake_dir, "fake", "as", "heck")
+
+        logger.info(f"directory: {directory}")
+
+        try:
+
+            paths.ensure_dir_exists(directory)
+
+            dir1 = os.path.join(fake_dir, "fake")
+            dir2 = os.path.join(fake_dir, "fake", "as")
+            dir3 = os.path.join(fake_dir, "fake", "as", "heck")
+
+            assert oct(stat.S_IMODE(os.stat(dir1).st_mode)) == oct(493)  # same as 0o755
+            assert oct(stat.S_IMODE(os.stat(dir2).st_mode)) == oct(493)
+            assert oct(stat.S_IMODE(os.stat(dir3).st_mode)) == oct(493)
+
+        finally:
+            shutil.rmtree(fake_dir, ignore_errors=True)
+
+    def test_ensure_dir_exists_raise_exception(self, mocker):
+        mock_os_makedirs = mocker.patch.object(
+            ultron8.paths.os, "makedirs", side_effect=OSError, autospec=True
+        )
+
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        directory = os.path.join(fake_dir, "fake", "as", "heck")
+
+        logger.info(f"directory: {directory}")
+
+        with pytest.raises(Exception) as excinfo:
+            paths.ensure_dir_exists(directory)
+
+            assert "Cannot create directory " in str(excinfo.value)
+            mock_os_makedirs.assert_called_once_with(directory, 0o775)
 
     # def test_unicode_decode_error_isWritable(self, mocker):
 
