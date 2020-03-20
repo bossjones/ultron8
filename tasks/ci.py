@@ -219,7 +219,7 @@ def pytest(
     if pdb:
         _cmd += r" --pdb "
 
-    _cmd += r" --cov-config .coveragerc --verbose --cov-append --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"
+    _cmd += r" --cov-config=setup.cfg --verbose --cov-append --cov-report=term-missing --cov-report=xml:cov.xml --cov-report=html:htmlcov --cov-report=annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"
 
     ctx.run(_cmd)
 
