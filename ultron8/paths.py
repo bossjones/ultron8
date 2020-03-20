@@ -146,6 +146,10 @@ def ensure_file_exists(path):
             raise Exception("Cannot create file [{}]: {}".format(path, e))
 
 
+def get_permissions(path):
+    return oct(stat.S_IMODE(os.stat(path).st_mode))
+
+
 def enforce_file_permissions(path):
     # source: dcos-cli
     """Enforce 400 or 600 permissions on file
@@ -153,11 +157,14 @@ def enforce_file_permissions(path):
     :type path: str
     :rtype: None
     """
+    res = is_readable_file(path)
+    logger.info(f"Res: {res}")
 
-    if not os.path.isfile(path):
+    # if not os.path.isfile(path):
+    if not res["result"]:
         raise Exception("Path [{}] is not a file".format(path))
 
-    permissions = oct(stat.S_IMODE(os.stat(path).st_mode))
+    permissions = get_permissions(path)
     if permissions not in ["0o600", "0600", "0o400", "0400"]:
         if os.path.realpath(path) != path:
             path = "%s (pointed to by %s)" % (os.path.realpath(path), path)

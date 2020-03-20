@@ -514,6 +514,59 @@ class TestPathToFileURI(object):
             assert "Cannot create file " in str(excinfo.value)
             mock_os_chmod.assert_called_once_with(path, 0o600)
 
+    def test_get_permissions(self, mocker):
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        path = os.path.join(fake_dir, "tester.log")
+
+        logger.info(f"path: {path}")
+
+        paths.ensure_file_exists(path)
+
+        assert paths.get_permissions(path) == oct(384)  # same as 0o600
+
+        os.unlink(path)
+        shutil.rmtree(base, ignore_errors=True)
+
+    def test_enforce_file_permissions(self, mocker):
+        # mock_os_chmod = mocker.patch.object(
+        #     ultron8.paths.os, "chmod", side_effect=IOError, autospec=True
+        # )
+
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        path = os.path.join(fake_dir, "tester.log")
+
+        logger.info(f"path: {path}")
+
+        paths.ensure_file_exists(path)
+
+        # change file permissions on purpose
+        os.chmod(path, 0o644)
+
+        with pytest.raises(Exception) as excinfo:
+            paths.enforce_file_permissions(path)
+
+            assert "File must only be accessible by owner. " in str(excinfo.value)
+            # mock_os_chmod.assert_called_once_with(path, 0o600)
+
+        os.unlink(path)
+        shutil.rmtree(base, ignore_errors=True)
+
+    def test_enforce_file_permissions_file_does_not_exist(self, mocker):
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        path = os.path.join(fake_dir, "tester.log")
+
+        # Don't create actual file on purpose
+
+        with pytest.raises(Exception) as excinfo:
+            paths.enforce_file_permissions(path)
+
+            assert f"Path [{path}] is not a file" in str(excinfo.value)
+
+        shutil.rmtree(base, ignore_errors=True)
+
     # def test_unicode_decode_error_isWritable(self, mocker):
 
     #     # mock
