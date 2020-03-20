@@ -102,6 +102,17 @@ def is_readable_file(path):
     return {"result": True}
 
 
+# def is_writable_file(path):
+#     """Check whether a path references a writable file."""
+#     if not os.path.exists(path):
+#         return {"result": False, "message": "Path does not exist", "path": path}
+#     if not os.path.isfile(path):
+#         return {"result": False, "message": "Path is not a file", "path": path}
+#     if not os.access(path, os.R_OK):
+#         return {"result": False, "message": "File is not writable", "path": path}
+#     return {"result": True}
+
+
 ###############################################################################################################
 
 
@@ -126,7 +137,7 @@ def ensure_dir_exists(directory):
             raise Exception("Cannot create directory [{}]: {}".format(directory, e))
 
 
-def ensure_file_exists(path):
+def ensure_file_exists(path, mode=0o600):
     # source: dcos-cli
     """ Create file if it doesn't exist
     :param path: path of file to create
@@ -141,7 +152,7 @@ def ensure_file_exists(path):
     if not res["result"]:
         try:
             open(path, "w").close()
-            os.chmod(path, 0o600)
+            os.chmod(path, mode)
         except IOError as e:
             raise Exception("Cannot create file [{}]: {}".format(path, e))
 
@@ -209,13 +220,6 @@ def mkdir_if_does_not_exist(path):
 def fname_exists(path):
     p = Path(path)
     return p.exists()
-
-
-def touch_empty_file(path):
-    if fname_exists(path):
-        logger.debug("File already exists: {}".format(path))
-    p = Path(path)
-    return p.touch()
 
 
 # NOTE: Borrowed from Pitivi
@@ -718,8 +722,8 @@ def is_path_exists_or_creatable_portable(pathname: str) -> bool:
 
 ###############################################################################################################
 
-
-def uri_is_valid(uri):
+# TODO: Get rid of this function
+def uri_is_valid(uri):  # pragma: no cover
     """Checks if the specified URI is usable (of type file://).
     Will also check if the size is valid (> 0).
     Args:

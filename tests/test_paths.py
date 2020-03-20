@@ -194,6 +194,55 @@ class TestPathToFileURI(object):
         mock_path.assert_any_call(path)
         assert result == True
 
+    # def test_touch_empty_file(self, mocker):
+    #     # mock
+    #     # mock_os_link = mocker.patch.object(ultron8.paths, "fname_exists", autospec=True)
+
+    #     # mock_path = mocker.MagicMock(name="mock_path")
+    #     # patch
+    #     # mocker.patch.object(ultron8.paths, "Path", mock_path)
+
+    #     base = tempfile.mkdtemp()
+    #     fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+    #     full_file_name = "fake"
+    #     path = os.path.join(fake_dir, full_file_name)
+
+    #     try:
+    #         # run test
+    #         res = paths.touch_empty_file(path)
+
+    #         assert paths.fname_exists(path)
+    #         assert res
+    #     finally:
+    #         os.unlink(path)
+    #         shutil.rmtree(base, ignore_errors=True)
+
+    # # TODO:
+    # def test_touch_empty_file_when_it_already_exists(self, mocker):
+    #     mock_fname_exists = mocker.patch.object(
+    #         ultron8.paths, "fname_exists", return_value=False,autospec=True
+    #     )
+
+    #     base = tempfile.mkdtemp()
+    #     fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+    #     full_file_name = "fake"
+    #     path = os.path.join(fake_dir, full_file_name)
+
+    #     example_data = "fake data"
+
+    #     with open(path, "wt") as f:
+    #         f.write(example_data)
+
+    #     with pytest.raises(Exception) as excinfo:
+    #         paths.touch_empty_file(path)
+
+    #         assert mock_fname_exists.assert_called_once_with(path)
+
+    #         assert f"Cannot create touch file [{path}]: " in str(excinfo.value)
+
+    #     os.unlink(path)
+    #     shutil.rmtree(base, ignore_errors=True)
+
     def test_fname_exists_false(self, mocker):
         # mock
         mock_path = mocker.MagicMock(name="mock_path")
@@ -489,7 +538,7 @@ class TestPathToFileURI(object):
 
         try:
 
-            paths.ensure_file_exists(path)
+            paths.ensure_file_exists(path, mode=0o600)
 
             assert oct(stat.S_IMODE(os.stat(path).st_mode)) == oct(384)  # same as 0o600
 
@@ -509,7 +558,7 @@ class TestPathToFileURI(object):
         logger.info(f"path: {path}")
 
         with pytest.raises(Exception) as excinfo:
-            paths.ensure_file_exists(path)
+            paths.ensure_file_exists(path, mode=0o600)
 
             assert "Cannot create file " in str(excinfo.value)
             mock_os_chmod.assert_called_once_with(path, 0o600)
@@ -521,7 +570,7 @@ class TestPathToFileURI(object):
 
         logger.info(f"path: {path}")
 
-        paths.ensure_file_exists(path)
+        paths.ensure_file_exists(path, mode=0o600)
 
         assert paths.get_permissions(path) == oct(384)  # same as 0o600
 
@@ -539,7 +588,7 @@ class TestPathToFileURI(object):
 
         logger.info(f"path: {path}")
 
-        paths.ensure_file_exists(path)
+        paths.ensure_file_exists(path, mode=0o600)
 
         # change file permissions on purpose
         os.chmod(path, 0o644)
@@ -620,67 +669,139 @@ class TestPathToFileURI(object):
 
     #     mock_logger_error.assert_any_call(_message)
 
-    # def test_path_to_uri(self):
-    #     result = paths.path_to_uri("/etc/fstab")
-    #     assert result == b"file:///etc/fstab"
-    #     assert type(result) == bytes
+    def test_path_to_uri(self):
+        result = paths.path_to_uri("/etc/fstab")
+        assert result == b"file:///etc/fstab"
+        assert type(result) == bytes
 
     # def test_uri_is_valid_bytes(self):
-    #     uri = b"file:///etc/fstab"
-    #     assert paths.uri_is_valid(uri)
+    #     # uri = b"file:///etc/fstab"
 
-    # def test_path_from_uri_bytes(self):
-    #     raw_uri = b"file:///etc/fstab"
-    #     result = paths.path_from_uri(raw_uri)
-    #     assert result == "/etc/fstab"
+    #     base = tempfile.mkdtemp()
+    #     fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+    #     full_file_name = "fake"
+    #     path = os.path.join(fake_dir, full_file_name)
 
-    # def test_filename_from_uri_bytes(self):
-    #     uri = b"file:///etc/fstab"
-    #     result = paths.filename_from_uri(uri)
-    #     assert result == "fstab"
+    #     example_data = "test data"
 
-    # def test_filename_from_uri_str(self):
-    #     uri = "file:///etc/fstab"
-    #     result = paths.filename_from_uri(uri)
-    #     assert result == "fstab"
+    #     try:
+    #         with open(path, "wt") as f:
+    #             f.write(example_data)
 
-    # def test_quote_uri_byte_to_str(self):
-    #     uri = b"file:///etc/fstab"
-    #     result = paths.quote_uri(uri)
-    #     assert result == "file:///etc/fstab"
-    #     assert type(result) == str
+    #         uri = paths.path_to_uri(path)
+    #         assert paths.uri_is_valid(uri)
 
-    # def test_quantize(self):
-    #     result = paths.quantize(100.00, 3.00)
-    #     assert result == 99.0
+    #     finally:
+    #         os.unlink(path)
+    #         shutil.rmtree(base, ignore_errors=True)
 
-    # def test_binary_search_EmptyList(self):
-    #     assert paths.binary_search([], 10) == -1
+    def test_path_from_uri_bytes(self):
+        raw_uri = b"file:///etc/fstab"
+        result = paths.path_from_uri(raw_uri)
+        assert result == "/etc/fstab"
 
-    # def test_binary_search_Existing(self):
-    #     A = [10, 20, 30]
-    #     for index, element in enumerate(A):
-    #         assert paths.binary_search([10, 20, 30], element) == index
+    def test_filename_from_uri_bytes(self):
+        uri = b"file:///etc/fstab"
+        result = paths.filename_from_uri(uri)
+        assert result == "fstab"
 
-    # def test_binary_search_MissingLeft(self):
-    #     assert paths.binary_search([10, 20, 30], 1) == 0
-    #     assert paths.binary_search([10, 20, 30], 16) == 1
-    #     assert paths.binary_search([10, 20, 30], 29) == 2
+    def test_filename_from_uri_str(self):
+        uri = "file:///etc/fstab"
+        result = paths.filename_from_uri(uri)
+        assert result == "fstab"
 
-    # def test_binary_search_MissingRight(self):
-    #     assert paths.binary_search([10, 20, 30], 11) == 0
-    #     assert paths.binary_search([10, 20, 30], 24) == 1
-    #     assert paths.binary_search([10, 20, 30], 40) == 2
+    def test_quote_uri_byte_to_str(self):
+        uri = b"file:///etc/fstab"
+        result = paths.quote_uri(uri)
+        assert result == "file:///etc/fstab"
+        assert type(result) == str
 
-    # def test_uri_to_path_str(self):
-    #     uri = "file:///etc/fstab"
-    #     result = paths.uri_to_path(uri)
-    #     assert result == "/etc/fstab"
+    def test_quantize(self):
+        result = paths.quantize(100.00, 3.00)
+        assert result == 99.0
 
-    # def test_uri_to_path_bytes(self):
-    #     uri = b"file:///etc/fstab"
-    #     result = paths.uri_to_path(uri)
-    #     assert result == "/etc/fstab"
+    def test_binary_search_EmptyList(self):
+        assert paths.binary_search([], 10) == -1
+
+    def test_binary_search_Existing(self):
+        A = [10, 20, 30]
+        for index, element in enumerate(A):
+            assert paths.binary_search([10, 20, 30], element) == index
+
+    def test_binary_search_MissingLeft(self):
+        assert paths.binary_search([10, 20, 30], 1) == 0
+        assert paths.binary_search([10, 20, 30], 16) == 1
+        assert paths.binary_search([10, 20, 30], 29) == 2
+
+    def test_binary_search_MissingRight(self):
+        assert paths.binary_search([10, 20, 30], 11) == 0
+        assert paths.binary_search([10, 20, 30], 24) == 1
+        assert paths.binary_search([10, 20, 30], 40) == 2
+
+    def test_uri_to_path_str(self):
+        uri = "file:///etc/fstab"
+        result = paths.uri_to_path(uri)
+        assert result == "/etc/fstab"
+
+    def test_uri_to_path_bytes(self):
+        uri = b"file:///etc/fstab"
+        result = paths.uri_to_path(uri)
+        assert result == "/etc/fstab"
+
+    def test_is_pathname_valid(self, mocker):
+        assert paths.is_pathname_valid("foo.bar")
+        # Long path valid?
+        assert not paths.is_pathname_valid("a" * 256)
+        assert not paths.is_pathname_valid(None)
+
+    def test_is_path_creatable(self, mocker):
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "fake"
+        path = os.path.join(fake_dir, full_file_name)
+
+        assert paths.is_path_creatable(path)
+        assert not paths.is_path_creatable("/bossjones/is/the/best/file.txt")
+
+        shutil.rmtree(base, ignore_errors=True)
+
+    def test_is_path_exists_or_creatable(self, mocker):
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "fake"
+        path = os.path.join(fake_dir, full_file_name)
+
+        assert paths.is_path_exists_or_creatable(path)
+
+        assert not paths.is_path_exists_or_creatable("/bossjones/is/the/best/file.txt")
+
+        shutil.rmtree(base, ignore_errors=True)
+
+    def test_is_path_sibling_creatable(self, mocker):
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "fake"
+        path = os.path.join(fake_dir, full_file_name)
+
+        assert paths.is_path_sibling_creatable(path)
+
+        assert not paths.is_path_sibling_creatable("/bossjones/is/the/best/file.txt")
+
+        shutil.rmtree(base, ignore_errors=True)
+
+    def test_is_path_exists_or_creatable_portable(self, mocker):
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "fake"
+        path = os.path.join(fake_dir, full_file_name)
+
+        assert paths.is_path_exists_or_creatable_portable(path)
+
+        assert not paths.is_path_exists_or_creatable_portable(
+            "/bossjones/is/the/best/file.txt"
+        )
+
+        shutil.rmtree(base, ignore_errors=True)
 
 
 ##################################################################################
