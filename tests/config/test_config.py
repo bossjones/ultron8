@@ -12,14 +12,14 @@ from ultron8.config import do_set_flag
 from ultron8.config import do_get_flag
 from ultron8.config import do_set_multi_flag
 
-# from ultron8.config import ULTRON_BASE_CONFIG_DIRECTORY
-from ultron8.config import ULTRON_CONFIG_DIRECTORY
-from ultron8.config import ULTRON_CONFIG_PATH
-from ultron8.config import ULTRON_CLUSTERS_PATH
-from ultron8.config import ULTRON_CACHE_PATH
-from ultron8.config import ULTRON_WORKSPACE_PATH
-from ultron8.config import ULTRON_LIBS_PATH
-from ultron8.config import ULTRON_TEMPLATES_PATH
+# from ultron8.config import ULTRON_CLI_BASE_CONFIG_DIRECTORY
+# from ultron8.config import ULTRON_CONFIG_DIRECTORY
+# from ultron8.config import ULTRON_CONFIG_PATH
+# from ultron8.config import ULTRON_CLUSTERS_PATH
+# from ultron8.config import ULTRON_CACHE_PATH
+# from ultron8.config import ULTRON_WORKSPACE_PATH
+# from ultron8.config import ULTRON_LIBS_PATH
+# from ultron8.config import ULTRON_TEMPLATES_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -48,11 +48,11 @@ def fake_dir() -> str:
 #         # Application of the monkeypatch to replace Path.home
 #         # with the behavior of mockreturn defined above.
 #         # monkeypatch.setattr(ultron8.config.os.path, 'expanduser', mockreturn)
-#         # monkeypatch.setattr(ultron8.config, 'ULTRON_BASE_CONFIG_DIRECTORY', fake_dir)
+#         # monkeypatch.setattr(ultron8.config, 'ULTRON_CLI_BASE_CONFIG_DIRECTORY', fake_dir)
 #         # import pdb; pdb.set_trace()
 
 #         temp_config_cidr = mockreturn(fake_dir)
-#         mocker.patch("ultron8.config.ULTRON_BASE_CONFIG_DIRECTORY", temp_config_cidr)
+#         mocker.patch("ultron8.config.ULTRON_CLI_BASE_CONFIG_DIRECTORY", temp_config_cidr)
 
 #         assert ULTRON_CONFIG_DIRECTORY == f"{temp_config_cidr}"
 #         # assert ULTRON_CONFIG_PATH == f"{temp_config_cidr}/config.json"

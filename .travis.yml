@@ -17,6 +17,10 @@ env:
     - DOCKER_VERSION=18.09
     - IS_CI_ENVIRONMENT="true"
     - CACHE_IMAGE=bossjones/ultron8-ci
+    # INFO: https://pytest-cov.readthedocs.io/en/latest/plugins.html
+    - COV_CORE_SOURCE=ultron8
+    - COV_CORE_CONFIG=setup.cfg
+    - COV_CORE_DATAFILE=.coverage
     # REGISTRY_USER
     - secure: l5zoavY8woQcKGa5UKwMeIHUbjFUxgBMG1UAfG683vTQv/19tIdqhpTwp20j5eLX4uOLGMLTHE6ldJhUP+qMZIn0OPepq0mSCJKEFvK48bpb7fdjlhpGxGwxKLi0X1xJNV8tblGoqQRMjKq/EMMreuBfAqIHbWe/a57+I5fvsgRAmNCD5AikBq7qbr+lZ6dDvPTSF/ssy46FSUTGzmnRwRUFHAmaKt5eHLpzRhpXAnZR74V0TfxABnu461mxvo8MFmLggRl/lNfQyoeKKDwmz8ls+ao+Q/Ljw2mLU2giCNiSattuPkGtAKU6IO7hyRtBzjP2Ufmeso2BrZoC4WpV5LdMMT4JioMktU7th39mzZ3YHDsu9kl9iU+eguNptilqzLTWrkUWSo3b3s/msNlX3l6nDBJ2EV1B328LrpMUdPBFfSxuVr2yjh3w0zQHYXqxsmSDaJBNwwsu6jas+lt6kggZ8o4pIjAwazBFJ0KeKjhQTi3k+kxaNIoAC6LV6G4A5lZuvsGs3Ru8wXFMyqqB73929iC8MxbVGdxAPxWBoWhMLifU6NRrjRi1zBVZjZHSdH2e10DCJ9HEZx3QwM0RfmRlGsdWYUHR+xgOW0/5ynBJbHmIzm9yxHPAm8KKa1WKdEOjLKvf4EgjKUpDxXXDhlg/T5+rZAQYV7YVrBS2AWM=
     # REGISTRY_PASS
@@ -149,8 +153,8 @@ jobs:
       stage: test
       install:
         - pip install --upgrade pip
-        - travis_retry pip install coveralls
-        - travis_retry pip install coverage
+        - 'travis_retry pip install coveralls==1.10.0'
+        - 'travis_retry pip install coverage==5.0.3'
         - travis_retry docker-compose -f docker-compose.ci.yml pull || true
         - docker pull $CACHE_IMAGE:runtime-image || true
         # - travis_retry make dc-ci-build

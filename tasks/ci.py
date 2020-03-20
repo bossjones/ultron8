@@ -185,6 +185,7 @@ def pytest(
     pdb=False,
     configonly=False,
     settingsonly=False,
+    pathsonly=False,
 ):
     """
     Run pytest
@@ -209,13 +210,16 @@ def pytest(
     if configonly:
         _cmd += r" -m configonly "
 
+    if pathsonly:
+        _cmd += r" -m pathsonly "
+
     if settingsonly:
         _cmd += r" -m settingsonly "
 
     if pdb:
         _cmd += r" --pdb "
 
-    _cmd += r" --cov-config .coveragerc --verbose --cov-append --cov-report term-missing --cov-report xml:cov.xml --cov-report html:htmlcov --cov-report annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"
+    _cmd += r" --cov-config=setup.cfg --verbose --cov-append --cov-report=term-missing --cov-report=xml:cov.xml --cov-report=html:htmlcov --cov-report=annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"
 
     ctx.run(_cmd)
 
@@ -288,7 +292,8 @@ def editable(ctx, loc="local"):
         call(alembic_upgrade, loc="local"),
         # call(pytest, loc="local", configonly=True),
         # call(pytest, loc="local", settingsonly=True),
-        call(pytest, loc="local"),
+        call(pytest, loc="local", pathsonly=True),
+        # call(pytest, loc="local"),
     ],
     incrementable=["verbose"],
 )

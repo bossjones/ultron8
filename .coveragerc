@@ -1,10 +1,17 @@
 # Coverage.py is a tool for measuring code coverage of Python programs.
 # for more info: https://coverage.readthedocs.io/en/coverage-4.4.1/config.html
 [run]
+source = ultron8
 omit =
     ultron8/pkg/*
     ultron8/docs/*
     ultron8/tests/*
+    /etc/python3.6/sitecustomize.py
+    venv/**
+    ultron8/tests/**
+    .eggs/**
+    /home/travis/virtualenv/**
+    tests/fixtures/simple/packs/linux/actions/checks/**
 
 [report]
 # Regexes for lines to exclude from consideration

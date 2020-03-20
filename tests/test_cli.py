@@ -10,13 +10,14 @@ from ultron8.cli import cli
 from ultron8.cli import get_flag
 from ultron8.cli import set_fact_flags
 from ultron8.cli import set_flag
-from ultron8.paths import Paths
+
+# from ultron8.paths import Paths
 
 # from .conftest import fixtures_path
 
 from typing import Iterator
 
-paths = Paths()
+# paths = Paths()
 
 
 @contextmanager
