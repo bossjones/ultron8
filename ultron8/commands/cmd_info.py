@@ -11,7 +11,8 @@ import click
 from ultron8.logging_init import getLogger
 
 # from ultron8.process import fail
-from ultron8.cli import set_trace, get_flag, set_fact_flags
+from ultron8.cli import set_trace, set_fact_flags
+from ultron8.config import do_get_flag, do_set_flag
 
 logger = getLogger(__name__)
 
@@ -28,7 +29,7 @@ def _info() -> None:
 @click.pass_context
 def cli(ctx, fact: Tuple[str]):
     """Get info on running Ultron8 process."""
-    if get_flag("debug"):
+    if do_get_flag("cli.flags.debug"):
         click.echo("Debug mode initiated")
         set_trace()
 

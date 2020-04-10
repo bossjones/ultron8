@@ -24,6 +24,12 @@ from ultron8.config import do_set_multi_flag
 logger = logging.getLogger(__name__)
 
 
+def create_file(path):
+    """Create an empty file."""
+    with open(path, "w"):
+        pass
+
+
 @pytest.fixture(scope="function")
 def fake_dir() -> str:
     base_dir = tempfile.mkdtemp()
@@ -32,6 +38,16 @@ def fake_dir() -> str:
     yield base_dir
 
     # shutil.rmtree(base_dir)
+
+
+@pytest.fixture(scope="function")
+def spoof_config_dir_base_path() -> str:
+    base = tempfile.mkdtemp()
+    base_dir = tempfile.mkdtemp(prefix="config", dir=base)
+
+    yield base_dir
+
+    shutil.rmtree(base_dir, ignore_errors=True)
 
 
 # FIXME:

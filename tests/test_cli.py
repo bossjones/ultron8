@@ -7,9 +7,11 @@ from click.testing import CliRunner
 
 from tests.conftest import fixtures_path
 from ultron8.cli import cli
-from ultron8.cli import get_flag
-from ultron8.cli import set_fact_flags
-from ultron8.cli import set_flag
+
+# from ultron8.cli import get_flag
+# from ultron8.cli import set_fact_flags
+from ultron8.config import do_set_flag
+from ultron8.config import do_get_flag
 
 # from ultron8.paths import Paths
 
@@ -154,23 +156,23 @@ def test_cli_dummp() -> None:
 #         assert not command_acquires_asset(runner, 'acquire', 'special.tar.gz')
 
 
-# def test_acquire_command_acquires_assets_specified_by_asset_set_flag():
+# def test_acquire_command_acquires_assets_specified_by_asset_do_set_flag():
 #     with project_runner() as runner:
 #         assert command_acquires_asset(runner, 'acquire --asset-set=special', 'special.tar.gz')
 
 
-# def test_set_flag_assigns_facts_in_config():
-#     set_flag('explode', False)
+# def test_do_set_flag_assigns_facts_in_config():
+#     do_set_flag('explode', False)
 #     assert pyconfig.get('cli.flags.explode') is False
 
 
-# def test_get_flag_return_cli_flags():
+# def test_do_get_flag_return_cli_flags():
 #     pyconfig.set('cli.flags.fly', True)
-#     assert get_flag('fly') is True
+#     assert do_get_flag('fly') is True
 
 
-# def test_get_flag_can_return_a_default():
-#     assert get_flag('no-bananas', 'have-a-peanut') == 'have-a-peanut'
+# def test_do_get_flag_can_return_a_default():
+#     assert do_get_flag('no-bananas', 'have-a-peanut') == 'have-a-peanut'
 
 
 # def test_set_fact_flags_assigns_facts_in_config():
@@ -180,6 +182,6 @@ def test_cli_dummp() -> None:
 #         'time_signature:3:4'  # <- Extra colon. Will it work?
 #     )
 #     set_fact_flags(args)
-#     assert get_flag('fact')['key'] == 'minor'
-#     assert get_flag('fact')['tempo'] == 'adagio'
-#     assert get_flag('fact')['time_signature'] == '3:4'
+#     assert do_get_flag('fact')['key'] == 'minor'
+#     assert do_get_flag('fact')['tempo'] == 'adagio'
+#     assert do_get_flag('fact')['time_signature'] == '3:4'

@@ -5,6 +5,7 @@ import os
 import sys
 import logging
 import yaml
+import inspect
 
 import pyconfig
 
@@ -13,6 +14,7 @@ from typing import Tuple
 from typing import List
 
 from ultron8.paths import mkdir_if_does_not_exist
+from ultron8.process import fail
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +61,14 @@ def get_config_dir_base_path(override=None):
     EXAMPLE: $HOME or /opt/ultron8
     :rtype: str
     """
+
+    callers_frame = inspect.currentframe().f_back
+    logger.debug(
+        "This function was called from the file: {}".format(
+            callers_frame.f_code.co_filename
+        )
+    )
+
     # First try environment var
     if os.environ.get("ULTRON_CLI_BASE_PATH"):
         config_home = os.environ.get("ULTRON_CLI_BASE_PATH")

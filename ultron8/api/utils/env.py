@@ -33,3 +33,38 @@ def getenv_bool(var_name, default=False, optional=False):
     if env_value is not None:
         result = env_value.upper() in ("TRUE", "1")
     return result
+
+
+# from piviti
+def get_bool_env(var):
+    value = os.getenv(var)
+    if not value:
+        return False
+    value = value.lower()
+    if value == "False":
+        return False
+    if value == "0":
+        return False
+    else:
+        return bool(value)
+
+
+# from piviti
+def get_env_by_type(type_, var):
+    """Gets an environment variable.
+
+    Args:
+        type_ (type): The type of the variable.
+        var (str): The name of the environment variable.
+
+    Returns:
+        The contents of the environment variable, or None if it doesn't exist.
+    """
+    if var is None:
+        return None
+    if type_ == bool:
+        return get_bool_env(var)
+    value = os.getenv(var)
+    if value:
+        return type_(os.getenv(var))
+    return None
