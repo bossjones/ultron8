@@ -610,7 +610,7 @@ def is_pathname_valid(pathname: str) -> bool:
             #   * Under some edge-case OSes (e.g., SunOS, *BSD), "ERANGE".
             except OSError as exc:
                 if hasattr(exc, "winerror"):
-                    if exc.winerror == ERROR_INVALID_NAME:
+                    if exc.winerror == ERROR_INVALID_NAME:  # pylint: disable=no-member
                         return False
                 elif exc.errno in {errno.ENAMETOOLONG, errno.ERANGE}:
                     return False
