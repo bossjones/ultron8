@@ -7,6 +7,9 @@ import logging
 import yaml
 import inspect
 
+from copy import deepcopy
+from collections import ChainMap
+
 import pyconfig
 
 from typing import Any
@@ -15,6 +18,8 @@ from typing import List
 
 from ultron8.paths import mkdir_if_does_not_exist
 from ultron8.process import fail
+
+from ultron8.config import smart
 
 logger = logging.getLogger(__name__)
 
@@ -117,3 +122,182 @@ def _load_and_set_cli_config_opts():
 # def check_folder_structure():
 #     config_file = do_get_flag("config_file")
 #     mkdir_if_does_not_exist(os.path.dirname(config_file))
+
+_CONFIG = None  # singleton instance.
+
+
+class Config(ChainMap):
+    """Top-level configuration object.
+
+    A Singleton configuration object.
+    A subclass of :py:class:`collections.ChainMap`, it allows chaining other configurations later.
+    """
+
+    def __init__(self, *maps):
+        self.__dict__["maps"] = list(maps) or [{}]
+
+    def __getattr__(self, name):
+        try:
+            return self.__getitem__(name)
+        except KeyError:
+            raise AttributeError(
+                "Config: No attribute or key {!r}".format(name)
+            ) from None
+
+    def __setattr__(self, name, val):
+        self.__setitem__(name, val)
+
+    def __delattr__(self, name):
+        self.__delitem__(name)
+
+    # Behaves like defaultdict, returning empty ConfigDict by default.
+    def __missing__(self, key):
+        value = ConfigDict()
+        self.__setitem__(key, value)
+        return value
+
+
+class ConfigDict(dict):
+    """Configuration Dictionary.
+
+    Provides both attribute style and normal mapping style syntax to access
+    mapping values.
+
+    Also features "reaching into" sub-containers using a dot-delimited syntax
+    for the key:
+
+        >>> cf = config.get_config()
+        >>> print(cf.flags.debug)
+        0
+        >>> cf["flags.debug"]
+        0
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.__dict__["_depth"] = kwargs.pop("_depth", 0)
+        dict.__init__(self, *args, **kwargs)
+
+    def __repr__(self):
+        return "{}({})".format(self.__class__.__name__, dict.__repr__(self))
+
+    def __str__(self):
+        getitem = dict.__getitem__
+        s = ["{}{{".format(" " * self._depth)]
+        sortedkeys = sorted(self.keys())
+        for key in sortedkeys:
+            val = getitem(self, key)
+            s.append("{}{} = {}".format("  " * self._depth, key, val))
+        s.append("{}}}".format(" " * self._depth))
+        return "\n".join(s)
+
+    def __setitem__(self, name, value):
+        d, name = self._get_subtree(name)
+        return dict.__setitem__(d, name, value)
+
+    def __getitem__(self, name):
+        d, name = self._get_subtree(name)
+        return dict.__getitem__(d, name)
+
+    def __delitem__(self, name):
+        d, name = self._get_subtree(name)
+        return dict.__delitem__(d, name)
+
+    def _get_subtree(self, name):
+        d = self
+        depth = self.__dict__["_depth"]
+        parts = name.split(".")
+        for part in parts[:-1]:
+            depth += 1
+            d = d.setdefault(part, self.__class__(_depth=depth))
+        return d, parts[-1]
+
+    __setattr__ = __setitem__
+    __delattr__ = __delitem__
+
+    def __getattr__(self, name):
+        try:
+            return self.__getitem__(name)
+        except KeyError:
+            raise AttributeError(
+                "AttrDict: No attribute or key {!r}".format(name)
+            ) from None
+
+    def copy(self):
+        return self.__class__(self)
+
+    __copy__ = copy
+
+    # Deep copies get regular dictionaries, not new AttrDict
+    def __deepcopy__(self, memo):
+        new = dict()
+        for key, value in self.items():
+            new[key] = deepcopy(value, memo)
+        return new
+
+
+def get_config(initdict=None, _filename=None, **kwargs):
+    """Get primary configuration.
+
+    Returns a Configuration instance containing configuration parameters. An
+    extra dictionary may be merged in with the 'initdict' parameter.  And
+    finally, extra options may also be added with keyword parameters.
+
+    There is only one Config object in the program, and this will return it. This is the primary
+    interface to obtain it.
+
+    Returns:
+        A :class:`Config` instance.
+    """
+    global _CONFIG
+    if _CONFIG is None:
+        cf = smart.Configuration("ultron8", "ultron8.config")
+        if _filename:
+            cf.set_file(_filename)
+        if isinstance(initdict, dict):
+            cf.add(initdict)
+        cf.add(kwargs)
+        _CONFIG = Config(cf.flatten(dclass=ConfigDict))
+    return _CONFIG
+
+
+def show_config(cf, _path=None):
+    """Print the configuration as a list of paths and the end value.
+    """
+    path = _path or []
+    keys = sorted(cf.keys())
+    for key in keys:
+        value = cf[key]
+        path.append(key)
+        if isinstance(value, dict):
+            show_config(value, path)
+        else:
+            print(".".join(path), "=", repr(value))
+        path.pop(-1)
+
+
+def get_package_config(packagename):
+    """Add configuration specific to a package.
+
+    Arguments:
+        packagename: name of a package. If the package directory contains a file named
+                     "config_default.yaml" the content will be loaded.
+
+    Returns:
+        New :class:`Config` with added configuration.
+    """
+    newcf = smart.Configuration("ultron8", packagename)
+    cf = get_config()
+    return cf.new_child(newcf.flatten(dclass=ConfigDict))
+
+
+if __name__ == "__main__":
+    # Simple test gets and shows config.
+    _CONFIG = None
+    cf = get_config()
+    cf.flags.debug = 1
+    cf.flags.verbose = 1
+    assert cf.flags.debug == 1
+    _CONFIG = None
+    cf = get_config(initdict={"initkey": "initvalue"})
+    assert cf.get("initkey", "") == "initvalue"
+    print(cf)

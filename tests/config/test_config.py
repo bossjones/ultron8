@@ -8,9 +8,10 @@ import pytest
 import pyconfig
 
 import ultron8
-from ultron8.config import do_set_flag
-from ultron8.config import do_get_flag
-from ultron8.config import do_set_multi_flag
+
+# from ultron8.config import do_set_flag
+# from ultron8.config import do_get_flag
+# from ultron8.config import do_set_multi_flag
 
 # from ultron8.config import ULTRON_CLI_BASE_CONFIG_DIRECTORY
 # from ultron8.config import ULTRON_CONFIG_DIRECTORY
@@ -21,7 +22,14 @@ from ultron8.config import do_set_multi_flag
 # from ultron8.config import ULTRON_LIBS_PATH
 # from ultron8.config import ULTRON_TEMPLATES_PATH
 
+from ultron8 import config
+
 logger = logging.getLogger(__name__)
+
+#############################################
+#############################################
+#############################################
+#############################################
 
 
 def create_file(path):
@@ -49,6 +57,39 @@ def spoof_config_dir_base_path() -> str:
 
     shutil.rmtree(base_dir, ignore_errors=True)
 
+
+@pytest.fixture
+def cf():
+    return config.get_config()
+
+
+@pytest.mark.smartonly
+@pytest.mark.configonly
+@pytest.mark.unittest
+class TestSmartConfig:
+    def test_is_singleton(self, cf):
+        newcf = config.get_config()
+        assert id(newcf) == id(cf)
+
+    def test_read_default(self, cf):
+        assert cf["flags"]["debug"] == 0
+        assert cf["flags"]["verbose"] == 0
+
+    def test_attribute_access(self, cf):
+        cf.flags.debug = 1
+        assert cf.flags.debug == 1
+
+
+class TestSmartConfigUpdate:
+    def test_with_initdict(self):
+        config._CONFIG = None
+        cf = config.get_config(initdict={"base.tree": "value"})
+        assert cf.base.tree == "value"
+
+
+#############################################
+#############################################
+#############################################
 
 # FIXME:
 # FIXME:
