@@ -47,15 +47,15 @@ def do_set_multi_flag(data: List[Tuple]) -> None:
         pyconfig.set(f"{d[0]}", d[1])
 
 
-def setup_api_pts():
-    pass
+# def setup_api_pts():
+#     pass
 
 
-def setup_cli_opts():
-    # 1. check_folder_structure
-    # 2. load_config
-    # 3. check_environment_overrides
-    pass
+# def setup_cli_opts():
+#     # 1. check_folder_structure
+#     # 2. load_config
+#     # 3. check_environment_overrides
+#     pass
 
 
 # TODO: Allow us to override this value purely for testing purposes 2/25/2018
@@ -235,6 +235,7 @@ class ConfigDict(dict):
         return new
 
 
+# TODO: Make this take another argument where you can pass in which type of config class you want it to pull back. Then that class will be dynamically called later. Also maybe re-think usage of a global config ? In the future we might need to add threading RLocks etc as well.
 def get_config(initdict=None, _filename=None, **kwargs):
     """Get primary configuration.
 
@@ -300,4 +301,5 @@ if __name__ == "__main__":
     _CONFIG = None
     cf = get_config(initdict={"initkey": "initvalue"})
     assert cf.get("initkey", "") == "initvalue"
+    # import pdb;pdb.set_trace()
     print(cf)

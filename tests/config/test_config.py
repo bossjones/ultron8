@@ -4,8 +4,11 @@ import logging
 import os
 import tempfile
 import shutil
+from collections import ChainMap
+from copy import deepcopy
 import pytest
 import pyconfig
+
 
 import ultron8
 
@@ -23,6 +26,7 @@ import ultron8
 # from ultron8.config import ULTRON_TEMPLATES_PATH
 
 from ultron8 import config
+from ultron8.config import get_config
 
 logger = logging.getLogger(__name__)
 
@@ -79,12 +83,69 @@ class TestSmartConfig:
         cf.flags.debug = 1
         assert cf.flags.debug == 1
 
+    def test_str(self, cf):
+        cf.flags.debug = 0
+        assert (
+            "Config(ConfigDict({'clusters_path': 'clusters/', 'cache_path': 'cache/', 'workspace_path': 'workspace/', 'templates_path': 'templates/', 'flags': ConfigDict({'debug': 0, 'verbose': 0, 'keep': 0, 'stderr': 0, 'repeat': 1}), 'clusters': ConfigDict({'instances': ConfigDict({'local': ConfigDict({'url': 'http://localhost:11267', 'token': ''})})})}))"
+            in str(cf)
+        )
+
+    def test_copy(self, cf):
+        cf2 = cf.copy()
+        assert cf2 == cf
+
+
+@pytest.mark.smartonly
+@pytest.mark.configonly
+@pytest.mark.unittest
+class TestSmartConfigErrors:
+    def test_attribute_access_keyerror(self):
+        config._CONFIG = None
+        cf = config.get_config(initdict={"base.tree": "value"})
+        assert cf.base.tree == "value"
+        cf.base.test = True
+        assert cf.base.test == True
+
+        with pytest.raises(AttributeError) as excinfo:
+            print(cf.flags.fake)
+            assert "Config: No attribute or key " in str(excinfo.value)
+
+    # def test_config_type(self, cf):
+    #     assert type(cf) == ChainMap
+    # <class 'ultron8.config.Config'>
+
+
+@pytest.mark.smartonly
+@pytest.mark.configonly
+@pytest.mark.unittest
+class TestSmartConfigPackageConfig:
+    def test_get_package_config(self):
+        config._CONFIG = None
+        cf = config.get_package_config("ultron8.config")
+        assert cf["flags"]["debug"] == 0
+        assert cf["flags"]["verbose"] == 0
+        assert "flags" in list(cf.keys())
+        del cf["flags"]["verbose"]
+
+    def test_delete(self):
+        config._CONFIG = None
+        cf = config.get_package_config("ultron8.config")
+        assert cf["flags"]["debug"] == 0
+        assert cf["flags"]["verbose"] == 0
+        assert "flags" in list(cf.keys())
+        del cf["flags"]["verbose"]
+
 
 class TestSmartConfigUpdate:
     def test_with_initdict(self):
         config._CONFIG = None
         cf = config.get_config(initdict={"base.tree": "value"})
         assert cf.base.tree == "value"
+
+    def test_deepcopy(self):
+        config._CONFIG = None
+        cf3 = deepcopy(config.get_config(initdict={"base.tree": "value"}))
+        assert cf3 == config._CONFIG
 
 
 #############################################
