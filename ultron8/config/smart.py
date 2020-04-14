@@ -709,6 +709,7 @@ class Configuration(RootView):
         if read:
             self.read()
 
+    # TODO: rename this config_path instead of user_config_path. Then implement where that values lies in templated/subclasses
     def user_config_path(self):
         """Points to the location of the user configuration.
 
@@ -716,6 +717,7 @@ class Configuration(RootView):
         """
         return os.path.join(self.config_dir(), CONFIG_FILENAME)
 
+    # TODO: rename this _add_source instead of _add_user_source. Then implement where that values lies in templated/subclasses
     def _add_user_source(self):
         """Add the configuration options from the YAML file in the
         user's configuration directory (given by `config_dir`) if it
@@ -725,6 +727,7 @@ class Configuration(RootView):
         if os.path.isfile(filename):
             self.add(ConfigSource(load_yaml(filename) or {}, filename))
 
+    # TODO: Maybe change this to not implemented or create a BaseClass that everything can adhere to. Else, simply template the other classes and make sure the code to pull this value is different and appropiate ( eg. packs, actions, etc )
     def _add_default_source(self):
         """Add the package's default configuration settings. This looks
         for a YAML file located inside the package for the module
@@ -735,6 +738,7 @@ class Configuration(RootView):
             if os.path.isfile(filename):
                 self.add(ConfigSource(load_yaml(filename), filename, True))
 
+    # TODO: rename arguments? instead of user, switch it to source? Defaults keep the same, maybe add one more value to allow us to override? (do we need that) ?
     def read(self, user=True, defaults=True):
         """Find and read the files for this configuration and set them
         as the sources for this configuration. To disable either
