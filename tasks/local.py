@@ -362,7 +362,7 @@ def rsync(ctx, loc="local", verbose=0, cleanup=False):
         ctx.config["run"]["env"][k] = v
 
     _cmd = r"""
-cd && rsync -r --exclude ultron8_venv --exclude .vagrant --exclude .git /srv/vagrant_repos/ultron8/ ~/ultron8/ && sudo chown vagrant:vagrant -R ~vagrant && cd ~/ultron8 && ls -lta
+cd && rsync -r --exclude ultron8_venv --exclude .vagrant --exclude .git --exclude .env /srv/vagrant_repos/ultron8/ ~/ultron8/ && sudo chown vagrant:vagrant -R ~vagrant && cd ~/ultron8 && ls -lta
     """
 
     if verbose >= 1:

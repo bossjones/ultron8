@@ -147,6 +147,19 @@ class TestSmartConfigUpdate:
     #     cf3 = deepcopy(config.get_config(initdict={"base.tree": "value"}))
     #     assert cf3 == config._CONFIG
 
+    def test_get_func(self):
+        config._CONFIG = None
+        cf = get_config(initdict={"initkey": "initvalue"})
+        print(cf)
+        # assert str(cf) == "Config(ConfigDict({'clusters_path': 'clusters/', 'cache_path': 'cache/', 'workspace_path': 'workspace/', 'templates_path': 'templates/', 'flags': ConfigDict({'debug': 0, 'verbose': 0, 'keep': 0, 'stderr': 0, 'repeat': 1}), 'clusters': ConfigDict({'instances': ConfigDict({'local': ConfigDict({'url': 'http://localhost:11267', 'token': ''})})}), 'base': ConfigDict({'tree': 'value'})}))"
+        # assert str(type(cf)) == "<class 'ultron8.config.Config'>"
+
+        # get_cf_base = cf.get("base")
+
+        assert cf.get("initkey", "") == "initvalue"
+        cf.set("initkey", "newvalue")
+        assert cf.get("initkey", "") == "newvalue"
+
 
 #############################################
 #############################################
