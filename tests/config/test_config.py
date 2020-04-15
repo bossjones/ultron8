@@ -142,10 +142,10 @@ class TestSmartConfigUpdate:
         cf = config.get_config(initdict={"base.tree": "value"})
         assert cf.base.tree == "value"
 
-    def test_deepcopy(self):
-        config._CONFIG = None
-        cf3 = deepcopy(config.get_config(initdict={"base.tree": "value"}))
-        assert cf3 == config._CONFIG
+    # def test_deepcopy(self):
+    #     config._CONFIG = None
+    #     cf3 = deepcopy(config.get_config(initdict={"base.tree": "value"}))
+    #     assert cf3 == config._CONFIG
 
 
 #############################################

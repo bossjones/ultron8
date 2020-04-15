@@ -47,17 +47,6 @@ def do_set_multi_flag(data: List[Tuple]) -> None:
         pyconfig.set(f"{d[0]}", d[1])
 
 
-# def setup_api_pts():
-#     pass
-
-
-# def setup_cli_opts():
-#     # 1. check_folder_structure
-#     # 2. load_config
-#     # 3. check_environment_overrides
-#     pass
-
-
 # TODO: Allow us to override this value purely for testing purposes 2/25/2018
 def get_config_dir_base_path(override=None):
     # source: home-assistant
