@@ -53,23 +53,23 @@ from ultron8.config.base import REDACTED_TOMBSTONE
 from ultron8.config.base import UNIX_SYSTEM_DIR
 
 
-# UNIX_DIR_VAR = 'XDG_CONFIG_HOME'
-UNIX_DIR_FALLBACK = "~/.config"
-# UNIX_DIR_FALLBACK = '~/.ultron8'
-MAC_DIR = "~/Library/Application Support"
-WINDOWS_DIR_VAR = "APPDATA"
-WINDOWS_DIR_FALLBACK = r"~\AppData\Roaming"
+# # UNIX_DIR_VAR = 'XDG_CONFIG_HOME'
+# UNIX_DIR_FALLBACK = "~/.config"
+# # UNIX_DIR_FALLBACK = '~/.ultron8'
+# MAC_DIR = "~/Library/Application Support"
+# WINDOWS_DIR_VAR = "APPDATA"
+# WINDOWS_DIR_FALLBACK = r"~\AppData\Roaming"
 
-# CONFIG_FILENAME = 'config.yaml'
-CONFIG_FILENAME = "smart.yaml"
-DEFAULT_FILENAME = "smart_default.yaml"
-ROOT_NAME = "root"
+# # CONFIG_FILENAME = 'config.yaml'
+# CONFIG_FILENAME = "smart.yaml"
+# DEFAULT_FILENAME = "smart_default.yaml"
+# ROOT_NAME = "root"
 
-YAML_TAB_PROBLEM = "found character '\\t' that cannot start any token"
+# YAML_TAB_PROBLEM = "found character '\\t' that cannot start any token"
 
-REDACTED_TOMBSTONE = "REDACTED"
+# REDACTED_TOMBSTONE = "REDACTED"
 
-UNIX_SYSTEM_DIR = "/etc/ultron8"
+# UNIX_SYSTEM_DIR = "/etc/ultron8"
 
 
 # def iter_first(sequence):
@@ -863,23 +863,6 @@ UNIX_SYSTEM_DIR = "/etc/ultron8"
 
 ############################################################################################################
 class Configuration(BaseConfiguration):
-
-    # # UNIX_DIR_VAR = 'XDG_CONFIG_HOME'
-    # UNIX_DIR_FALLBACK = "~/.config"
-    # # UNIX_DIR_FALLBACK = '~/.ultron8'
-    # MAC_DIR = "~/Library/Application Support"
-    # WINDOWS_DIR_VAR = "APPDATA"
-    # WINDOWS_DIR_FALLBACK = r"~\AppData\Roaming"
-
-    # # CONFIG_FILENAME = 'config.yaml'
-    # CONFIG_FILENAME = "smart.yaml"
-    # DEFAULT_FILENAME = "smart_default.yaml"
-    # ROOT_NAME = "root"
-
-    # YAML_TAB_PROBLEM = "found character '\\t' that cannot start any token"
-
-    # REDACTED_TOMBSTONE = "REDACTED"
-
     def __init__(self, appname, modname=None, read=True):
         """Create a configuration object by reading the
         automatically-discovered config files for the application for a

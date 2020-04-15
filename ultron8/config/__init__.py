@@ -115,6 +115,7 @@ def _load_and_set_cli_config_opts():
 _CONFIG = None  # singleton instance.
 
 
+# NOTE: For testing ChainMaps, look at this https://github.com/python/cpython/blob/master/Lib/test/test_collections.py
 class Config(ChainMap):
     """Top-level configuration object.
 
