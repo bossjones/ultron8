@@ -9,6 +9,7 @@ import copy
 from copy import deepcopy
 import pytest
 import pyconfig
+import argparse
 
 import ultron8
 from ultron8.config import base as config_base
@@ -102,3 +103,101 @@ me: me: me: me:
         finally:
             os.unlink(path)
             shutil.rmtree(base, ignore_errors=True)
+
+
+@pytest.mark.baseconfigonly
+@pytest.mark.configonly
+@pytest.mark.unittest
+class TestBaseConfigSource:
+    def test_configsource_invalid_filename(self):
+        with pytest.raises(TypeError) as excinfo:
+            config_base.ConfigSource({}, filename=1)
+        assert "filename must be a string or None" in str(excinfo.value)
+
+    def test_configsource_invalid_source_value(self):
+        with pytest.raises(TypeError) as excinfo:
+            config_base.ConfigSource.of("")
+        assert "source value must be a dict" in str(excinfo.value)
+
+
+@pytest.mark.baseconfigonly
+@pytest.mark.configonly
+@pytest.mark.unittest
+class TestBaseConfigRootView:
+    def test_rootview(self):
+
+        sources = []
+        cs1 = config_base.ConfigSource({1: 2}, filename="cs1.yaml")
+        cs2 = config_base.ConfigSource({4: 5}, filename="cs2.yaml")
+
+        sources.append(cs1)
+        sources.append(cs2)
+
+        temp_root = config_base.RootView(sources)
+
+        assert temp_root.first() == (
+            {1: 2},
+            config_base.ConfigSource({1: 2}, "cs1.yaml", False),
+        )
+
+        # verify List/sequence emulation works and we can pull back keys 1 and 4
+        contents = []
+        for i in temp_root.all_contents():
+            contents.append(i)
+
+        assert 1 in contents
+        assert 4 in contents
+
+        # str view
+        assert str(temp_root) == "{1: 2}"
+
+        # verify contains func works as intented
+        assert 1 in temp_root
+
+        # verify set item works
+        temp_root[9] = True
+        contents = []
+        for i in temp_root.all_contents():
+            contents.append(i)
+
+        assert 1 in contents
+        assert 4 in contents
+        assert 9 in contents
+
+        # verify boolean view works
+        assert bool(temp_root)
+        # assert temp_root[1]
+
+        # validate set_args function to pass in argeparse CLI values
+        class C:
+            pass
+
+        c = C()
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--foo")
+        parser.parse_args(args=["--foo", "BAR"], namespace=c)
+
+        temp_root.set_args(c)
+
+        for k, v in temp_root.items():
+            if str(k) == "foo":
+                assert str(v) == "BAR"
+
+    def test_rootview_first_not_found(self):
+        sources = []
+
+        temp_root = config_base.RootView(sources)
+
+        # verify first value doesn't exist
+        with pytest.raises(config_base.ConfigNotFoundError) as excinfo:
+            temp_root.first()
+        assert "root not found" in str(excinfo.value)
+
+        # confirm class function exists returns False
+        assert not temp_root.exists()
+
+        # verify that we can not iterate
+        with pytest.raises(TypeError) as excinfo:
+            for i in temp_root:
+                print(i)
+        assert "'RootView' object is not iterable" in str(excinfo.value)
