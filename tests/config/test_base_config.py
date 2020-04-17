@@ -148,6 +148,14 @@ class TestBaseConfigRootView:
         assert 1 in contents
         assert 4 in contents
 
+        # verify List/sequence emulation works for values()
+        contents = []
+        for i in temp_root.values():
+            contents.append(str(i))
+
+        assert "2" in contents
+        assert "5" in contents
+
         # str view
         assert str(temp_root) == "{1: 2}"
 
@@ -183,6 +191,19 @@ class TestBaseConfigRootView:
             if str(k) == "foo":
                 assert str(v) == "BAR"
 
+        # Get root object
+        assert str(type(temp_root.root())) == "<class 'ultron8.config.base.RootView'>"
+
+        # set/get redactions
+        temp_root.set_redaction(1, "***")
+
+        str(temp_root.get_redactions()) == "{1}"
+
+        # verify clear
+        assert len(temp_root.sources) == 4
+        temp_root.clear()
+        assert len(temp_root.sources) == 0
+
     def test_rootview_first_not_found(self):
         sources = []
 
@@ -201,3 +222,8 @@ class TestBaseConfigRootView:
             for i in temp_root:
                 print(i)
         assert "'RootView' object is not iterable" in str(excinfo.value)
+
+        # with pytest.raises(config_base.ConfigTypeError) as excinfo:
+        #     for i in temp_root.all_contents():
+        #         print(i)
+        # assert "must be an iterable, not" in str(excinfo.value)

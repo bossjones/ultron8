@@ -333,17 +333,17 @@ class ConfigView(object):
 
     # Old validation methods (deprecated).
 
-    def as_filename(self):
-        return self.get(Filename())
+    # def as_filename(self):
+    #     return self.get(Filename())
 
-    def as_choice(self, choices):
-        return self.get(Choice(choices))
+    # def as_choice(self, choices):
+    #     return self.get(Choice(choices))
 
-    def as_number(self):
-        return self.get(Number())
+    # def as_number(self):
+    #     return self.get(Number())
 
-    def as_str_seq(self):
-        return self.get(StrSeq())
+    # def as_str_seq(self):
+    #     return self.get(StrSeq())
 
     # Redaction.
 
