@@ -430,3 +430,73 @@ pip install -e .
     click.secho(msg, fg=COLOR_SUCCESS)
 
     ctx.run("ultronctl --help")
+
+
+@task(
+    pre=[call(detect_os, loc="local"), call(clean, loc="local"),],
+    incrementable=["verbose"],
+)
+def setup_jupyter(ctx, loc="local", verbose=0, cleanup=False):
+    """
+    Setup jupyter notebook
+    Usage: inv local.setup-jupyter
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    msg = "[setup-jupyter] installing dependencies"
+    click.secho(msg, fg=COLOR_SUCCESS)
+
+    _cmd = r"""
+pip install jupyter
+pip install ipython-sql cython
+python -m ipykernel install --user
+pip install jupyter_nbextensions_configurator jupyter_contrib_nbextensions
+jupyter contrib nbextension install --user
+jupyter nbextensions_configurator enable --user
+pip install ipywidgets
+jupyter nbextension enable --py widgetsnbextension --sys-prefix
+    """
+
+    if verbose >= 1:
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run(_cmd)
+
+
+@task(
+    pre=[call(detect_os, loc="local"), call(clean, loc="local"),],
+    incrementable=["verbose"],
+)
+def jupyter(ctx, loc="local", verbose=0, cleanup=False):
+    """
+    Run jupyter notebook
+    Usage: inv local.jupyter
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    _cmd = r"""
+pip install -e .
+    """
+
+    if verbose >= 1:
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run(_cmd)
+
+    msg = "[jupyter] start up notebook"
+    click.secho(msg, fg=COLOR_SUCCESS)
+
+    msg = "[jupyter] Great guide to jupyter here: https://www.datacamp.com/community/tutorials/tutorial-jupyter-notebook"
+    click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run("jupyter notebook")

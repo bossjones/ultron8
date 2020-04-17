@@ -129,6 +129,9 @@ class Config(ChainMap):
     def __getattr__(self, name):
         try:
             return self.__getitem__(name)
+        # The expression following from must be an exception or None. It will be set as __cause__ on the raised exception.
+        # Setting __cause__ also implicitly sets the __suppress_context__ attribute to True, so that using raise new_exc from None
+        # effectively replaces the old exception with the new one for display purposes (e.g. converting KeyError to AttributeError), while leaving the old exception available in __context__ for introspection when debugging.
         except KeyError:
             raise AttributeError(
                 "Config: No attribute or key {!r}".format(name)
