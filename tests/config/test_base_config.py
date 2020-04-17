@@ -204,6 +204,36 @@ class TestBaseConfigRootView:
         temp_root.clear()
         assert len(temp_root.sources) == 0
 
+    def test_subview(self):
+        sources = []
+        cs1 = config_base.ConfigSource({1: 2}, filename="cs1.yaml")
+        cs2 = config_base.ConfigSource({4: 5}, filename="cs2.yaml")
+        cs3 = config_base.ConfigSource({12: b"hi"}, filename="cs3.yaml")
+        cs4 = config_base.ConfigSource({14: float(3.0)}, filename="cs4.yaml")
+
+        sources.append(cs1)
+        sources.append(cs2)
+        sources.append(cs3)
+        sources.append(cs4)
+
+        temp_root = config_base.RootView(sources)
+
+        contents = []
+        for i in temp_root.values():
+            contents.append(i)
+
+        # contents
+        # [<Subview: #1>, <Subview: #4>, <Subview: #12>, <Subview: #14>]
+
+        # test that RootView is a parent for each of the Subviews
+        for sv in contents:
+            assert str(type(sv.root())) == "<class 'ultron8.config.base.RootView'>"
+
+        # Test resolve func
+        for v, s in contents[0].resolve():
+            assert str(v) == "2"
+            assert str(s) == "ConfigSource({1: 2}, 'cs1.yaml', False)"
+
     def test_rootview_first_not_found(self):
         sources = []
 
