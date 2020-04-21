@@ -492,15 +492,15 @@ def config_dirs(domain="user", override=None):
     paths = []
     if domain is "user":
         if platform.system() == "Darwin":
-            paths.append(MAC_DIR)
+            # TODO: Add this back in one day # paths.append(MAC_DIR)
             paths.append(UNIX_DIR_FALLBACK)
             # if UNIX_DIR_VAR in os.environ:
             #     paths.append(os.environ[UNIX_DIR_VAR])
 
-        elif platform.system() == "Windows":
-            if WINDOWS_DIR_VAR in os.environ:
-                paths.append(os.environ[WINDOWS_DIR_VAR])
-            paths.append(WINDOWS_DIR_FALLBACK)
+        # elif platform.system() == "Windows":
+        #     if WINDOWS_DIR_VAR in os.environ:
+        #         paths.append(os.environ[WINDOWS_DIR_VAR])
+        #     paths.append(WINDOWS_DIR_FALLBACK)
 
         else:
             # Assume Unix.
@@ -515,6 +515,8 @@ def config_dirs(domain="user", override=None):
 
     # mainly for testing etc
     if override:
+        # empty list then add only override
+        paths = []
         paths.append(override)
 
     # Expand and deduplicate paths.
