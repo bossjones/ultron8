@@ -10,7 +10,8 @@ from enum import Enum
 DEBUG_MODE_FLAG = os.environ.get("ULTRON_DEBUG", None)
 
 # file extensions
-YAML_FILE = ".yaml"
+# YAML_FILE = ".yaml"
+YAML_FILE = ".yml"
 
 CONF_FILE = ".conf"
 

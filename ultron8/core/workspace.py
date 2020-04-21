@@ -4,6 +4,9 @@ import shutil
 from ultron8.logging_init import getLogger
 from ultron8.core.files import write_file
 
+from ultron8.config import get_config_dir_base_path
+from ultron8.paths import is_readable_dir, ensure_dir_exists
+
 logger = getLogger(__name__)
 
 
@@ -22,8 +25,9 @@ def cluster_home():
 
 
 def mkdir_if_dne(target):
-    if not os.path.isdir(target):
-        os.makedirs(target)
+    res = is_readable_dir(target)
+    if not res["result"]:
+        ensure_dir_exists(target)
 
 
 def prep_default_config():
@@ -38,7 +42,60 @@ def prep_default_config():
     return default_cfg
 
 
-class Workspace:
+# INFO: https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Metaprogramming.html#intercepting-class-creation
+# # Metaprogramming/Singleton.py
+
+# class Singleton(type):
+#     instance = None
+#     def __call__(cls, *args, **kw):
+#         if not cls.instance:
+#              cls.instance = super(Singleton, cls).__call__(*args, **kw)
+#         return cls.instance
+
+# class ASingleton(object):
+#     __metaclass__ = Singleton
+
+# class WorkspaceBase:
+#     def __init__(self, wdir=None, libdir=None, **kwargs):
+#         super().__init__(**kwargs)
+#         self._wdir = wdir
+#         self._lib_dir = libdir
+
+#     def clean(self):
+#         pass
+
+#     def set_dir(self, d):
+#         pass
+
+#     def copy_libs(self):
+#         pass
+
+#     def copy_templates(self, in_dir):
+#         """
+#         copy over lib files, and THEN user files to ensure overwrites
+#         """
+#         pass
+
+#     def copy_contents(self, source, subdir="", sourcedir=None):
+#         pass
+
+#     def create_subdir(self, subdir):
+#         pass
+
+#     def write_template(self, path, contents):
+#         pass
+
+#     def template_subdir(self):
+#         pass
+
+#     def _default_workspace(self):
+#         pass
+
+#     def _default_libdir(self):
+#         pass
+
+
+class CliWorkspace:
     def __init__(self, wdir=None, libdir=None):
         self._wdir = None
         if wdir is None:
@@ -108,7 +165,7 @@ class Workspace:
         return os.path.join(self._wdir, "templates")
 
     def _default_workspace(self):
-        return os.path.join(app_home(), "workspace")
+        return os.path.join(get_config_dir_base_path(), ".ultron8", "workspace")
 
     def _default_libdir(self):
-        return os.path.join(app_home(), "libs")
+        return os.path.join(get_config_dir_base_path(), ".ultron8", "libs")

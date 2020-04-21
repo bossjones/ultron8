@@ -505,6 +505,9 @@ class TestPathToFileURI(object):
             dir2 = os.path.join(fake_dir, "fake", "as")
             dir3 = os.path.join(fake_dir, "fake", "as", "heck")
 
+            print(f"dir1: {dir1}")
+            print(f"dir1: {dir2}")
+            print(f"dir1: {dir3}")
             assert oct(stat.S_IMODE(os.stat(dir1).st_mode)) == oct(493)  # same as 0o755
             assert oct(stat.S_IMODE(os.stat(dir2).st_mode)) == oct(493)
             assert oct(stat.S_IMODE(os.stat(dir3).st_mode)) == oct(493)

@@ -4,7 +4,6 @@ cache_path: cache/
 workspace_path: workspace/
 templates_path: templates/
 
-
 # beard_paths:
 #   - beards/
 #   - beard_cache/
@@ -28,3 +27,16 @@ templates_path: templates/
 
 # host: 0.0.0.0
 # port: 8000
+
+flags:
+    debug: 0
+    verbose: 0
+    keep: 0
+    stderr: 0
+    repeat: 1
+
+clusters:
+    instances:
+        local:
+            url: 'http://localhost:11267'
+            token: ''

@@ -8,7 +8,8 @@ import click
 
 from ultron8.logging_init import getLogger
 
-from ultron8.cli import set_trace, get_flag, set_fact_flags
+from ultron8.cli import set_trace
+from ultron8.config import do_get_flag
 
 logger = getLogger(__name__)
 
@@ -32,7 +33,7 @@ stdin, stdout = sys.stdin, sys.stdout
 @click.pass_context
 def cli(ctx):
     """cluster cmds for ultron8."""
-    if get_flag("debug"):
+    if do_get_flag("cli.flags.debug"):
         click.echo("Debug mode initiated")
         set_trace()
 
@@ -44,7 +45,7 @@ def cli(ctx):
 @click.pass_context
 def setup(ctx, cluster_url):
     """Cmd to setup workspace etc for ultron8."""
-    if get_flag("debug"):
+    if do_get_flag("cli.flags.debug"):
         click.echo("Debug mode initiated")
         set_trace()
 

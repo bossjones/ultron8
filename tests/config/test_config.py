@@ -4,13 +4,18 @@ import logging
 import os
 import tempfile
 import shutil
+from collections import ChainMap
+import copy
+from copy import deepcopy
 import pytest
 import pyconfig
 
+
 import ultron8
-from ultron8.config import do_set_flag
-from ultron8.config import do_get_flag
-from ultron8.config import do_set_multi_flag
+
+# from ultron8.config import do_set_flag
+# from ultron8.config import do_get_flag
+# from ultron8.config import do_set_multi_flag
 
 # from ultron8.config import ULTRON_CLI_BASE_CONFIG_DIRECTORY
 # from ultron8.config import ULTRON_CONFIG_DIRECTORY
@@ -21,7 +26,21 @@ from ultron8.config import do_set_multi_flag
 # from ultron8.config import ULTRON_LIBS_PATH
 # from ultron8.config import ULTRON_TEMPLATES_PATH
 
+from ultron8 import config
+from ultron8.config import get_config
+
 logger = logging.getLogger(__name__)
+
+#############################################
+#############################################
+#############################################
+#############################################
+
+
+def create_file(path):
+    """Create an empty file."""
+    with open(path, "w"):
+        pass
 
 
 @pytest.fixture(scope="function")
@@ -33,6 +52,251 @@ def fake_dir() -> str:
 
     # shutil.rmtree(base_dir)
 
+
+@pytest.fixture(scope="function")
+def spoof_config_dir_base_path() -> str:
+    base = tempfile.mkdtemp()
+    base_dir = tempfile.mkdtemp(prefix="config", dir=base)
+
+    yield base_dir
+
+    shutil.rmtree(base_dir, ignore_errors=True)
+
+
+@pytest.fixture
+def cf():
+    return config.get_config()
+
+
+@pytest.mark.smartonly
+@pytest.mark.configonly
+@pytest.mark.unittest
+class TestSmartConfig:
+    def test_is_singleton(self, cf):
+        newcf = config.get_config()
+        assert id(newcf) == id(cf)
+
+    def test_read_default(self, cf):
+        assert cf["flags"]["debug"] == 0
+        assert cf["flags"]["verbose"] == 0
+
+    def test_attribute_access(self, cf):
+        cf.flags.debug = 1
+        assert cf.flags.debug == 1
+
+    def test_str(self, cf):
+        cf.flags.debug = 0
+        assert (
+            "Config(ConfigDict({'clusters_path': 'clusters/', 'cache_path': 'cache/', 'workspace_path': 'workspace/', 'templates_path': 'templates/', 'flags': ConfigDict({'debug': 0, 'verbose': 0, 'keep': 0, 'stderr': 0, 'repeat': 1}), 'clusters': ConfigDict({'instances': ConfigDict({'local': ConfigDict({'url': 'http://localhost:11267', 'token': ''})})})}))"
+            in str(cf)
+        )
+
+    def test_copy(self, cf):
+        cf2 = cf.copy()
+        assert cf2 == cf
+
+
+@pytest.mark.smartonly
+@pytest.mark.configonly
+@pytest.mark.unittest
+class TestSmartConfigErrors:
+    def test_attribute_access_keyerror(self):
+        config._CONFIG = None
+        cf = config.get_config(initdict={"base.tree": "value"})
+        assert cf.base.tree == "value"
+        cf.base.test = True
+        assert cf.base.test == True
+
+        with pytest.raises(AttributeError) as excinfo:
+            print(cf.flags.fake)
+            assert "Config: No attribute or key " in str(excinfo.value)
+
+
+@pytest.mark.smartonly
+@pytest.mark.configonly
+@pytest.mark.unittest
+class TestSmartConfigPackageConfig:
+    def test_get_package_config(self):
+        config._CONFIG = None
+        cf = config.get_package_config("ultron8.config")
+        assert cf["flags"]["debug"] == 0
+        assert cf["flags"]["verbose"] == 0
+        assert "flags" in list(cf.keys())
+        del cf["flags"]["verbose"]
+
+    def test_delete(self):
+        config._CONFIG = None
+        cf = config.get_package_config("ultron8.config")
+        assert cf["flags"]["debug"] == 0
+        assert cf["flags"]["verbose"] == 0
+        assert "flags" in list(cf.keys())
+        del cf["flags"]["verbose"]
+
+
+class TestSmartConfigUpdate:
+    def test_with_initdict(self):
+        config._CONFIG = None
+        cf = config.get_config(initdict={"base.tree": "value"})
+        assert cf.base.tree == "value"
+
+    # def test_deepcopy(self):
+    #     config._CONFIG = None
+    #     cf3 = deepcopy(config.get_config(initdict={"base.tree": "value"}))
+    #     assert cf3 == config._CONFIG
+
+    def test_get_func(self):
+        config._CONFIG = None
+        cf = get_config(initdict={"initkey": "initvalue"})
+        print(cf)
+        # assert str(cf) == "Config(ConfigDict({'clusters_path': 'clusters/', 'cache_path': 'cache/', 'workspace_path': 'workspace/', 'templates_path': 'templates/', 'flags': ConfigDict({'debug': 0, 'verbose': 0, 'keep': 0, 'stderr': 0, 'repeat': 1}), 'clusters': ConfigDict({'instances': ConfigDict({'local': ConfigDict({'url': 'http://localhost:11267', 'token': ''})})}), 'base': ConfigDict({'tree': 'value'})}))"
+        # assert str(type(cf)) == "<class 'ultron8.config.Config'>"
+
+        # get_cf_base = cf.get("base")
+
+        assert cf.get("initkey", "") == "initvalue"
+        # cf.set("initkey", "newvalue")
+        # assert cf.get("initkey", "") == "newvalue"
+
+        # check internal state
+        assert cf.maps == [
+            config.ConfigDict(
+                {
+                    "clusters_path": "clusters/",
+                    "cache_path": "cache/",
+                    "workspace_path": "workspace/",
+                    "templates_path": "templates/",
+                    "flags": config.ConfigDict(
+                        {"debug": 0, "verbose": 0, "keep": 0, "stderr": 0, "repeat": 1}
+                    ),
+                    "clusters": config.ConfigDict(
+                        {
+                            "instances": config.ConfigDict(
+                                {
+                                    "local": config.ConfigDict(
+                                        {"url": "http://localhost:11267", "token": ""}
+                                    )
+                                }
+                            )
+                        }
+                    ),
+                    "initkey": "initvalue",
+                }
+            )
+        ]
+
+
+class TestSmartConfigDict:
+    def test_basics(self):
+        config._CONFIG = None
+        cf = config.get_config(initdict={"base.foo": "value"})
+        cf.base.foo = "foo"
+        cf.base.bar = "foo"
+        print(cf)
+
+        # check internal state
+        assert cf.maps == [
+            config.ConfigDict(
+                {
+                    "clusters_path": "clusters/",
+                    "cache_path": "cache/",
+                    "workspace_path": "workspace/",
+                    "templates_path": "templates/",
+                    "flags": config.ConfigDict(
+                        {"debug": 0, "verbose": 0, "keep": 0, "stderr": 0, "repeat": 1}
+                    ),
+                    "clusters": config.ConfigDict(
+                        {
+                            "instances": config.ConfigDict(
+                                {
+                                    "local": config.ConfigDict(
+                                        {"url": "http://localhost:11267", "token": ""}
+                                    )
+                                }
+                            )
+                        }
+                    ),
+                    "base": config.ConfigDict({"foo": "foo", "bar": "foo"}),
+                }
+            )
+        ]
+
+        # check items/iter/getitem
+        assert cf.base.items() == dict(foo="foo", bar="foo").items()
+
+        # check len
+        assert len(cf.base) == 2
+
+        # check contains
+        for key in ["foo", "bar"]:
+            assert key in cf.base
+
+        # check get
+        d = cf.base
+        cf.base.z = 100
+        for k, v in dict(foo="foo", bar="foo", z=100).items():
+            assert cf.base.get(k, 100) == v
+
+        # Test proper exception thrown when trying to access attribute that doesn't exist
+        with pytest.raises(
+            AttributeError
+        ) as excinfo:  # pylint: disable=pointless-statement
+            cf.base.gg
+        assert "No attribute or key 'gg'" in str(excinfo.value)
+
+        # unmask a value
+        del cf["base"]["z"]
+
+        # check internal state
+        assert cf.maps == [
+            config.ConfigDict(
+                {
+                    "clusters_path": "clusters/",
+                    "cache_path": "cache/",
+                    "workspace_path": "workspace/",
+                    "templates_path": "templates/",
+                    "flags": config.ConfigDict(
+                        {"debug": 0, "verbose": 0, "keep": 0, "stderr": 0, "repeat": 1}
+                    ),
+                    "clusters": config.ConfigDict(
+                        {
+                            "instances": config.ConfigDict(
+                                {
+                                    "local": config.ConfigDict(
+                                        {"url": "http://localhost:11267", "token": ""}
+                                    )
+                                }
+                            )
+                        }
+                    ),
+                    "base": config.ConfigDict({"foo": "foo", "bar": "foo"}),
+                }
+            )
+        ]
+
+        # check items/iter/getitem
+        assert d.items() == dict(foo="foo", bar="foo").items()
+
+        # check len
+        assert len(d) == 2
+
+        # check contains
+        for key in ["foo", "bar"]:
+            assert key in d
+
+        # check repr
+        assert repr(d) == type(d).__name__ + "({'foo': 'foo', 'bar': 'foo'})"
+
+        # check shallow copies
+        for e in cf.copy(), copy.copy(cf):
+            assert cf == e
+            assert cf.maps == e.maps
+            for m1, m2 in zip(cf.maps[1:], e.maps[1:]):
+                assert m1 == m2
+
+
+#############################################
+#############################################
+#############################################
 
 # FIXME:
 # FIXME:

@@ -10,8 +10,8 @@ import click
 
 from ultron8.logging_init import getLogger
 
-# from ultron8.process import fail
-from ultron8.cli import set_trace, get_flag, set_fact_flags
+from ultron8.cli import set_trace
+from ultron8.config import do_get_flag
 
 from ultron8 import __version__
 
@@ -29,7 +29,7 @@ def _version() -> None:
 @click.pass_context
 def cli(ctx):
     """Get version of running Ultron8 process."""
-    if get_flag("debug"):
+    if do_get_flag("cli.flags.debug"):
         click.echo("Debug mode initiated")
         set_trace()
 

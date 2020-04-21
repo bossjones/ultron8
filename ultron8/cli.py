@@ -6,14 +6,16 @@ import sys
 
 # import pdb
 import click
-import pyconfig
+
+# import pyconfig
 
 from ultron8.logging_init import getLogger
 from ultron8.process import fail
 
-from ultron8.core.workspace import Workspace, prep_default_config
+from ultron8.core.workspace import CliWorkspace, prep_default_config
 from ultron8.core.files import load_json_file
 from ultron8.config.manager import NullConfig, ConfigProxy
+from ultron8.config import do_set_flag
 
 logger = getLogger(__name__)
 
@@ -83,29 +85,29 @@ def cli(ctx, working_dir: str, config_dir: str, debug: bool, verbose: int):
     # by means other than the `if` block below
     ctx.ensure_object(dict)
 
-    set_flag("working-dir", working_dir)
-    set_flag("config-dir", config_dir)
-    set_flag("debug", debug)
-    set_flag("verbose", verbose)
+    do_set_flag("cli.flags.working-dir", working_dir)
+    do_set_flag("cli.flags.config-dir", config_dir)
+    do_set_flag("cli.flags.debug", debug)
+    do_set_flag("cli.flags.verbose", verbose)
 
     ctx.obj["working_dir"] = working_dir
     ctx.obj["config_dir"] = config_dir
     ctx.obj["debug"] = debug
     ctx.obj["cfg_file"] = prep_default_config()
     ctx.obj["verbose"] = verbose
-    ctx.obj["workspace"] = Workspace()
+    ctx.obj["workspace"] = CliWorkspace()
     ctx.obj["configmanager"] = ConfigProxy(load_json_file(ctx.obj["cfg_file"]))
 
 
-# SOURCE: https://kite.com/blog/python/python-command-line-click-tutorial/
-def set_flag(flag: str, value: Any) -> None:
-    """Store a CLI flag in the config as "cli.flags.FLAG"."""
-    pyconfig.set(f"cli.flags.{flag}", value)
+# # SOURCE: https://kite.com/blog/python/python-command-line-click-tutorial/
+# def set_flag(flag: str, value: Any) -> None:
+#     """Store a CLI flag in the config as "cli.flags.FLAG"."""
+#     pyconfig.set(f"cli.flags.{flag}", value)
 
 
-def get_flag(flag: str, default: Any = None) -> Any:
-    """Get a CLI flag from the config."""
-    return pyconfig.get(f"cli.flags.{flag}", default)
+# def get_flag(flag: str, default: Any = None) -> Any:
+#     """Get a CLI flag from the config."""
+#     return pyconfig.get(f"cli.flags.{flag}", default)
 
 
 def set_fact_flags(flag_args: Tuple[str]) -> None:
@@ -121,7 +123,7 @@ def set_fact_flags(flag_args: Tuple[str]) -> None:
         logger.debug(f'Setting fact from cli: "{fact}" -> "{value}"')
         facts[fact] = value
 
-    set_flag("fact", facts)
+    do_set_flag("fact", facts)
 
 
 if __name__ == "__main__":

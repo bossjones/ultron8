@@ -28,3 +28,20 @@ The tests are integration tests.  They use sqlite for the db & a memory cache (i
 pipenv install -d
 pipenv run test
 ```
+
+# Testing w/ pytest and Visual Studio Code
+
+### Note
+
+Unit test debugging with `pytest` only works when code-coverage is disabled:
+```
+{
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [ "--no-cov" ]
+}
+{
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [ "--cov-config=.coveragerc", "--cov=./westac", ]
+}
+```
+See [issue](https://github.com/microsoft/vscode-python/issues/693) and [issue](https://github.com/kondratyev-nv/vscode-python-test-adapter/issues/123).
