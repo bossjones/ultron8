@@ -32,6 +32,8 @@ from ultron8.exceptions.config import ConfigNotFoundError
 from ultron8.exceptions.config import ConfigValueError
 from ultron8.exceptions.config import ConfigTypeError
 from ultron8.exceptions.config import ConfigTemplateError
+from ultron8.exceptions.config import ConfigReadError
+from ultron8.exceptions.config import YAML_TAB_PROBLEM
 
 
 # UNIX_DIR_VAR = 'XDG_CONFIG_HOME'
@@ -45,8 +47,6 @@ WINDOWS_DIR_FALLBACK = r"~\AppData\Roaming"
 CONFIG_FILENAME = "smart.yaml"
 DEFAULT_FILENAME = "smart_default.yaml"
 ROOT_NAME = "root"
-
-YAML_TAB_PROBLEM = "found character '\\t' that cannot start any token"
 
 REDACTED_TOMBSTONE = "REDACTED"
 
@@ -64,27 +64,27 @@ def iter_first(sequence):
         raise ValueError()
 
 
-class ConfigReadError(ConfigError):
-    """A configuration file could not be read."""
+# class ConfigReadError(ConfigError):
+#     """A configuration file could not be read."""
 
-    def __init__(self, filename, reason=None):
-        self.filename = filename
-        self.reason = reason
+#     def __init__(self, filename, reason=None):
+#         self.filename = filename
+#         self.reason = reason
 
-        message = "file {0} could not be read".format(filename)
-        if (
-            isinstance(reason, yaml.scanner.ScannerError)
-            and reason.problem == YAML_TAB_PROBLEM
-        ):
-            # Special-case error message for tab indentation in YAML markup.
-            message += ": found tab character at line {0}, column {1}".format(
-                reason.problem_mark.line + 1, reason.problem_mark.column + 1,
-            )
-        elif reason:
-            # Generic error message uses exception's message.
-            message += ": {0}".format(reason)
+#         message = "file {0} could not be read".format(filename)
+#         if (
+#             isinstance(reason, yaml.scanner.ScannerError)
+#             and reason.problem == YAML_TAB_PROBLEM
+#         ):
+#             # Special-case error message for tab indentation in YAML markup.
+#             message += ": found tab character at line {0}, column {1}".format(
+#                 reason.problem_mark.line + 1, reason.problem_mark.column + 1,
+#             )
+#         elif reason:
+#             # Generic error message uses exception's message.
+#             message += ": {0}".format(reason)
 
-        super().__init__(message)
+#         super().__init__(message)
 
 
 # Views and sources.
@@ -600,6 +600,46 @@ def load_yaml(filename):
     except (IOError, yaml.error.YAMLError) as exc:
         raise ConfigReadError(filename, exc)
 
+
+# TODO: We need a standalone function to save data to yaml
+# def save_yaml(filename, data):
+#     """
+#     Save contents of an OrderedDict structure to a yaml file
+#     :param filename: name of the yaml file to save to
+#     :type filename: str
+#     :param data: configuration data to to save
+#     :type filename: str
+#     :type data: OrderedDict
+
+#     :returns: Nothing
+#     """
+
+#     ordered = type(data).__name__ == "OrderedDict"
+#     dict_type = "dict"
+#     if ordered:
+#         dict_type = "OrderedDict"
+#     LOGGER.info("Saving '{}' to '{}'".format(dict_type, filename))
+#     if ordered:
+#         sdata = _ordered_dump(
+#             data,
+#             Dumper=yaml.SafeDumper,
+#             indent=4,
+#             width=768,
+#             allow_unicode=True,
+#             default_flow_style=False,
+#         )
+#     else:
+#         sdata = yaml.dump(
+#             data,
+#             Dumper=yaml.SafeDumper,
+#             indent=4,
+#             width=768,
+#             allow_unicode=True,
+#             default_flow_style=False,
+#         )
+#     sdata = _format_yaml_dump(sdata)
+#     with open(filename, "w") as outfile:
+#        outfile.write(sdata)
 
 # YAML dumping.
 

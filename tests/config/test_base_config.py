@@ -12,6 +12,7 @@ import pyconfig
 import argparse
 
 import ultron8
+from ultron8.exceptions.config import ConfigReadError
 from ultron8.config import base as config_base
 
 
@@ -161,7 +162,7 @@ class TestBaseConfig:
             with open(path, "wt") as f:
                 f.write(example_data)
 
-            with pytest.raises(config_base.ConfigReadError) as excinfo:
+            with pytest.raises(ConfigReadError) as excinfo:
                 config_base.load_yaml(path)
             assert "file {0} could not be read: found tab character at line 2, column 1".format(
                 path
@@ -186,7 +187,7 @@ me: me: me: me:
             with open(path, "wt") as f:
                 f.write(example_data)
 
-            with pytest.raises(config_base.ConfigReadError) as excinfo:
+            with pytest.raises(ConfigReadError) as excinfo:
                 config_base.load_yaml(path)
             assert "file {0} could not be read: mapping values are not allowed here".format(
                 path

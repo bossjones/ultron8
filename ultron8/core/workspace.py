@@ -7,21 +7,18 @@ from ultron8.core.files import write_file
 from ultron8.config import get_config_dir_base_path
 from ultron8.paths import is_readable_dir, ensure_dir_exists
 
+from ultron8.config.base import config_dirs, CONFIG_FILENAME
+
 logger = getLogger(__name__)
 
 
 def app_home():
-    try:
-        return os.path.join(os.environ["HOME"], ".ultron8")
-    except KeyError:
-        raise "HOME environment variable not set?"
+    app_base_dir = config_dirs()[0]
+    return os.path.join(app_base_dir, "ultron8")
 
 
 def cluster_home():
-    try:
-        return os.path.join(app_home(), "clusters")
-    except KeyError:
-        raise "HOME environment variable not set?"
+    return os.path.join(app_home(), "clusters")
 
 
 def mkdir_if_dne(target):
@@ -34,7 +31,7 @@ def prep_default_config():
     home = app_home()
     if not os.path.exists(home):
         os.makedirs(home)
-    default_cfg = os.path.join(home, "config.json")
+    default_cfg = os.path.join(home, CONFIG_FILENAME)
     if not os.path.exists(default_cfg):
         file = open(default_cfg, "w")
         file.write("{}")

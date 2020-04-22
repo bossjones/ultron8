@@ -20,6 +20,7 @@ from ultron8.paths import mkdir_if_does_not_exist
 from ultron8.process import fail
 
 from ultron8.config import smart
+from ultron8.exceptions.config import ConfigReadError
 
 logger = logging.getLogger(__name__)
 
@@ -282,6 +283,41 @@ def get_package_config(packagename):
     newcf = smart.Configuration("ultron8", packagename)
     cf = get_config()
     return cf.new_child(newcf.flatten(dclass=ConfigDict))
+
+
+class ConfigManager(object):
+    def __init__(self):
+        self.data = get_config()
+        self.api = smart.Configuration("ultron8", "ultron8.config")
+
+    def get_config_dir(self):
+        """Return configuration directory
+        """
+        return self.api.config_dir()
+
+    def get_filename(self):
+        """Return config filename
+        """
+        return self.api.config_filename
+
+    def save(self):
+        """Save modified config to disk.
+
+        Raises:
+            ConfigReadError: [description]
+        """
+        sdata = self.api.dump()
+        filename = self.get_filename()
+        try:
+            with open(filename, "w") as outfile:
+                outfile.write(sdata)
+        except (IOError, yaml.error.YAMLError) as exc:
+            raise ConfigReadError(filename, exc)
+
+    def __repr__(self):
+        return "<{}: {}/{}>".format(
+            self.__class__.__name__, self.get_config_dir(), self.get_filename()
+        )
 
 
 if __name__ == "__main__":
