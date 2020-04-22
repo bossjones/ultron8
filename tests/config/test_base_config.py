@@ -42,8 +42,12 @@ templates_path: templates/
 #   - beards/
 #   - beard_cache/
 
-# beards:
-#   - debugbeard
+ultrons:
+  - debugultron
+
+async: True
+
+nodes: 0
 
 # stache_paths:
 #   - moustaches
@@ -51,7 +55,7 @@ templates_path: templates/
 # staches:
 #   - postcats
 
-# db_url: sqlite:///skybeard-2.db
+db_uri: sqlite:///test.db
 # db_bin_path: ./db_binary_entries
 
 # admins:
@@ -76,6 +80,47 @@ clusters:
             token: ''
 """
     yield user_config_fixture
+
+
+@pytest.fixture(scope="function")
+def all_types_fixture() -> str:
+    all_types_fixture = """
+---
+utf8: "Это уникодная строка"
+
+test_list_of_strings:
+  - Boston Red Sox
+  - Detroit Tigers
+  - New York Yankees
+
+test_bools:
+- yes
+- NO
+- True
+- on
+
+test_map_of_floats:
+  canonical: 6.8523015e+5
+  exponential: 685.230_15e+03
+  fixed: 685_230.15
+  sexagesimal: 190:20:30.15
+  negative infinity: -.inf
+  not a number: .NaN
+
+42: life the universe everything
+
+test_list_of_ints:
+    - 21
+    - 1
+    - 2
+    - 3
+    - 1911
+
+test_small_list:
+    - 1
+    - 2
+"""
+    yield all_types_fixture
 
 
 @pytest.fixture(scope="function")
@@ -386,6 +431,7 @@ class TestBaseConfigBaseConfigurationView:
                 == "clusters_path: clusters/\ncache_path: cache/\nworkspace_path: workspace/\ntemplates_path: templates/\n\n# beard_paths:\n#   - beards/\n#   - beard_cache/\n\n# beards:\n#   - debugbeard\n\n# stache_paths:\n#   - moustaches\n\n# staches:\n#   - postcats\n\n# db_url: sqlite:///skybeard-2.db\n# db_bin_path: ./db_binary_entries\n\n# admins:\n#   [\n#   [My name, 99999999],\n#   ]\n\n# host: 0.0.0.0\n# port: 8000\n\nflags:\n    debug: 0\n    verbose: 0\n    keep: 0\n    stderr: 0\n    repeat: 1\n\nclusters:\n    instances:\n        local:\n            url: http://localhost:11267\n            token: ''\n"
             )
 
+            # FIXME: This empty dict, is that what we actually want when we say don't use full dump?
             assert bcv.dump(full=False) == "{}\n"
             print(bcv)
 
@@ -489,4 +535,64 @@ clusters:
 
             os.unlink(path)
             os.unlink(path2)
+            shutil.rmtree(base, ignore_errors=True)
+
+
+@pytest.mark.baseconfigonly
+@pytest.mark.configonly
+@pytest.mark.unittest
+class TestBaseConfigTemplates:
+    def test_template_with_sentinel(self, all_types_fixture, mocker, monkeypatch):
+
+        # create fake config directory
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "smart.yaml"
+        path = os.path.join(fake_dir, full_file_name)
+
+        # create fake fixture data to be returned as list(<fake_dir>)
+        default_path = os.path.abspath(os.path.expanduser(fake_dir))
+        expected_paths = []
+        expected_paths.append(default_path)
+
+        # temporarily patch environment to include fake_dir
+        monkeypatch.setenv("ULTRON8DIR", fake_dir)
+        mocker.patch.object(
+            config_base, "config_dirs", return_value=expected_paths, autospec=True,
+        )
+
+        mock_as_template = mocker.patch.object(
+            config_base, "as_template", autospec=True,
+        )
+
+        # write temporary data to disk
+        example_data = all_types_fixture
+
+        try:
+            with open(path, "wt") as f:
+                f.write(example_data)
+
+            bcv = config_base.BaseConfiguration("ultron8", "ultron8.config", read=False)
+
+            bcv.read(source=True, defaults=False)
+
+            print(path)
+            print(base)
+
+            s = bcv.sources[0]
+
+            assert s.get("test_bools") == [True, False, True, True]
+            assert s.get("test_list_of_ints") == [21, 1, 2, 3, 1911]
+            assert s.get("test_list_of_strings") == [
+                "Boston Red Sox",
+                "Detroit Tigers",
+                "New York Yankees",
+            ]
+            # assert s.get("test_map_of_floats")["canonical") == 6.8523015e+5
+            assert s.get("utf8") == "Это уникодная строка"
+            assert s.get(42) == "life the universe everything"
+            # assert s.default == False
+
+        finally:
+            os.unlink(path)
             shutil.rmtree(base, ignore_errors=True)

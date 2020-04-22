@@ -95,6 +95,76 @@ class TestSmartConfig:
         cf2 = cf.copy()
         assert cf2 == cf
 
+    def test_config_value_resolution(self, mocker, monkeypatch):
+        # create fake config directory
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "smart.yaml"
+        path = os.path.join(fake_dir, full_file_name)
+
+        # create fake fixture data to be returned as list(<fake_dir>)
+        default_path = os.path.abspath(os.path.expanduser(fake_dir))
+        expected_paths = []
+        expected_paths.append(default_path)
+
+        # temporarily patch environment to include fake_dir
+        monkeypatch.setenv("ULTRON8DIR", fake_dir)
+        # mocker.patch.object(
+        #     config, "config_dirs", return_value=expected_paths, autospec=True,
+        # )
+
+        # write temporary data to disk
+        example_data = """
+---
+clusters_path: clusters/
+cache_path: cache/
+workspace_path: workspace/
+templates_path: templates/
+
+ultrons:
+  - debugultron
+
+async: True
+
+nodes: 0
+
+db_uri: sqlite:///test.db
+
+flags:
+    debug: 1
+    verbose: 1
+    keep: 1
+    stderr: 1
+    repeat: 0
+
+clusters:
+    instances:
+        local:
+            url: 'http://localhost:11267'
+            token: 'memememememememmemememe'
+"""
+
+        try:
+            with open(path, "wt") as f:
+                f.write(example_data)
+
+            config._CONFIG = None
+            cf = config.get_config()
+
+            print(cf)
+
+            # verify correct values are being used
+            assert cf.clusters.instances.local.token == "memememememememmemememe"
+            assert cf.flags.debug == 1
+            assert cf.flags.verbose == 1
+            assert cf.flags.keep == 1
+            assert cf.flags.stderr == 1
+            assert cf.flags.repeat == 0
+
+        finally:
+            os.unlink(path)
+            shutil.rmtree(base, ignore_errors=True)
+
 
 @pytest.mark.smartonly
 @pytest.mark.configonly
