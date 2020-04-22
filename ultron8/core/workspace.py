@@ -1,3 +1,4 @@
+import sys
 import os
 import shutil
 
@@ -8,6 +9,8 @@ from ultron8.config import get_config_dir_base_path
 from ultron8.paths import is_readable_dir, ensure_dir_exists
 
 from ultron8.config.base import config_dirs, CONFIG_FILENAME
+
+from ultron8.config import ConfigManager
 
 logger = getLogger(__name__)
 
@@ -21,6 +24,14 @@ def cluster_home():
     return os.path.join(app_home(), "clusters")
 
 
+def workspace_home():
+    return os.path.join(app_home(), "workspace")
+
+
+def libs_home():
+    return os.path.join(app_home(), "libs")
+
+
 def mkdir_if_dne(target):
     res = is_readable_dir(target)
     if not res["result"]:
@@ -28,14 +39,26 @@ def mkdir_if_dne(target):
 
 
 def prep_default_config():
+    cm = ConfigManager()
     home = app_home()
     if not os.path.exists(home):
+        logger.debug(
+            "[{}] | {} does not exist, creating .... ".format(
+                sys._getframe().f_code.co_name, home
+            )
+        )
         os.makedirs(home)
     default_cfg = os.path.join(home, CONFIG_FILENAME)
     if not os.path.exists(default_cfg):
-        file = open(default_cfg, "w")
-        file.write("{}")
-        file.close()
+        logger.debug(
+            "[{}] | {} does not exist, creating .... ".format(
+                sys._getframe().f_code.co_name, default_cfg
+            )
+        )
+        cm.save()
+        # file = open(default_cfg, "w")
+        # file.write("{}")
+        # file.close()
     return default_cfg
 
 
@@ -162,7 +185,10 @@ class CliWorkspace:
         return os.path.join(self._wdir, "templates")
 
     def _default_workspace(self):
-        return os.path.join(get_config_dir_base_path(), ".ultron8", "workspace")
+        return workspace_home()
 
     def _default_libdir(self):
-        return os.path.join(get_config_dir_base_path(), ".ultron8", "libs")
+        return libs_home()
+
+    def get_workdir(self):
+        return self._wdir
