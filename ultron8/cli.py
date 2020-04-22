@@ -94,7 +94,8 @@ def cli(ctx, working_dir: str, config_dir: str, debug: bool, verbose: int):
     # ctx.obj["configmanager"] = ConfigProxy(load_json_file(ctx.obj["cfg_file"]))
     ctx.obj["configmanager"] = ConfigManager()
     ctx.obj["working_dir"] = working_dir
-    ctx.obj["config_dir"] = config_dir
+    # ctx.obj["config_dir"] = config_dir
+    ctx.obj["config_dir"] = ctx.obj["configmanager"].get_config_dir()
     ctx.obj["debug"] = debug
     ctx.obj["cfg_file"] = prep_default_config()
     ctx.obj["verbose"] = verbose

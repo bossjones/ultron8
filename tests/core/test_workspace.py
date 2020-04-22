@@ -19,14 +19,127 @@ logger = logging.getLogger(__name__)
 @pytest.mark.workspaceonly
 @pytest.mark.unittest
 class TestCliWorkspace(object):
-    def test_get_parent_dir(self, mocker):
-        pass
-        # path = "/opt/ultron8/fakefile.log"
+    def test_directory_paths(self, mocker, monkeypatch):
+        # create fake config directory
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "smart.yaml"
+        path = os.path.join(fake_dir, full_file_name)
 
-        # # run test
-        # result = paths.get_parent_dir(path)
+        # create fake fixture data to be returned as list(<fake_dir>)
+        default_path = os.path.abspath(os.path.expanduser(fake_dir))
+        expected_paths = []
+        expected_paths.append(default_path)
 
-        # assert result == "/opt/ultron8"
+        # temporarily patch environment to include fake_dir
+        monkeypatch.setenv("ULTRON8DIR", fake_dir)
+        mocker.patch.object(
+            workspace, "config_dirs", return_value=expected_paths, autospec=True,
+        )
+
+        try:
+            assert workspace.app_home() == "{}/ultron8".format(fake_dir)
+            assert workspace.cluster_home() == "{}/ultron8/clusters".format(fake_dir)
+            assert workspace.workspace_home() == "{}/ultron8/workspace".format(fake_dir)
+            assert workspace.libs_home() == "{}/ultron8/libs".format(fake_dir)
+
+        finally:
+            # os.unlink(path)
+            shutil.rmtree(base, ignore_errors=True)
+
+    def test_mkdir_if_dne(self, mocker, monkeypatch):
+        # create fake config directory
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "directorythatdoesnotexist"
+        path = os.path.join(fake_dir, full_file_name)
+
+        # mock
+        # mock_os_access = mocker.MagicMock(name="mock_os_access")
+
+        # # patch
+        # mocker.patch.object(ultron8.paths.os, "access", mock_os_access)
+
+        mock_is_readable_dir = mocker.patch.object(
+            workspace, "is_readable_dir", return_value={"result": False}, autospec=True,
+        )
+
+        mock_ensure_dir_exists = mocker.patch.object(
+            workspace, "ensure_dir_exists", autospec=True,
+        )
+
+        # run test
+        try:
+            workspace.mkdir_if_dne(path)
+
+            # tests
+            mock_is_readable_dir.assert_called_once_with(path)
+            mock_ensure_dir_exists.assert_called_once_with(path)
+
+        finally:
+            shutil.rmtree(base, ignore_errors=True)
+
+    def test_prep_default_config(self, mocker, monkeypatch):
+        # create fake config directory
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "smart.yaml"
+        path = os.path.join(fake_dir, "ultron8")
+        full_path = os.path.join(path, full_file_name)
+
+        # mock
+        # mock_os_access = mocker.MagicMock(name="mock_os_access")
+
+        # # patch
+        # mocker.patch.object(ultron8.paths.os, "access", mock_os_access)
+
+        mock_is_readable_dir = mocker.patch.object(
+            workspace, "is_readable_dir", return_value={"result": False}, autospec=True,
+        )
+        mock_is_readable_file = mocker.patch.object(
+            workspace,
+            "is_readable_file",
+            return_value={"result": False},
+            autospec=True,
+        )
+
+        mock_ensure_dir_exists = mocker.patch.object(
+            workspace, "ensure_dir_exists", autospec=True,
+        )
+
+        mock_config_manager = mocker.patch.object(
+            workspace, "ConfigManager", autospec=True,
+        )
+
+        mock_app_home = mocker.patch.object(
+            workspace,
+            "app_home",
+            return_value=os.path.join(fake_dir, "ultron8"),
+            autospec=True,
+        )
+
+        # run test
+        try:
+            workspace.prep_default_config()
+
+            # tests
+            mock_config_manager.assert_called_once_with()
+            mock_app_home.assert_called_once_with()
+            mock_is_readable_file.assert_called_once_with(full_path)
+            mock_ensure_dir_exists.assert_called_once_with(path)
+            mock_is_readable_dir.assert_called_once_with(path)
+
+        finally:
+            shutil.rmtree(base, ignore_errors=True)
+
+    # def test_app_home(self, mocker):
+    #     pass
+    #     path = "/opt/ultron8/fakefile.log"
+
+    #     # run test
+    #     result = paths.get_parent_dir(path)
+
+    #     assert result == "/opt/ultron8"
 
     # def test_mkdir_p(self, mocker):
     #     # mock

@@ -6,7 +6,7 @@ from ultron8.logging_init import getLogger
 from ultron8.core.files import write_file
 
 from ultron8.config import get_config_dir_base_path
-from ultron8.paths import is_readable_dir, ensure_dir_exists
+from ultron8.paths import is_readable_dir, ensure_dir_exists, is_readable_file
 
 from ultron8.config.base import config_dirs, CONFIG_FILENAME
 
@@ -35,21 +35,30 @@ def libs_home():
 def mkdir_if_dne(target):
     res = is_readable_dir(target)
     if not res["result"]:
+        logger.debug(
+            "[{}] | {} does not exist, creating .... ".format(
+                sys._getframe().f_code.co_name, target
+            )
+        )
         ensure_dir_exists(target)
 
 
 def prep_default_config():
     cm = ConfigManager()
     home = app_home()
-    if not os.path.exists(home):
+    res = is_readable_dir(home)
+    if not res["result"]:
         logger.debug(
             "[{}] | {} does not exist, creating .... ".format(
                 sys._getframe().f_code.co_name, home
             )
         )
-        os.makedirs(home)
+        ensure_dir_exists(home)
     default_cfg = os.path.join(home, CONFIG_FILENAME)
-    if not os.path.exists(default_cfg):
+
+    res = is_readable_file(default_cfg)
+
+    if not res["result"]:
         logger.debug(
             "[{}] | {} does not exist, creating .... ".format(
                 sys._getframe().f_code.co_name, default_cfg
@@ -116,6 +125,13 @@ def prep_default_config():
 
 
 class CliWorkspace:
+    @classmethod
+    def from_configmanager(cls, cm):
+        workspace_dir = os.path.join(cm.get_config_dir(), "workspace")
+        libs_dir = os.path.join(cm.get_config_dir(), "libs")
+        kwargs = dict(wdir=workspace_dir, libdir=libs_dir,)
+        return cls(**kwargs)
+
     def __init__(self, wdir=None, libdir=None):
         self._wdir = None
         if wdir is None:
@@ -128,6 +144,11 @@ class CliWorkspace:
         self._lib_dir = libdir
 
     def clean(self):
+        logger.debug(
+            "[{}] | removing dir tree starting at {} .... ".format(
+                sys._getframe().f_code.co_name, self._wdir
+            )
+        )
         shutil.rmtree(self._wdir)
         self.set_dir(self._wdir)
 
@@ -141,6 +162,11 @@ class CliWorkspace:
         old_workspace = self._wdir
         self._wdir = d
         if not d == old_workspace and old_workspace is not None:
+            logger.debug(
+                "[{}] | copying contents from {} to {} .... ".format(
+                    sys._getframe().f_code.co_name, old_workspace, self._wdir
+                )
+            )
             self.copy_contents(old_workspace)
 
     def copy_libs(self):

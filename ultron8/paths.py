@@ -79,6 +79,14 @@ logger = logging.getLogger(__name__)
 #     # def template_path(self):
 #     #     return self.base_path_dir / 'template'
 
+# SOURCE:  https://realpython.com/python-pathlib/
+def tree(directory):
+    print(f"+ {directory}")
+    for path in sorted(directory.rglob("*")):
+        depth = len(path.relative_to(directory).parts)
+        spacer = "    " * depth
+        print(f"{spacer}+ {path.name}")
+
 
 def is_readable_dir(path):
     """Check whether a path references a readable directory."""
