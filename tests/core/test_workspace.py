@@ -54,12 +54,6 @@ class TestCliWorkspace(object):
         full_file_name = "directorythatdoesnotexist"
         path = os.path.join(fake_dir, full_file_name)
 
-        # mock
-        # mock_os_access = mocker.MagicMock(name="mock_os_access")
-
-        # # patch
-        # mocker.patch.object(ultron8.paths.os, "access", mock_os_access)
-
         mock_is_readable_dir = mocker.patch.object(
             workspace, "is_readable_dir", return_value={"result": False}, autospec=True,
         )
@@ -86,12 +80,6 @@ class TestCliWorkspace(object):
         full_file_name = "smart.yaml"
         path = os.path.join(fake_dir, "ultron8")
         full_path = os.path.join(path, full_file_name)
-
-        # mock
-        # mock_os_access = mocker.MagicMock(name="mock_os_access")
-
-        # # patch
-        # mocker.patch.object(ultron8.paths.os, "access", mock_os_access)
 
         mock_is_readable_dir = mocker.patch.object(
             workspace, "is_readable_dir", return_value={"result": False}, autospec=True,
