@@ -120,6 +120,139 @@ class TestCliWorkspace(object):
         finally:
             shutil.rmtree(base, ignore_errors=True)
 
+    def test_instance_cliworkspace(self, mocker, monkeypatch):
+        # create fake config directory
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "smart.yaml"
+        path = os.path.join(fake_dir, "ultron8")
+        # full_path = os.path.join(path, full_file_name)
+
+        # mock_is_readable_dir = mocker.patch.object(
+        #     workspace, "is_readable_dir", return_value={"result": False}, autospec=True,
+        # )
+        # mock_is_readable_file = mocker.patch.object(
+        #     workspace,
+        #     "is_readable_file",
+        #     return_value={"result": False},
+        #     autospec=True,
+        # )
+
+        # mock_ensure_dir_exists = mocker.patch.object(
+        #     workspace, "ensure_dir_exists", autospec=True,
+        # )
+
+        # mock_mkdir_if_dne = mocker.patch.object(
+        #     workspace, "mkdir_if_dne", autospec=True,
+        # )
+
+        # mock_config_manager = mocker.patch.object(
+        #     workspace, "ConfigManager", autospec=True,
+        # )
+
+        mock_app_home = mocker.patch.object(
+            workspace,
+            "app_home",
+            return_value=os.path.join(fake_dir, "ultron8"),
+            autospec=True,
+        )
+
+        mock_tree = mocker.patch.object(workspace, "tree", autospec=True,)
+
+        # mock_workspace_home = mocker.patch.object(
+        #     workspace,
+        #     "workspace_home",
+        #     return_value=os.path.join(fake_dir, "ultron8", workspace),
+        #     autospec=True,
+        # )
+
+        # create fake fixture data to be returned as list(<fake_dir>)
+        default_path = os.path.abspath(os.path.expanduser(fake_dir))
+        expected_paths = []
+        expected_paths.append(default_path)
+
+        # temporarily patch environment to include fake_dir
+        monkeypatch.setenv("ULTRON8DIR", fake_dir)
+        mocker.patch.object(
+            workspace, "config_dirs", return_value=expected_paths, autospec=True,
+        )
+
+        try:
+            w = workspace.CliWorkspace()
+            assert w._wdir is None
+            assert w._lib_dir is None
+            assert w._template_dir is None
+            assert str(type(w.api)) == "<class 'pathlib.PosixPath'>"
+            assert w._root == os.path.join(fake_dir, "ultron8")
+            assert not w._setup
+            assert w._default_clusters() == "{}/ultron8/clusters".format(fake_dir)
+            assert w._default_templates() == "{}/ultron8/templates".format(fake_dir)
+            assert w._default_workspace() == "{}/ultron8/workspace".format(fake_dir)
+            assert w._default_libdir() == "{}/ultron8/libs".format(fake_dir)
+            assert w.build_whitelist_dirs() == {
+                # "root": w.api,
+                "workspace": w.api.joinpath("workspace"),
+                "templates": w.api.joinpath("templates"),
+                "libs": w.api.joinpath("libs"),
+            }
+
+            w.configure()
+            assert w._wdir == "{}/ultron8/workspace".format(fake_dir)
+            assert w._lib_dir == "{}/ultron8/libs".format(fake_dir)
+            assert w._template_dir == "{}/ultron8/templates".format(fake_dir)
+
+            # since we did not call with .verify(create=True), none of these should exist at the moment.
+            checked = w.check()
+            for i in checked:
+                assert not i["value"]
+
+            w.verify(create=True)
+            w.tree()
+
+            mock_tree.assert_called_once_with(w.api.cwd())
+
+        finally:
+            # os.unlink(path)
+            shutil.rmtree(base, ignore_errors=True)
+
+        # TODO: the following need to be mocked because of copy_contents()
+        # TODO: mock - shutil.copy
+        # TODO: mock - os.listdir
+        # TODO: mock - os.path.isfile(source)
+        # TODO: mock - os.path.isdir(source)
+
+        # # run test
+        # try:
+        #     workspace.prep_default_config()
+
+        #     # tests
+        #     mock_config_manager.assert_called_once_with()
+        #     mock_app_home.assert_called_once_with()
+        #     mock_is_readable_file.assert_called_once_with(full_path)
+        #     mock_ensure_dir_exists.assert_called_once_with(path)
+        #     mock_is_readable_dir.assert_called_once_with(path)
+
+        # finally:
+        #     shutil.rmtree(base, ignore_errors=True)
+
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+    # TODO: Finish up testing for workspace tomorrow
+
     # def test_app_home(self, mocker):
     #     pass
     #     path = "/opt/ultron8/fakefile.log"
