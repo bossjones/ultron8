@@ -303,7 +303,9 @@ class ConfigManager(object):
     def get_cfg_file_path(self):
         """Return config file full path
         """
-        return os.path.join(self.get_config_dir(), self.get_filename())
+        base = self.get_config_dir()
+        fname = self.get_filename()
+        return os.path.join(base, fname)
 
     def save(self):
         """Save modified config to disk.

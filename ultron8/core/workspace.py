@@ -150,6 +150,8 @@ def prep_default_config():
             )
         )
         ensure_dir_exists(home)
+
+    # HOTFIX: config file path needs return full path to config every single time, this needs to be fixed now
     default_cfg = cm.get_cfg_file_path()
 
     res = is_readable_file(default_cfg)

@@ -76,9 +76,16 @@ class TestCliWorkspace(object):
     def test_prep_default_config(self, mocker, monkeypatch):
         # create fake config directory
         base = tempfile.mkdtemp()
-        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        # DISABLED: # fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        # DISABLED: # full_file_name = "smart.yaml"
+        # DISABLED: # path = os.path.join(fake_dir, "ultron8")
+        # DISABLED: # full_path = os.path.join(path, full_file_name)
+        fake_dir_root = tempfile.mkdtemp(prefix="config", dir=base)
+        fake_dir = os.path.join(
+            fake_dir_root, "ultron8"
+        )  # eg. /home/developer/.config/ultron8
         full_file_name = "smart.yaml"
-        path = os.path.join(fake_dir, "ultron8")
+        path = fake_dir
         full_path = os.path.join(path, full_file_name)
 
         mock_is_readable_dir = mocker.patch.object(
@@ -91,19 +98,25 @@ class TestCliWorkspace(object):
             autospec=True,
         )
 
-        mock_ensure_dir_exists = mocker.patch.object(
-            workspace, "ensure_dir_exists", autospec=True,
-        )
+        # mock_ensure_dir_exists = mocker.patch.object(
+        #     workspace, "ensure_dir_exists", autospec=True,
+        # )
 
         mock_config_manager = mocker.patch.object(
             workspace, "ConfigManager", autospec=True,
         )
 
+        m_cm = mock_config_manager()
+        m_cm.get_cfg_file_path.return_value = full_path
+
+        # mock_config_manager.get_cfg_file_path.return_value = fake_dir
+
+        # mock_config_manager_cfg_file_path = mocker.patch.object(
+        #     workspace.ConfigManager, "get_cfg_file_path", return_value=fake_dir
+        # )
+
         mock_app_home = mocker.patch.object(
-            workspace,
-            "app_home",
-            return_value=os.path.join(fake_dir, "ultron8"),
-            autospec=True,
+            workspace, "app_home", return_value=os.path.join(fake_dir), autospec=True,
         )
 
         # run test
@@ -111,11 +124,15 @@ class TestCliWorkspace(object):
             workspace.prep_default_config()
 
             # tests
-            mock_config_manager.assert_called_once_with()
+            # mock_config_manager.get_cfg_file_path.assert_called_once_with()
             mock_app_home.assert_called_once_with()
-            mock_is_readable_file.assert_called_once_with(full_path)
-            mock_ensure_dir_exists.assert_called_once_with(path)
-            mock_is_readable_dir.assert_called_once_with(path)
+            mock_is_readable_file.assert_called_once_with(
+                full_path
+            )  # eg. /home/developer/.config/ultron8/smart.yaml
+            # mock_ensure_dir_exists.assert_called_once_with(fake_dir)  # eg. /home/developer/.config/ultron8/
+            mock_is_readable_dir.assert_called_once_with(
+                fake_dir
+            )  # eg. /home/developer/.config/ultron8/
 
         finally:
             shutil.rmtree(base, ignore_errors=True)
@@ -158,10 +175,7 @@ class TestCliWorkspace(object):
         # )
 
         mock_app_home = mocker.patch.object(
-            workspace,
-            "app_home",
-            return_value=os.path.join(fake_dir, "ultron8"),
-            autospec=True,
+            workspace, "app_home", return_value=fake_dir, autospec=True,
         )
 
         mock_tree = mocker.patch.object(workspace, "tree", autospec=True)
@@ -240,16 +254,20 @@ class TestCliWorkspace(object):
     def test_instance_cliworkspace_with_setup(self, mocker, monkeypatch):
         # create fake config directory
         base = tempfile.mkdtemp()
-        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        # DISABLED: # fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        # DISABLED: # full_file_name = "smart.yaml"
+        # DISABLED: # path = os.path.join(fake_dir, "ultron8")
+        # DISABLED: # # full_path = os.path.join(path, full_file_name)
+
+        fake_dir_root = tempfile.mkdtemp(prefix="config", dir=base)
+        fake_dir = os.path.join(
+            fake_dir_root, "ultron8"
+        )  # eg. /home/developer/.config/ultron8
         full_file_name = "smart.yaml"
-        path = os.path.join(fake_dir, "ultron8")
-        # full_path = os.path.join(path, full_file_name)
+        path = os.path.join(fake_dir, full_file_name)
 
         mock_app_home = mocker.patch.object(
-            workspace,
-            "app_home",
-            return_value=os.path.join(fake_dir, "ultron8"),
-            autospec=True,
+            workspace, "app_home", return_value=fake_dir, autospec=True,
         )
 
         mock_tree = mocker.patch.object(workspace, "tree", autospec=True)

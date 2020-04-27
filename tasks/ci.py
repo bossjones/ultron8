@@ -294,11 +294,11 @@ def editable(ctx, loc="local"):
         call(verify_python_version, loc="local"),
         call(pre_start, loc="local"),
         call(alembic_upgrade, loc="local"),
-        call(pytest, loc="local", configonly=True),
+        # call(pytest, loc="local", configonly=True),
         # call(pytest, loc="local", settingsonly=True),
         # call(pytest, loc="local", pathsonly=True),
         # call(pytest, loc="local", workspaceonly=True),
-        # call(pytest, loc="local"),
+        call(pytest, loc="local"),
     ],
     incrementable=["verbose"],
 )
