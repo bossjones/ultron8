@@ -248,6 +248,29 @@ def view_coverage(ctx, loc="local"):
     ctx.run(_cmd)
 
 
+@task(
+    incrementable=["verbose"],
+    aliases=["swagger", "openapi", "view_openapi", "view_swagger"],
+)
+def view_api_docs(ctx, loc="local"):
+    """
+    Open api swagger docs inside of browser
+    Usage: inv ci.view-api-docs
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    _cmd = r"./script/open-browser.py http://localhost:11267/docs"
+
+    ctx.run(_cmd)
+
+
 @task(incrementable=["verbose"])
 def alembic_upgrade(ctx, loc="local"):
     """
