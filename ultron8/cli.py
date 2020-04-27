@@ -99,7 +99,7 @@ def cli(ctx, working_dir: str, config_dir: str, debug: bool, verbose: int):
     ctx.obj["debug"] = debug
     ctx.obj["cfg_file"] = prep_default_config()
     ctx.obj["verbose"] = verbose
-    ctx.obj["workspace"] = CliWorkspace()
+    ctx.obj["workspace"] = CliWorkspace(setup=True)
 
 
 # # SOURCE: https://kite.com/blog/python/python-command-line-click-tutorial/

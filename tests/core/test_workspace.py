@@ -230,7 +230,7 @@ class TestCliWorkspace(object):
             w.verify(create=True)
             w.tree()
 
-            mock_tree.assert_called_once_with(w.api.cwd())
+            mock_tree.assert_called_once_with(w.api)
 
             # This time eveything should exist
             checked = w.check()
