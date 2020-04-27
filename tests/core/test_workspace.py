@@ -157,7 +157,7 @@ class TestCliWorkspace(object):
             autospec=True,
         )
 
-        mock_tree = mocker.patch.object(workspace, "tree", autospec=True,)
+        mock_tree = mocker.patch.object(workspace, "tree", autospec=True)
 
         # mock_workspace_home = mocker.patch.object(
         #     workspace,
@@ -211,8 +211,58 @@ class TestCliWorkspace(object):
 
             mock_tree.assert_called_once_with(w.api.cwd())
 
+            # This time eveything should exist
+            checked = w.check()
+            for i in checked:
+                assert i["value"]
+
+            assert not w.verify(create=True, ignore_errors=True)
+
+            # finally, since we already tested everything one by one, let's just call setup
+
+            assert not w._setup  # False
+
+            w.setup()
+
+            assert w._setup  # True
+
         finally:
             # os.unlink(path)
+            shutil.rmtree(base, ignore_errors=True)
+
+    def test_instance_cliworkspace_with_setup(self, mocker, monkeypatch):
+        # create fake config directory
+        base = tempfile.mkdtemp()
+        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        full_file_name = "smart.yaml"
+        path = os.path.join(fake_dir, "ultron8")
+        # full_path = os.path.join(path, full_file_name)
+
+        mock_app_home = mocker.patch.object(
+            workspace,
+            "app_home",
+            return_value=os.path.join(fake_dir, "ultron8"),
+            autospec=True,
+        )
+
+        mock_tree = mocker.patch.object(workspace, "tree", autospec=True)
+
+        # create fake fixture data to be returned as list(<fake_dir>)
+        default_path = os.path.abspath(os.path.expanduser(fake_dir))
+        expected_paths = []
+        expected_paths.append(default_path)
+
+        # temporarily patch environment to include fake_dir
+        monkeypatch.setenv("ULTRON8DIR", fake_dir)
+        mocker.patch.object(
+            workspace, "config_dirs", return_value=expected_paths, autospec=True,
+        )
+
+        try:
+            w = workspace.CliWorkspace(setup=True)
+            assert w._setup  # True
+
+        finally:
             shutil.rmtree(base, ignore_errors=True)
 
         # TODO: the following need to be mocked because of copy_contents()
