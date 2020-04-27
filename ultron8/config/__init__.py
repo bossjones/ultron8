@@ -300,6 +300,11 @@ class ConfigManager(object):
         """
         return self.api.config_filename
 
+    def get_cfg_file_path(self):
+        """Return config file full path
+        """
+        return os.path.join(self.get_config_dir(), self.get_filename())
+
     def save(self):
         """Save modified config to disk.
 
@@ -307,12 +312,13 @@ class ConfigManager(object):
             ConfigReadError: [description]
         """
         sdata = self.api.dump()
-        filename = self.get_filename()
+        # filename = self.get_filename()
+        path_to_file = self.get_cfg_file_path()
         try:
-            with open(filename, "w") as outfile:
+            with open(path_to_file, "w") as outfile:
                 outfile.write(sdata)
         except (IOError, yaml.error.YAMLError) as exc:
-            raise ConfigReadError(filename, exc)
+            raise ConfigReadError(path_to_file, exc)
 
     def __repr__(self):
         return "<{}: {}/{}>".format(

@@ -18,6 +18,7 @@ import os
 import platform
 from collections import abc, OrderedDict
 import re
+from pathlib import Path
 
 import pkg_resources
 import yaml
@@ -807,6 +808,17 @@ class BaseConfiguration(RootView):
         if defaults:
             self._add_default_source()
 
+    def check_path_for_correct_subdir(self, path):
+        p = Path(path).resolve()
+        # In [9]: p.parts
+        # Out[9]: ('/', 'Users', 'malcolm', '.config')
+        if (
+            self.appname in p.parts[-1]
+        ):  # if ultron8 is the name of the top level config folder
+            return True
+        else:
+            return False
+
     # TODO: Need to make this interchangeable so that we can use this class to load yaml files for packs, actions, etc etc
     def config_dir(self):
         """Get the path to the user configuration directory. The
@@ -821,8 +833,13 @@ class BaseConfiguration(RootView):
         """
         # If environment variable is set, use it.
         if self._env_var in os.environ:
+            # appdir = os.path.join(os.environ[self._env_var], self.appname)
             appdir = os.environ[self._env_var]
             appdir = os.path.abspath(os.path.expanduser(appdir))
+            # # now check to see if ultron8 is in the path name, if not, append it
+            # if not self.check_path_for_correct_subdir(appdir):
+            #     appdir = os.path.join(appdir, self.appname)
+
             if os.path.isfile(appdir):
                 raise ConfigError("{0} must be a directory".format(self._env_var))
 

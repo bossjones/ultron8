@@ -4,6 +4,7 @@ import logging
 import os
 import tempfile
 import shutil
+from pathlib import Path
 from collections import ChainMap
 import copy
 from copy import deepcopy
@@ -374,7 +375,10 @@ class TestConfigManager:
     def test_basics(self, mocker, monkeypatch):
         # create fake config directory
         base = tempfile.mkdtemp()
-        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        fake_dir_root = tempfile.mkdtemp(prefix="config", dir=base)
+        fake_dir = os.path.join(
+            fake_dir_root, "ultron8"
+        )  # eg. /home/developer/.config/ultron8
         full_file_name = "smart.yaml"
         path = os.path.join(fake_dir, full_file_name)
 
@@ -409,6 +413,8 @@ clusters:
 """
 
         try:
+            #  need to make dir first
+            os.makedirs(fake_dir)
             with open(path, "wt") as f:
                 f.write(example_data)
 
@@ -431,9 +437,10 @@ clusters:
             assert (
                 cm.get_config_dir() == fake_dir
             )  # eg. /Users/bossjones/.config/ultron8
+            assert cm.get_filename() == "smart.yaml"  # eg. smart.yaml
             assert (
-                cm.get_filename() == "smart.yaml"
-            )  # eg. /Users/bossjones/.config/ultron8
+                cm.get_cfg_file_path() == path
+            )  # eg. /Users/bossjones/.config/ultron8/smart.yaml
             assert str(repr(cm)) == "<{}: {}/{}>".format(
                 cm.__class__.__name__, cm.get_config_dir(), cm.get_filename()
             )
@@ -446,6 +453,8 @@ clusters:
             cm.api.read()
 
             assert cm.data.bossjones == 1911
+
+            assert Path(cm.get_cfg_file_path()).resolve().is_file()
 
         finally:
             os.unlink(path)

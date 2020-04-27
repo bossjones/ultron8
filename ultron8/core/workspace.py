@@ -150,7 +150,7 @@ def prep_default_config():
             )
         )
         ensure_dir_exists(home)
-    default_cfg = os.path.join(home, CONFIG_FILENAME)
+    default_cfg = cm.get_cfg_file_path()
 
     res = is_readable_file(default_cfg)
 
@@ -160,10 +160,12 @@ def prep_default_config():
                 sys._getframe().f_code.co_name, default_cfg
             )
         )
+        # write empty file first
+        file = open(default_cfg, "w")
+        file.write("{}")
+        file.close()
+
         cm.save()
-        # file = open(default_cfg, "w")
-        # file.write("{}")
-        # file.close()
     return default_cfg
 
 
@@ -228,7 +230,9 @@ class CliWorkspace:
     #     kwargs = dict(wdir=workspace_dir, libdir=libs_dir,)
     #     return cls(**kwargs)
 
-    def __init__(self, wdir=None, libdir=None, setup=False):
+    def __init__(
+        self, wdir=None, libdir=None, setup=False, ignore_errors=False, create=True
+    ):
         self._wdir = wdir
         self._lib_dir = libdir
         self._template_dir = None
@@ -239,7 +243,7 @@ class CliWorkspace:
         self._setup = False
 
         if setup:
-            self.setup()
+            self.setup(ignore_errors, create)
 
     def setup(self, ignore_errors=False, create=True):
         self.configure()
@@ -261,6 +265,9 @@ class CliWorkspace:
     def tree(self):
         tree(self.api.cwd())
 
+    def create_default_config(self):
+        prep_default_config()
+
     # def setup(self, wdir=None, libdir=None):
     #     self._wdir = None
     #     if wdir is None:
@@ -276,9 +283,11 @@ class CliWorkspace:
         list_to_verify = self.check()
         if create:
             for i in list_to_verify:
-                temp_dir = os.path.join(self._root, i["key"])
-                mkdir_if_dne(temp_dir)
+                if i["kind"] is "d":
+                    temp_dir = os.path.join(self._root, i["key"])
+                    mkdir_if_dne(temp_dir)
             # Re-Run check to get latest values
+            self.create_default_config()
             list_to_verify = self.check()
 
         if ignore_errors:
@@ -297,18 +306,26 @@ class CliWorkspace:
         whitelist_dirs["libs"] = self.api.joinpath("libs")
         return whitelist_dirs
 
+    def build_whitelist_files(self):
+        whitelist_files = dict()
+        whitelist_files["cfg_file"] = self.api.joinpath("smart.yaml")
+        return whitelist_files
+
     def check(self):
         whitelist_dirs = self.build_whitelist_dirs()
         checked = []
         for k, v in whitelist_dirs.items():
-            checked.append({"key": str(k), "value": self._check_dir(v)})
+            checked.append({"key": str(k), "value": self._check_dir(v), "kind": "d"})
+        whitelist_files = self.build_whitelist_files()
+        for k, v in whitelist_files.items():
+            checked.append({"key": str(k), "value": self._check_file(v), "kind": "f"})
         return checked
 
     def _check_dir(self, p):
         return p.is_dir()
 
-    # def _check_file(self, f):
-    #     return f.is_file()
+    def _check_file(self, f):
+        return f.is_file()
 
     # def clean(self):
     #     logger.debug(

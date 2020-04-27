@@ -123,10 +123,17 @@ class TestCliWorkspace(object):
     def test_instance_cliworkspace(self, mocker, monkeypatch):
         # create fake config directory
         base = tempfile.mkdtemp()
-        fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        # DISABLED: # fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
+        # DISABLED: # full_file_name = "smart.yaml"
+        # DISABLED: # path = os.path.join(fake_dir, "ultron8")
+        # DISABLED: # # full_path = os.path.join(path, full_file_name)
+
+        fake_dir_root = tempfile.mkdtemp(prefix="config", dir=base)
+        fake_dir = os.path.join(
+            fake_dir_root, "ultron8"
+        )  # eg. /home/developer/.config/ultron8
         full_file_name = "smart.yaml"
-        path = os.path.join(fake_dir, "ultron8")
-        # full_path = os.path.join(path, full_file_name)
+        path = os.path.join(fake_dir, full_file_name)
 
         # mock_is_readable_dir = mocker.patch.object(
         #     workspace, "is_readable_dir", return_value={"result": False}, autospec=True,
@@ -183,12 +190,12 @@ class TestCliWorkspace(object):
             assert w._lib_dir is None
             assert w._template_dir is None
             assert str(type(w.api)) == "<class 'pathlib.PosixPath'>"
-            assert w._root == os.path.join(fake_dir, "ultron8")
+            assert w._root == fake_dir
             assert not w._setup
-            assert w._default_clusters() == "{}/ultron8/clusters".format(fake_dir)
-            assert w._default_templates() == "{}/ultron8/templates".format(fake_dir)
-            assert w._default_workspace() == "{}/ultron8/workspace".format(fake_dir)
-            assert w._default_libdir() == "{}/ultron8/libs".format(fake_dir)
+            assert w._default_clusters() == "{}/clusters".format(fake_dir)
+            assert w._default_templates() == "{}/templates".format(fake_dir)
+            assert w._default_workspace() == "{}/workspace".format(fake_dir)
+            assert w._default_libdir() == "{}/libs".format(fake_dir)
             assert w.build_whitelist_dirs() == {
                 # "root": w.api,
                 "workspace": w.api.joinpath("workspace"),
@@ -197,9 +204,9 @@ class TestCliWorkspace(object):
             }
 
             w.configure()
-            assert w._wdir == "{}/ultron8/workspace".format(fake_dir)
-            assert w._lib_dir == "{}/ultron8/libs".format(fake_dir)
-            assert w._template_dir == "{}/ultron8/templates".format(fake_dir)
+            assert w._wdir == "{}/workspace".format(fake_dir)
+            assert w._lib_dir == "{}/libs".format(fake_dir)
+            assert w._template_dir == "{}/templates".format(fake_dir)
 
             # since we did not call with .verify(create=True), none of these should exist at the moment.
             checked = w.check()
@@ -227,7 +234,7 @@ class TestCliWorkspace(object):
             assert w._setup  # True
 
         finally:
-            # os.unlink(path)
+            os.unlink(path)
             shutil.rmtree(base, ignore_errors=True)
 
     def test_instance_cliworkspace_with_setup(self, mocker, monkeypatch):
@@ -262,7 +269,10 @@ class TestCliWorkspace(object):
             w = workspace.CliWorkspace(setup=True)
             assert w._setup  # True
 
+            w.create_default_config()
+
         finally:
+            # os.unlink(path)
             shutil.rmtree(base, ignore_errors=True)
 
         # TODO: the following need to be mocked because of copy_contents()
