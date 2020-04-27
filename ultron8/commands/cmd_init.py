@@ -25,3 +25,5 @@ def cli(ctx):
         set_trace()
 
     logger.debug("init subcommand called from cli")
+
+    ctx.obj["workspace"].setup()

@@ -12,6 +12,9 @@
 
 """All Config exceptions."""
 
+import yaml
+
+YAML_TAB_PROBLEM = "found character '\\t' that cannot start any token"
 
 # configuration errors
 class ConfigError(Exception):
@@ -36,3 +39,26 @@ class ConfigTypeError(ConfigValueError):
 class ConfigTemplateError(ConfigError):
     """Base class for exceptions raised because of an invalid template.
     """
+
+
+class ConfigReadError(ConfigError):
+    """A configuration file could not be read."""
+
+    def __init__(self, filename, reason=None):
+        self.filename = filename
+        self.reason = reason
+
+        message = "file {0} could not be read".format(filename)
+        if (
+            isinstance(reason, yaml.scanner.ScannerError)
+            and reason.problem == YAML_TAB_PROBLEM
+        ):
+            # Special-case error message for tab indentation in YAML markup.
+            message += ": found tab character at line {0}, column {1}".format(
+                reason.problem_mark.line + 1, reason.problem_mark.column + 1,
+            )
+        elif reason:
+            # Generic error message uses exception's message.
+            message += ": {0}".format(reason)
+
+        super().__init__(message)
