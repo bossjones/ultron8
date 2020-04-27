@@ -25,6 +25,7 @@ def cli(ctx):
         set_trace()
 
     logger.debug("workspace subcommand called from cli")
+    ctx.obj["workspace"].setup()
 
 
 @cli.command("tree")
@@ -38,6 +39,26 @@ def tree(ctx):
     logger.debug("tree show subcommand")
 
     ctx.obj["workspace"].tree()
+
+
+@cli.command("info")
+@click.pass_context
+def info(ctx):
+    """Info on workspace"""
+    if do_get_flag("cli.flags.debug"):
+        click.echo("Debug mode initiated")
+        set_trace()
+
+    logger.debug("workspace infosubcommand")
+
+    click.echo("--------------------------------")
+    click.echo("-------[Workspace Info]---------")
+    click.echo("--------------------------------")
+    click.echo("Root: {}".format(ctx.obj["workspace"]._root))
+    click.echo("Api: {}".format(ctx.obj["workspace"].api))
+    click.echo("Workdir: {}".format(ctx.obj["workspace"]._wdir))
+    click.echo("Libdir: {}".format(ctx.obj["workspace"]._lib_dir))
+    click.echo("Templatedir: {}".format(ctx.obj["workspace"]._template_dir))
 
 
 # @click.group("cluster", short_help="Manage your ultron8 clusters")
