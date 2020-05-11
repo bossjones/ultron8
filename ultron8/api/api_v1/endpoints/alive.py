@@ -6,4 +6,4 @@ router = APIRouter()
 
 @router.get("/alive")
 async def alive() -> UJSONResponse:
-    return UJSONResponse({"yes": ":)"})
+    return UJSONResponse({"status": "yes"})

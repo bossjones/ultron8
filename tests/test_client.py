@@ -104,6 +104,16 @@ class TestUltronAPI:
 
         assert r == content
 
+    def test_get_alive(self, mocker, username_and_password_first_superuser_fixtures):
+        username, password = username_and_password_first_superuser_fixtures
+
+        u = client.UltronAPI()
+        r = u._get_alive()
+
+        content = {"status": "yes"}
+
+        assert r == content
+
     # def test_get_version_sideeffect_retry_requests_not_200(self, mocker, username_and_password_first_superuser_fixtures):
     #     username, password = username_and_password_first_superuser_fixtures
 

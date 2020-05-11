@@ -1,9 +1,10 @@
+# pylint: disable=logging-not-lazy
+import os
 import logging
-import requests
 import time
+import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry  # pylint: disable=import-error
-import os
 
 from ultron8.api import settings
 
@@ -91,6 +92,20 @@ class UltronAPI:
         if r.status_code != 200:
             logger.debug(f"_get_version returned {r.status_code} {r.json()} {url}")
             raise AssertionError("Failed to get Version")
+
+        return r.json()
+
+    def _get_alive(self):
+        url = f"{self.endpoints['alive']}"
+        logger.debug("Ultron8 get alive URL : " + url)
+        header_debug = self._headers()
+        logger.debug("Token preview:" + header_debug["Authorization"][-4:])
+        r = self._retry_requests(url, headers=self._headers())
+        if r.text is not None:
+            logger.debug(r.text)
+        if r.status_code != 200:
+            logger.debug(f"_get_alive returned {r.status_code} {r.json()} {url}")
+            raise AssertionError("Failed to get alive")
 
         return r.json()
 

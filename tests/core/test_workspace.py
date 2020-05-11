@@ -293,44 +293,6 @@ class TestCliWorkspace(object):
             # os.unlink(path)
             shutil.rmtree(base, ignore_errors=True)
 
-        # TODO: the following need to be mocked because of copy_contents()
-        # TODO: mock - shutil.copy
-        # TODO: mock - os.listdir
-        # TODO: mock - os.path.isfile(source)
-        # TODO: mock - os.path.isdir(source)
-
-        # # run test
-        # try:
-        #     workspace.prep_default_config()
-
-        #     # tests
-        #     mock_config_manager.assert_called_once_with()
-        #     mock_app_home.assert_called_once_with()
-        #     mock_is_readable_file.assert_called_once_with(full_path)
-        #     mock_ensure_dir_exists.assert_called_once_with(path)
-        #     mock_is_readable_dir.assert_called_once_with(path)
-
-        # finally:
-        #     shutil.rmtree(base, ignore_errors=True)
-
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-
     # def test_app_home(self, mocker):
     #     pass
     #     path = "/opt/ultron8/fakefile.log"

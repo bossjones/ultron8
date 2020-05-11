@@ -17,6 +17,7 @@ from ultron8.core.files import load_json_file
 from ultron8.config.manager import NullConfig, ConfigProxy
 from ultron8.config import do_set_flag
 from ultron8.config import ConfigManager
+from ultron8.client import UltronAPI
 
 logger = getLogger(__name__)
 
@@ -100,6 +101,8 @@ def cli(ctx, working_dir: str, config_dir: str, debug: bool, verbose: int):
     ctx.obj["cfg_file"] = prep_default_config()
     ctx.obj["verbose"] = verbose
     ctx.obj["workspace"] = CliWorkspace(setup=True)
+    # TODO: We need a get_client() function that can programtically pull the client config, verify if we have a token saved locally that is valid, pull that or revalidate it, then use it for api calls.
+    ctx.obj["client"] = UltronAPI()
 
 
 # # SOURCE: https://kite.com/blog/python/python-command-line-click-tutorial/
