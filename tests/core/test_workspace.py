@@ -230,7 +230,7 @@ class TestCliWorkspace(object):
             w.verify(create=True)
             w.tree()
 
-            mock_tree.assert_called_once_with(w.api.cwd())
+            mock_tree.assert_called_once_with(w.api)
 
             # This time eveything should exist
             checked = w.check()
@@ -292,44 +292,6 @@ class TestCliWorkspace(object):
         finally:
             # os.unlink(path)
             shutil.rmtree(base, ignore_errors=True)
-
-        # TODO: the following need to be mocked because of copy_contents()
-        # TODO: mock - shutil.copy
-        # TODO: mock - os.listdir
-        # TODO: mock - os.path.isfile(source)
-        # TODO: mock - os.path.isdir(source)
-
-        # # run test
-        # try:
-        #     workspace.prep_default_config()
-
-        #     # tests
-        #     mock_config_manager.assert_called_once_with()
-        #     mock_app_home.assert_called_once_with()
-        #     mock_is_readable_file.assert_called_once_with(full_path)
-        #     mock_ensure_dir_exists.assert_called_once_with(path)
-        #     mock_is_readable_dir.assert_called_once_with(path)
-
-        # finally:
-        #     shutil.rmtree(base, ignore_errors=True)
-
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
-    # TODO: Finish up testing for workspace tomorrow
 
     # def test_app_home(self, mocker):
     #     pass

@@ -187,6 +187,7 @@ def pytest(
     settingsonly=False,
     pathsonly=False,
     workspaceonly=False,
+    clientonly=False,
 ):
     """
     Run pytest
@@ -220,6 +221,9 @@ def pytest(
     if workspaceonly:
         _cmd += r" -m workspaceonly "
 
+    if clientonly:
+        _cmd += r" -m clientonly "
+
     if pdb:
         _cmd += r" --pdb "
 
@@ -246,6 +250,51 @@ def view_coverage(ctx, loc="local"):
     _cmd = r"./script/open-browser.py file://${PWD}/htmlcov/index.html"
 
     ctx.run(_cmd)
+
+
+@task(
+    incrementable=["verbose"],
+    aliases=["swagger", "openapi", "view_openapi", "view_swagger"],
+)
+def view_api_docs(ctx, loc="local"):
+    """
+    Open api swagger docs inside of browser
+    Usage: inv ci.view-api-docs
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    _cmd = r"./script/open-browser.py http://localhost:11267/docs"
+
+    ctx.run(_cmd)
+
+
+@task(
+    incrementable=["verbose"],
+    pre=[call(view_api_docs, loc="local"), call(view_coverage, loc="local"),],
+)
+def browser(ctx, loc="local"):
+    """
+    Open api swagger docs inside of browser
+    Usage: inv ci.view-api-docs
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    msg = "Finished loading everything into browser".format(_cmd)
+    click.secho(msg, fg=COLOR_SUCCESS)
 
 
 @task(incrementable=["verbose"])
@@ -298,7 +347,8 @@ def editable(ctx, loc="local"):
         # call(pytest, loc="local", settingsonly=True),
         # call(pytest, loc="local", pathsonly=True),
         # call(pytest, loc="local", workspaceonly=True),
-        call(pytest, loc="local"),
+        call(pytest, loc="local", clientonly=True),
+        # call(pytest, loc="local"),
     ],
     incrementable=["verbose"],
 )

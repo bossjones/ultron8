@@ -132,7 +132,9 @@ app.add_middleware(starlette_prometheus.PrometheusMiddleware)
 
 app.add_route(f"{settings.API_V1_STR}/metrics", starlette_prometheus.metrics)
 
-app.include_router(log_endpoint.router, tags=["log"], prefix=f"{settings.API_V1_STR}")
+app.include_router(
+    log_endpoint.router, tags=["log"], prefix=f"{settings.API_V1_STR}/logs"
+)
 app.include_router(token.router, tags=["token"], prefix=f"{settings.API_V1_STR}")
 app.include_router(home.router, tags=["home"], prefix=f"{settings.API_V1_STR}")
 app.include_router(alive.router, tags=["alive"], prefix=f"{settings.API_V1_STR}")

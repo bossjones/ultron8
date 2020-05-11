@@ -119,7 +119,7 @@ class CliWorkspace:
             self._template_dir = self._default_templates()
 
     def tree(self):
-        tree(self.api.cwd())
+        tree(self.api)
 
     def create_default_config(self):
         prep_default_config()
