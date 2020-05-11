@@ -145,9 +145,12 @@ class UltronSession(requests.Session):
                 "User-Agent": "ultron8.client/{0}".format(__version__),
             }
         )
-        self.base_url = get_api_endpoint()
+        self.base_url = self.get_api_endpoint()
         self.two_factor_auth_cb = None
         self.request_counter = 0
+
+    def get_api_endpoint(self):
+        return get_api_endpoint()
 
     @property
     def timeout(self):

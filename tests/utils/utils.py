@@ -21,7 +21,7 @@ def get_server_api() -> str:
     return server_name
 
 
-def get_sueruser_jwt_request():
+def get_superuser_jwt_request():
     server_api = get_server_api()
     login_data = {
         "username": settings.FIRST_SUPERUSER,
@@ -34,7 +34,7 @@ def get_sueruser_jwt_request():
 
 
 def get_superuser_token_headers() -> Dict[str, str]:
-    r = get_sueruser_jwt_request()
+    r = get_superuser_jwt_request()
     tokens = r.json()
     a_token = tokens["access_token"]
     headers = {"Authorization": f"Bearer {a_token}"}

@@ -10,7 +10,7 @@ from starlette.testclient import TestClient
 from tests.utils.utils import get_server_api
 from tests.utils.utils import get_superuser_token_headers
 from tests.utils.utils import superuser_credentials
-from tests.utils.utils import get_sueruser_jwt_request
+from tests.utils.utils import get_superuser_jwt_request
 
 # from ultron8.api import settings
 # from ultron8.web import app
@@ -39,7 +39,7 @@ with betamax.Betamax.configure() as config:
 
     config.default_cassette_options["record_mode"] = record_mode
 
-    r = get_sueruser_jwt_request()
+    r = get_superuser_jwt_request()
     tokens = r.json()
     _access_token = tokens["access_token"]
 
