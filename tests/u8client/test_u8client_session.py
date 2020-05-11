@@ -3,6 +3,11 @@
 import logging
 import os
 
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
 import pytest
 
 # import pyconfig
@@ -338,34 +343,50 @@ class TestUltronSession:
         assert len(r.history) != 0
         assert request_mock.call_count == 2
 
-    # def test_token_auth(self):
-    #     """Test that token auth will work with a valid token"""
-    #     s = self.build_session()
-    #     s.token_auth("token goes here")
-    #     req = requests.Request("GET", "https://api.github.com/")
-    #     pr = s.prepare_request(req)
-    #     assert pr.headers["Authorization"] == "token token goes here"
+    def test_token_auth(self):
+        """Test that token auth will work with a valid token"""
+        s = self.build_session()
 
-    # def test_token_auth_disables_basic_auth(self):
-    #     """Test that using token auth removes the value of the auth attribute.
+        r = get_superuser_jwt_request()
+        tokens = r.json()
+        a_token = tokens["access_token"]
 
-    #     If `GitHubSession.auth` is set then it conflicts with the token value.
-    #     """
-    #     s = self.build_session()
-    #     s.auth = ("foo", "bar")
-    #     s.token_auth("token goes here")
-    #     assert s.auth != ("foo", "bar")
-    #     assert isinstance(s.auth, session.TokenAuth)
+        s.token_auth(a_token)
 
-    # def test_token_auth_does_not_use_falsey_values(self):
-    #     """Test that token auth will not authenticate with falsey values"""
-    #     bad_tokens = [None, ""]
-    #     req = requests.Request("GET", "https://api.github.com/")
-    #     for token in bad_tokens:
-    #         s = self.build_session()
-    #         s.token_auth(token)
-    #         pr = s.prepare_request(req)
-    #         assert "Authorization" not in pr.headers
+        # s.token_auth("token goes here")
+        req = requests.Request("GET", "http://localhost:11267/v1/users")
+        pr = s.prepare_request(req)
+        assert pr.headers["Authorization"] == "Bearer {}".format(a_token)
+
+    def test_token_auth_disables_basic_auth(
+        self, username_and_password_first_superuser_fixtures
+    ):
+        """Test that using token auth removes the value of the auth attribute.
+
+        If `GitHubSession.auth` is set then it conflicts with the token value.
+        """
+        username, password = username_and_password_first_superuser_fixtures
+
+        s = self.build_session()
+
+        r = get_superuser_jwt_request()
+        tokens = r.json()
+        a_token = tokens["access_token"]
+
+        s.auth = (username, password)
+        s.token_auth(a_token)
+        assert s.auth != (username, password)
+        assert isinstance(s.auth, session.TokenAuth)
+
+    def test_token_auth_does_not_use_falsey_values(self):
+        """Test that token auth will not authenticate with falsey values"""
+        bad_tokens = [None, ""]
+        req = requests.Request("GET", "http://localhost:11267/v1/users")
+        for token in bad_tokens:
+            s = self.build_session()
+            s.token_auth(token)
+            pr = s.prepare_request(req)
+            assert "Authorization" not in pr.headers
 
     # def test_token_auth_with_netrc_works(self, tmpdir):
     #     """
@@ -399,29 +420,29 @@ class TestUltronSession:
     #         auth_header = pr.headers["Authorization"]
     #         assert auth_header == "token {0}".format(token)
 
-    # def test_two_factor_auth_callback_handles_None(self):
-    #     s = self.build_session()
-    #     assert s.two_factor_auth_cb is None
-    #     s.two_factor_auth_callback(None)
-    #     assert s.two_factor_auth_cb is None
+    def test_two_factor_auth_callback_handles_None(self):
+        s = self.build_session()
+        assert s.two_factor_auth_cb is None
+        s.two_factor_auth_callback(None)
+        assert s.two_factor_auth_cb is None
 
-    # def test_two_factor_auth_callback_checks_for_Callable(self):
-    #     s = self.build_session()
-    #     assert s.two_factor_auth_cb is None
-    #     with pytest.raises(ValueError):
-    #         s.two_factor_auth_callback(1)
+    def test_two_factor_auth_callback_checks_for_Callable(self):
+        s = self.build_session()
+        assert s.two_factor_auth_cb is None
+        with pytest.raises(ValueError):
+            s.two_factor_auth_callback(1)
 
-    # def test_two_factor_auth_callback_accepts_a_Callable(self):
-    #     s = self.build_session()
-    #     assert s.two_factor_auth_cb is None
-    #     # You have to have a sense of humor ;)
+    def test_two_factor_auth_callback_accepts_a_Callable(self):
+        s = self.build_session()
+        assert s.two_factor_auth_cb is None
+        # You have to have a sense of humor ;)
 
-    #     def _not_so_anonymous(*args):
-    #         return "foo"
+        def _not_so_anonymous(*args):
+            return "foo"
 
-    #     not_so_anonymous = _not_so_anonymous
-    #     s.two_factor_auth_callback(not_so_anonymous)
-    #     assert s.two_factor_auth_cb is not_so_anonymous
+        not_so_anonymous = _not_so_anonymous
+        s.two_factor_auth_callback(not_so_anonymous)
+        assert s.two_factor_auth_cb is not_so_anonymous
 
     # def test_oauth2_auth(self):
     #     """Test that oauth2 authentication works
@@ -432,66 +453,74 @@ class TestUltronSession:
     #     with pytest.raises(NotImplementedError):
     #         s.oauth2_auth("Foo", "bar")
 
-    # def test_issubclass_of_requests_Session(self):
-    #     """Test that GitHubSession is a subclass of requests.Session"""
-    #     assert issubclass(session.UltronSession, requests.Session)
+    def test_issubclass_of_requests_Session(self):
+        """Test that GitHubSession is a subclass of requests.Session"""
+        assert issubclass(session.UltronSession, requests.Session)
 
-    # def test_can_use_temporary_basic_auth(self):
-    #     """Test that temporary_basic_auth resets old auth."""
-    #     s = self.build_session()
-    #     s.basic_auth("foo", "bar")
-    #     with s.temporary_basic_auth("temp", "pass"):
-    #         assert s.auth != session.BasicAuth("foo", "bar")
+    def test_can_use_temporary_basic_auth(
+        self, username_and_password_first_superuser_fixtures
+    ):
+        """Test that temporary_basic_auth resets old auth."""
+        username, password = username_and_password_first_superuser_fixtures
+        s = self.build_session()
+        s.basic_auth(username, password)
+        with s.temporary_basic_auth("temp", "pass"):
+            assert s.auth != session.BasicAuth(username, password)
 
-    #     assert s.auth == session.BasicAuth("foo", "bar")
+        assert s.auth == session.BasicAuth(username, password)
 
-    # def test_temporary_basic_auth_replaces_auth(self):
-    #     """Test that temporary_basic_auth sets the proper credentials."""
-    #     s = self.build_session()
-    #     s.basic_auth("foo", "bar")
-    #     with s.temporary_basic_auth("temp", "pass"):
-    #         assert s.auth == session.BasicAuth("temp", "pass")
+    def test_temporary_basic_auth_replaces_auth(
+        self, username_and_password_first_superuser_fixtures
+    ):
+        """Test that temporary_basic_auth sets the proper credentials."""
+        username, password = username_and_password_first_superuser_fixtures
+        s = self.build_session()
+        # s.basic_auth("foo", "bar")
+        s.basic_auth(username, password)
+        with s.temporary_basic_auth("temp", "pass"):
+            assert s.auth == session.BasicAuth("temp", "pass")
 
-    # def test_no_auth(self):
-    #     """Verify that no_auth removes existing authentication."""
-    #     s = self.build_session()
-    #     s.basic_auth("user", "password")
-    #     req = requests.Request("GET", "https://api.github.com/")
+    def test_no_auth(self, username_and_password_first_superuser_fixtures):
+        """Verify that no_auth removes existing authentication."""
+        username, password = username_and_password_first_superuser_fixtures
+        s = self.build_session()
+        s.basic_auth("user", "password")
+        req = requests.Request("GET", "http://localhost:11267/v1/users")
 
-    #     with s.no_auth():
-    #         pr = s.prepare_request(req)
-    #         assert "Authorization" not in pr.headers
-    #         assert s.auth is None
+        with s.no_auth():
+            pr = s.prepare_request(req)
+            assert "Authorization" not in pr.headers
+            assert s.auth is None
 
-    #     pr = s.prepare_request(req)
-    #     assert "Authorization" in pr.headers
-    #     assert s.auth == session.BasicAuth("user", "password")
+        pr = s.prepare_request(req)
+        assert "Authorization" in pr.headers
+        assert s.auth == session.BasicAuth("user", "password")
 
-    # def test_retrieve_client_credentials_when_set(self):
-    #     """Test that retrieve_client_credentials will return the credentials.
+    def test_retrieve_client_credentials_when_set(self):
+        """Test that retrieve_client_credentials will return the credentials.
 
-    #     We must assert that when set, this function will return them.
-    #     """
-    #     s = self.build_session()
-    #     s.params = {"client_id": "id", "client_secret": "secret"}
-    #     assert s.retrieve_client_credentials() == ("id", "secret")
+        We must assert that when set, this function will return them.
+        """
+        s = self.build_session()
+        s.params = {"client_id": "id", "client_secret": "secret"}
+        assert s.retrieve_client_credentials() == ("id", "secret")
 
-    # def test_retrieve_client_credentials_returns_none(self):
-    #     """Test that retrieve_client_credentials will return (None, None).
+    def test_retrieve_client_credentials_returns_none(self):
+        """Test that retrieve_client_credentials will return (None, None).
 
-    #     Namely, then the necessary parameters are set, it will not raise an
-    #     error.
-    #     """
-    #     s = self.build_session()
-    #     assert s.retrieve_client_credentials() == (None, None)
+        Namely, then the necessary parameters are set, it will not raise an
+        error.
+        """
+        s = self.build_session()
+        assert s.retrieve_client_credentials() == (None, None)
 
-    # def test_pickling(self):
-    #     s = self.build_session("https://api.github.com")
-    #     dumped = pickle.dumps(s, pickle.HIGHEST_PROTOCOL)
-    #     loaded = pickle.loads(dumped)
+    def test_pickling(self):
+        s = self.build_session("http://localhost:11267/v1/users")
+        dumped = pickle.dumps(s, pickle.HIGHEST_PROTOCOL)
+        loaded = pickle.loads(dumped)
 
-    #     assert hasattr(loaded, "base_url")
-    #     assert hasattr(loaded, "two_factor_auth_cb")
+        assert hasattr(loaded, "base_url")
+        assert hasattr(loaded, "two_factor_auth_cb")
 
-    #     assert loaded.base_url == s.base_url
-    #     assert loaded.two_factor_auth_cb == s.two_factor_auth_cb
+        assert loaded.base_url == s.base_url
+        assert loaded.two_factor_auth_cb == s.two_factor_auth_cb
