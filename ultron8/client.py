@@ -2,19 +2,25 @@
 import os
 import logging
 import time
+import datetime
+from contextlib import contextmanager
+import collections.abc as abc_collections
+import dateutil.parser
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry  # pylint: disable=import-error
 
 from ultron8.api import settings
+from ultron8 import __version__
+from ultron8.u8client.utils import get_api_endpoint
 
+__url_cache__ = {}
 logger = logging.getLogger(__name__)
 
-
-def get_api_endpoint() -> str:
-    server_name = f"http://{settings.SERVER_NAME}"
-    logger.debug("server_name: '%s'", server_name)
-    return server_name
+# def get_api_endpoint() -> str:
+#     server_name = f"http://{settings.SERVER_NAME}"
+#     logger.debug("server_name: '%s'", server_name)
+#     return server_name
 
 
 class UltronAPI:
@@ -106,6 +112,20 @@ class UltronAPI:
         if r.status_code != 200:
             logger.debug(f"_get_alive returned {r.status_code} {r.json()} {url}")
             raise AssertionError("Failed to get alive")
+
+        return r.json()
+
+    def _get_users(self):
+        url = f"{self.endpoints['users']}"
+        logger.debug("Ultron8 get users URL : " + url)
+        header_debug = self._headers()
+        logger.debug("Token preview:" + header_debug["Authorization"][-4:])
+        r = self._retry_requests(url, headers=self._headers())
+        if r.text is not None:
+            logger.debug(r.text)
+        if r.status_code != 200:
+            logger.debug(f"_get_users returned {r.status_code} {r.json()} {url}")
+            raise AssertionError("Failed to get users")
 
         return r.json()
 
