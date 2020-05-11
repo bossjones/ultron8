@@ -291,48 +291,52 @@ class TestUltronSession:
         assert "Bearer {}".format(a_token) != pr.headers["Authorization"]
 
     # @mock.patch.object(requests.Session, "request")
-    # def test_handle_two_factor_auth(self, request_mock):
-    #     """Test the method that handles getting the 2fa code"""
-    #     s = self.build_session()
-    #     s.two_factor_auth_callback(lambda: "fake")
-    #     args = ("GET", "http://localhost:11267/v1/version")
-    #     s.handle_two_factor_auth(args, {})
-    #     request_mock.assert_called_once_with(
-    #         *args, headers={"X-GitHub-OTP": "fake"}
-    #     )
+    def test_handle_two_factor_auth(self, mocker):
+        """Test the method that handles getting the 2fa code"""
+        request_mock = mocker.patch.object(session.requests.Session, "request")
+        s = self.build_session()
+        s.two_factor_auth_callback(lambda: "fake")
+        args = (mocker.ANY, "GET", "http://localhost:11267/v1/users")
+        s.handle_two_factor_auth(args, {})
+        request_mock.assert_called_once_with(*args, headers={"X-UltronAPI-OTP": "fake"})
 
     # @mock.patch.object(requests.Session, "request")
-    # def test_request_ignores_responses_that_do_not_require_2fa(
-    #     self, request_mock
-    # ):
-    #     """Test that request does not try to handle 2fa when it should not"""
-    #     response = mock.Mock()
-    #     response.configure_mock(status_code=200, headers={})
-    #     request_mock.return_value = response
-    #     s = self.build_session()
-    #     s.two_factor_auth_callback(lambda: "fake")
-    #     r = s.get("http://localhost:11267/v1/version")
-    #     assert r is response
-    #     request_mock.assert_called_once_with(
-    #         "GET", "http://localhost:11267/v1/version", allow_redirects=True,
-    #         timeout=(4, 10)
-    #     )
+    def test_request_ignores_responses_that_do_not_require_2fa(self, mocker):
+        """Test that request does not try to handle 2fa when it should not"""
+        request_mock = mocker.patch.object(
+            session.requests.Session, "request", autospec=True
+        )
+        response = mocker.Mock()
+        response.configure_mock(status_code=200, headers={})
+        request_mock.return_value = response
+        s = self.build_session()
+        s.two_factor_auth_callback(lambda: "fake")
+        r = s.get("http://localhost:11267/v1/users")
+        assert r is response
+        request_mock.assert_called_once_with(
+            mocker.ANY,
+            "GET",
+            "http://localhost:11267/v1/users",
+            allow_redirects=True,
+            timeout=(4, 10),
+        )
 
     # @mock.patch.object(requests.Session, "request")
-    # def test_creates_history_while_handling_2fa(self, request_mock):
-    #     """Test that the overridden request method will create history"""
-    #     response = mock.Mock()
-    #     response.configure_mock(
-    #         status_code=401,
-    #         headers={"X-GitHub-OTP": "required;2fa"},
-    #         history=[],
-    #     )
-    #     request_mock.return_value = response
-    #     s = self.build_session()
-    #     s.two_factor_auth_callback(lambda: "fake")
-    #     r = s.get("http://localhost:11267/v1/version")
-    #     assert len(r.history) != 0
-    #     assert request_mock.call_count == 2
+    def test_creates_history_while_handling_2fa(self, mocker):
+        """Test that the overridden request method will create history"""
+        request_mock = mocker.patch.object(
+            session.requests.Session, "request", autospec=True
+        )
+        response = mocker.Mock()
+        response.configure_mock(
+            status_code=401, headers={"X-UltronAPI-OTP": "required;2fa"}, history=[],
+        )
+        request_mock.return_value = response
+        s = self.build_session()
+        s.two_factor_auth_callback(lambda: "fake")
+        r = s.get("http://localhost:11267/v1/users")
+        assert len(r.history) != 0
+        assert request_mock.call_count == 2
 
     # def test_token_auth(self):
     #     """Test that token auth will work with a valid token"""
