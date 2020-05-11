@@ -14,7 +14,6 @@ from ultron8.api import settings
 from ultron8 import __version__
 from ultron8.u8client.utils import get_api_endpoint
 
-__url_cache__ = {}
 logger = logging.getLogger(__name__)
 
 # def get_api_endpoint() -> str:

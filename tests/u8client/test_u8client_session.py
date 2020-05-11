@@ -181,9 +181,8 @@ class TestUltronSession:
         assert r.headers["server"] == "uvicorn"
         assert r.headers["content-type"] == "application/json"
         assert r.json() == {"version": "0.0.1"}
-        assert (
-            session.UltronSession.__init__.call_count == 1
-        )  # pylint: disable=no-member
+        # pylint: disable=no-member
+        assert session.UltronSession.__init__.call_count == 1
         # assert session.UltronSession.__init__.assert_called_once_with(mocker.ANY)  # pylint: disable=no-member
         assert (
             session.UltronSession.__call__.call_count == 0
@@ -224,62 +223,72 @@ class TestUltronSession:
         url = s.build_url("v1", "gists", "123456", "history")
         assert url == "http://localhost:11267/v1/gists/123456/history"
 
-    # def test_build_url_caches_built_urls(self):
-    #     """Test that building a URL caches it"""
-    #     s = self.build_session()
-    #     url = s.build_url("gists", "123456", "history")
-    #     url_parts = ("https://api.github.com", "gists", "123456", "history")
-    #     assert url_parts in session.__url_cache__
-    #     assert url in session.__url_cache__.values()
+    def test_build_url_caches_built_urls(self):
+        """Test that building a URL caches it"""
+        s = self.build_session()
+        url = s.build_url("v1", "gists", "123456", "history")
+        url_parts = ("http://localhost:11267", "v1", "gists", "123456", "history")
+        assert url_parts in session.__url_cache__
+        assert url_parts in session.__url_cache__
+        assert url in session.__url_cache__.values()
 
-    # def test_build_url_uses_a_different_base(self):
-    #     """Test that you can pass in a different base URL to build_url"""
-    #     s = self.build_session()
-    #     url = s.build_url(
-    #         "gists", "123456", "history", base_url="https://status.github.com"
-    #     )
-    #     assert url == "https://status.github.com/gists/123456/history"
+    def test_build_url_uses_a_different_base(self):
+        """Test that you can pass in a different base URL to build_url"""
+        s = self.build_session()
+        url = s.build_url(
+            "v1", "gists", "123456", "history", base_url="http://localhost:1337"
+        )
+        assert url == "http://localhost:1337/v1/gists/123456/history"
 
-    # def test_build_url_respects_the_session_base_url(self):
-    #     """Test that build_url uses the session's base_url"""
-    #     s = self.build_session("https://enterprise.customer.com")
-    #     url = s.build_url("gists")
-    #     assert url == "https://enterprise.customer.com/gists"
+    def test_build_url_respects_the_session_base_url(self):
+        """Test that build_url uses the session's base_url"""
+        s = self.build_session("https://enterprise.customer.com")
+        url = s.build_url("gists")
+        assert url == "https://enterprise.customer.com/gists"
 
-    # def test_basic_login_does_not_use_falsey_values(self):
-    #     """Test that basic auth will not authenticate with falsey values"""
-    #     bad_auths = [
-    #         (None, "password"),
-    #         ("username", None),
-    #         ("", "password"),
-    #         ("username", ""),
-    #     ]
-    #     for auth in bad_auths:
-    #         # Make sure we have a clean session to test with
-    #         s = self.build_session()
-    #         s.basic_auth(*auth)
-    #         assert s.auth != session.BasicAuth(*auth)
+    def test_basic_login_does_not_use_falsey_values(self):
+        """Test that basic auth will not authenticate with falsey values"""
+        bad_auths = [
+            (None, "password"),
+            ("username", None),
+            ("", "password"),
+            ("username", ""),
+        ]
+        for auth in bad_auths:
+            # Make sure we have a clean session to test with
+            s = self.build_session()
+            s.basic_auth(*auth)
+            assert s.auth != session.BasicAuth(*auth)
 
-    # def test_basic_login(self):
-    #     """Test that basic auth will work with a valid combination"""
-    #     s = self.build_session()
-    #     s.basic_auth("username", "password")
-    #     assert s.auth == session.BasicAuth("username", "password")
+    def test_basic_login(self, username_and_password_first_superuser_fixtures):
+        """Test that basic auth will work with a valid combination"""
+        username, password = username_and_password_first_superuser_fixtures
+        s = self.build_session()
+        s.basic_auth(username, password)
+        assert s.auth == session.BasicAuth(username, password)
 
-    # def test_basic_login_disables_token_auth(self):
-    #     """Test that basic auth will remove the Authorization header.
+    def test_basic_login_disables_token_auth(
+        self, username_and_password_first_superuser_fixtures
+    ):
+        """Test that basic auth will remove the Authorization header.
 
-    #     Token and basic authentication will conflict so remove the token
-    #     authentication.
-    #     """
-    #     s = self.build_session()
-    #     s.token_auth("token goes here")
-    #     req = requests.Request("GET", "https://api.github.com/")
-    #     pr = s.prepare_request(req)
-    #     assert "token token goes here" == pr.headers["Authorization"]
-    #     s.basic_auth("username", "password")
-    #     pr = s.prepare_request(req)
-    #     assert "token token goes here" != pr.headers["Authorization"]
+        Token and basic authentication will conflict so remove the token
+        authentication.
+        """
+        username, password = username_and_password_first_superuser_fixtures
+        s = self.build_session()
+
+        r = get_superuser_jwt_request()
+        tokens = r.json()
+        a_token = tokens["access_token"]
+
+        s.token_auth(a_token)
+        req = requests.Request("GET", "http://localhost:11267/v1/users")
+        pr = s.prepare_request(req)
+        assert "Bearer {}".format(a_token) == pr.headers["Authorization"]
+        s.basic_auth(username, password)
+        pr = s.prepare_request(req)
+        assert "Bearer {}".format(a_token) != pr.headers["Authorization"]
 
     # @mock.patch.object(requests.Session, "request")
     # def test_handle_two_factor_auth(self, request_mock):
