@@ -1,0 +1,52 @@
+# To add a new cell, type '# %%'
+# To add a new markdown cell, type '# %% [markdown]'
+# %%
+import requests
+import ultron8
+from ultron8 import debugger
+from ultron8 import client
+from ultron8.api import settings
+from ultron8.u8client import session
+
+username = settings.FIRST_SUPERUSER
+password = settings.FIRST_SUPERUSER_PASSWORD
+
+
+# %%
+# u = client.UltronAPI()
+
+
+# %%
+s = session.BasicAuth(username, password)
+
+
+# %%
+debugger.debug_dump_exclude(s)
+
+
+# %%
+debugger.dump_magic(s)
+
+
+# %%
+debugger.dump_all(s)
+
+
+# %%
+assert isinstance(s, ultron8.u8client.session.BasicAuth)
+
+
+# %%
+url = "http://localhost:11267/v1/users"
+
+r = requests.Request('GET', url, auth=s)
+p = r.prepare()
+
+assert isinstance(s, ultron8.u8client.session.BasicAuth)
+assert s.password == "password"
+assert s.username == "admin@ultron8.com"
+
+assert p.headers['Authorization'] == requests.auth._basic_auth_str(username, password)
+
+
+# %%
