@@ -275,6 +275,28 @@ def view_api_docs(ctx, loc="local"):
     ctx.run(_cmd)
 
 
+@task(
+    incrementable=["verbose"],
+    pre=[call(view_api_docs, loc="local"), call(view_coverage, loc="local"),],
+)
+def browser(ctx, loc="local"):
+    """
+    Open api swagger docs inside of browser
+    Usage: inv ci.view-api-docs
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    msg = "Finished loading everything into browser".format(_cmd)
+    click.secho(msg, fg=COLOR_SUCCESS)
+
+
 @task(incrementable=["verbose"])
 def alembic_upgrade(ctx, loc="local"):
     """

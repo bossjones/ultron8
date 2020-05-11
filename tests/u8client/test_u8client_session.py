@@ -14,6 +14,7 @@ from ultron8.u8client import session
 # from ultron8 import __version__
 # from ultron8 import client
 from ultron8.api import settings
+from tests.utils.utils import get_sueruser_jwt_request
 
 
 logger = logging.getLogger(__name__)
@@ -50,3 +51,33 @@ class TestUltronAPI:
             username, password
         )
         assert "Basic " in p.headers["Authorization"]
+        assert str(repr(s)) == "basic {}".format(username)
+
+    def test_instance_session_token(self, mocker):
+
+        r = get_sueruser_jwt_request()
+        tokens = r.json()
+        a_token = tokens["access_token"]
+
+        s = session.TokenAuth(a_token)
+        s2 = session.TokenAuth("sdifhjidhjdsofhijehiojeh")
+        s3 = session.TokenAuth(a_token)
+
+        assert s != s2
+        assert s == s3
+
+        url = "http://localhost:11267/v1/users"
+
+        r = requests.Request("GET", url, auth=s)
+        prepped = r.prepare()
+        # prepped = s.prepare_request(r)
+
+        assert isinstance(s, ultron8.u8client.session.TokenAuth)
+        assert s.token == a_token
+
+        assert str(repr(s)) == "token {}...".format(a_token[:4])
+
+        assert s.header_format_str.format(a_token) == "Bearer {}".format(a_token)
+
+        # resp = s.send(prepped)
+        # assert resp.status_code == 200
