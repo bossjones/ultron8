@@ -153,8 +153,10 @@ jobs:
       stage: test
       install:
         - pip install --upgrade pip
-        - 'travis_retry pip install coveralls==1.10.0'
-        - 'travis_retry pip install coverage==5.0.3'
+        - _COVERALLS_VERSION=$(grep -ir "coveralls==" requirements*.txt | awk -F= '{print $3}'| cut -d" " -f1)
+        - _COVERAGE_VERSION=$(grep -ir "coverage==" requirements*.txt | awk -F= '{print $3}'| cut -d" " -f1)
+        - 'travis_retry pip install coveralls==$_COVERALLS_VERSION'
+        - 'travis_retry pip install coverage==$_COVERAGE_VERSION'
         - travis_retry docker-compose -f docker-compose.ci.yml pull || true
         - docker pull $CACHE_IMAGE:runtime-image || true
         # - travis_retry make dc-ci-build
@@ -187,7 +189,8 @@ jobs:
       - coverage combine
       # Coverage report contains Docker paths. We replace them, so that we can run Coveralls.
       - sed -i 's@\"/home/developer/app/@'"\"$(pwd)/"'@g' .coverage
-      - coveralls
+      - coveralls debug
+      - coveralls -v
 
 before_install:
   - sudo apt-get update
