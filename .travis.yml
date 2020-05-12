@@ -68,18 +68,6 @@ stages:
 jobs:
   fast_finish: true
   include:
-    # - name: Flake8
-    #   python: '3.7'
-    #   sudo: required
-    #   dist: xenial
-    #   language: python
-    #   group: edge
-    #   env:
-    #     - PYTHON="python3"
-    #   stage: pre-test
-    #   install: pip install $(grep "^flake8==" requirements-test.txt | awk '{print $1}')
-    #   script: flake8
-
     - name: mypy
       python: '3.7'
       # sudo: required
@@ -91,18 +79,6 @@ jobs:
       stage: pre-test
       install: pip install $(grep "^mypy==" requirements-test.txt | awk '{print $1}')
       script: mypy ultron8 tests
-
-    # - name: Lint Dockerfile
-    #   python: '3.7'
-    #   sudo: required
-    #   dist: xenial
-    #   language: python
-    #   group: edge
-    #   env:
-    #     - PYTHON="python3"
-    #   stage: pre-test
-    #   install: skip
-    #   script: .ci/ci_lint_dockerfile.sh
 
     # - name: Check docs
     #   python: '3.7'
@@ -151,12 +127,14 @@ jobs:
       env:
         - PYTHON="python3"
       stage: test
+      # INFO: Add pip install coveralls to install section of .travis.yml
       install:
         - pip install --upgrade pip
         - _COVERALLS_VERSION=$(grep -ir "coveralls==" requirements*.txt | awk -F= '{print $3}'| cut -d" " -f1)
         - _COVERAGE_VERSION=$(grep -ir "coverage==" requirements*.txt | awk -F= '{print $3}'| cut -d" " -f1)
-        - 'travis_retry pip install coveralls==$_COVERALLS_VERSION'
-        - 'travis_retry pip install coverage==$_COVERAGE_VERSION'
+        # - 'travis_retry pip install coveralls==$_COVERALLS_VERSION'
+        # - 'travis_retry pip install coverage==$_COVERAGE_VERSION'
+        - 'travis_retry pip install coveralls==$_COVERALLS_VERSION coverage==$_COVERAGE_VERSION'
         - travis_retry docker-compose -f docker-compose.ci.yml pull || true
         - docker pull $CACHE_IMAGE:runtime-image || true
         # - travis_retry make dc-ci-build
@@ -177,7 +155,13 @@ jobs:
       - _GROUP=$(ls -lta | awk '{print $4}')
       - docker ps -a
       - 'ls -lta'
-      - 'sudo chown $_USER:$_GROUP -Rv *'
+      - 'sudo chown -Rv $_USER:$_GROUP *'
+
+      # Copy the .coverage.* file from the Docker container to the local filesystem.
+      # - docker cp ingredient-phrase-tagger-container:/app/$(docker exec -it ingredient-phrase-tagger-container bash -c "ls -a .coverage.*" | tr -d '\r') ./
+
+      - cat .coveragerc
+      - coverage --version
       - sudo mv .coverage .coverage.tests
       ################################################################################################
       # NOTE: https://coverage.readthedocs.io/en/coverage-4.5.1/changes.html?highlight=clean
@@ -186,15 +170,24 @@ jobs:
       # ################################################################################################
       # NOTE: Version 4.5 - 2018-02-03
       # The coverage combine command used to always overwrite the data file, even when no data had been read from apparently combinable files. Now, an error is raised if we thought there were files to combine, but in fact none of them could be used. Fixes issue 629.
-      - coverage combine
+      # - coverage combine
+      # INFO: https://pypi.org/project/coveralls/
+      # INFO: https://github.com/pytest-dev/pytest-cov/issues/146
+      - 'coverage combine --append'
       # Coverage report contains Docker paths. We replace them, so that we can run Coveralls.
       - sed -i 's@\"/home/developer/app/@'"\"$(pwd)/"'@g' .coverage
       - coveralls debug
       - coveralls -v
+      - "docker-compose -f docker-compose.ci.yml kill -s SIGTERM || true"
+      - "docker-compose -f docker-compose.ci.yml rm -f || true"
 
 before_install:
   - sudo apt-get update
-  - travis_retry pip install coveralls
+  # - travis_retry pip install coveralls
+  - _COVERALLS_VERSION=$(grep -ir "coveralls==" requirements*.txt | awk -F= '{print $3}'| cut -d" " -f1)
+  - _COVERAGE_VERSION=$(grep -ir "coverage==" requirements*.txt | awk -F= '{print $3}'| cut -d" " -f1)
+  - 'travis_retry pip install coveralls==$_COVERALLS_VERSION coverage==$_COVERAGE_VERSION'
+  # - 'travis_retry pip install coverage==$_COVERAGE_VERSION'
   - npm install -g gnomon
 
   - sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
