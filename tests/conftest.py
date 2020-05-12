@@ -40,6 +40,8 @@ from starlette.testclient import Params
 from starlette.testclient import TestClient as PureClient
 from starlette.testclient import TimeOut
 
+from ultron8.web import get_application
+
 here = os.path.abspath(os.path.dirname(__file__))
 
 print("here: {}".format(here))
@@ -206,16 +208,17 @@ def patch_datetime_now(monkeypatch):
 
 
 @pytest.fixture(scope="class")
-def fastapi_app() -> FastAPI:
-    from ultron8.web import app  # pylint:disable=import-outside-toplevel
-
-    yield app
+def fastapi_app() -> typing.Generator[FastAPI, typing.Any, None]:
+    # from ultron8.web import app  # pylint:disable=import-outside-toplevel
+    # yield app
+    _app = get_application()
+    yield _app
 
 
 # SOURCE: https://github.com/gvbgduh/starlette-cbge/blob/c1c7b99b07f4cf21537a12b82526b9a34ff3100b/tests/conftest.py
 # @pytest.fixture(scope="session")
 @pytest.fixture(scope="class")
-def fastapi_client(request) -> typing.Generator:
+def fastapi_client(request, fastapi_app) -> typing.Generator:
     """
     Sync test client.
 
@@ -226,11 +229,11 @@ def fastapi_client(request) -> typing.Generator:
         response = client.get(url)
         assert response.status_code == 200
     """
-    from ultron8.web import app  # pylint:disable=import-outside-toplevel
+    # from ultron8.web import app  # pylint:disable=import-outside-toplevel
 
     base_url = get_server_api_with_version()
 
-    with TestClient(app=app, base_url=base_url) as fast_client:
+    with TestClient(app=fastapi_app, base_url=base_url) as fast_client:
         request.cls.fastapi_client = fast_client
         yield fast_client
 
