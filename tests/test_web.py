@@ -9,6 +9,7 @@ import ultron8
 # from ultron8 import __version__
 # from ultron8 import client
 from ultron8.api import settings
+from tests.utils.utils import get_server_api_with_version
 
 
 logger = logging.getLogger(__name__)
@@ -22,11 +23,16 @@ def username_and_password_first_superuser_fixtures():
 @pytest.mark.fastapionly
 @pytest.mark.unittest
 class TestFastAPIWeb:
-    def test_fastapi_instance(
-        self, mocker, username_and_password_first_superuser_fixtures, fastapi_client
-    ):
-        username, password = username_and_password_first_superuser_fixtures
+    def test_fastapi_instance(self, mocker, fastapi_client):
+        # username, password = username_and_password_first_superuser_fixtures
+        url = "{base}/logs".format(base=get_server_api_with_version())
+        response = fastapi_client.get(url)
+        assert response.status_code == 200
 
-        print(username)
-        print(password)
-        pass
+    # def test_fastapi_instance_routes(
+    #     self, mocker, fastapi_client
+    # ):
+    #     # username, password = username_and_password_first_superuser_fixtures
+    #     url = "{base}/logs".format(base=get_server_api_with_version())
+    #     response = fastapi_client.get(url)
+    #     assert response.status_code == 200

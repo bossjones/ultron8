@@ -26,6 +26,20 @@ from typing import Dict
 import betamax
 from betamax_matchers import json_body
 
+from tests.utils.utils import get_server_api_with_version
+
+from fastapi import FastAPI
+
+
+import requests
+from starlette.testclient import AuthType
+from starlette.testclient import Cookies
+from starlette.testclient import DataType
+from starlette.testclient import FileType
+from starlette.testclient import Params
+from starlette.testclient import TestClient as PureClient
+from starlette.testclient import TimeOut
+
 here = os.path.abspath(os.path.dirname(__file__))
 
 print("here: {}".format(here))
@@ -145,10 +159,63 @@ def patch_datetime_now(monkeypatch):
 #     yield loop
 #     loop.close()
 
+# SOURCE: https://github.com/yourfriendlydev/fastapi-backend/blob/861e876c57a00547d15bf4b9fe794ccdc5fa3d26/tests/client.py
+# class TestClientFixture(PureClient):
+#     def __init__(self, prefix: str = "", *args, **kwargs):
+#         super(TestClient, self).__init__(*args, **kwargs)
+#         self.prefix = prefix
+
+#     def request(
+#         self,
+#         method: str,
+#         url: str,
+#         params: Params = None,
+#         data: DataType = None,
+#         headers: typing.MutableMapping[str, str] = None,
+#         cookies: Cookies = None,
+#         files: FileType = None,
+#         auth: AuthType = None,
+#         timeout: TimeOut = None,
+#         allow_redirects: bool = None,
+#         proxies: typing.MutableMapping[str, str] = None,
+#         hooks: typing.Any = None,
+#         stream: bool = None,
+#         verify: typing.Union[bool, str] = None,
+#         cert: typing.Union[str, typing.Tuple[str, str]] = None,
+#         json: typing.Any = None,
+#     ) -> requests.Response:
+#         url = self.prefix + url
+#         return super(TestClient, self).request(
+#             method,
+#             url,
+#             params,
+#             data,
+#             headers,
+#             cookies,
+#             files,
+#             auth,
+#             timeout,
+#             allow_redirects,
+#             proxies,
+#             hooks,
+#             stream,
+#             verify,
+#             cert,
+#             json,
+#         )
+
+
+@pytest.fixture(scope="class")
+def fastapi_app() -> FastAPI:
+    from ultron8.web import app  # pylint:disable=import-outside-toplevel
+
+    yield app
+
 
 # SOURCE: https://github.com/gvbgduh/starlette-cbge/blob/c1c7b99b07f4cf21537a12b82526b9a34ff3100b/tests/conftest.py
-@pytest.fixture(scope="session")
-def fastapi_client() -> typing.Generator:
+# @pytest.fixture(scope="session")
+@pytest.fixture(scope="class")
+def fastapi_client(request) -> typing.Generator:
     """
     Sync test client.
 
@@ -161,7 +228,10 @@ def fastapi_client() -> typing.Generator:
     """
     from ultron8.web import app  # pylint:disable=import-outside-toplevel
 
-    with TestClient(app=app) as fast_client:
+    base_url = get_server_api_with_version()
+
+    with TestClient(app=app, base_url=base_url) as fast_client:
+        request.cls.fastapi_client = fast_client
         yield fast_client
 
 

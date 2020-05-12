@@ -26,6 +26,17 @@ def get_server_api() -> str:
     return server_name
 
 
+def get_server_api_with_version() -> str:
+    """Return url w/ api versioning in it. eg. http://localhost:11267/v1
+
+    Returns:
+        str -- url in string format
+    """
+    server_name = f"http://{settings.SERVER_NAME}{settings.API_V1_STR}"
+    logger.debug("server_name: '%s'", server_name)
+    return server_name
+
+
 def get_superuser_jwt_request():
     server_api = get_server_api()
     login_data = {

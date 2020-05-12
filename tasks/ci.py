@@ -188,6 +188,7 @@ def pytest(
     pathsonly=False,
     workspaceonly=False,
     clientonly=False,
+    fastapionly=False,
 ):
     """
     Run pytest
@@ -223,6 +224,9 @@ def pytest(
 
     if clientonly:
         _cmd += r" -m clientonly "
+
+    if fastapionly:
+        _cmd += r" -m fastapionly "
 
     if pdb:
         _cmd += r" --pdb "
@@ -348,6 +352,7 @@ def editable(ctx, loc="local"):
         # call(pytest, loc="local", pathsonly=True),
         # call(pytest, loc="local", workspaceonly=True),
         # call(pytest, loc="local", clientonly=True),
+        # call(pytest, loc="local", fastapionly=True),
         call(pytest, loc="local"),
     ],
     incrementable=["verbose"],
