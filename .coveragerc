@@ -13,6 +13,10 @@ omit =
     /home/travis/virtualenv/**
     tests/fixtures/simple/packs/linux/actions/checks/**
 
+# # Run in parallel mode so that coverage can canonicalize the source paths
+# # regardless of whether it runs locally or within a Docker container.
+# parallel = True
+
 [report]
 # Regexes for lines to exclude from consideration
 exclude_lines =
@@ -30,3 +34,12 @@ exclude_lines =
     # Don't complain if non-runnable code isn't run:
     if 0:
     if __name__ == .__main__.:
+
+# https://coverage.readthedocs.io/en/coverage-4.3.1/config.html#paths
+[paths]
+# SOURCE: https://github.com/mtlynch/ingredient-phrase-tagger/blob/master/.coveragerc
+# the first path is the path on the local filesystem
+# the second path is the path as it appears within the Docker container
+source =
+    ultron8/
+    /home/developer/app/ultron8

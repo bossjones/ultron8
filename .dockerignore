@@ -1,10 +1,10 @@
 .tox
-.git
+# .git
 .idea
 .vscode
 
 # General files
-.git
+# .git
 .github
 config
 
@@ -19,7 +19,7 @@ venv
 **/__pycache__
 
 data/*
-.git/*
+# .git/*
 # fixtures/*
 notes/*
 temp*

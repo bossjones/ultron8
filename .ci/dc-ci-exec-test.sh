@@ -10,6 +10,11 @@ source $_DIR/utility.sh
 if [ "IS_CI_ENVIRONMENT" == "true" ]; then
     export CONTAINER_UID=$(ls -lta | awk '{print $3}')
     export CONTAINER_GID=$(ls -lta | awk '{print $4}')
+
+    export CI_BUILD_NUMBER="$TRAVIS_BUILD_NUMBER"
+    export CI_PULL_REQUEST="$TRAVIS_PULL_REQUEST"
+    export CI_BRANCH="$TRAVIS_BRANCH"
+
 else
     export CONTAINER_UID=$(id -u)
     export CONTAINER_GID=$(id -g)
