@@ -352,8 +352,8 @@ def editable(ctx, loc="local"):
         # call(pytest, loc="local", pathsonly=True),
         # call(pytest, loc="local", workspaceonly=True),
         # call(pytest, loc="local", clientonly=True),
-        # call(pytest, loc="local", fastapionly=True),
-        call(pytest, loc="local"),
+        call(pytest, loc="local", fastapionly=True),
+        # call(pytest, loc="local"),
     ],
     incrementable=["verbose"],
 )

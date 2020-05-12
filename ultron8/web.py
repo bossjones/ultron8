@@ -1,6 +1,8 @@
 import logging
 from pathlib import Path
 
+import time
+
 import starlette_prometheus
 import uvicorn
 from fastapi import Depends
@@ -224,6 +226,22 @@ class DbSessionMiddleware(BaseHTTPMiddleware):
             response = await call_next(request)
         finally:
             request.state.db.close()
+        return response
+
+
+class AddProcessTimeMiddleware(BaseHTTPMiddleware):
+    """Figure out how long it takes for a request to process.
+
+    Arguments:
+        BaseHTTPMiddleware {[type]} -- [description]
+    """
+
+    # SOURCE: https://github.com/podhmo/individual-sandbox/blob/c666a27f8bacb8a56750c74998d80405b92cb4e8/daily/20191220/example_starlette/04fastapi-jinja2-with-middleware/test_main.py
+    async def dispatch(self, request: Request, call_next) -> Response:
+        start_time = time.time()
+        response = await call_next(request)
+        process_time = time.time() - start_time
+        response.headers["X-Process-Time"] = str(process_time)
         return response
 
 
