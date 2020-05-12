@@ -160,8 +160,8 @@ jobs:
       # Copy the .coverage.* file from the Docker container to the local filesystem.
       # - docker cp ingredient-phrase-tagger-container:/app/$(docker exec -it ingredient-phrase-tagger-container bash -c "ls -a .coverage.*" | tr -d '\r') ./
 
-      - cat .coveragerc
-      - coverage --version
+      # - cat .coveragerc
+      # - coverage --version
       - sudo mv .coverage .coverage.tests
       ################################################################################################
       # NOTE: https://coverage.readthedocs.io/en/coverage-4.5.1/changes.html?highlight=clean
@@ -176,20 +176,19 @@ jobs:
       - 'coverage combine --append'
       # Coverage report contains Docker paths. We replace them, so that we can run Coveralls.
       - sed -i 's@\"/home/developer/app/@'"\"$(pwd)/"'@g' .coverage
-      - coveralls --verbose debug
+      # NOTE: Only need these when we need to debug coverage
+      # - coveralls --verbose debug
       - coveralls --verbose
-      - .ci/debug-coverage.sh
-      - .ci/digest.sh
+      # - .ci/debug-coverage.sh
+      # - .ci/digest.sh
       - "docker-compose -f docker-compose.ci.yml kill -s SIGTERM || true"
       - "docker-compose -f docker-compose.ci.yml rm -f || true"
 
 before_install:
   - sudo apt-get update
-  # - travis_retry pip install coveralls
   - _COVERALLS_VERSION=$(grep -ir "coveralls==" requirements*.txt | awk -F= '{print $3}'| cut -d" " -f1)
   - _COVERAGE_VERSION=$(grep -ir "coverage==" requirements*.txt | awk -F= '{print $3}'| cut -d" " -f1)
   - 'travis_retry pip install coveralls==$_COVERALLS_VERSION coverage==$_COVERAGE_VERSION'
-  # - 'travis_retry pip install coverage==$_COVERAGE_VERSION'
   - npm install -g gnomon
 
   - sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
@@ -227,3 +226,8 @@ cache:
     - $HOME/.wheelhouse/
     - $HOME/.cache/pip
     - $HOME/.travis_cache/
+
+# SOURCE: https://github.com/inspirehep/hepcrawl/blob/2a1b09cef82c19d1d07433cbf33b8f68758470ec/.travis.yml
+after_failure:
+  - docker-compose -f docker-compose.ci.yml logs --tail=200
+  - bash -c 'for log in logs/*/*; do echo $log; cat $log; done'
