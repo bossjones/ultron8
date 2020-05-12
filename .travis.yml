@@ -176,8 +176,10 @@ jobs:
       - 'coverage combine --append'
       # Coverage report contains Docker paths. We replace them, so that we can run Coveralls.
       - sed -i 's@\"/home/developer/app/@'"\"$(pwd)/"'@g' .coverage
-      - coveralls debug
-      - coveralls -v
+      - coveralls --verbose debug
+      - coveralls --verbose
+      - .ci/debug-coverage.sh
+      - .ci/digest.sh
       - "docker-compose -f docker-compose.ci.yml kill -s SIGTERM || true"
       - "docker-compose -f docker-compose.ci.yml rm -f || true"
 
@@ -218,7 +220,7 @@ notifications:
 before_cache:
   - _USER=$(ls -lta | awk '{print $3}')
   - _GROUP=$(ls -lta | awk '{print $4}')
-  - 'sudo chown $_USER:$_GROUP -Rv $HOME/.cache/pip $HOME/.wheelhouse/'
+  - 'sudo chown -Rv $_USER:$_GROUP $HOME/.cache/pip $HOME/.wheelhouse/'
 
 cache:
   directories:

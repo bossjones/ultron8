@@ -81,6 +81,9 @@ services:
     environment:
       - CONTAINER_GID=${CONTAINER_GID:-1000}
       - CONTAINER_UID=${CONTAINER_UID:-1000}
+      - COV_CORE_SOURCE
+      - COV_CORE_CONFIG
+      - COV_CORE_DATAFILE
       - TRAVIS
       - TRAVIS_BRANCH
       - TRAVIS_BUILD_DIR
@@ -91,6 +94,8 @@ services:
       - TRAVIS_REPO_SLUG
       - TRAVIS_OS_NAME
       - TRAVIS_TAG
+      - TRAVIS_BUILD_NUMBER
+      - TRAVIS_PULL_REQUEST
       - ULTRON_ENABLE_WEB=${ULTRON_ENABLE_WEB:-false}
       - BETTER_EXCEPTIONS=1
       # FOR WEB APPLICATION
