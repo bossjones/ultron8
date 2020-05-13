@@ -20,6 +20,10 @@ import traceback
 from pathlib import Path
 from urllib.parse import urlparse
 
+from fastapi import HTTPException
+from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
+from starlette import status
+
 LOGGER = logging.getLogger(__name__)
 
 SEPARATOR_CHARACTER_DEFAULT = "-"
@@ -343,3 +347,23 @@ def pquery(command, stdin=None, **kwargs):
 #         self.run = run_with_except_hook
 
 #     threading.Thread.__init__ = init
+
+
+# SOURCE: https://github.com/bergran/fast-api-project-template/blob/master/README.md
+def get_object_or_404(qs):
+    try:
+        return qs.one()
+    except MultipleResultsFound:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except NoResultFound:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+
+# SOURCE: https://github.com/bergran/fast-api-project-template/blob/master/README.md
+def get_object(qs):
+    try:
+        return qs.one()
+    except MultipleResultsFound:
+        return None
+    except NoResultFound:
+        return None

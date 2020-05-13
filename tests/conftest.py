@@ -1,4 +1,10 @@
+"""
+Global test fixtures definitions.
+"""
 # Taken from tedi and guid_tracker
+
+# import asyncio
+import typing
 import base64
 import datetime
 import os
@@ -11,6 +17,7 @@ from tests.utils.utils import get_server_api
 from tests.utils.utils import get_superuser_token_headers
 from tests.utils.utils import superuser_credentials
 from tests.utils.utils import get_superuser_jwt_request
+from ultron8.api.db.u_sqlite.session import db_session, Session as SessionLocal
 
 # from ultron8.api import settings
 # from ultron8.web import app
@@ -18,6 +25,27 @@ from tests.utils.utils import get_superuser_jwt_request
 from typing import Dict
 import betamax
 from betamax_matchers import json_body
+
+from tests.utils.utils import get_server_api_with_version
+
+from fastapi import FastAPI
+
+
+import requests
+from starlette.testclient import AuthType
+from starlette.testclient import Cookies
+from starlette.testclient import DataType
+from starlette.testclient import FileType
+from starlette.testclient import Params
+from starlette.testclient import TestClient as PureClient
+from starlette.testclient import TimeOut
+
+from ultron8.web import get_application
+from ultron8.api import settings
+
+from tests.utils.user import authentication_token_from_email
+
+# from tests.utils.user import get_superuser_token_headers
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -114,3 +142,161 @@ def patch_datetime_now(monkeypatch):
             return FAKE_TIME
 
     monkeypatch.setattr(datetime, "datetime", mydatetime)
+
+
+# @pytest.fixture()
+# def client():
+#     """
+#     When using the 'client' fixture in test cases, we'll get full database
+#     rollbacks between test cases:
+#     def test_homepage(client):
+#         url = app.url_path_for('homepage')
+#         response = client.get(url)
+#         assert response.status_code == 200
+#     """
+#     client = TestClient(app)
+#     with TestClient(app) as client:
+#         yield client
+
+
+# SOURCE: https://github.com/gvbgduh/starlette-cbge/blob/c1c7b99b07f4cf21537a12b82526b9a34ff3100b/tests/conftest.py
+# @pytest.yield_fixture(scope="session")
+# def event_loop() -> typing.Generator:
+#     loop = asyncio.get_event_loop_policy().new_event_loop()
+#     yield loop
+#     loop.close()
+
+# SOURCE: https://github.com/yourfriendlydev/fastapi-backend/blob/861e876c57a00547d15bf4b9fe794ccdc5fa3d26/tests/client.py
+# class TestClientFixture(PureClient):
+#     def __init__(self, prefix: str = "", *args, **kwargs):
+#         super(TestClient, self).__init__(*args, **kwargs)
+#         self.prefix = prefix
+
+#     def request(
+#         self,
+#         method: str,
+#         url: str,
+#         params: Params = None,
+#         data: DataType = None,
+#         headers: typing.MutableMapping[str, str] = None,
+#         cookies: Cookies = None,
+#         files: FileType = None,
+#         auth: AuthType = None,
+#         timeout: TimeOut = None,
+#         allow_redirects: bool = None,
+#         proxies: typing.MutableMapping[str, str] = None,
+#         hooks: typing.Any = None,
+#         stream: bool = None,
+#         verify: typing.Union[bool, str] = None,
+#         cert: typing.Union[str, typing.Tuple[str, str]] = None,
+#         json: typing.Any = None,
+#     ) -> requests.Response:
+#         url = self.prefix + url
+#         return super(TestClient, self).request(
+#             method,
+#             url,
+#             params,
+#             data,
+#             headers,
+#             cookies,
+#             files,
+#             auth,
+#             timeout,
+#             allow_redirects,
+#             proxies,
+#             hooks,
+#             stream,
+#             verify,
+#             cert,
+#             json,
+#         )
+
+
+@pytest.fixture(scope="class")
+def fastapi_app() -> typing.Generator[FastAPI, typing.Any, None]:
+    # from ultron8.web import app  # pylint:disable=import-outside-toplevel
+    # yield app
+    _app = get_application()
+    yield _app
+
+
+# SOURCE: https://github.com/gvbgduh/starlette-cbge/blob/c1c7b99b07f4cf21537a12b82526b9a34ff3100b/tests/conftest.py
+# @pytest.fixture(scope="session")
+@pytest.fixture(scope="class")
+def fastapi_client(request, fastapi_app) -> typing.Generator:
+    """
+    Sync test client.
+
+    When using the 'client' fixture in test cases, we'll get full database
+    rollbacks between test cases:
+    def test_homepage(client):
+        url = app.url_path_for('homepage')
+        response = client.get(url)
+        assert response.status_code == 200
+    """
+    # from ultron8.web import app  # pylint:disable=import-outside-toplevel
+
+    base_url = get_server_api_with_version()
+
+    with TestClient(app=fastapi_app, base_url=base_url) as fast_client:
+        request.cls.fastapi_client = fast_client
+        yield fast_client
+
+
+# SOURCE: https://github.com/KyriakosFrang/sandbox/blob/c98be415c6b7e01768c4ab2d086e147cdc86757c/fastAPI_sandbox/backend/app/app/tests/conftest.py
+# @pytest.fixture(scope="module")
+# def superuser_token_headers(fastapi_client: TestClient) -> Dict[str, str]:
+#     return get_superuser_token_headers()
+
+
+# SOURCE: https://github.com/KyriakosFrang/sandbox/blob/c98be415c6b7e01768c4ab2d086e147cdc86757c/fastAPI_sandbox/backend/app/app/tests/conftest.py
+@pytest.fixture(scope="module")
+def normal_user_token_headers(
+    fastapi_client: TestClient, db_session: SessionLocal
+) -> Dict[str, str]:
+    return authentication_token_from_email(
+        client=fastapi_client, email=settings.EMAIL_TEST_USER, db_session=db_session
+    )
+
+
+@pytest.fixture(scope="session")
+def db() -> typing.Generator:
+    yield SessionLocal()
+
+
+# SOURCE: https://github.com/gvbgduh/starlette-cbge/blob/c1c7b99b07f4cf21537a12b82526b9a34ff3100b/tests/conftest.py
+# @pytest.mark.asyncio
+# @pytest.fixture(scope="session")
+# async def async_client() -> typing.AsyncGenerator:
+#     """
+#     Async test client
+#     """
+#     from example_app.app import app
+
+#     async with AsyncTestClient(app=app) as async_client:
+#         yield async_client
+
+
+# @pytest.fixture(scope="session", autouse=True)
+# async def create_db_tables() -> typing.AsyncGenerator:
+#     """
+#     Creates tables using the helper func from the example app.
+#     Also drops them when tests are complete.
+#     """
+#     from example_app.db import create_tables, drop_tables
+
+#     await create_tables()
+#     yield
+#     await drop_tables()
+
+
+# @pytest.fixture(scope="function", autouse=True)
+# async def truncate_tables() -> typing.AsyncGenerator:
+#     """
+#     Truncates tables before every test,
+#     basically to allow transactional operations complete.
+#     """
+#     from example_app.db import truncate_tables
+
+#     await truncate_tables()
+#     yield

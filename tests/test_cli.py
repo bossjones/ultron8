@@ -21,6 +21,8 @@ from typing import Iterator
 
 # paths = Paths()
 
+# TODO: Capture data from print() statements and validate them https://docs.pytest.org/en/latest/capture.html
+
 
 @contextmanager
 def project_runner(fixture: str = "simple") -> Iterator[CliRunner]:

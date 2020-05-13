@@ -1,6 +1,8 @@
 import logging
 from pathlib import Path
 
+import time
+
 import starlette_prometheus
 import uvicorn
 from fastapi import Depends
@@ -8,10 +10,12 @@ from fastapi import FastAPI
 from fastapi import Header
 from fastapi import HTTPException
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import PlainTextResponse
 from starlette.responses import RedirectResponse
 from starlette.responses import UJSONResponse
+from starlette.responses import Response
 from starlette.staticfiles import StaticFiles
 
 
@@ -89,125 +93,251 @@ log.setup_logging()
 #     logging.getLogger(__name__).exception(f"{request.method} {request.url} {exc}")
 #     return await request_validation_exception_handler(request, exc)
 
-# SOURCE: https://github.com/nwcell/guid_tracker/blob/aef948336ba268aa06df7cc9e7e6768b08d0f363/src/guid/main.py
-app = FastAPI(title="Ultron-8 Web Server")
 
-logger.info(f" settings.DEBUG={settings.DEBUG}")
-
-app.debug = settings.DEBUG
-app.mount(
-    "/static",
-    StaticFiles(directory=str(Path(__file__).parent / "static")),
-    name="static",
-)
-
-# CORS
-origins = []
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_methods=[settings.BACKEND_CORS_ORIGINS],
-    allow_headers=[settings.BACKEND_CORS_ORIGINS],
-    allow_credentials=True,
-)
-
-app.add_middleware(starlette_prometheus.PrometheusMiddleware)
+# # SOURCE: https://fastapi.tiangolo.com/tutorial/sql-databases/#main-fastapi-app
+# # Dependency
+# def get_db():
+#     try:
+#         db = Session()
+#         yield db
+#     finally:
+#         db.close()
 
 
-# -----------------------------------------------------------------------
-# DISABLED: originally from guid_tracker
-# -----------------------------------------------------------------------
-# app.add_event_handler("startup", open_database_connection_pool)
-# app.add_event_handler("shutdown", close_database_connection_pool)
-# -----------------------------------------------------------------------
+def get_application() -> FastAPI:
+    # SOURCE: https://github.com/nwcell/guid_tracker/blob/aef948336ba268aa06df7cc9e7e6768b08d0f363/src/guid/main.py
+    app = FastAPI(title="Ultron-8 Web Server")
 
-# app = FastAPI()
+    logger.info(f"Create fastapi web application ...")
+
+    logger.info(f" settings.DEBUG={settings.DEBUG}")
+
+    app.debug = settings.DEBUG
+    app.mount(
+        "/static",
+        StaticFiles(directory=str(Path(__file__).parent / "static")),
+        name="static",
+    )
+
+    # CORS
+    origins = []
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_methods=[settings.BACKEND_CORS_ORIGINS],
+        allow_headers=[settings.BACKEND_CORS_ORIGINS],
+        allow_credentials=True,
+    )
+
+    app.add_middleware(starlette_prometheus.PrometheusMiddleware)
+
+    # -----------------------------------------------------------------------
+    # DISABLED: originally from guid_tracker
+    # -----------------------------------------------------------------------
+    # app.add_event_handler("startup", open_database_connection_pool)
+    # app.add_event_handler("shutdown", close_database_connection_pool)
+    # -----------------------------------------------------------------------
+
+    # app = FastAPI()
+
+    # async def get_token_header(x_token: str = Header(...)):
+    #     if x_token != "fake-super-secret-token":
+    #         raise HTTPException(status_code=400, detail="X-Token header invalid")
+
+    app.add_route(f"{settings.API_V1_STR}/metrics", starlette_prometheus.metrics)
+
+    app.include_router(
+        log_endpoint.router, tags=["log"], prefix=f"{settings.API_V1_STR}/logs"
+    )
+    app.include_router(token.router, tags=["token"], prefix=f"{settings.API_V1_STR}")
+    app.include_router(home.router, tags=["home"], prefix=f"{settings.API_V1_STR}")
+    app.include_router(alive.router, tags=["alive"], prefix=f"{settings.API_V1_STR}")
+    app.include_router(
+        version.router, tags=["version"], prefix=f"{settings.API_V1_STR}"
+    )
+    app.include_router(login.router, tags=["login"], prefix=f"{settings.API_V1_STR}")
+    app.include_router(
+        users.router, tags=["users"], prefix=f"{settings.API_V1_STR}/users"
+    )
+    app.include_router(
+        items.router,
+        prefix=f"{settings.API_V1_STR}/items",
+        tags=["items"],
+        # dependencies=[Depends(get_token_header)],
+        # responses={404: {"description": "Not found"}},
+    )
+
+    # # app.include_router(guid.router, prefix="/guid", tags=["guid"])
+
+    # # SOURCE: https://fastapi.tiangolo.com/tutorial/sql-databases/#alternative-db-session-with-middleware
+    # # to we make sure the database session is always closed after the request. Even if there was an exception while processing the request.
+    # @app.middleware("http")
+    # async def db_session_middleware(request: Request, call_next):
+    #     """The middleware we'll add (just a function) will create a new SQLAlchemy SessionLocal for each request, add it to the request and then close it once the request is finished.
+
+    #     Arguments:
+    #         request {Request} -- [description]
+    #         call_next {[type]} -- [description]
+
+    #     Returns:
+    #         [type] -- FastAPI Response
+    #     """
+    #     # NOTE: request.state is a property of each Request object. It is there to store arbitrary objects attached to the request itself, like the database session in this case. You can read more about it in Starlette's docs about Request state.
+    #     # For us in this case, it helps us ensure a single database session is used through all the request, and then closed afterwards (in the middleware).
+    #     response = Response("Internal server error", status_code=500)
+    #     try:
+    #         request.state.db = Session()
+    #         response = await call_next(request)
+    #     finally:
+    #         request.state.db.close()
+    #     return response
+    app.add_middleware(DbSessionMiddleware)
+
+    return app
 
 
-# async def get_token_header(x_token: str = Header(...)):
-#     if x_token != "fake-super-secret-token":
-#         raise HTTPException(status_code=400, detail="X-Token header invalid")
+# SOURCE: https://fastapi.tiangolo.com/tutorial/sql-databases/#alternative-db-session-with-middleware
+# to we make sure the database session is always closed after the request. Even if there was an exception while processing the request.
+# SOURCE: https://www.starlette.io/middleware/
+class DbSessionMiddleware(BaseHTTPMiddleware):
+    """Alternate implementation for:
+
+    @app.middleware("http")
+    async def db_session_middleware(request: Request, call_next):
+        # NOTE: request.state is a property of each Request object. It is there to store arbitrary objects attached to the request itself, like the database session in this case. You can read more about it in Starlette's docs about Request state.
+        # For us in this case, it helps us ensure a single database session is used through all the request, and then closed afterwards (in the middleware).
+        response = Response("Internal server error", status_code=500)
+        try:
+            request.state.db = Session()
+            response = await call_next(request)
+        finally:
+            request.state.db.close()
+        return response
+
+    Arguments:
+        BaseHTTPMiddleware {[type]} -- [description]
+    """
+
+    async def dispatch(self, request: Request, call_next) -> Response:
+        response = Response("Internal server error", status_code=500)
+        try:
+            request.state.db = Session()
+            response = await call_next(request)
+        finally:
+            request.state.db.close()
+        return response
 
 
-app.add_route(f"{settings.API_V1_STR}/metrics", starlette_prometheus.metrics)
+class AddProcessTimeMiddleware(BaseHTTPMiddleware):
+    """Figure out how long it takes for a request to process.
 
-app.include_router(
-    log_endpoint.router, tags=["log"], prefix=f"{settings.API_V1_STR}/logs"
-)
-app.include_router(token.router, tags=["token"], prefix=f"{settings.API_V1_STR}")
-app.include_router(home.router, tags=["home"], prefix=f"{settings.API_V1_STR}")
-app.include_router(alive.router, tags=["alive"], prefix=f"{settings.API_V1_STR}")
-app.include_router(version.router, tags=["version"], prefix=f"{settings.API_V1_STR}")
-app.include_router(login.router, tags=["login"], prefix=f"{settings.API_V1_STR}")
-app.include_router(users.router, tags=["users"], prefix=f"{settings.API_V1_STR}/users")
-app.include_router(
-    items.router,
-    prefix=f"{settings.API_V1_STR}/items",
-    tags=["items"],
-    # dependencies=[Depends(get_token_header)],
-    # responses={404: {"description": "Not found"}},
-)
+    Arguments:
+        BaseHTTPMiddleware {[type]} -- [description]
+    """
 
-# app.include_router(guid.router, prefix="/guid", tags=["guid"])
+    # SOURCE: https://github.com/podhmo/individual-sandbox/blob/c666a27f8bacb8a56750c74998d80405b92cb4e8/daily/20191220/example_starlette/04fastapi-jinja2-with-middleware/test_main.py
+    async def dispatch(self, request: Request, call_next) -> Response:
+        start_time = time.time()
+        response = await call_next(request)
+        process_time = time.time() - start_time
+        response.headers["X-Process-Time"] = str(process_time)
+        return response
 
 
-@app.middleware("http")
-async def db_session_middleware(request: Request, call_next):
-    request.state.db = Session()
-    response = await call_next(request)
-    request.state.db.close()
-    return response
+# # SOURCE: https://github.com/nwcell/guid_tracker/blob/aef948336ba268aa06df7cc9e7e6768b08d0f363/src/guid/main.py
+# app = FastAPI(title="Ultron-8 Web Server")
+
+# logger.info(f" settings.DEBUG={settings.DEBUG}")
+
+# app.debug = settings.DEBUG
+# app.mount(
+#     "/static",
+#     StaticFiles(directory=str(Path(__file__).parent / "static")),
+#     name="static",
+# )
+
+# # CORS
+# origins = []
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_methods=[settings.BACKEND_CORS_ORIGINS],
+#     allow_headers=[settings.BACKEND_CORS_ORIGINS],
+#     allow_credentials=True,
+# )
+
+# app.add_middleware(starlette_prometheus.PrometheusMiddleware)
 
 
-# NOTE: from guid tracker
+# # -----------------------------------------------------------------------
+# # DISABLED: originally from guid_tracker
+# # -----------------------------------------------------------------------
+# # app.add_event_handler("startup", open_database_connection_pool)
+# # app.add_event_handler("shutdown", close_database_connection_pool)
+# # -----------------------------------------------------------------------
+
+# # app = FastAPI()
 
 
-# FIXME: Enable this
-# def creates_web_app():
-#     """Create the fastapi web application
-#     Returns:
-#         [fastapi.FastAPI]: the main application
-#     """
-
-#     logger.info(f"Create fastapi web application ...")
+# # async def get_token_header(x_token: str = Header(...)):
+# #     if x_token != "fake-super-secret-token":
+# #         raise HTTPException(status_code=400, detail="X-Token header invalid")
 
 
-#     app = FastAPI(title="Ultron-8 Web Server")
-#     app.debug = settings.DEBUG
-#     app.mount(
-#         "/static",
-#         StaticFiles(directory=str(Path(__file__).parent / "static")),
-#         name="static",
-#     )
+# app.add_route(f"{settings.API_V1_STR}/metrics", starlette_prometheus.metrics)
 
-#     app.add_middleware(
-#         CORSMiddleware, allow_origins=[settings.BACKEND_CORS_ORIGINS], allow_methods=[settings.BACKEND_CORS_ORIGINS], allow_headers=[settings.BACKEND_CORS_ORIGINS]
-#     )
-#     app.add_middleware(starlette_prometheus.PrometheusMiddleware)
+# app.include_router(
+#     log_endpoint.router, tags=["log"], prefix=f"{settings.API_V1_STR}/logs"
+# )
+# app.include_router(token.router, tags=["token"], prefix=f"{settings.API_V1_STR}")
+# app.include_router(home.router, tags=["home"], prefix=f"{settings.API_V1_STR}")
+# app.include_router(alive.router, tags=["alive"], prefix=f"{settings.API_V1_STR}")
+# app.include_router(version.router, tags=["version"], prefix=f"{settings.API_V1_STR}")
+# app.include_router(login.router, tags=["login"], prefix=f"{settings.API_V1_STR}")
+# app.include_router(users.router, tags=["users"], prefix=f"{settings.API_V1_STR}/users")
+# app.include_router(
+#     items.router,
+#     prefix=f"{settings.API_V1_STR}/items",
+#     tags=["items"],
+#     # dependencies=[Depends(get_token_header)],
+#     # responses={404: {"description": "Not found"}},
+# )
 
-#     app.add_event_handler("startup", open_database_connection_pool)
-#     app.add_event_handler("shutdown", close_database_connection_pool)
+# # app.include_router(guid.router, prefix="/guid", tags=["guid"])
 
 
-#     app.add_route("/metrics/", starlette_prometheus.metrics)
+# # # SOURCE: https://fastapi.tiangolo.com/tutorial/sql-databases/#alternative-db-session-with-middleware
+# # # to we make sure the database session is always closed after the request. Even if there was an exception while processing the request.
+# # @app.middleware("http")
+# # async def db_session_middleware(request: Request, call_next):
+# #     """The middleware we'll add (just a function) will create a new SQLAlchemy SessionLocal for each request, add it to the request and then close it once the request is finished.
 
-#     app.include_router(home.router)
-#     app.include_router(alive.router, tags=["alive"])
-#     app.include_router(version.router)
-#     app.include_router(users.router)
-#     app.include_router(
-#         items.router,
-#         prefix="/items",
-#         tags=["items"],
-#         dependencies=[Depends(get_token_header)],
-#         responses={404: {"description": "Not found"}},
-#     )
+# #     Arguments:
+# #         request {Request} -- [description]
+# #         call_next {[type]} -- [description]
 
-#     app.include_router(guid.router, prefix="/guid", tags=["guid"])
-#     return app
+# #     Returns:
+# #         [type] -- FastAPI Response
+# #     """
+# #     # NOTE: request.state is a property of each Request object. It is there to store arbitrary objects attached to the request itself, like the database session in this case. You can read more about it in Starlette's docs about Request state.
+# #     # For us in this case, it helps us ensure a single database session is used through all the request, and then closed afterwards (in the middleware).
+# #     response = Response("Internal server error", status_code=500)
+# #     try:
+# #         request.state.db = Session()
+# #         response = await call_next(request)
+# #     finally:
+# #         request.state.db.close()
+# #     return response
 
-# app = creates_web_app()
+
+# app.add_middleware(DbSessionMiddleware)
+
+# # NOTE: from guid tracker
+
+
+app = get_application()
 if __name__ == "__main__":
     import os
 

@@ -5,6 +5,7 @@
 #     import mock
 import json as jsonlib
 import logging
+import os
 import os.path
 import sys
 import unittest
@@ -20,9 +21,64 @@ from ultron8.yaml import yaml_dump_roundtrip
 from ultron8.yaml import yaml_load
 from ultron8.yaml import yaml_save
 
+
+# ######################################################################################
+# #SOURCE: https://github.com/gvbgduh/starlette-cbge/blob/c1c7b99b07f4cf21537a12b82526b9a34ff3100b/starlette_cbge/test_client.py
+# ######################################################################################
+# import asyncio
+
+# from types import TracebackType
+# from typing import Type
+
+# from requests_async import ASGISession
+# ######################################################################################
+# #SOURCE: https://github.com/gvbgduh/starlette-cbge/blob/c1c7b99b07f4cf21537a12b82526b9a34ff3100b/starlette_cbge/test_client.py -- end
+# ######################################################################################
+
+
 # from unittest.mock import patch, MagicMock, Mock
 
 LOGGER = logging.getLogger(__name__)
+
+
+# class AsyncTestClient(ASGISession):
+#     async def lifespan(self) -> None:
+#         scope = {"type": "lifespan"}
+#         try:
+#             await self.app(scope, self.receive_queue.get, self.send_queue.put)
+#         finally:
+#             await self.send_queue.put(None)
+
+#     async def wait_startup(self) -> None:
+#         await self.receive_queue.put({"type": "lifespan.startup"})
+#         message = await self.send_queue.get()
+#         if message is None:
+#             self.task.result()
+#         assert message["type"] == "lifespan.startup.complete"
+
+#     async def wait_shutdown(self) -> None:
+#         await self.receive_queue.put({"type": "lifespan.shutdown"})
+#         message = await self.send_queue.get()
+#         if message is None:
+#             self.task.result()
+#         assert message["type"] == "lifespan.shutdown.complete"
+#         await self.task
+
+#     async def __aenter__(self) -> ASGISession:
+#         loop = asyncio.get_event_loop()
+#         self.send_queue = asyncio.Queue()  # type: asyncio.Queue
+#         self.receive_queue = asyncio.Queue()  # type: asyncio.Queue
+#         self.task = loop.create_task(self.lifespan())
+#         await self.wait_startup()
+#         return self
+
+#     async def __aexit__(
+#         self,
+#         exc_type: Type[BaseException] = None,
+#         exc_value: BaseException = None,
+#         traceback: TracebackType = None,
+#     ) -> None:
+#         await self.wait_shutdown()
 
 
 def get_parent_dir():

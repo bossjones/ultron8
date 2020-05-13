@@ -17,6 +17,10 @@ Package  | Description | Link
 
 # Api
 
-1. Create crud classes for all of the models
-2. Move everything from routes to entrypoint
-3. Make sure to update web.py w/ new paths to entrypoint
+1. Create crud classes for all of the models [ ]
+2. Move everything from routes to entrypoint [ ]
+3. Make sure to update web.py w/ new paths to entrypoint [ ]
+4. Update access-token endpoint to look like full-stack-postgres ( add tests as well ) [ ]
+5. Validate output from jwt token on jwt.io
+6. Add more u8client testing
+7. Update readme with more valuable information
