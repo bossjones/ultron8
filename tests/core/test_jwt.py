@@ -1,17 +1,16 @@
-import logging
 import datetime
 from datetime import timedelta
+import logging
 import os
-import pytest
-from tests.conftest import fixtures_path
-import ultron8
-from ultron8.api import settings
-from ultron8.api import crud
-from ultron8.api.core import jwt
-
-import jwt as pyjwt
 
 from freezegun import freeze_time
+import jwt as pyjwt
+import pytest
+
+from tests.conftest import fixtures_path
+import ultron8
+from ultron8.api import crud, settings
+from ultron8.api.core import jwt
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +32,23 @@ class TestCreateAccessToken(object):
         )
 
         expire_expected = datetime.datetime.utcnow() + access_token_expires
+
+        test_data = {"user_id": user.id, "exp": expire_expected, "sub": "access"}
+
+        expected_token = pyjwt.encode(test_data, settings.SECRET_KEY, algorithm="HS256")
+
+        assert a_token == expected_token
+
+    def test_create_access_token_without_timedelta(
+        self, first_superuser_username_and_password_fixtures, db
+    ):
+        username, password = first_superuser_username_and_password_fixtures
+
+        user = crud.user.authenticate(db, email=username, password=password)
+
+        a_token = jwt.create_access_token(data={"user_id": user.id})
+
+        expire_expected = datetime.datetime.utcnow() + timedelta(minutes=15)
 
         test_data = {"user_id": user.id, "exp": expire_expected, "sub": "access"}
 
