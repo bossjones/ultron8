@@ -354,3 +354,32 @@ def not_raises(exception):
 #####################################################
 # SOURCE: https://github.com/thorwolpert/lear-gh/blob/596930fd2a6b77ab303c73db53d608c89de97110/queue_services/common/tests/conftest.py
 #####################################################
+
+
+@pytest.fixture
+def create_mocked_ultron_session(request, mocker):
+    """Use mock to auto-spec a UltronSession and return an instance."""
+    from ultron8.u8client import session
+
+    MockedSession = mocker.create_autospec(session.UltronSession)
+    # request.cls.fastapi_client = fast_client
+    yield MockedSession()
+
+
+# @pytest.fixture
+# def create_session_mock(mocker, *args):
+#     """Create a mocked session and add headers and auth attributes."""
+#     session = self.create_mocked_session()
+#     base_attrs = ["headers", "auth"]
+#     attrs = dict(
+#         (key, mock.Mock()) for key in set(args).union(base_attrs)
+#     )
+#     session.configure_mock(**attrs)
+#     session.delete.return_value = None
+#     session.get.return_value = None
+#     session.patch.return_value = None
+#     session.post.return_value = None
+#     session.put.return_value = None
+#     session.has_auth.return_value = True
+#     session.build_url = self.get_build_url_proxy()
+#     return session
