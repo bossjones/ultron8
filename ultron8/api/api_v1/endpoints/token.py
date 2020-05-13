@@ -42,7 +42,7 @@ def get_token(
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {
         "access_token": create_access_token(
-            data={"user_id": user.id}, expires_delta=access_token_expires
+            user.id, expires_delta=access_token_expires
         ),
         "token_type": "bearer",
     }

@@ -1,5 +1,5 @@
 # SOURCE: # SOURCE: https://github.com/bergran/fast-api-project-template
-import jwt
+from jose import jwt
 from fastapi import Depends, HTTPException
 from starlette import status
 from starlette.requests import Request

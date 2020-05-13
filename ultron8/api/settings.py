@@ -40,9 +40,9 @@ def getenv_boolean(var_name: str, default_value: bool = False) -> bool:
 
 API_V1_STR = "/v1"
 
-DEFAULT_SECRET_KEY = b"supersecretkey"
+DEFAULT_SECRET_KEY = "supersecretkey"
 
-SECRET_KEY = os.getenvb(b"SECRET_KEY", DEFAULT_SECRET_KEY)
+SECRET_KEY = os.getenv("SECRET_KEY", DEFAULT_SECRET_KEY)
 if not SECRET_KEY:
     SECRET_KEY = os.urandom(32)
 

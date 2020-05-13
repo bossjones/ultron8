@@ -5,9 +5,13 @@ from pathlib import Path
 from typing import Optional
 
 import emails
-import jwt
+
+# import jwt
+from jose import jwt
 from emails.template import JinjaTemplate
-from jwt.exceptions import InvalidTokenError
+
+# from jwt.exceptions import InvalidTokenError
+from ultron8.exceptions.jwt import InvalidTokenError
 
 from ultron8.api import settings
 
