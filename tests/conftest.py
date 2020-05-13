@@ -9,6 +9,7 @@ import base64
 import datetime
 import os
 from pathlib import Path
+from contextlib import contextmanager
 
 import pytest
 from starlette.testclient import TestClient
@@ -300,3 +301,85 @@ def db() -> typing.Generator:
 
 #     await truncate_tables()
 #     yield
+
+
+@pytest.fixture(scope="function")
+def first_superuser_username_and_password_fixtures():
+    yield settings.FIRST_SUPERUSER, settings.FIRST_SUPERUSER_PASSWORD
+
+
+#####################################################
+# SOURCE: https://github.com/thorwolpert/lear-gh/blob/596930fd2a6b77ab303c73db53d608c89de97110/queue_services/common/tests/conftest.py
+#####################################################
+EPOCH_DATETIME = datetime.datetime.utcfromtimestamp(0)
+FROZEN_DATETIME = datetime.datetime(2001, 8, 5, 7, 7, 58, 272362)
+
+
+def add_years(d, years):
+    """Return a date that's `years` years after the date (or datetime).
+    Return the same calendar date (month and day) in the destination year,
+    if it exists, otherwise use the following day
+    (thus changing February 29 to February 28).
+    """
+    try:
+        return d.replace(year=d.year + years)
+    except ValueError:
+        return d + (datetime.date(d.year + years, 3, 1) - datetime.date(d.year, 3, 1))
+
+
+# fixture to freeze utcnow to a fixed date-time
+@pytest.fixture
+def freeze_datetime_utcnow(monkeypatch):
+    """Fixture to return a static time for utcnow()."""
+
+    class _Datetime:
+        @classmethod
+        def utcnow(cls):
+            return FROZEN_DATETIME
+
+    monkeypatch.setattr(datetime, "datetime", _Datetime)
+
+
+@contextmanager
+def not_raises(exception):
+    """Corallary to the pytest raises builtin.
+    Assures that an exception is NOT thrown.
+    """
+    try:
+        yield
+    except exception:
+        raise pytest.fail(f"DID RAISE {exception}")
+
+
+#####################################################
+# SOURCE: https://github.com/thorwolpert/lear-gh/blob/596930fd2a6b77ab303c73db53d608c89de97110/queue_services/common/tests/conftest.py
+#####################################################
+
+
+@pytest.fixture
+def create_mocked_ultron_session(request, mocker):
+    """Use mock to auto-spec a UltronSession and return an instance."""
+    from ultron8.u8client import session
+
+    MockedSession = mocker.create_autospec(session.UltronSession)
+    # request.cls.fastapi_client = fast_client
+    yield MockedSession()
+
+
+# @pytest.fixture
+# def create_session_mock(mocker, *args):
+#     """Create a mocked session and add headers and auth attributes."""
+#     session = self.create_mocked_session()
+#     base_attrs = ["headers", "auth"]
+#     attrs = dict(
+#         (key, mock.Mock()) for key in set(args).union(base_attrs)
+#     )
+#     session.configure_mock(**attrs)
+#     session.delete.return_value = None
+#     session.get.return_value = None
+#     session.patch.return_value = None
+#     session.post.return_value = None
+#     session.put.return_value = None
+#     session.has_auth.return_value = True
+#     session.build_url = self.get_build_url_proxy()
+#     return session

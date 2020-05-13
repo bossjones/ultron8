@@ -120,3 +120,4 @@ Faker
 
 # Introspect and display the logger tree inside "logging"
 logging_tree
+python-jose

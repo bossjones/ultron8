@@ -1,5 +1,5 @@
 # SOURCE: # SOURCE: https://github.com/bergran/fast-api-project-template
-import jwt
+from jose import jwt
 from fastapi import Depends, HTTPException
 from starlette import status
 from starlette.requests import Request
@@ -7,6 +7,7 @@ from starlette.requests import Request
 # from apps.token.depends.get_jwt import get_jwt
 from ultron8.api.depends.get_jwt import get_jwt
 from ultron8.api import settings
+from ultron8.exceptions.jwt import InvalidSignatureError
 
 
 def get_token_decoded(request: Request, jwt_token: str = Depends(get_jwt)) -> str:
@@ -31,7 +32,7 @@ def get_token_decoded(request: Request, jwt_token: str = Depends(get_jwt)) -> st
         token = jwt.decode(jwt_token, settings.JWT_SECRET_KEY, algorithms=["HS256"])
     except jwt.ExpiredSignatureError as ex:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ex))
-    except jwt.InvalidSignatureError as ex:
+    except InvalidSignatureError as ex:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ex))
 
     return token
