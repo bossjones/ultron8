@@ -23,4 +23,4 @@ Package  | Description | Link
 4. Update access-token endpoint to look like full-stack-postgres ( add tests as well ) [ ]
 5. Validate output from jwt token on jwt.io
 6. Add more u8client testing
-7.
+7. Update readme with more valuable information

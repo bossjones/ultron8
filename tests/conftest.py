@@ -41,6 +41,11 @@ from starlette.testclient import TestClient as PureClient
 from starlette.testclient import TimeOut
 
 from ultron8.web import get_application
+from ultron8.api import settings
+
+from tests.utils.user import authentication_token_from_email
+
+# from tests.utils.user import get_superuser_token_headers
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -240,18 +245,58 @@ def fastapi_client(request, fastapi_app) -> typing.Generator:
 
 # SOURCE: https://github.com/KyriakosFrang/sandbox/blob/c98be415c6b7e01768c4ab2d086e147cdc86757c/fastAPI_sandbox/backend/app/app/tests/conftest.py
 # @pytest.fixture(scope="module")
-# def superuser_token_headers(client: TestClient) -> Dict[str, str]:
-#     return get_superuser_token_headers(client)
+# def superuser_token_headers(fastapi_client: TestClient) -> Dict[str, str]:
+#     return get_superuser_token_headers()
 
 
 # SOURCE: https://github.com/KyriakosFrang/sandbox/blob/c98be415c6b7e01768c4ab2d086e147cdc86757c/fastAPI_sandbox/backend/app/app/tests/conftest.py
-# @pytest.fixture(scope="module")
-# def normal_user_token_headers(client: TestClient, db: Session) -> Dict[str, str]:
-#     return authentication_token_from_email(
-#         client=client, email=settings.EMAIL_TEST_USER, db=db
-#     )
+@pytest.fixture(scope="module")
+def normal_user_token_headers(
+    fastapi_client: TestClient, db_session: SessionLocal
+) -> Dict[str, str]:
+    return authentication_token_from_email(
+        client=fastapi_client, email=settings.EMAIL_TEST_USER, db_session=db_session
+    )
 
 
 @pytest.fixture(scope="session")
 def db() -> typing.Generator:
     yield SessionLocal()
+
+
+# SOURCE: https://github.com/gvbgduh/starlette-cbge/blob/c1c7b99b07f4cf21537a12b82526b9a34ff3100b/tests/conftest.py
+# @pytest.mark.asyncio
+# @pytest.fixture(scope="session")
+# async def async_client() -> typing.AsyncGenerator:
+#     """
+#     Async test client
+#     """
+#     from example_app.app import app
+
+#     async with AsyncTestClient(app=app) as async_client:
+#         yield async_client
+
+
+# @pytest.fixture(scope="session", autouse=True)
+# async def create_db_tables() -> typing.AsyncGenerator:
+#     """
+#     Creates tables using the helper func from the example app.
+#     Also drops them when tests are complete.
+#     """
+#     from example_app.db import create_tables, drop_tables
+
+#     await create_tables()
+#     yield
+#     await drop_tables()
+
+
+# @pytest.fixture(scope="function", autouse=True)
+# async def truncate_tables() -> typing.AsyncGenerator:
+#     """
+#     Truncates tables before every test,
+#     basically to allow transactional operations complete.
+#     """
+#     from example_app.db import truncate_tables
+
+#     await truncate_tables()
+#     yield
