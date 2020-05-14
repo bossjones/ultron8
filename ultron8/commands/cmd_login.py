@@ -58,7 +58,7 @@ def cli(ctx, cluster, email, password):
     """
     Login CLI. Used to interact with ultron8 api.
     """
-    if do_get_flag("cli.flags.debug"):
+    if ctx.obj["debug"]:
         click.echo("Debug mode initiated")
         set_trace()
 
@@ -96,7 +96,7 @@ def cli(ctx, cluster, email, password):
 @click.pass_context
 def token(ctx):
     """token command for connecting to a cluster"""
-    if do_get_flag("cli.flags.debug"):
+    if ctx.obj["debug"]:
         click.echo("Debug mode initiated")
         set_trace()
 
