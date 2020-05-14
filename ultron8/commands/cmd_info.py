@@ -24,7 +24,7 @@ def _info() -> None:
     logger.info("Ultron8 is running")
 
 
-@click.command("info", short_help="Get info on running Ultron8 process")
+@click.group("info", short_help="Get info on running Ultron8 process")
 @click.option("--fact", multiple=True, help="Set a fact, like --fact=color:blue.")
 @click.pass_context
 def cli(ctx, fact: Tuple[str]):

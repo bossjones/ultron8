@@ -19,7 +19,7 @@ logger = getLogger(__name__)
 stdin, stdout = sys.stdin, sys.stdout
 
 
-@click.command("login", short_help="Login to ultron8 cluster")
+@click.group("login", short_help="Login to ultron8 cluster")
 @click.option("--user", prompt="Username", help="Username")
 @click.option(
     "--password",
@@ -43,3 +43,22 @@ def cli(ctx, user, password, password_stdin):
         set_trace()
 
     click.echo("BLAH")
+
+
+@cli.command("token")
+@click.pass_context
+def token(ctx):
+    """token command for Workspace"""
+    if do_get_flag("cli.flags.debug"):
+        click.echo("Debug mode initiated")
+        set_trace()
+
+    logger.debug("token show subcommand")
+
+    # ctx.obj["workspace"].tree()
+
+
+# TODO: Create a function to check for access token
+# TODO: Create a function request a new access token if it does not exist
+# TODO: Update session headers to have access token after you pull it
+# TODO: Save access token to disk and use that to pull/verify before making calls

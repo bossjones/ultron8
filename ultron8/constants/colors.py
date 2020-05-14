@@ -1,0 +1,5 @@
+COLOR_WARNING = "red"
+COLOR_DANGER = "red"
+COLOR_SUCCESS = "green"
+COLOR_CAUTION = "yellow"
+COLOR_STABLE = "blue"

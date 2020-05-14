@@ -16,7 +16,7 @@ logger = getLogger(__name__)
 stdin, stdout = sys.stdin, sys.stdout
 
 
-@click.command("init", short_help="Init cmd to setup workspace etc for ultron8.")
+@click.group("init", short_help="Init cmd to setup workspace etc for ultron8.")
 @click.pass_context
 def cli(ctx):
     """init cmd to setup workspace etc for ultron8."""
