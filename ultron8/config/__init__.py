@@ -327,6 +327,13 @@ class ConfigManager(object):
             self.__class__.__name__, self.get_config_dir(), self.get_filename()
         )
 
+    def read(self):
+        """ Read data from disk and update the proper container objects after that is done."""
+        # first read from the api and update that data
+        self.api.read()
+        # Now update attributes for self.data
+        self.data = get_config(_filename=self.get_cfg_file_path())
+
 
 if __name__ == "__main__":
     # Simple test gets and shows config.

@@ -461,6 +461,100 @@ clusters:
             shutil.rmtree(base, ignore_errors=True)
 
 
+# TODO: Fix this so that we can make updates to the config, then save it to disk
+#     def test_read_updates_data_attr(self, mocker, monkeypatch):
+#         # create fake config directory
+#         base = tempfile.mkdtemp()
+#         fake_dir_root = tempfile.mkdtemp(prefix="config", dir=base)
+#         fake_dir = os.path.join(
+#             fake_dir_root, "ultron8"
+#         )  # eg. /home/developer/.config/ultron8
+#         full_file_name = "smart.yaml"
+#         path = os.path.join(fake_dir, full_file_name)
+
+#         # create fake fixture data to be returned as list(<fake_dir>)
+#         default_path = os.path.abspath(os.path.expanduser(fake_dir))
+#         expected_paths = []
+#         expected_paths.append(default_path)
+
+#         # temporarily patch environment to include fake_dir
+#         monkeypatch.setenv("ULTRON8DIR", fake_dir)
+
+#         # write temporary data to disk
+#         example_data = """
+# ---
+# clusters_path: clusters/
+# cache_path: cache/
+# workspace_path: workspace/
+# templates_path: templates/
+
+# flags:
+#     debug: 1
+#     verbose: 1
+#     keep: 1
+#     stderr: 1
+#     repeat: 0
+
+# clusters:
+#     instances:
+#         local:
+#             url: 'http://localhost:11267'
+#             token: 'memememememememmemememe'
+# """
+
+#         try:
+#             #  need to make dir first
+#             os.makedirs(fake_dir)
+#             with open(path, "wt") as f:
+#                 f.write(example_data)
+
+#             config._CONFIG = None
+#             cm = config.ConfigManager()
+
+#             print(cm)
+
+#             # verify we can access the data object
+#             assert cm.data.clusters.instances.local.token == "memememememememmemememe"
+#             assert cm.data.flags.debug == 1
+#             assert cm.data.flags.verbose == 1
+#             assert cm.data.flags.keep == 1
+#             assert cm.data.flags.stderr == 1
+#             assert cm.data.flags.repeat == 0
+
+#             # verify we can access the config api as well
+#             assert cm.api._env_var == "ULTRON8DIR"
+
+#             assert (
+#                 cm.get_config_dir() == fake_dir
+#             )  # eg. /Users/bossjones/.config/ultron8
+#             assert cm.get_filename() == "smart.yaml"  # eg. smart.yaml
+#             assert (
+#                 cm.get_cfg_file_path() == path
+#             )  # eg. /Users/bossjones/.config/ultron8/smart.yaml
+#             assert str(repr(cm)) == "<{}: {}/{}>".format(
+#                 cm.__class__.__name__, cm.get_config_dir(), cm.get_filename()
+#             )
+
+#             # test saving data
+#             cm.data["bossjones"] = 1911
+#             cm.save()
+
+#             # nuke bossjones key out of the existing data object.
+#             del cm.data["bossjones"]
+
+#             # read from disk
+#             cm.read()
+
+#             # ensure cm updated data with the proper values from disk.
+#             assert cm.data.bossjones == 1911
+
+#             assert Path(cm.get_cfg_file_path()).resolve().is_file()
+
+#         finally:
+#             os.unlink(path)
+#             shutil.rmtree(base, ignore_errors=True)
+
+
 #############################################
 #############################################
 #############################################

@@ -12,6 +12,7 @@ from ultron8.cli import set_trace
 from ultron8.config import do_get_flag
 
 from ultron8.constants import colors
+from ultron8.config import show_config
 
 logger = getLogger(__name__)
 
@@ -60,5 +61,4 @@ def show(ctx):
     click.secho(
         "Config Path: {}\n".format(cm.get_cfg_file_path()), fg=colors.COLOR_SUCCESS
     )
-    # click.secho("\n")
-    click.secho("{}".format(cm.data))
+    click.secho("{}".format(cm.api.dump()))
