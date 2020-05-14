@@ -70,7 +70,9 @@ def cli(ctx, cluster, email, password):
     ctx.obj["login"]["password"] = password
 
     ctx.obj["client"].set_api_endpoint(
-        ctx.obj["configmanager"].data.clusters.instances.local.url
+        ctx.obj["configmanager"].data["clusters"]["instances"][
+            ctx.obj["login"]["cluster"]
+        ]["url"]
     )
 
     click.secho(
