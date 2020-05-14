@@ -17,6 +17,7 @@ import subprocess
 import sys
 import time
 import traceback
+import collections
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -367,3 +368,123 @@ def get_object(qs):
         return None
     except NoResultFound:
         return None
+
+
+# from unittest import TestCase
+# SOURCE: https://gist.github.com/angstwad/bf22d1822c38a92ec0a9
+def dict_merge(dct, merge_dct, add_keys=True):
+    """ Recursive dict merge. Inspired by :meth:``dict.update()``, instead of
+    updating only top-level keys, dict_merge recurses down into dicts nested
+    to an arbitrary depth, updating keys. The ``merge_dct`` is merged into
+    ``dct``.
+
+    This version will return a copy of the dictionary and leave the original
+    arguments untouched.
+
+    The optional argument ``add_keys``, determines whether keys which are
+    present in ``merge_dict`` but not ``dct`` should be included in the
+    new dict.
+
+    Args:
+        dct (dict) onto which the merge is executed
+        merge_dct (dict): dct merged into dct
+        add_keys (bool): whether to add new keys
+
+    Returns:
+        dict: updated dict
+    """
+    dct = dct.copy()
+    if not add_keys:
+        merge_dct = {k: merge_dct[k] for k in set(dct).intersection(set(merge_dct))}
+
+    for k, v in merge_dct.items():
+        if (
+            k in dct
+            and isinstance(dct[k], dict)
+            and isinstance(merge_dct[k], collections.Mapping)
+        ):
+            dct[k] = dict_merge(dct[k], merge_dct[k], add_keys=add_keys)
+        else:
+            dct[k] = merge_dct[k]
+
+    return dct
+
+
+# class DictMergeTestCase(TestCase):
+#     def test_merges_dicts(self):
+#         a = {
+#             'a': 1,
+#             'b': {
+#                 'b1': 2,
+#                 'b2': 3,
+#             },
+#         }
+#         b = {
+#             'a': 1,
+#             'b': {
+#                 'b1': 4,
+#             },
+#         }
+
+#         assert dict_merge(a, b)['a'] == 1
+#         assert dict_merge(a, b)['b']['b2'] == 3
+#         assert dict_merge(a, b)['b']['b1'] == 4
+
+#     def test_inserts_new_keys(self):
+#         """Will it insert new keys by default?"""
+#         a = {
+#             'a': 1,
+#             'b': {
+#                 'b1': 2,
+#                 'b2': 3,
+#             },
+#         }
+#         b = {
+#             'a': 1,
+#             'b': {
+#                 'b1': 4,
+#                 'b3': 5
+#             },
+#             'c': 6,
+#         }
+
+#         assert dict_merge(a, b)['a'] == 1
+#         assert dict_merge(a, b)['b']['b2'] == 3
+#         assert dict_merge(a, b)['b']['b1'] == 4
+#         assert dict_merge(a, b)['b']['b3'] == 5
+#         assert dict_merge(a, b)['c'] == 6
+
+#     def test_does_not_insert_new_keys(self):
+#         """Will it avoid inserting new keys when required?"""
+#         a = {
+#             'a': 1,
+#             'b': {
+#                 'b1': 2,
+#                 'b2': 3,
+#             },
+#         }
+#         b = {
+#             'a': 1,
+#             'b': {
+#                 'b1': 4,
+#                 'b3': 5,
+#             },
+#             'c': 6,
+#         }
+
+#         assert dict_merge(a, b, add_keys=False)['a'] == 1
+#         assert dict_merge(a, b, add_keys=False)['b']['b2'] == 3
+#         assert dict_merge(a, b, add_keys=False)['b']['b1'] == 4
+#         try:
+#             assert dict_merge(a, b, add_keys=False)['b']['b3'] == 5
+#         except KeyError:
+#             pass
+#         else:
+#             raise Exception('New keys added when they should not be')
+
+#         try:
+#             assert dict_merge(a, b, add_keys=False)['b']['b3'] == 6
+#         except KeyError:
+#             pass
+#         else:
+#             raise Exception('New keys added when they should not be')

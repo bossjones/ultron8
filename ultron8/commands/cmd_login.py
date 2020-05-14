@@ -1,3 +1,5 @@
+# Example usage:  ultronctl --debug login --cluster=local --email=admin@ultron8.com --password=password token
+
 from typing import Any
 from typing import Tuple
 
@@ -14,27 +16,45 @@ from ultron8.logging_init import getLogger
 from ultron8.cli import set_trace, set_fact_flags
 from ultron8.config import do_get_flag, do_set_flag
 
+from ultron8.constants import colors
+
 logger = getLogger(__name__)
 
 stdin, stdout = sys.stdin, sys.stdout
 
+# SOURCE: https://stackoverflow.com/questions/2088056/get-kwargs-inside-function
+def showargs(function):
+    """Get kwargs Inside Function
+
+    Arguments:
+        function {[type]} -- [description]
+    """
+
+    def inner(*args, **kwargs):
+        return function((args, kwargs), *args, **kwargs)
+
+    return inner
+
 
 @click.group("login", short_help="Login to ultron8 cluster")
-@click.option("--user", prompt="Username", help="Username")
+@click.option(
+    "--cluster",
+    prompt="Cluster Name",
+    confirmation_prompt=False,
+    help="Cluster Name eg 'local'",
+)
+@click.option(
+    "--email", prompt="Email", confirmation_prompt=False, help="Email",
+)
 @click.option(
     "--password",
     prompt="Password",
     hide_input=True,
-    confirmation_prompt=True,
+    confirmation_prompt=False,
     help="Password",
 )
-@click.option(
-    "--password-stdin",
-    prompt="Take the password from stdin",
-    help="Take the password from stdin",
-)
 @click.pass_context
-def cli(ctx, user, password, password_stdin):
+def cli(ctx, cluster, email, password):
     """
     Login CLI. Used to interact with ultron8 api.
     """
@@ -42,20 +62,51 @@ def cli(ctx, user, password, password_stdin):
         click.echo("Debug mode initiated")
         set_trace()
 
-    click.echo("BLAH")
+    args = {}
+
+    ctx.obj["login"] = args
+    ctx.obj["login"]["cluster"] = cluster
+    ctx.obj["login"]["email"] = email
+    ctx.obj["login"]["password"] = password
+
+    ctx.obj["client"].set_api_endpoint(
+        ctx.obj["configmanager"].data.clusters.instances.local.url
+    )
+
+    click.secho(
+        "Client endpoints: {}\n".format(ctx.obj["client"].endpoints),
+        fg=colors.COLOR_SUCCESS,
+    )
+
+    if ctx.obj["debug"]:
+        click.secho(
+            "User: {}\n".format(ctx.obj["login"]["email"]), fg=colors.COLOR_SUCCESS
+        )
+        click.secho(
+            "Cluster: {}\n".format(ctx.obj["login"]["cluster"]), fg=colors.COLOR_SUCCESS
+        )
+        click.secho(
+            "Cluster url: {}\n".format(ctx.obj["client"].api_endpoint),
+            fg=colors.COLOR_SUCCESS,
+        )
 
 
+# @showargs
 @cli.command("token")
 @click.pass_context
 def token(ctx):
-    """token command for Workspace"""
+    """token command for connecting to a cluster"""
     if do_get_flag("cli.flags.debug"):
         click.echo("Debug mode initiated")
         set_trace()
 
-    logger.debug("token show subcommand")
+    click.secho("login token subcommand", fg=colors.COLOR_SUCCESS)
 
-    # ctx.obj["workspace"].tree()
+    response = ctx.obj["client"]._post_login_access_token(
+        ctx.obj["login"]["email"], ctx.obj["login"]["password"]
+    )
+
+    click.secho("response: {}\n".format(response), fg=colors.COLOR_SUCCESS)
 
 
 # TODO: Create a function to check for access token

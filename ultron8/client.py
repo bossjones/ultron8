@@ -55,6 +55,27 @@ class UltronAPI:
         else:
             self.jwt_token = None
 
+    def _update_endpoints(self):
+        logger.debug("Refreshing client endpoints ....")
+        self.endpoints["base"] = self.api_endpoint
+        self.api_url = f"{self.api_endpoint}{settings.API_V1_STR}"
+        self.endpoints["api"] = f"{self.api_url}"
+        self.endpoints["login"] = f"{self.api_url}/login"
+        self.endpoints["logs"] = f"{self.api_url}/logs"
+        self.endpoints["token"] = f"{self.api_url}/token"
+        self.endpoints["home"] = f"{self.api_url}/"
+        self.endpoints["alive"] = f"{self.api_url}/alive"
+        self.endpoints["version"] = f"{self.api_url}/version"
+        self.endpoints["users"] = f"{self.api_url}/users"
+        self.endpoints["items"] = f"{self.api_url}/items"
+        logger.debug("Client endpoints refreshed....")
+
+    def set_api_endpoint(self, v):
+        logger.debug("Old api_endpoint: {}".format(self.api_endpoint))
+        self.api_endpoint = v.rstrip("/")
+        self._update_endpoints()
+        logger.debug("New api_endpoint: {}".format(self.api_endpoint))
+
     def _headers(self) -> dict:
         return {
             "accept": "application/json",
@@ -145,6 +166,6 @@ class UltronAPI:
             raise AssertionError("Failed to get new access token")
 
         tokens = r.json()
-        a_token = tokens["access_token"]
-        headers = {"Authorization": f"Bearer {a_token}"}
-        return r.json()
+        # a_token = tokens["access_token"]
+        # headers = {"Authorization": f"Bearer {a_token}"}
+        return tokens
