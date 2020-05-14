@@ -22,13 +22,29 @@ import subprocess
 import sys
 import time
 import traceback
+import collections
+
 from pathlib import Path
 from urllib.parse import urlparse
 
-log = logging.getLogger(__name__)
+from fastapi import HTTPException
+from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
+from starlette import status
+
+LOGGER = logging.getLogger(__name__)
 
 SEPARATOR_CHARACTER_DEFAULT = "-"
 SEPARATOR_LENGTH_DEFAULT = 40
+
+# SOURCE: python 3 OOP book
+# def log_calls(func):
+#     def wrapper(*args, **kwargs):
+#         now = time.time()
+#         print("Calling {0} with {1} and {2}".format(func.__name__, args, kwargs))
+#         return_value = func(*args, **kwargs)
+#         print("Executed {0} in {1}ms".format(func.__name__, time.time() - now))
+#         return return_value
+#     return wrapper
 
 
 def maybe_decode(maybe_string):
@@ -60,7 +76,7 @@ def flock(fd):
     try:
         fcntl.lockf(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except BlockingIOError as e:  # locked by someone else
-        log.debug(f"Locked by another process: {fd}")
+        LOGGER.debug(f"Locked by another process: {fd}")
         raise e
 
     try:
@@ -101,20 +117,20 @@ def mkdir_p(path):
     p = Path(path)
     p.mkdir(parents=True, exist_ok=True)
     d = dir_exists(path)
-    log.info("Verify mkdir_p ran: {}".format(d))
+    LOGGER.info("Verify mkdir_p ran: {}".format(d))
 
 
 def dir_exists(path):
     p = Path(path)
     if not p.is_dir():
-        log.error("This is not a dir: {}".format(path))
+        LOGGER.error("This is not a dir: {}".format(path))
         return False
     return True
 
 
 def mkdir_if_does_not_exist(path):
     if not dir_exists(path):
-        log.error("Dir does not exist, creating ... : {}".format(path))
+        LOGGER.error("Dir does not exist, creating ... : {}".format(path))
         mkdir_p(path)
         return True
     return False
@@ -404,3 +420,62 @@ def pquery(command, stdin=None, **kwargs):
 #         self.run = run_with_except_hook
 
 #     threading.Thread.__init__ = init
+
+# SOURCE: https://github.com/bergran/fast-api-project-template/blob/master/README.md
+def get_object_or_404(qs):
+    try:
+        return qs.one()
+    except MultipleResultsFound:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except NoResultFound:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+
+# SOURCE: https://github.com/bergran/fast-api-project-template/blob/master/README.md
+def get_object(qs):
+    try:
+        return qs.one()
+    except MultipleResultsFound:
+        return None
+    except NoResultFound:
+        return None
+
+
+# from unittest import TestCase
+# SOURCE: https://gist.github.com/angstwad/bf22d1822c38a92ec0a9
+def dict_merge(dct, merge_dct, add_keys=True):
+    """ Recursive dict merge. Inspired by :meth:``dict.update()``, instead of
+    updating only top-level keys, dict_merge recurses down into dicts nested
+    to an arbitrary depth, updating keys. The ``merge_dct`` is merged into
+    ``dct``.
+
+    This version will return a copy of the dictionary and leave the original
+    arguments untouched.
+
+    The optional argument ``add_keys``, determines whether keys which are
+    present in ``merge_dict`` but not ``dct`` should be included in the
+    new dict.
+
+    Args:
+        dct (dict) onto which the merge is executed
+        merge_dct (dict): dct merged into dct
+        add_keys (bool): whether to add new keys
+
+    Returns:
+        dict: updated dict
+    """
+    dct = dct.copy()
+    if not add_keys:
+        merge_dct = {k: merge_dct[k] for k in set(dct).intersection(set(merge_dct))}
+
+    for k, v in merge_dct.items():
+        if (
+            k in dct
+            and isinstance(dct[k], dict)
+            and isinstance(merge_dct[k], collections.Mapping)
+        ):
+            dct[k] = dict_merge(dct[k], merge_dct[k], add_keys=add_keys)
+        else:
+            dct[k] = merge_dct[k]
+
+    return dct

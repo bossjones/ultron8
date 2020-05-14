@@ -24,3 +24,13 @@ Package  | Description | Link
 5. Validate output from jwt token on jwt.io
 6. Add more u8client testing
 7. Update readme with more valuable information
+
+
+# Testing
+
+1. xunit style testing?
+   1. [How do I correctly setup and teardown my pytest class with tests?](https://stackoverflow.com/questions/26405380/how-do-i-correctly-setup-and-teardown-my-pytest-class-with-tests)
+   2. [How to test a class' inherited methods in pytest](https://stackoverflow.com/questions/46040478/how-to-test-a-class-inherited-methods-in-pytest)
+   3. OPTIONAL. [passing a py.test fixture between test files in a module](https://stackoverflow.com/questions/43061100/passing-a-py-test-fixture-between-test-files-in-a-module/43061876#43061876)
+   4. (PYTEST: classic xunit-style setup)[https://docs.pytest.org/en/latest/xunit_setup.html#method-and-function-level-setup-teardown]
+   4. (pytest fixtures: explicit, modular, scalable)[https://docs.pytest.org/en/latest/fixture.html#fixture]

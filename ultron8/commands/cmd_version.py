@@ -25,7 +25,7 @@ def _version() -> None:
     logger.info("f{__version__}")
 
 
-@click.command("version", short_help="Get version")
+@click.group("version", short_help="Get version")
 @click.pass_context
 def cli(ctx):
     """Get version of running Ultron8 process."""

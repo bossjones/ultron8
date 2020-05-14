@@ -21,7 +21,7 @@ logger = getLogger(__name__)
 stdin, stdout = sys.stdin, sys.stdout
 
 
-@click.command("dummy", short_help="Dummy command, doesn't do anything.")
+@click.group("dummy", short_help="Dummy command, doesn't do anything.")
 @click.pass_context
 def cli(ctx):
     """

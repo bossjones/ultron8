@@ -17,7 +17,7 @@ logger = getLogger(__name__)
 stdin, stdout = sys.stdin, sys.stdout
 
 
-@click.command("user", short_help="User CLI. Used to interact with ultron8 api")
+@click.group("user", short_help="User CLI. Used to interact with ultron8 api")
 @click.option(
     "-m",
     "--method",

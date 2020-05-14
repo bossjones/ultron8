@@ -43,6 +43,8 @@ from ultron8.exceptions.client import (
 # from . import session
 from ultron8.u8client import session
 
+from ultron8.u8client.utils import get_api_endpoint
+
 LOG = logging.getLogger(__package__)
 
 
@@ -68,7 +70,7 @@ class UltronCore(object):
         self.session = getattr(session, "session", session)
 
         # set a sane default
-        self._github_url = "https://api.github.com"
+        self._ultron_url = get_api_endpoint()
 
         if json is not None:
             self.etag = json.pop("ETag", None)
