@@ -17,6 +17,10 @@ from ultron8.cli import set_trace, set_fact_flags
 from ultron8.config import do_get_flag, do_set_flag
 
 from ultron8.constants import colors
+from ultron8.constants import media_types
+
+# assert media_types.HTML_TYPE == "text/html; charset=utf-8"
+# assert media_types.TEXT_TYPE == "text/plain; charset=utf-8"
 
 logger = getLogger(__name__)
 
@@ -33,7 +37,7 @@ stdin, stdout = sys.stdin, sys.stdout
 @click.pass_context
 def cli(ctx, cluster):
     """
-    Login CLI. Used to interact with ultron8 api.
+    Metrics CLI. Used to interact with ultron8 api.
     """
     if ctx.obj["debug"]:
         click.echo("Debug mode initiated")
@@ -50,6 +54,10 @@ def cli(ctx, cluster):
         ]["url"]
     )
 
+    ctx.obj["client"].jwt_token = ctx.obj["configmanager"].data["clusters"][
+        "instances"
+    ][ctx.obj["metrics"]["cluster"]]["token"]
+
     click.secho(
         "Client endpoints: {}\n".format(ctx.obj["client"].endpoints),
         fg=colors.COLOR_SUCCESS,
@@ -57,15 +65,15 @@ def cli(ctx, cluster):
 
     if ctx.obj["debug"]:
         click.secho(
-            "User: {}\n".format(ctx.obj["metrics"]["email"]), fg=colors.COLOR_SUCCESS
-        )
-        click.secho(
             "Cluster: {}\n".format(ctx.obj["metrics"]["cluster"]),
             fg=colors.COLOR_SUCCESS,
         )
         click.secho(
             "Cluster url: {}\n".format(ctx.obj["client"].api_endpoint),
             fg=colors.COLOR_SUCCESS,
+        )
+        click.secho(
+            "Token: {}\n".format(ctx.obj["client"].jwt_token), fg=colors.COLOR_SUCCESS,
         )
 
 
@@ -80,8 +88,5 @@ def show(ctx):
 
     click.secho("metrics show subcommand", fg=colors.COLOR_SUCCESS)
 
-    # response = ctx.obj["client"]._post_metrics_access_show(
-    #     ctx.obj["metrics"]["email"], ctx.obj["metrics"]["password"]
-    # )
-
-    # click.secho("response: {}\n".format(response), fg=colors.COLOR_SUCCESS)
+    response = ctx.obj["client"]._get_metrics()
+    click.secho("response: {}\n".format(response), fg=colors.COLOR_SUCCESS)

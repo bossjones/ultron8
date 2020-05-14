@@ -20,6 +20,10 @@ from ultron8.config import ConfigManager
 logger = getLogger(__name__)
 
 
+def _touch(path):
+    open(path, "a").close()
+
+
 def app_home():
     app_base_dir = config_dirs()[0]
     return os.path.join(app_base_dir, "ultron8")
@@ -92,6 +96,7 @@ class CliWorkspace:
         self._wdir = wdir
         self._lib_dir = libdir
         self._template_dir = None
+        self._clusters_dir = None
         self.api = None
         self._root = self._default_root()
         self._setup_api()
@@ -117,6 +122,8 @@ class CliWorkspace:
             self._lib_dir = self._default_libdir()
         if self._template_dir is None:
             self._template_dir = self._default_templates()
+        if self._clusters_dir is None:
+            self._clusters_dir = self._default_clusters()
 
     def tree(self):
         tree(self.api)
@@ -147,6 +154,7 @@ class CliWorkspace:
         whitelist_dirs["workspace"] = self.api.joinpath("workspace")
         whitelist_dirs["templates"] = self.api.joinpath("templates")
         whitelist_dirs["libs"] = self.api.joinpath("libs")
+        whitelist_dirs["clusters"] = self.api.joinpath("clusters")
         return whitelist_dirs
 
     def build_whitelist_files(self):
@@ -184,6 +192,24 @@ class CliWorkspace:
 
     def _default_root(self):
         return app_home()
+
+    # TODO: #41 Finish implementig active cluster in Workspace class
+    # def set_active_cluster(self, cluster_name):
+    #     """Write a file to disk w/ the name of the active cluster we want to run all cli queries from
+    #     """
+    #     # _touch(os.path.join(path, confuse.CONFIG_FILENAME))
+    #     # self.api.joinpath("active_cluster.txt")
+    #     pass
+
+    # def get_active_cluster(self):
+    #     """Write a file to disk w/ the name of the active cluster we want to run all cli queries from
+    #     """
+    #     pass
+
+    # def clean_active_cluster(self):
+    #     """Delete a file to disk w/ the name of the active cluster we want to run all cli queries from. This will not actually destroy the cluster itself.
+    #     """
+    #     pass
 
 
 # ################################################################################

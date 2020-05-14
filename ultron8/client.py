@@ -13,6 +13,7 @@ from requests.packages.urllib3.util.retry import Retry  # pylint: disable=import
 from ultron8.api import settings
 from ultron8 import __version__
 from ultron8.u8client.utils import get_api_endpoint
+from ultron8.constants import media_types
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +50,7 @@ class UltronAPI:
         self.endpoints["version"] = f"{self.api_endpoint}{settings.API_V1_STR}/version"
         self.endpoints["users"] = f"{self.api_endpoint}{settings.API_V1_STR}/users"
         self.endpoints["items"] = f"{self.api_endpoint}{settings.API_V1_STR}/items"
+        self.endpoints["metrics"] = f"{self.api_endpoint}{settings.API_V1_STR}/metrics"
 
         if jwt_token:
             self.jwt_token = jwt_token
@@ -68,6 +70,7 @@ class UltronAPI:
         self.endpoints["version"] = f"{self.api_url}/version"
         self.endpoints["users"] = f"{self.api_url}/users"
         self.endpoints["items"] = f"{self.api_url}/items"
+        self.endpoints["metrics"] = f"{self.api_url}/metrics"
         logger.debug("Client endpoints refreshed....")
 
     def set_api_endpoint(self, v):
@@ -169,3 +172,21 @@ class UltronAPI:
         # a_token = tokens["access_token"]
         # headers = {"Authorization": f"Bearer {a_token}"}
         return tokens
+
+    def _get_metrics(self):
+        # Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+        url = f"{self.endpoints['metrics']}"
+        logger.debug("Ultron8 get metrics URL : " + url)
+        header_debug = {
+            "accept": media_types.TEXT_TYPE,
+            "Authorization": f"Bearer {self.jwt_token}",
+        }
+        logger.debug("Token preview:" + header_debug["Authorization"][-4:])
+        r = self._retry_requests(url, headers=self._headers())
+        if r.text is not None:
+            logger.debug(r.text)
+        if r.status_code != 200:
+            logger.debug(f"_get_metrics returned {r.status_code} {r.json()} {url}")
+            raise AssertionError("Failed to get metrics")
+
+        return r.text
