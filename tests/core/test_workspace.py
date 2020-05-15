@@ -215,6 +215,7 @@ class TestCliWorkspace(object):
                 "workspace": w.api.joinpath("workspace"),
                 "templates": w.api.joinpath("templates"),
                 "libs": w.api.joinpath("libs"),
+                "clusters": w.api.joinpath("clusters"),
             }
 
             w.configure()

@@ -48,6 +48,7 @@ class TestUltronAPI:
             "api": "http://localhost:11267/v1",
             "login": "http://localhost:11267/v1/login",
             "logs": "http://localhost:11267/v1/logs",
+            "metrics": "http://localhost:11267/v1/metrics",
             "token": "http://localhost:11267/v1/token",
             "home": "http://localhost:11267/v1/",
             "alive": "http://localhost:11267/v1/alive",

@@ -14,6 +14,7 @@
 """Worry-free YAML configuration files.
 """
 
+import logging
 import os
 import platform
 from collections import abc, OrderedDict
@@ -35,6 +36,8 @@ from ultron8.exceptions.config import ConfigTypeError
 from ultron8.exceptions.config import ConfigTemplateError
 from ultron8.exceptions.config import ConfigReadError
 from ultron8.exceptions.config import YAML_TAB_PROBLEM
+
+logger = logging.getLogger(__name__)
 
 
 # UNIX_DIR_VAR = 'XDG_CONFIG_HOME'
@@ -833,9 +836,17 @@ class BaseConfiguration(RootView):
         """
         # If environment variable is set, use it.
         if self._env_var in os.environ:
+            logger.debug(" [config_dir] inside environment variable section")
             # appdir = os.path.join(os.environ[self._env_var], self.appname)
             appdir = os.environ[self._env_var]
-            appdir = os.path.abspath(os.path.expanduser(appdir))
+            logger.debug(" [config_dir] initial value appdir = {}".format(appdir))
+            appdir = os.path.abspath(
+                os.path.expanduser(appdir)
+            )  # NOTE: This should be something like ~/.config/ultron8
+            logger.debug(
+                " [config_dir] after expanduser value appdir = {}".format(appdir)
+            )
+
             # # now check to see if ultron8 is in the path name, if not, append it
             # if not self.check_path_for_correct_subdir(appdir):
             #     appdir = os.path.join(appdir, self.appname)
