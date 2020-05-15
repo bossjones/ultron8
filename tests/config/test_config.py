@@ -665,9 +665,9 @@ clusters:
 @pytest.mark.unittest
 class TestConfigManager:
     @pytest.mark.mockedfs
-    @pytest.mark.xfail(
-        reason="I think our new fixtures are causing problems here, specifically the expanduser one. Need to figure out a work around"
-    )
+    # @pytest.mark.xfail(
+    #     reason="I think our new fixtures are causing problems here, specifically the expanduser one. Need to figure out a work around"
+    # )
     def test_config_manager_basics(
         self,
         request,
@@ -675,7 +675,7 @@ class TestConfigManager:
         linux_systems_fixture,
         posixpath_fixture,
         platform_system_fixture,
-        mock_expand_user,
+        # mock_expand_user,
     ):
         # def test_basics(self, mocker, monkeypatch):
 
