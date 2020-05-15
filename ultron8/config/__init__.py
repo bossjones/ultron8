@@ -25,6 +25,10 @@ from ultron8.exceptions.config import ConfigReadError
 logger = logging.getLogger(__name__)
 
 
+def fake_expand_user():
+    return os.path.expanduser("~/")
+
+
 class ConfigError(Exception):
     """Generic exception class for errors with config validation"""
 

@@ -190,6 +190,7 @@ def pytest(
     clientonly=False,
     fastapionly=False,
     jwtonly=False,
+    mockedfs=False,
 ):
     """
     Run pytest
@@ -231,6 +232,9 @@ def pytest(
 
     if jwtonly:
         _cmd += r" -m jwtonly "
+
+    if mockedfs:
+        _cmd += r" -m mockedfs "
 
     if pdb:
         _cmd += r" --pdb "
@@ -358,7 +362,8 @@ def editable(ctx, loc="local"):
         # call(pytest, loc="local", clientonly=True),
         # call(pytest, loc="local", fastapionly=True),
         # call(pytest, loc="local", jwtonly=True),
-        call(pytest, loc="local"),
+        call(pytest, loc="local", mockedfs=True),
+        # call(pytest, loc="local"),
     ],
     incrementable=["verbose"],
 )
