@@ -20,6 +20,7 @@ from ultron8.config import do_get_flag
 # from .conftest import fixtures_path
 
 from typing import Iterator
+from ultron8 import config
 
 # paths = Paths()
 
@@ -41,33 +42,6 @@ def project_runner(fixture: str = "simple") -> Iterator[CliRunner]:
         # And another for checkout the text output by the command.
         runner.output_of = lambda command: runner.run(command).output
         yield runner
-
-
-# @pytest.fixture
-# def runner():
-#     return CliRunner()
-
-
-# @pytest.fixture(scope="function")
-# def fake_config(mocker):
-#     MockConfig = mocker.patch("moonbeam_cli.cli.Config", spec=True)
-#     # mock_config_instance = MockConfig()
-#     mock_config_instance = MockConfig.return_value
-#     mock_config_instance.load.return_value = {
-#         "behance_corp_fake": {
-#             "api_url": "https://git.corp.adobe.com/api/v3",
-#             "organization": "behance",
-#             "token": "fake_token",
-#             "whitelist": ["behance/not-to-be-copied"],
-#         },
-#         "behance_pub_fake": {
-#             "api_url": "https://api.github.com",
-#             "organization": "behance",
-#             "token": "fake_token",
-#             "whitelist": ["behance/not-to-be-copied"],
-#         },
-#     }
-#     yield fake_config
 
 
 # def test_cli_no_args(runner):
@@ -194,6 +168,8 @@ def test_cli_dummp() -> None:
 @pytest.mark.clionly
 @pytest.mark.integration
 def test_cli_default_no_args(request, monkeypatch) -> None:
+    # reset global config singleton
+    config._CONFIG = None
     fixture_path = fixtures_path / "isolated_config_dir"
     print(fixture_path)
     runner = CliRunner()
@@ -236,12 +212,6 @@ def test_cli_default_no_args(request, monkeypatch) -> None:
 
         # verify results
         assert result.exit_code == 0
-        # assert (
-        #     "Usage: cli user [OPTIONS] COMMAND [ARGS]...\n\n  User CLI. Used to interact with ultron8 api.\n\nOptions:\n  -m, --method [GET|POST|PUT|DELETE]\n  --help                          Show this message and exit.\n"
-        #     in result.output
-        # )
-
-        # import pdb;pdb.set_trace()
         assert "Usage: cli [OPTIONS] COMMAND [ARGS]..." in result.output
         assert (
             "Ultronctl - Client Side CLI tool to manage an Ultron8 Cluster."
@@ -270,27 +240,3 @@ def test_cli_default_no_args(request, monkeypatch) -> None:
             "workspace  All commands dealing with workspace for ultron8"
             in result.output
         )
-
-        # "Usage: cli [OPTIONS] COMMAND [ARGS]...\n\n  Ultronctl - Client Side CLI tool to manage an Ultron8 Cluster.\n\nOptions:\n  --working-dir TEXT\n  --config-dir TEXT\n  --debug\n  -v, --verbose       Enables verbose mode.\n  --help              Show this message and exit.\n\nCommands:\n  cluster    Manage your ultron8 clusters\n  config     Manage your ultron8 config\n  dummy      Dummy command, doesn't do anything.\n  info       Get info on running Ultron8 process\n  init       Init cmd to setup workspace etc for ultron8.\n  login      Login to ultron8 cluster\n  metrics    Login to ultron8 cluster\n  node       Manage your ultron8 nodes\n  user       User CLI. Used to interact with ultron8 api\n  version    Get version\n  workspace  All commands dealing with workspace for ultron8\n"
-
-        # "Ultronctl - Client Side CLI tool to manage an Ultron8 Cluster."
-
-        # "Options:"
-        #   --working-dir TEXT
-        #   --config-dir TEXT
-        #   --debug
-        #   -v, --verbose       Enables verbose mode.
-        #   --help              Show this message and exit.
-
-        # Commands:
-        #   cluster    Manage your ultron8 clusters
-        #   config     Manage your ultron8 config
-        #   dummy      Dummy command, doesn't do anything.
-        #   info       Get info on running Ultron8 process
-        #   init       Init cmd to setup workspace etc for ultron8.
-        #   login      Login to ultron8 cluster
-        #   metrics    Login to ultron8 cluster
-        #   node       Manage your ultron8 nodes
-        #   user       User CLI. Used to interact with ultron8 api
-        #   version    Get version
-        #   workspace  All commands dealing with workspace for ultron8

@@ -31,16 +31,9 @@ import ultron8
 
 from ultron8 import config
 from ultron8.config import get_config
+from tests.utils.filesystem import helper_write_yaml_to_disk
 
 logger = logging.getLogger(__name__)
-
-
-def helper_write_yaml_to_disk(data, path, additional_data={}):
-    # data
-    # if additional_data:
-
-    with open(path, "wt") as f:
-        f.write(data)
 
 
 def create_file(path):
