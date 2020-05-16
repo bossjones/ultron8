@@ -11,6 +11,17 @@ import os
 from pathlib import Path
 from contextlib import contextmanager
 
+import tempfile
+import logging
+import platform
+import posixpath
+import os
+import shutil
+from pathlib import Path
+from collections import ChainMap
+import copy
+from copy import deepcopy
+
 import pytest
 from starlette.testclient import TestClient
 
@@ -383,3 +394,109 @@ def create_mocked_ultron_session(request, mocker):
 #     session.has_auth.return_value = True
 #     session.build_url = self.get_build_url_proxy()
 #     return session
+
+
+##############################################################################
+# Boilerplate for isolated systems
+##############################################################################
+
+# https://docs.pytest.org/en/latest/tmpdir.html
+@pytest.fixture(name="linux_systems_fixture")
+def linux_systems_fixture(request, monkeypatch):
+    request.cls.systems = {
+        "Linux": [{"HOME": "/home/test", "XDG_CONFIG_HOME": "~/.config"}, posixpath],
+    }
+
+    request.cls.sys_name = "Linux"
+
+    env_override, _ = request.cls.systems["Linux"]
+
+    for k, v in env_override.items():
+        monkeypatch.setenv(k, v)
+
+    # this is suppose to use a conditional
+    # NOTE: THIS IS WHAT WE NORMALLY DO # base = tempfile.mkdtemp()
+    # NOTE: THIS IS WHAT WE NORMALLY DO # fake_dir_root = tempfile.mkdtemp(prefix="config", dir=base)
+    # NOTE: THIS IS WHAT WE NORMALLY DO # fake_dir = os.path.join(
+    # NOTE: THIS IS WHAT WE NORMALLY DO #     fake_dir_root, "ultron8"
+    # NOTE: THIS IS WHAT WE NORMALLY DO # )  # eg. /home/developer/.config/ultron8
+    # NOTE: THIS IS WHAT WE NORMALLY DO # full_file_name = "smart.yaml"
+    # NOTE: THIS IS WHAT WE NORMALLY DO # path = os.path.join(fake_dir, full_file_name)
+
+    tmp = tempfile.mkdtemp(prefix="ultron8-test-")
+    print(f"[linux_systems_fixture] created temp directory: {tmp}")
+
+    tmp_xdg_config_home = os.path.join(tmp, ".config")
+    tmp_ultron_config_dir = os.path.join(tmp_xdg_config_home, "ultron8")
+    tmp_ultron_config_path = os.path.join(tmp_ultron_config_dir, "smart.yaml")
+
+    os.makedirs(tmp_xdg_config_home)
+    os.makedirs(tmp_ultron_config_dir)
+
+    request.cls.home = tmp
+    request.cls.xdg_config_home = tmp_xdg_config_home
+    request.cls.ultron_config_dir = tmp_ultron_config_dir
+    request.cls.ultron_config_path = tmp_ultron_config_path
+
+    monkeypatch.setenv("HOME", request.cls.home)
+    monkeypatch.setenv("XDG_CONFIG_HOME", request.cls.xdg_config_home)
+    monkeypatch.setenv("ULTRON8DIR", request.cls.ultron_config_dir)
+
+    @request.addfinalizer
+    def restore():
+        print(
+            "starting finalizer restore after finished with fixture 'linux_systems_fixture'"
+        )
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+@pytest.fixture(name="posixpath_fixture")
+def posixpath_fixture(monkeypatch):
+    monkeypatch.setattr(os, "path", posixpath)
+
+
+@pytest.fixture(name="platform_system_fixture")
+def platform_system_fixture(monkeypatch):
+    monkeypatch.setattr(os, "system", lambda: "Linux")
+
+
+@pytest.fixture(name="fixture_config_data_with_foo")
+def fixture_config_data_with_foo():
+    example_data = """
+---
+clusters_path: clusters/
+cache_path: cache/
+workspace_path: workspace/
+templates_path: templates/
+
+ultrons:
+  - debugultron
+
+async: True
+
+nodes: 0
+
+db_uri: sqlite:///test.db
+
+flags:
+    debug: 1
+    verbose: 1
+    keep: 1
+    stderr: 1
+    repeat: 0
+
+clusters:
+    instances:
+        local:
+            url: 'http://localhost:11267'
+            token: 'memememememememmemememe'
+"""
+    yield example_data
+
+
+@pytest.fixture(name="mock_expand_user")
+def mock_expand_user(request, monkeypatch):
+    def mockreturn(path):
+        return request.cls.home
+
+    monkeypatch.setattr(os.path, "expanduser", mockreturn)

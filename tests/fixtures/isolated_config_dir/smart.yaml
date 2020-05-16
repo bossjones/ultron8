@@ -1,0 +1,17 @@
+clusters_path: clusters/
+cache_path: cache/
+workspace_path: workspace/
+templates_path: templates/
+
+flags:
+    debug: 0
+    verbose: 0
+    keep: 0
+    stderr: 0
+    repeat: 1
+
+clusters:
+    instances:
+        local:
+            url: http://localhost:11267
+            token: ''
