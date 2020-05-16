@@ -72,9 +72,6 @@ def cli(ctx, cluster):
 
     if ctx.obj["debug"]:
         click.secho(
-            "User: {}\n".format(ctx.obj["user"]["email"]), fg=colors.COLOR_SUCCESS
-        )
-        click.secho(
             "Cluster: {}\n".format(ctx.obj["user"]["cluster"]), fg=colors.COLOR_SUCCESS
         )
         click.secho(
