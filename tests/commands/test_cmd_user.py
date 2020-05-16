@@ -75,6 +75,7 @@ def test_cli_user_no_args(request, monkeypatch) -> None:
     print(fixture_path)
     runner = CliRunner()
     with runner.isolated_filesystem() as isolated_dir:
+        # Populate filesystem folders
         isolated_base_dir = isolated_dir
         isolated_xdg_config_home_dir = os.path.join(isolated_dir, ".config")
         isolated_ultron_config_dir = os.path.join(
@@ -84,14 +85,15 @@ def test_cli_user_no_args(request, monkeypatch) -> None:
             isolated_ultron_config_dir, "smart.yaml"
         )
 
+        # create base dirs
         os.makedirs(isolated_xdg_config_home_dir)
-        # os.makedirs(isolated_ultron_config_dir)
 
         # request.cls.home = isolated_base_dir
         # request.cls.xdg_config_home = isolated_xdg_config_home_dir
         # request.cls.ultron_config_dir = isolated_ultron_config_dir
         # request.cls.ultron_config_path = isolated_ultron_config_path
 
+        # monkeypatch env vars to trick intgr tests into running only in isolated file system
         monkeypatch.setenv("HOME", isolated_base_dir)
         monkeypatch.setenv("XDG_CONFIG_HOME", isolated_xdg_config_home_dir)
         monkeypatch.setenv("ULTRON8DIR", isolated_ultron_config_dir)
@@ -106,7 +108,10 @@ def test_cli_user_no_args(request, monkeypatch) -> None:
         # And another for checkout the text output by the command.
         runner.output_of = lambda command: runner.run(command).output
 
+        # Run click test client
         result = runner.invoke(cli, ["user"])
+
+        # verify results
         assert result.exit_code == 0
         assert (
             "Usage: cli user [OPTIONS] COMMAND [ARGS]...\n\n  User CLI. Used to interact with ultron8 api.\n\nOptions:\n  -m, --method [GET|POST|PUT|DELETE]\n  --help                          Show this message and exit.\n"
