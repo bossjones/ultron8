@@ -190,3 +190,20 @@ class UltronAPI:
             raise AssertionError("Failed to get metrics")
 
         return r.text
+
+    # FYI, borrowed from k8s-migration-tooling
+    def _post_create_user(self, data: dict):
+        url = f"{self.endpoints['users']}/"
+
+        headers = self._headers()
+
+        data["id"] = None
+
+        r = requests.post(url, data=data, headers=headers)
+
+        if r.status_code != 200:
+            print(f"_post_login_access_token returned {r.status_code} {r.json()} {url}")
+            raise AssertionError("Failed to get new access token")
+
+        tokens = r.json()
+        return tokens

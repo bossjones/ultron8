@@ -117,3 +117,45 @@ def list(ctx, output):
         pp.pprint(response)
 
     click.secho("\n\n", fg=colors.COLOR_SUCCESS)
+
+
+@cli.command("create")
+@click.option(
+    "--payload", type=click.File("r"), help=("Payload in json format"),
+)
+@click.pass_context
+def create(ctx, payload):
+    """create user from payload"""
+    if ctx.obj["debug"]:
+        click.echo("Debug mode initiated")
+        set_trace()
+
+    click.secho("user create subcommand", fg=colors.COLOR_SUCCESS)
+
+    source = json.load(payload)
+    click.secho("Data loaded: \n\n", fg=colors.COLOR_SUCCESS)
+    click.secho("{}".format(source), fg=colors.COLOR_SUCCESS)
+    data = source
+    # if click.confirm('Create user ?'):
+    #     json.dump(result, out)
+
+    #########################################
+
+    # Run API call
+    response = ctx.obj["client"]._post_create_user(data)
+
+    # Output values
+    click.secho("response: \n\n", fg=colors.COLOR_SUCCESS)
+
+    if ctx.obj["user"]["output"] == "table":
+
+        data = [user_results_to_list(i) for i in response]
+
+        tt.print(
+            data, header=TERMTABLES_HEADER, style=tt.styles.double,
+        )
+
+    else:
+        pp.pprint(response)
+
+    click.secho("\n\n", fg=colors.COLOR_SUCCESS)
