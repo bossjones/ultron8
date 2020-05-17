@@ -1,7 +1,9 @@
+import os
 import shutil
 from contextlib import contextmanager
 from uuid import uuid4
 
+import pytest
 import pyconfig
 from click.testing import CliRunner
 
@@ -18,6 +20,7 @@ from ultron8.config import do_get_flag
 # from .conftest import fixtures_path
 
 from typing import Iterator
+from ultron8 import config
 
 # paths = Paths()
 
@@ -39,33 +42,6 @@ def project_runner(fixture: str = "simple") -> Iterator[CliRunner]:
         # And another for checkout the text output by the command.
         runner.output_of = lambda command: runner.run(command).output
         yield runner
-
-
-# @pytest.fixture
-# def runner():
-#     return CliRunner()
-
-
-# @pytest.fixture(scope="function")
-# def fake_config(mocker):
-#     MockConfig = mocker.patch("moonbeam_cli.cli.Config", spec=True)
-#     # mock_config_instance = MockConfig()
-#     mock_config_instance = MockConfig.return_value
-#     mock_config_instance.load.return_value = {
-#         "behance_corp_fake": {
-#             "api_url": "https://git.corp.adobe.com/api/v3",
-#             "organization": "behance",
-#             "token": "fake_token",
-#             "whitelist": ["behance/not-to-be-copied"],
-#         },
-#         "behance_pub_fake": {
-#             "api_url": "https://api.github.com",
-#             "organization": "behance",
-#             "token": "fake_token",
-#             "whitelist": ["behance/not-to-be-copied"],
-#         },
-#     }
-#     yield fake_config
 
 
 # def test_cli_no_args(runner):
@@ -187,3 +163,80 @@ def test_cli_dummp() -> None:
 #     assert do_get_flag('fact')['key'] == 'minor'
 #     assert do_get_flag('fact')['tempo'] == 'adagio'
 #     assert do_get_flag('fact')['time_signature'] == '3:4'
+
+
+@pytest.mark.clionly
+@pytest.mark.integration
+def test_cli_default_no_args(request, monkeypatch) -> None:
+    # reset global config singleton
+    config._CONFIG = None
+    fixture_path = fixtures_path / "isolated_config_dir"
+    print(fixture_path)
+    runner = CliRunner()
+    with runner.isolated_filesystem() as isolated_dir:
+        # Populate filesystem folders
+        isolated_base_dir = isolated_dir
+        isolated_xdg_config_home_dir = os.path.join(isolated_dir, ".config")
+        isolated_ultron_config_dir = os.path.join(
+            isolated_xdg_config_home_dir, "ultron8"
+        )
+        isolated_ultron_config_path = os.path.join(
+            isolated_ultron_config_dir, "smart.yaml"
+        )
+
+        # create base dirs
+        os.makedirs(isolated_xdg_config_home_dir)
+
+        # request.cls.home = isolated_base_dir
+        # request.cls.xdg_config_home = isolated_xdg_config_home_dir
+        # request.cls.ultron_config_dir = isolated_ultron_config_dir
+        # request.cls.ultron_config_path = isolated_ultron_config_path
+
+        # monkeypatch env vars to trick intgr tests into running only in isolated file system
+        monkeypatch.setenv("HOME", isolated_base_dir)
+        monkeypatch.setenv("XDG_CONFIG_HOME", isolated_xdg_config_home_dir)
+        monkeypatch.setenv("ULTRON8DIR", isolated_ultron_config_dir)
+
+        # Copy the project fixture into the isolated filesystem dir.
+        shutil.copytree(fixture_path, isolated_ultron_config_dir)
+
+        # Monkeypatch a helper method onto the runner to make running commands
+        # easier.
+        runner.run = lambda command: runner.invoke(cli, command.split())
+
+        # And another for checkout the text output by the command.
+        runner.output_of = lambda command: runner.run(command).output
+
+        # Run click test client
+        result = runner.invoke(cli, ["--help"])
+
+        # verify results
+        assert result.exit_code == 0
+        assert "Usage: cli [OPTIONS] COMMAND [ARGS]..." in result.output
+        assert (
+            "Ultronctl - Client Side CLI tool to manage an Ultron8 Cluster."
+            in result.output
+        )
+        assert "Options:" in result.output
+        assert "--working-dir TEXT" in result.output
+        assert "--config-dir TEXT" in result.output
+        assert "--debug" in result.output
+        assert "-v, --verbose       Enables verbose mode." in result.output
+        assert "--help              Show this message and exit." in result.output
+        assert "Commands:" in result.output
+        assert "cluster    Manage your ultron8 clusters" in result.output
+        assert "config     Manage your ultron8 config" in result.output
+        assert "dummy      Dummy command, doesn't do anything." in result.output
+        assert "info       Get info on running Ultron8 process" in result.output
+        assert (
+            "init       Init cmd to setup workspace etc for ultron8." in result.output
+        )
+        assert "login      Login to ultron8 cluster" in result.output
+        assert "metrics    Login to ultron8 cluster" in result.output
+        assert "node       Manage your ultron8 nodes" in result.output
+        assert "user       User CLI. Used to interact with ultron8 api" in result.output
+        assert "version    Get version" in result.output
+        assert (
+            "workspace  All commands dealing with workspace for ultron8"
+            in result.output
+        )

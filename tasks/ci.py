@@ -191,6 +191,7 @@ def pytest(
     fastapionly=False,
     jwtonly=False,
     mockedfs=False,
+    clionly=False,
 ):
     """
     Run pytest
@@ -235,6 +236,9 @@ def pytest(
 
     if mockedfs:
         _cmd += r" -m mockedfs "
+
+    if clionly:
+        _cmd += r" -m clionly "
 
     if pdb:
         _cmd += r" --pdb "
@@ -355,7 +359,7 @@ def editable(ctx, loc="local"):
         call(verify_python_version, loc="local"),
         call(pre_start, loc="local"),
         call(alembic_upgrade, loc="local"),
-        call(pytest, loc="local", configonly=True),
+        # call(pytest, loc="local", configonly=True),
         # call(pytest, loc="local", settingsonly=True),
         # call(pytest, loc="local", pathsonly=True),
         # call(pytest, loc="local", workspaceonly=True),
@@ -363,7 +367,8 @@ def editable(ctx, loc="local"):
         # call(pytest, loc="local", fastapionly=True),
         # call(pytest, loc="local", jwtonly=True),
         # call(pytest, loc="local", mockedfs=True),
-        # call(pytest, loc="local"),
+        # call(pytest, loc="local", clionly=True),
+        call(pytest, loc="local"),
     ],
     incrementable=["verbose"],
 )
