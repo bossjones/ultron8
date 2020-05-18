@@ -133,7 +133,8 @@ class TestCliUserCmd:
             assert "--cluster TEXT  Cluster Name eg 'local'" in result.output
             assert "--help          Show this message and exit." in result.output
             assert "Commands:" in result.output
-            assert "list  list command for users" in result.output
+            assert "create  create user from payload" in result.output
+            assert "list    list command for users" in result.output
 
     def test_cli_user_list(self, request, monkeypatch) -> None:
         # reset global config singleton
