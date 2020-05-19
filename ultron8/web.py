@@ -382,7 +382,10 @@ def get_application() -> FastAPI:
     #         request.state.db.close()
     #     return response
     app.add_middleware(DbSessionMiddleware)
-    app.add_middleware(LogRequestMiddleware)
+
+    # only add this logging middleware if we have this in super debug mode ( since it is noisey )
+    if os.getenv("ULTRON_ENVIRONMENT", "production") == "development":
+        app.add_middleware(LogRequestMiddleware)
 
     return app
 
