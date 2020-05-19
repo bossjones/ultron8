@@ -22,6 +22,7 @@ from ultron8.constants import colors
 
 import termtables as tt
 from ultron8.api.models.user import UserCreate
+from fastapi.encoders import jsonable_encoder
 
 logger = getLogger(__name__)
 
@@ -124,8 +125,15 @@ def list(ctx, output):
 @click.option(
     "--payload", type=click.File("r"), help=("Payload in json format"),
 )
+@click.option(
+    "--output",
+    type=click.Choice(["table", "json"], case_sensitive=True),
+    default="json",
+    help=("Format results by either table or json "),
+    show_default=True,
+)
 @click.pass_context
-def create(ctx, payload):
+def create(ctx, payload, output):
     """create user from payload"""
     if ctx.obj["debug"]:
         click.echo("Debug mode initiated")
@@ -133,17 +141,22 @@ def create(ctx, payload):
 
     click.secho("user create subcommand", fg=colors.COLOR_SUCCESS)
 
+    ctx.obj["user"]["output"] = output
+
     source = json.load(payload)
     click.secho("Data loaded: \n\n", fg=colors.COLOR_SUCCESS)
     click.secho("{}".format(source), fg=colors.COLOR_SUCCESS)
 
-    data = UserCreate(email=source["email"], password=source["password"])
+    # data = UserCreate(email=source["email"], password=source["password"])
+    data = {"email": source["email"], "password": source["password"]}
+
+    json_compatible_data = jsonable_encoder(data)
 
     click.secho("data: \n\n", fg=colors.COLOR_SUCCESS)
-    click.secho("{}".format(data.dict()), fg=colors.COLOR_SUCCESS)
+    click.secho("{}".format(data), fg=colors.COLOR_SUCCESS)
 
     # Run API call
-    response = ctx.obj["client"]._post_create_user(data.dict())
+    response = ctx.obj["client"]._post_create_user(json_compatible_data)
 
     # Output values
     click.secho("response: \n\n", fg=colors.COLOR_SUCCESS)

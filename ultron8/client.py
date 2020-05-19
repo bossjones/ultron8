@@ -205,7 +205,7 @@ class UltronAPI:
 
         # data["id"] = None
 
-        r = requests.post(url, data=data, headers=headers)
+        r = requests.post(url, headers=headers, json=data)
 
         if r.status_code != 200:
             print(f"_post_login_access_token returned {r.status_code} {r.json()} {url}")
