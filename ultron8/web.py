@@ -215,6 +215,7 @@ if settings.LOG_LEVEL == logging.DEBUG:
 # SOURCE: https://fastapi.tiangolo.com/tutorial/handling-errors/#use-the-requestvalidationerror-body
 def validation_exception_handler(request: Request, exc: RequestValidationError):
     # print(jsonable_encoder({"detail": exc.errors(), "body": exc.body}))
+    print(f"OMG! The client sent invalid data!: {exc}")
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
@@ -224,6 +225,62 @@ def validation_exception_handler(request: Request, exc: RequestValidationError):
 # def misc_exception_handler(request: Request, exc: Exception):
 #     logger.exception(exc)
 #     return JSONResponse('Unexpected error', status_code=500)
+
+
+# async def log_request(request, call_next):
+#     logger.info(f'{request.method} {request.url}')
+#     response = await call_next(request)
+#     logger.info(f'Status code: {response.status_code}')
+#     body = b""
+#     async for chunk in response.body_iterator:
+#         body += chunk
+#     # do something with body ...
+#     logger.info("[body]: ")
+#     logger.info(body)
+
+#     return Response(
+#         content=body,
+#         status_code=response.status_code,
+#         headers=dict(response.headers),
+#         media_type=response.media_type
+#     )
+
+# SOURCE: https://stackoverflow.com/questions/60778279/fastapi-middleware-peeking-into-responses
+class LogRequestMiddleware(BaseHTTPMiddleware):
+    """Alternate implementation for:
+
+    @app.middleware("http")
+    async def db_session_middleware(request: Request, call_next):
+        # NOTE: request.state is a property of each Request object. It is there to store arbitrary objects attached to the request itself, like the database session in this case. You can read more about it in Starlette's docs about Request state.
+        # For us in this case, it helps us ensure a single database session is used through all the request, and then closed afterwards (in the middleware).
+        response = Response("Internal server error", status_code=500)
+        try:
+            request.state.db = Session()
+            response = await call_next(request)
+        finally:
+            request.state.db.close()
+        return response
+
+    Arguments:
+        BaseHTTPMiddleware {[type]} -- [description]
+    """
+
+    async def dispatch(self, request: Request, call_next) -> Response:
+        logger.info(f"{request.method} {request.url}")
+        response = await call_next(request)
+        logger.info(f"Status code: {response.status_code}")
+        body = b""
+        async for chunk in response.body_iterator:
+            body += chunk
+        # do something with body ...
+        logger.info("[body]: ")
+        logger.info(body)
+        return Response(
+            content=body,
+            status_code=response.status_code,
+            headers=dict(response.headers),
+            media_type=response.media_type,
+        )
 
 
 def get_application() -> FastAPI:
@@ -318,6 +375,7 @@ def get_application() -> FastAPI:
     #         request.state.db.close()
     #     return response
     app.add_middleware(DbSessionMiddleware)
+    app.add_middleware(LogRequestMiddleware)
 
     return app
 

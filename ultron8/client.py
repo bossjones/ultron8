@@ -14,6 +14,7 @@ from ultron8.api import settings
 from ultron8 import __version__
 from ultron8.u8client.utils import get_api_endpoint
 from ultron8.constants import media_types
+from ultron8.api.models.user import UserCreate
 
 logger = logging.getLogger(__name__)
 
@@ -197,7 +198,12 @@ class UltronAPI:
 
         headers = self._headers()
 
-        data["id"] = None
+        # data = UserCreate(
+        #     email=data["email"],
+        #     password=data["password"]
+        # )
+
+        # data["id"] = None
 
         r = requests.post(url, data=data, headers=headers)
 

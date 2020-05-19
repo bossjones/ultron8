@@ -21,6 +21,7 @@ from ultron8.config import do_get_flag, do_set_flag
 from ultron8.constants import colors
 
 import termtables as tt
+from ultron8.api.models.user import UserCreate
 
 logger = getLogger(__name__)
 
@@ -135,14 +136,14 @@ def create(ctx, payload):
     source = json.load(payload)
     click.secho("Data loaded: \n\n", fg=colors.COLOR_SUCCESS)
     click.secho("{}".format(source), fg=colors.COLOR_SUCCESS)
-    data = source
-    # if click.confirm('Create user ?'):
-    #     json.dump(result, out)
 
-    #########################################
+    data = UserCreate(email=source["email"], password=source["password"])
+
+    click.secho("data: \n\n", fg=colors.COLOR_SUCCESS)
+    click.secho("{}".format(data.dict()), fg=colors.COLOR_SUCCESS)
 
     # Run API call
-    response = ctx.obj["client"]._post_create_user(data)
+    response = ctx.obj["client"]._post_create_user(data.dict())
 
     # Output values
     click.secho("response: \n\n", fg=colors.COLOR_SUCCESS)
