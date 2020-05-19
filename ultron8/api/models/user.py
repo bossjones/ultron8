@@ -16,7 +16,7 @@ class UserBase(BaseDataModel):
 
 
 class UserBaseInDB(UserBase):
-    id: int = None
+    id: Optional[int] = None
 
     class Config:
         orm_mode = True
