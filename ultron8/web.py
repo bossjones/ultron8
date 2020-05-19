@@ -1,3 +1,47 @@
+import ptvsd
+import os
+
+# See: https://github.com/microsoft/ptvsd/issues/1056
+# multiprocess debugging requires spawn method
+# @ref: https://github.com/microsoft/ptvsd/blob/master/TROUBLESHOOTING.md#1-multiprocessing-on-linuxmac
+import multiprocessing
+
+multiprocessing.set_start_method("spawn", True)
+import subprocess
+
+# SOURCE: https://blog.hipolabs.com/remote-debugging-with-vscode-docker-and-pico-fde11f0e5f1c
+def start_debugger():
+    parent_pid = os.getppid()
+    # cmd = "ps aux | grep %s | awk '{print $2}'" % "ULTRON_ENABLE_WEB"
+    cmd = "ps aux | grep 'python ultron8/web.py' | awk '{print $2}' | head -1"
+    ps = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        bufsize=4096,
+        shell=True,
+        universal_newlines=True,
+    )
+
+    output, _ = ps.communicate()
+    pids = output.split("\n")
+    # using list comprehension to perform removal of empty strings
+    pids = [i for i in pids if i]
+    return parent_pid, pids
+
+
+if os.getenv("ULTRON_ENVIRONMENT", "production") == "development":
+
+    # SOURCE: https://github.com/microsoft/ptvsd/blob/master/TROUBLESHOOTING.md#1-multiprocessing-on-linuxmac
+    # Multiprocess debugging on a Linux machine requires the spawn setting. We are working on improving this experience, see #943. Meanwhile do this to improve your debugging experience:
+    parent_pid, pids = start_debugger()
+    print(f" [parent_pid] {parent_pid}")
+    print(f" [pids] {pids}")
+    if str(parent_pid) in pids:
+        print("Starting debugger")
+        ptvsd.enable_attach()
+
+
 import logging
 from pathlib import Path
 
@@ -9,6 +53,8 @@ from fastapi import Depends
 from fastapi import FastAPI
 from fastapi import Header
 from fastapi import HTTPException
+from fastapi.exceptions import RequestValidationError
+from fastapi.encoders import jsonable_encoder
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
@@ -17,6 +63,8 @@ from starlette.responses import RedirectResponse
 from starlette.responses import UJSONResponse
 from starlette.responses import Response
 from starlette.staticfiles import StaticFiles
+from starlette import status
+from starlette.responses import JSONResponse
 
 
 from ultron8.api import settings
@@ -34,6 +82,27 @@ from ultron8.api.db.u_sqlite import open_database_connection_pool
 from ultron8.api.db.u_sqlite.session import Session
 from ultron8.api.middleware.logging import log
 
+# import sys
+# from IPython.core.debugger import Tracer  # noqa
+# from IPython.core import ultratb
+
+# sys.excepthook = ultratb.FormattedTB(
+#     mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
+# )
+
+##########################################################################
+# # FIXME: #46 5/18/2020 Stop using the setup_logging function and use the one defined in "from ultron8.api.middleware.logging import log"
+# from ultron8.api.applog import read_logging_config, setup_logging
+
+# logconfig_dict = read_logging_config("logging.yml")
+
+# setup_logging(logconfig_dict)
+
+# LOGGER = logging.getLogger(__name__)
+
+# LOGGER.setLevel(settings.LOG_LEVEL)
+##########################################################################
+
 # from ultron8.api.routers import items, users, home, version, guid, alive
 
 logger = logging.getLogger(__name__)
@@ -41,6 +110,34 @@ logger = logging.getLogger(__name__)
 # TODO: As soon as we merge web.py into the MCP, we will want to nuke this setup_logging line!!!
 log.setup_logging()
 
+
+# NOTE: If debug logging is enabled, then turn on debug logging for everything in app
+if settings.LOG_LEVEL == logging.DEBUG:
+
+    #     # Enable connection pool logging
+    #     # SOURCE: https://docs.sqlalchemy.org/en/13/core/engines.html#dbengine-logging
+    #     SQLALCHEMY_POOL_LOGGER = logging.getLogger("sqlalchemy.pool")
+    #     SQLALCHEMY_ENGINE_LOGGER = logging.getLogger("sqlalchemy.engine")
+    #     SQLALCHEMY_ORM_LOGGER = logging.getLogger("sqlalchemy.orm")
+    #     SQLALCHEMY_DIALECTS_LOGGER = logging.getLogger("sqlalchemy.dialects")
+    #     UVICORN_LOGGER = logging.getLogger("uvicorn")
+    #     SQLALCHEMY_POOL_LOGGER.setLevel(logging.DEBUG)
+    #     SQLALCHEMY_ENGINE_LOGGER.setLevel(logging.DEBUG)
+    #     SQLALCHEMY_ORM_LOGGER.setLevel(logging.DEBUG)
+    #     SQLALCHEMY_DIALECTS_LOGGER.setLevel(logging.DEBUG)
+    #    UVICORN_LOGGER.setLevel(logging.DEBUG)
+    FASTAPI_LOGGER = logging.getLogger("fastapi")
+    FASTAPI_LOGGER.setLevel(logging.DEBUG)
+
+
+# if settings.DEBUG_REQUESTS:
+#     # import requests.packages.urllib3.connectionpool as http_client
+#     # http_client.HTTPConnection.debuglevel = 1
+#     REQUESTS_LOGGER = logging.getLogger("requests")
+#     REQUESTS_LOGGER.setLevel(logging.DEBUG)
+#     REQUESTS_LOGGER.propagate = True
+#     URLLIB3_LOGGER = logging.getLogger("urllib3")
+#     URLLIB3_LOGGER.setLevel(logging.DEBUG)
 
 # # Suppress overly verbose logs from libraries that aren't helpful
 # logging.getLogger('requests').setLevel(logging.WARNING)
@@ -103,10 +200,38 @@ log.setup_logging()
 #     finally:
 #         db.close()
 
+# NOTE: Async version
+# DISABLED: # # SOURCE: https://fastapi.tiangolo.com/tutorial/handling-errors/#use-the-requestvalidationerror-body
+# DISABLED: # @app.exception_handler(RequestValidationError)
+# DISABLED: # async def validation_exception_handler(request: Request, exc: RequestValidationError):
+# DISABLED: #     print(jsonable_encoder({"detail": exc.errors(), "body": exc.body}))
+# DISABLED: #     return JSONResponse(
+# DISABLED: #         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+# DISABLED: #         content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
+# DISABLED: #     )
+
+
+# @app.exception_handler(RequestValidationError)
+# SOURCE: https://fastapi.tiangolo.com/tutorial/handling-errors/#use-the-requestvalidationerror-body
+def validation_exception_handler(request: Request, exc: RequestValidationError):
+    # print(jsonable_encoder({"detail": exc.errors(), "body": exc.body}))
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
+    )
+
+
+# def misc_exception_handler(request: Request, exc: Exception):
+#     logger.exception(exc)
+#     return JSONResponse('Unexpected error', status_code=500)
+
 
 def get_application() -> FastAPI:
     # SOURCE: https://github.com/nwcell/guid_tracker/blob/aef948336ba268aa06df7cc9e7e6768b08d0f363/src/guid/main.py
     app = FastAPI(title="Ultron-8 Web Server")
+
+    app.add_exception_handler(RequestValidationError, validation_exception_handler)
+    # app.add_exception_handler(Exception, misc_exception_handler)
 
     logger.info(f"Create fastapi web application ...")
 
@@ -338,11 +463,31 @@ class AddProcessTimeMiddleware(BaseHTTPMiddleware):
 
 
 app = get_application()
+
+print(" [app] ran get_application")
+
 if __name__ == "__main__":
     import os
 
-    HOST = os.environ.get("HOST", "0.0.0.0")
-    PORT = os.environ.get("PORT", 11267)
+    # if os.getenv("ULTRON_ENVIRONMENT", "production") == "development":
+
+    #     # SOURCE: https://github.com/microsoft/ptvsd/blob/master/TROUBLESHOOTING.md#1-multiprocessing-on-linuxmac
+    #     # Multiprocess debugging on a Linux machine requires the spawn setting. We are working on improving this experience, see #943. Meanwhile do this to improve your debugging experience:
+    #     import multiprocessing
+    #     multiprocessing.set_start_method('spawn', True)
+    #     parent_pid, pids = start_debugger()
+    #     if str(parent_pid) in pids:
+    #         print('Starting debugger')
+    #         # ptvsd.enable_attach(address=('0.0.0.0', 3000))
+    #         # ptvsd.enable_attach(address=('localhost', 3000))
+    #         ptvsd.enable_attach()
+    #         ptvsd.wait_for_attach()
+    #     import pystuck
+    #     pystuck.run_server()
+
+    # HOST = os.environ.get("HOST", "0.0.0.0")
+    HOST = "localhost"
+    PORT = int(os.environ.get("PORT", 11267))
     # uvicorn.run(app, host=HOST, port=PORT)
 
     # uvicorn.run(app, host=HOST, port=PORT, log_level=settings._USER_LOG_LEVEL.lower(), reload=True, workers=settings.WORKERS)

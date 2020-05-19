@@ -4,12 +4,13 @@ import requests
 
 from tests.utils.user import user_authentication_headers
 from tests.utils.utils import get_server_api
-from tests.utils.utils import random_lower_string
+from tests.utils.utils import random_lower_string, random_email
 from ultron8.api import crud
 from ultron8.api import settings
 from ultron8.api.db.u_sqlite.session import db_session
 from ultron8.api.models.user import UserCreate
 import pytest
+from ultron8.api.factories.users import _MakeRandomNormalUserFactory
 
 from typing import Dict
 
@@ -48,6 +49,25 @@ def test_create_user_new_email(superuser_token_headers: Dict[str, str]) -> None:
     created_user = r.json()
     user = crud.user.get_by_email(db_session, email=username)
     assert user.email == created_user["email"]
+
+
+# @pytest.mark.fastapionly
+# @pytest.mark.unittest
+# class TestFastAPIWeb:
+#     def test_fastapi_instance(self, mocker, fastapi_client):
+#         # username, password = username_and_password_first_superuser_fixtures
+#         url = "{base}/logs".format(base=get_server_api_with_version())
+#         response = fastapi_client.get(url)
+#         assert response.status_code == 200
+
+#     def test_fastapi_app_instance(self, mocker, fastapi_app, fastapi_client):
+#         # username, password = username_and_password_first_superuser_fixtures
+#         assert fastapi_app.title == "Ultron-8 Web Server"
+#         assert fastapi_app.debug
+#         assert fastapi_app.description == ""
+#         url = "{base}/logs".format(base=get_server_api_with_version())
+#         response = fastapi_client.get(url)
+#         assert response.status_code == 200
 
 
 @pytest.mark.usersonly
@@ -133,3 +153,37 @@ def test_retrieve_users(superuser_token_headers: Dict[str, str]) -> None:
     assert len(all_users) > 1
     for user in all_users:
         assert "email" in user
+
+
+@pytest.mark.convertingtotestclientstarlette
+@pytest.mark.usersonly
+@pytest.mark.unittest
+class TestUserApiEndpoint:
+    def test_create_user_new_email_with_starlette_client(
+        self, superuser_token_headers: Dict[str, str], mocker, fastapi_client
+    ) -> None:
+        # SOURCE: https://github.com/tiangolo/fastapi/issues/300
+        server_api = get_server_api()
+        logger.debug("server_api : %s", server_api)
+
+        data = _MakeRandomNormalUserFactory()
+        print(data)
+        # # email = random_email()
+        # # password = random_lower_string()
+        # # data = UserCreate(
+        # #     email=email,
+        # #     password=password
+        # # )
+        r = fastapi_client.post(
+            f"{server_api}{settings.API_V1_STR}/users/",
+            headers=superuser_token_headers,
+            json=data.dict(),
+        )
+        assert 200 <= r.status_code < 300
+        created_user = r.json()
+        user = crud.user.get_by_email(db_session, email=data.email)
+        assert user.email == created_user["email"]
+
+        logger.debug(r)
+        logger.debug(r.reason)
+        logger.debug(r.text)

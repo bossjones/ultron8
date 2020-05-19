@@ -572,10 +572,7 @@ def list_ports(ctx, loc="local", verbose=0, cleanup=False):
     # SOURCE: https://wilsonmar.github.io/ports-open/
     # lsof -nP +c 15 | grep LISTEN
     _cmd = r"""
-nmap -p 11267 localhost
-nmap -p 3000 localhost
-nmap -p 5678 localhost
-nmap -p 6666 localhost
+nmap -p 11267,3000,5678,6666 localhost
     """
 
     if verbose >= 1:

@@ -33,8 +33,8 @@ class RandomUserFactory(factory.Factory):
         model = UserCreate
 
     full_name = factory.Faker("name_male")
-    is_active = True
-    is_superuser = False
+    # is_active = True
+    # is_superuser = False
     email = factory.Faker("free_email")
     password = factory.Faker("password")
 
@@ -45,10 +45,4 @@ def _MakeRandomNormalUserFactory():
     _full_name = "{} {}".format(_first_name, _last_name)
     _password = randomStringwithDigitsAndSymbols()
 
-    return RandomUserFactory(
-        full_name=_full_name,
-        is_active=True,
-        is_superuser=False,
-        email=_email,
-        password=_password,
-    )
+    return RandomUserFactory(full_name=_full_name, email=_email, password=_password,)
