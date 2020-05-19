@@ -1,4 +1,8 @@
-import ptvsd
+try:
+    import ptvsd
+except Exception:
+    print("WARNING - ptvsd is not installed, can't use to debug in vscode")
+
 import os
 
 # See: https://github.com/microsoft/ptvsd/issues/1056
@@ -39,7 +43,10 @@ if os.getenv("ULTRON_ENVIRONMENT", "production") == "development":
     print(f" [pids] {pids}")
     if str(parent_pid) in pids:
         print("Starting debugger")
-        ptvsd.enable_attach()
+        try:
+            ptvsd.enable_attach()
+        except Exception:
+            print("WARNING - ptvsd is not installed, can't run ptvsd.enable_attach()")
 
 
 import logging
