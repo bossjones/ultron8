@@ -192,6 +192,8 @@ def pytest(
     jwtonly=False,
     mockedfs=False,
     clionly=False,
+    usersonly=False,
+    convertingtotestclientstarlette=False,
 ):
     """
     Run pytest
@@ -239,6 +241,12 @@ def pytest(
 
     if clionly:
         _cmd += r" -m clionly "
+
+    if usersonly:
+        _cmd += r" -m usersonly "
+
+    if convertingtotestclientstarlette:
+        _cmd += r" -m convertingtotestclientstarlette "
 
     if pdb:
         _cmd += r" --pdb "
@@ -368,6 +376,8 @@ def editable(ctx, loc="local"):
         # call(pytest, loc="local", jwtonly=True),
         # call(pytest, loc="local", mockedfs=True),
         # call(pytest, loc="local", clionly=True),
+        # call(pytest, loc="local", usersonly=True),
+        # call(pytest, loc="local", convertingtotestclientstarlette=True),
         call(pytest, loc="local"),
     ],
     incrementable=["verbose"],

@@ -180,6 +180,58 @@ pgrep -f "ultron8/dev_serve.py" || true
     ctx.run("python ultron8/dev_serve.py")
 
 
+@task(pre=[call(detect_os, loc="local")], incrementable=["verbose"])
+def web(ctx, loc="local", verbose=0, cleanup=False, app_only=False):
+    """
+    start up fastapi application
+    Usage: inv local.web
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    if verbose >= 1:
+        msg = "[serve] override env vars 'SERVER_NAME' and 'SERVER_HOST' - We don't want to mess w/ '.env.dist' for this situation"
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    # override CI_IMAGE value
+    ctx.config["run"]["env"]["SERVER_NAME"] = "localhost:11267"
+    ctx.config["run"]["env"]["SERVER_HOST"] = "http://localhost:11267"
+    ctx.config["run"]["env"]["BETTER_EXCEPTIONS"] = "1"
+
+    if verbose >= 3:
+        click.secho(
+            "Detected 4 or more verbose flags, enabling TRACE mode", fg=COLOR_WARNING
+        )
+        ctx.config["run"]["env"]["ULTRON_ENVIRONMENT"] = "development"
+
+    _cmd = r"""
+pkill -f "ultron8/web.py" || true
+pgrep -f "ultron8/web.py" || true
+    """
+
+    if verbose >= 1:
+        msg = "[serve] kill running app server: "
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run(_cmd)
+
+    if not app_only:
+        ctx.run("pip install -e .")
+        ctx.run("alembic --raiseerr upgrade head")
+        ctx.run("python ./ultron8/api/backend_pre_start.py")
+        ctx.run("python ./ultron8/initial_data.py")
+    else:
+        click.secho("APP ONLY MODE DETECTED.", fg=COLOR_WARNING)
+
+    ctx.run("python ultron8/web.py")
+
+
 @task(
     pre=[call(detect_os, loc="local")], incrementable=["verbose"], aliases=["install"]
 )
@@ -500,3 +552,71 @@ pip install -e .
     click.secho(msg, fg=COLOR_SUCCESS)
 
     ctx.run("jupyter notebook")
+
+
+@task(
+    pre=[call(detect_os, loc="local"), call(clean, loc="local"),],
+    incrementable=["verbose"],
+)
+def list_ports(ctx, loc="local", verbose=0, cleanup=False):
+    """
+    Run jupyter notebook
+    Usage: inv local.list-ports
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    # SOURCE: https://wilsonmar.github.io/ports-open/
+    # lsof -nP +c 15 | grep LISTEN
+    _cmd = r"""
+nmap -p 11267,3000,5678,6666 localhost
+    """
+
+    if verbose >= 1:
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run(_cmd)
+
+
+@task(
+    pre=[call(detect_os, loc="local"), call(clean, loc="local"),],
+    incrementable=["verbose"],
+)
+def pstree(ctx, loc="local", verbose=0, cleanup=False):
+    """
+    Run jupyter notebook
+    Usage: inv local.pstree
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    # SOURCE: https://wilsonmar.github.io/ports-open/
+    # lsof -nP +c 15 | grep LISTEN
+    _cmd = r"""
+ps aux | grep 'python ultron8/web.py' | awk '{print $2}' | head -1
+    """
+
+    if verbose >= 1:
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    pid_res = ctx.run(_cmd)
+
+    _cmd = r"""
+pstree -p {}
+    """.format(
+        pid_res.stdout
+    )
+
+    if verbose >= 1:
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run(_cmd)

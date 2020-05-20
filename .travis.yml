@@ -8,6 +8,9 @@ dist: xenial
 
 group: edge
 
+# Last working: https://travis-ci.org/github/bossjones/ultron8/jobs/688515313#L399
+# recent broken: https://travis-ci.org/github/bossjones/ultron8/jobs/689019816#L400
+
 env:
   global:
     - PYTHON="python3"
@@ -197,7 +200,7 @@ before_install:
   - sudo apt-get update
   - sudo apt-cache search docker
   - apt-cache madison docker-ce
-  - sudo apt-get --allow-downgrades -y -o Dpkg::Options::="--force-confnew" install docker-ce=$(apt-cache madison docker-ce | grep $DOCKER_VERSION | head -1 | awk '{print $3}')
+  - sudo apt-get --allow-downgrades -y -o Dpkg::Options::="--force-confnew" install docker-ce=$(apt-cache madison docker-ce | grep $DOCKER_VERSION | head -1 | awk '{print $3}') docker-ce-cli=$(apt-cache madison docker-ce-cli | grep $DOCKER_VERSION | head -1 | awk '{print $3}')
 
   - sudo rm -f /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose

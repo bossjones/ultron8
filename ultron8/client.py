@@ -14,6 +14,7 @@ from ultron8.api import settings
 from ultron8 import __version__
 from ultron8.u8client.utils import get_api_endpoint
 from ultron8.constants import media_types
+from ultron8.api.models.user import UserCreate
 
 logger = logging.getLogger(__name__)
 
@@ -190,3 +191,25 @@ class UltronAPI:
             raise AssertionError("Failed to get metrics")
 
         return r.text
+
+    # FYI, borrowed from k8s-migration-tooling
+    def _post_create_user(self, data: dict):
+        url = f"{self.endpoints['users']}/"
+
+        headers = self._headers()
+
+        # data = UserCreate(
+        #     email=data["email"],
+        #     password=data["password"]
+        # )
+
+        # data["id"] = None
+
+        r = requests.post(url, headers=headers, json=data)
+
+        if r.status_code != 200:
+            print(f"_post_login_access_token returned {r.status_code} {r.json()} {url}")
+            raise AssertionError("Failed to get new access token")
+
+        tokens = r.json()
+        return tokens
