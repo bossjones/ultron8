@@ -224,7 +224,7 @@ def patch_datetime_now(monkeypatch):
 #         )
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture(scope="function")
 def fastapi_app() -> typing.Generator[FastAPI, typing.Any, None]:
     # from ultron8.web import app  # pylint:disable=import-outside-toplevel
     # yield app
@@ -234,7 +234,7 @@ def fastapi_app() -> typing.Generator[FastAPI, typing.Any, None]:
 
 # SOURCE: https://github.com/gvbgduh/starlette-cbge/blob/c1c7b99b07f4cf21537a12b82526b9a34ff3100b/tests/conftest.py
 # @pytest.fixture(scope="session")
-@pytest.fixture(scope="class")
+@pytest.fixture(scope="function")
 def fastapi_client(request, fastapi_app) -> typing.Generator:
     """
     Sync test client.
@@ -271,7 +271,8 @@ def normal_user_token_headers(
     )
 
 
-@pytest.fixture(scope="session")
+# @pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def db() -> typing.Generator:
     yield SessionLocal()
 

@@ -482,8 +482,8 @@ done
         # call(pytest, loc="local", mockedfs=True),
         # call(pytest, loc="local", clionly=True),
         # call(pytest, loc="local", usersonly=True),
-        call(pytest, loc="local", convertingtotestclientstarlette=True),
-        # call(pytest, loc="local"),
+        # call(pytest, loc="local", convertingtotestclientstarlette=True),
+        call(pytest, loc="local"),
     ],
     incrementable=["verbose"],
 )

@@ -421,9 +421,16 @@ class DbSessionMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Response:
         response = Response("Internal server error", status_code=500)
         try:
+            logger.debug(
+                "[DbSessionMiddleware] dispatch - Creating new Sqlalchemy Session()"
+            )
             request.state.db = Session()
+            logger.debug("[DbSessionMiddleware] dispatch - await call_next(request)")
             response = await call_next(request)
         finally:
+            logger.debug(
+                "[DbSessionMiddleware] dispatch - closing ... request.state.db.close()"
+            )
             request.state.db.close()
         return response
 

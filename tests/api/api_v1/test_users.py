@@ -38,144 +38,6 @@ def mock_email(request, monkeypatch, mocker):
     yield mock_send_new_account_email
 
 
-# @pytest.mark.usersonly
-# @pytest.mark.unittest
-# def test_get_users_superuser_me(superuser_token_headers: Dict[str, str]) -> None:
-#     server_api = get_server_api()
-#     logger.debug("server_api : %s", server_api)
-#     r = requests.get(
-#         f"{server_api}{settings.API_V1_STR}/users/me", headers=superuser_token_headers
-#     )
-#     current_user = r.json()
-#     assert current_user
-#     assert current_user["is_active"] is True
-#     assert current_user["is_superuser"]
-#     assert current_user["email"] == settings.FIRST_SUPERUSER
-
-
-# @pytest.mark.usersonly
-# @pytest.mark.unittest
-# def test_create_user_new_email(superuser_token_headers: Dict[str, str]) -> None:
-#     server_api = get_server_api()
-#     logger.debug("server_api : %s", server_api)
-#     username = random_lower_string()
-#     password = random_lower_string()
-#     data = {"email": username, "password": password}
-#     r = requests.post(
-#         f"{server_api}{settings.API_V1_STR}/users/",
-#         headers=superuser_token_headers,
-#         json=data,
-#     )
-#     assert 200 <= r.status_code < 300
-#     created_user = r.json()
-#     user = crud.user.get_by_email(db_session, email=username)
-#     assert user.email == created_user["email"]
-
-
-# # @pytest.mark.fastapionly
-# # @pytest.mark.unittest
-# # class TestFastAPIWeb:
-# #     def test_fastapi_instance(self, mocker, fastapi_client):
-# #         # username, password = username_and_password_first_superuser_fixtures
-# #         url = "{base}/logs".format(base=get_server_api_with_version())
-# #         response = fastapi_client.get(url)
-# #         assert response.status_code == 200
-
-# #     def test_fastapi_app_instance(self, mocker, fastapi_app, fastapi_client):
-# #         # username, password = username_and_password_first_superuser_fixtures
-# #         assert fastapi_app.title == "Ultron-8 Web Server"
-# #         assert fastapi_app.debug
-# #         assert fastapi_app.description == ""
-# #         url = "{base}/logs".format(base=get_server_api_with_version())
-# #         response = fastapi_client.get(url)
-# #         assert response.status_code == 200
-
-
-# @pytest.mark.usersonly
-# @pytest.mark.unittest
-# def test_get_existing_user(superuser_token_headers: Dict[str, str]) -> None:
-#     server_api = get_server_api()
-#     logger.debug("server_api : %s", server_api)
-#     username = random_lower_string()
-#     password = random_lower_string()
-#     user_in = UserCreate(email=username, password=password)
-#     user = crud.user.create(db_session, user_in=user_in)
-#     user_id = user.id
-#     r = requests.get(
-#         f"{server_api}{settings.API_V1_STR}/users/{user_id}",
-#         headers=superuser_token_headers,
-#     )
-#     assert 200 <= r.status_code < 300
-#     api_user = r.json()
-#     user = crud.user.get_by_email(db_session, email=username)
-#     assert user.email == api_user["email"]
-
-
-# @pytest.mark.usersonly
-# @pytest.mark.unittest
-# def test_create_user_existing_username(superuser_token_headers: Dict[str, str]) -> None:
-#     server_api = get_server_api()
-#     logger.debug("server_api : %s", server_api)
-#     username = random_lower_string()
-#     # username = email
-#     password = random_lower_string()
-#     user_in = UserCreate(email=username, password=password)
-#     user = crud.user.create(db_session, user_in=user_in)
-#     data = {"email": username, "password": password}
-#     r = requests.post(
-#         f"{server_api}{settings.API_V1_STR}/users/",
-#         headers=superuser_token_headers,
-#         json=data,
-#     )
-#     created_user = r.json()
-#     assert r.status_code == 400
-#     assert "_id" not in created_user
-
-
-# @pytest.mark.usersonly
-# @pytest.mark.unittest
-# def test_create_user_by_normal_user() -> None:
-#     server_api = get_server_api()
-#     logger.debug("server_api : %s", server_api)
-#     username = random_lower_string()
-#     password = random_lower_string()
-#     user_in = UserCreate(email=username, password=password)
-#     user = crud.user.create(db_session, user_in=user_in)
-#     user_token_headers = user_authentication_headers(server_api, username, password)
-#     data = {"email": username, "password": password}
-#     r = requests.post(
-#         f"{server_api}{settings.API_V1_STR}/users/",
-#         headers=user_token_headers,
-#         json=data,
-#     )
-#     assert r.status_code == 400
-
-
-# @pytest.mark.usersonly
-# @pytest.mark.unittest
-# def test_retrieve_users(superuser_token_headers: Dict[str, str]) -> None:
-#     server_api = get_server_api()
-#     logger.debug("server_api : %s", server_api)
-#     username = random_lower_string()
-#     password = random_lower_string()
-#     user_in = UserCreate(email=username, password=password)
-#     user = crud.user.create(db_session, user_in=user_in)
-
-#     username2 = random_lower_string()
-#     password2 = random_lower_string()
-#     user_in2 = UserCreate(email=username2, password=password2)
-#     user2 = crud.user.create(db_session, user_in=user_in2)
-
-#     r = requests.get(
-#         f"{server_api}{settings.API_V1_STR}/users/", headers=superuser_token_headers
-#     )
-#     all_users = r.json()
-
-#     assert len(all_users) > 1
-#     for user in all_users:
-#         assert "email" in user
-
-
 @pytest.mark.convertingtotestclientstarlette
 @pytest.mark.usersonly
 @pytest.mark.unittest
@@ -191,7 +53,7 @@ class TestUserApiEndpoint:
         r = fastapi_client.post(
             f"{server_api}{settings.API_V1_STR}/users/",
             headers=superuser_token_headers,
-            json=data.dict(),
+            json=data.dict(),  # pylint: disable=no-member
         )
         assert 200 <= r.status_code < 300
         created_user = r.json()
@@ -229,7 +91,7 @@ class TestUserApiEndpoint:
         r = fastapi_client.post(
             f"{server_api}{settings.API_V1_STR}/users/",
             headers=superuser_token_headers,
-            json=data.dict(),
+            json=data.dict(),  # pylint: disable=no-member
         )
         assert 200 <= r.status_code < 300
         created_user = r.json()
@@ -257,7 +119,7 @@ class TestUserApiEndpoint:
         r = fastapi_client.post(
             f"{server_api}{settings.API_V1_STR}/users/",
             headers=superuser_token_headers,
-            json=data.dict(),
+            json=data.dict(),  # pylint: disable=no-member
         )
         assert 200 <= r.status_code < 300
         created_user = r.json()
@@ -309,7 +171,7 @@ class TestUserApiEndpoint:
         r = fastapi_client.post(
             f"{server_api}{settings.API_V1_STR}/users/",
             headers=superuser_token_headers,
-            json=data.dict(),
+            json=data.dict(),  # pylint: disable=no-member
         )
         created_user = r.json()
         assert r.status_code == 400
@@ -332,7 +194,7 @@ class TestUserApiEndpoint:
         r = fastapi_client.post(
             f"{server_api}{settings.API_V1_STR}/users/",
             headers=user_token_headers,
-            json=data.dict(),
+            json=data.dict(),  # pylint: disable=no-member
         )
         assert r.status_code == 400
 
