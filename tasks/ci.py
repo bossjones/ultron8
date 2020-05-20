@@ -47,6 +47,35 @@ rm -f .coverage
     ctx.run(_cmd)
 
 
+@task(incrementable=["verbose"])
+def coverage_clean(ctx, loc="local", verbose=0, cleanup=False):
+    """
+    clean coverage files
+    Usage: inv ci.coverage-clean
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    _cmd = r"""
+find . -name '*.pyc' -exec rm -fv {} +
+find . -name '*.pyo' -exec rm -fv {} +
+find . -name '__pycache__' -exec rm -frv {} +
+rm -f .coverage
+rm -rf htmlcov/*
+rm -rf cov_annotate/*
+rm -f cov.xml
+    """
+
+    if verbose >= 1:
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run(_cmd)
+
+
 @task
 def pylint(ctx, loc="local"):
     """
@@ -194,6 +223,7 @@ def pytest(
     clionly=False,
     usersonly=False,
     convertingtotestclientstarlette=False,
+    loggeronly=False,
 ):
     """
     Run pytest
@@ -247,6 +277,9 @@ def pytest(
 
     if convertingtotestclientstarlette:
         _cmd += r" -m convertingtotestclientstarlette "
+
+    if loggeronly:
+        _cmd += r" -m loggeronly "
 
     if pdb:
         _cmd += r" --pdb "
@@ -367,6 +400,82 @@ def editable(ctx, loc="local"):
         call(verify_python_version, loc="local"),
         call(pre_start, loc="local"),
         call(alembic_upgrade, loc="local"),
+    ],
+    incrementable=["verbose"],
+)
+def monkeytype(ctx, loc="local", verbose=0, cleanup=False, apply=False, dry_run=False):
+    """
+    Use monkeytype to collect runtime types of function arguments and return values, and automatically generate stub files
+    or even add draft type annotations directly to python code. Uses pytest to access all lines of code that have testing setup.
+
+    To generate stubs:
+        Usage: inv ci.monkeytype -vvv
+    To apply stubs to existing code base:
+        Usage: inv ci.monkeytype --apply -vvv
+    To apply stubs to existing code base(dry run):
+        Usage: inv ci.monkeytype --apply -vvv --dry-run
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    # NOTE: https://monkeytype.readthedocs.io/en/stable/faq.html#why-did-my-test-coverage-measurement-stop-working
+    _cmd = r"""monkeytype run "`command -v pytest`" --no-cov --verbose --mypy --showlocals --tb=short tests"""
+
+    if verbose >= 1:
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    if dry_run:
+        click.secho(
+            "[monkeytype] DRY RUN mode enabled, not executing command: {}".format(_cmd),
+            fg=COLOR_CAUTION,
+        )
+    else:
+        ctx.run(_cmd)
+
+    _cmd_apply = r"""
+modules_array=()
+while IFS= read -r line; do
+    modules_array+=( "$line" )
+done < <( monkeytype list-modules | grep -v "pytestipdb" )
+
+echo "Stub all modules using monkeytype"
+for element in "${modules_array[@]}"
+do
+    monkeytype stub ${element}
+done
+
+echo "apply all modules using monkeytype"
+for element in "${modules_array[@]}"
+do
+    monkeytype apply ${element}
+done
+    """
+
+    if apply:
+        if dry_run:
+            click.secho(
+                "[monkeytype] DRY RUN mode enabled, not executing command: \n\n{}".format(
+                    _cmd_apply
+                ),
+                fg=COLOR_CAUTION,
+            )
+        else:
+            ctx.run(_cmd_apply)
+
+
+@task(
+    pre=[
+        call(clean, loc="local"),
+        call(verify_python_version, loc="local"),
+        call(pre_start, loc="local"),
+        call(alembic_upgrade, loc="local"),
         # call(pytest, loc="local", configonly=True),
         # call(pytest, loc="local", settingsonly=True),
         # call(pytest, loc="local", pathsonly=True),
@@ -378,6 +487,7 @@ def editable(ctx, loc="local"):
         # call(pytest, loc="local", clionly=True),
         # call(pytest, loc="local", usersonly=True),
         # call(pytest, loc="local", convertingtotestclientstarlette=True),
+        # call(pytest, loc="local", loggeronly=True),
         call(pytest, loc="local"),
     ],
     incrementable=["verbose"],

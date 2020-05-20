@@ -198,13 +198,6 @@ class UltronAPI:
 
         headers = self._headers()
 
-        # data = UserCreate(
-        #     email=data["email"],
-        #     password=data["password"]
-        # )
-
-        # data["id"] = None
-
         r = requests.post(url, headers=headers, json=data)
 
         if r.status_code != 200:
