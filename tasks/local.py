@@ -3,6 +3,7 @@ local tasks
 """
 import logging
 from invoke import task, call
+from invoke.exceptions import Exit
 import os
 
 # from sqlalchemy.engine.url import make_url
@@ -364,6 +365,98 @@ pip-compile --output-file requirements-test.txt requirements-test.in
         click.secho(msg, fg=COLOR_SUCCESS)
 
     ctx.run(_cmd)
+
+
+@task(
+    pre=[call(detect_os, loc="local")], incrementable=["verbose"],
+)
+def pip_tools(
+    ctx,
+    loc="local",
+    verbose=0,
+    cleanup=False,
+    upgrade=False,
+    package="",
+    dev=False,
+    test=False,
+    dry_run=False,
+):
+    """
+    upgrade single requirements.txt file [requirements, dev, test]
+    Usage: inv local.pip-tools --upgrade --package="MonkeyType" --dev -vvv
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    if verbose >= 1:
+        msg = "[pip-tools] Create virtual environment, initialize it, install packages, and remind user to activate after make is done"
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    _cmd = r"pip-compile"
+
+    if upgrade and package:
+        if verbose >= 1:
+            msg = "[pip-tools] Looks like we're upgrading a specific package: '{}'".format(
+                package
+            )
+            click.secho(msg, fg=COLOR_SUCCESS)
+        _cmd += r" --upgrade-package '{}'".format(package)
+
+    if dev:
+        if verbose >= 1:
+            msg = "[pip-tools] output file will be DEV"
+            click.secho(msg, fg=COLOR_SUCCESS)
+        _cmd += " --output-file requirements-dev.txt requirements-dev.in"
+
+    if test:
+        if verbose >= 1:
+            msg = "[pip-tools] output file will be TEST"
+            click.secho(msg, fg=COLOR_SUCCESS)
+        _cmd += " --output-file requirements-test.txt requirements-test.in"
+
+    if (not test) and (not dev):
+        if verbose >= 1:
+            msg = "[pip-tools] output file will be regular requirements.txt"
+            click.secho(msg, fg=COLOR_SUCCESS)
+        _cmd += " --output-file requirements.txt requirements.in"
+
+    if verbose >= 1:
+        msg = "[pip-tools] Rendering dependencies ... "
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    if dev and test:
+        msg = "Can't use both --dev and --test\n" "Please pick one or neither\n\n"
+        raise Exit(msg)
+
+    if dry_run:
+        click.secho(
+            "[pip-tools] DRY RUN mode enabled, not executing command: {}".format(_cmd),
+            fg=COLOR_CAUTION,
+        )
+    else:
+        ctx.run(_cmd)
+
+    if upgrade and package:
+        msg = "[pip-tools] Upgrading packages"
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+        _upgrade_cmd = r"pip install -U {}".format(package)
+
+        if dry_run:
+            click.secho(
+                "[pip-tools] DRY RUN mode enabled, not executing command: {}".format(
+                    _upgrade_cmd
+                ),
+                fg=COLOR_CAUTION,
+            )
+        else:
+            ctx.run(_upgrade_cmd)
 
 
 @task(

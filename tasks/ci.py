@@ -396,6 +396,43 @@ def editable(ctx, loc="local"):
         call(verify_python_version, loc="local"),
         call(pre_start, loc="local"),
         call(alembic_upgrade, loc="local"),
+    ],
+    incrementable=["verbose"],
+)
+def monkeytype(ctx, loc="local", verbose=0, cleanup=False, apply=False):
+    """
+    Use monkeytype to collect runtime types of function arguments and return values, and automatically generate stub files
+    or even add draft type annotations directly to python code. Uses pytest to access all lines of code that have testing setup.
+
+    To generate stubs:
+        Usage: inv ci.monkeytype
+    To apply stubs to existing code base:
+        Usage: inv ci.monkeytype --apply
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    _cmd = r"""monkeytype run "`command -v pytest`" --cov-config=setup.cfg --verbose --cov-append --cov-report=term-missing --cov-report=xml:cov.xml --cov-report=html:htmlcov --cov-report=annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"""
+
+    if verbose >= 1:
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run(_cmd)
+
+
+@task(
+    pre=[
+        call(clean, loc="local"),
+        call(verify_python_version, loc="local"),
+        call(pre_start, loc="local"),
+        call(alembic_upgrade, loc="local"),
         # call(pytest, loc="local", configonly=True),
         # call(pytest, loc="local", settingsonly=True),
         # call(pytest, loc="local", pathsonly=True),
