@@ -1,7 +1,7 @@
 # SOURCE: https://blog.bartab.fr/fastapi-logging-on-the-fly/
 from __future__ import annotations
 
-from typing import List, Optional, Any
+from typing import List, Optional, Any, ForwardRef
 
 from pydantic import BaseModel
 
@@ -11,12 +11,16 @@ class LoggerPatch(BaseModel):
     level: str
 
 
+# ListLoggerModel = ForwardRef("List[LoggerModel]")
+
+
 class LoggerModel(BaseModel):
     name: str
     level: Optional[int]
     # children: Optional[List["LoggerModel"]] = None
     # fixes: https://github.com/samuelcolvin/pydantic/issues/545
     children: Optional[List[Any]] = None
+    # children: ListLoggerModel = None
 
 
 LoggerModel.update_forward_refs()

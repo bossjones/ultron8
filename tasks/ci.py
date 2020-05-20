@@ -223,6 +223,7 @@ def pytest(
     clionly=False,
     usersonly=False,
     convertingtotestclientstarlette=False,
+    loggeronly=False,
 ):
     """
     Run pytest
@@ -276,6 +277,9 @@ def pytest(
 
     if convertingtotestclientstarlette:
         _cmd += r" -m convertingtotestclientstarlette "
+
+    if loggeronly:
+        _cmd += r" -m loggeronly "
 
     if pdb:
         _cmd += r" --pdb "
@@ -483,7 +487,8 @@ done
         # call(pytest, loc="local", clionly=True),
         # call(pytest, loc="local", usersonly=True),
         # call(pytest, loc="local", convertingtotestclientstarlette=True),
-        call(pytest, loc="local"),
+        call(pytest, loc="local", loggeronly=True),
+        # call(pytest, loc="local"),
     ],
     incrementable=["verbose"],
 )

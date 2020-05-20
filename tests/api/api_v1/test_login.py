@@ -47,22 +47,23 @@ class TestLoginApiEndpoint:
         assert "email" in result
 
 
-# @pytest.mark.loginonly
-# @pytest.mark.unittest
-# def test_get_access_token() -> None:
-#     server_api = get_server_api()
-#     logger.debug("server_api : %s", server_api)
-#     login_data = {
-#         "username": settings.FIRST_SUPERUSER,
-#         "password": settings.FIRST_SUPERUSER_PASSWORD,
-#     }
-#     r = requests.post(
-#         f"{server_api}{settings.API_V1_STR}/login/access-token", data=login_data
-#     )
-#     tokens = r.json()
-#     assert r.status_code == 200
-#     assert "access_token" in tokens
-#     assert tokens["access_token"]
+# Need to keep this for the moment since things like tests_pre_start.py use it.
+@pytest.mark.loginonly
+@pytest.mark.unittest
+def test_get_access_token() -> None:
+    server_api = get_server_api()
+    logger.debug("server_api : %s", server_api)
+    login_data = {
+        "username": settings.FIRST_SUPERUSER,
+        "password": settings.FIRST_SUPERUSER_PASSWORD,
+    }
+    r = requests.post(
+        f"{server_api}{settings.API_V1_STR}/login/access-token", data=login_data
+    )
+    tokens = r.json()
+    assert r.status_code == 200
+    assert "access_token" in tokens
+    assert tokens["access_token"]
 
 
 # @pytest.mark.loginonly
