@@ -16,12 +16,12 @@ logger = logging.getLogger(__name__)
 ###############################################################
 
 
-def configure_engine(*args, **kwargs):
-    args_with_defaults = [f"{settings.DATABASE_URL}?check_same_thread=False"].extend(
-        args
-    )
-    kwargs_with_defaults = dict({"pool_pre_ping": True}, **kwargs)
-    return create_engine(*args_with_defaults, **kwargs_with_defaults)
+# DISABLED: # def configure_engine(*args, **kwargs):
+# DISABLED: #     args_with_defaults = [f"{settings.DATABASE_URL}?check_same_thread=False"].extend(
+# DISABLED: #         args
+# DISABLED: #     )
+# DISABLED: #     kwargs_with_defaults = dict({"pool_pre_ping": True}, **kwargs)
+# DISABLED: #     return create_engine(*args_with_defaults, **kwargs_with_defaults)
 
 
 ###############################################################
