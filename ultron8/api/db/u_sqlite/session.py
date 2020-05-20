@@ -21,6 +21,9 @@ def configure_engine(*args, **kwargs):
 engine = create_engine(
     f"{settings.DATABASE_URL}?check_same_thread=False", pool_pre_ping=True, echo=True
 )
+
+# NOTE: https://docs.sqlalchemy.org/en/13/orm/contextual.html
+# A scoped_session is constructed by calling it, passing it a factory which can create new Session objects. A factory is just something that produces a new object when called, and in the case of Session, the most common factory is the sessionmaker
 db_session = scoped_session(
     sessionmaker(autocommit=False, autoflush=False, bind=engine)
 )

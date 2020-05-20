@@ -1,7 +1,10 @@
 """init_db"""
+from sqlalchemy.orm import Session
+
 from ultron8.api import crud
 from ultron8.api import settings
-from ultron8.api.db.u_sqlite.base import Base
+
+# from ultron8.api.db.u_sqlite.base import Base
 from ultron8.api.models.user import UserCreate
 
 # make sure all SQL Alchemy models are imported before initializing DB
@@ -9,7 +12,7 @@ from ultron8.api.models.user import UserCreate
 # for more details: https://github.com/tiangolo/full-stack-fastapi-postgresql/issues/28
 
 
-def init_db(db_session):
+def init_db(db_session: Session):
     # Tables should be created with Alembic migrations
     # But if you don't want to use migrations, create
     # the tables un-commenting the next line
