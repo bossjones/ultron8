@@ -167,13 +167,6 @@ class TestUserApiEndpoint:
         logger.debug("server_api : %s", server_api)
 
         data = _MakeRandomNormalUserFactory()
-        print(data)
-        # # email = random_email()
-        # # password = random_lower_string()
-        # # data = UserCreate(
-        # #     email=email,
-        # #     password=password
-        # # )
         r = fastapi_client.post(
             f"{server_api}{settings.API_V1_STR}/users/",
             headers=superuser_token_headers,
@@ -183,7 +176,3 @@ class TestUserApiEndpoint:
         created_user = r.json()
         user = crud.user.get_by_email(db_session, email=data.email)
         assert user.email == created_user["email"]
-
-        logger.debug(r)
-        logger.debug(r.reason)
-        logger.debug(r.text)

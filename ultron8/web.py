@@ -1,16 +1,21 @@
-try:
-    import ptvsd
-except Exception:
-    print("WARNING - ptvsd is not installed, can't use to debug in vscode")
+# NOTE: Uncomment to enabled debugger in vscode # try:
+# NOTE: Uncomment to enabled debugger in vscode #     import ptvsd
+# NOTE: Uncomment to enabled debugger in vscode # except Exception:
+# NOTE: Uncomment to enabled debugger in vscode #     print("WARNING - ptvsd is not installed, can't use to debug in vscode")
+# NOTE: Uncomment to enabled debugger in vscode #     pass
 
 import os
 
-# See: https://github.com/microsoft/ptvsd/issues/1056
-# multiprocess debugging requires spawn method
-# @ref: https://github.com/microsoft/ptvsd/blob/master/TROUBLESHOOTING.md#1-multiprocessing-on-linuxmac
-import multiprocessing
+# NOTE: Uncomment to enabled debugger in vscode #     # SOURCE: https://github.com/microsoft/ptvsd/blob/master/TROUBLESHOOTING.md#1-multiprocessing-on-linuxmac
+# NOTE: Uncomment to enabled debugger in vscode #     # Multiprocess debugging on a Linux machine requires the spawn setting. We are working on improving this experience, see # NOTE: Uncomment to enabled debugger in vscode #943. Meanwhile do this to improve your debugging experience:
+# NOTE: Uncomment to enabled debugger in vscode # if os.getenv("ULTRON_ENVIRONMENT", "production") == "development":
+# NOTE: Uncomment to enabled debugger in vscode #     # See: https://github.com/microsoft/ptvsd/issues/1056
+# NOTE: Uncomment to enabled debugger in vscode #     # multiprocess debugging requires spawn method
+# NOTE: Uncomment to enabled debugger in vscode #     # @ref: https://github.com/microsoft/ptvsd/blob/master/TROUBLESHOOTING.md#1-multiprocessing-on-linuxmac
+# NOTE: Uncomment to enabled debugger in vscode #     import multiprocessing
+# NOTE: Uncomment to enabled debugger in vscode
+# NOTE: Uncomment to enabled debugger in vscode #     multiprocessing.set_start_method("spawn", True)
 
-multiprocessing.set_start_method("spawn", True)
 import subprocess
 
 # SOURCE: https://blog.hipolabs.com/remote-debugging-with-vscode-docker-and-pico-fde11f0e5f1c
@@ -34,19 +39,20 @@ def start_debugger():
     return parent_pid, pids
 
 
-if os.getenv("ULTRON_ENVIRONMENT", "production") == "development":
-
-    # SOURCE: https://github.com/microsoft/ptvsd/blob/master/TROUBLESHOOTING.md#1-multiprocessing-on-linuxmac
-    # Multiprocess debugging on a Linux machine requires the spawn setting. We are working on improving this experience, see #943. Meanwhile do this to improve your debugging experience:
-    parent_pid, pids = start_debugger()
-    print(f" [parent_pid] {parent_pid}")
-    print(f" [pids] {pids}")
-    if str(parent_pid) in pids:
-        print("Starting debugger")
-        try:
-            ptvsd.enable_attach()
-        except Exception:
-            print("WARNING - ptvsd is not installed, can't run ptvsd.enable_attach()")
+# NOTE: Uncomment to enabled debugger in vscode # if os.getenv("ULTRON_ENVIRONMENT", "production") == "development":
+# NOTE: Uncomment to enabled debugger in vscode
+# NOTE: Uncomment to enabled debugger in vscode #     # SOURCE: https://github.com/microsoft/ptvsd/blob/master/TROUBLESHOOTING.md#1-multiprocessing-on-linuxmac
+# NOTE: Uncomment to enabled debugger in vscode #     # Multiprocess debugging on a Linux machine requires the spawn setting. We are working on improving this experience, see # NOTE: Uncomment to enabled debugger in vscode #943. Meanwhile do this to improve your debugging experience:
+# NOTE: Uncomment to enabled debugger in vscode #     parent_pid, pids = start_debugger()
+# NOTE: Uncomment to enabled debugger in vscode #     print(f" [parent_pid] {parent_pid}")
+# NOTE: Uncomment to enabled debugger in vscode #     print(f" [pids] {pids}")
+# NOTE: Uncomment to enabled debugger in vscode #     if str(parent_pid) in pids:
+# NOTE: Uncomment to enabled debugger in vscode #         print("Starting debugger")
+# NOTE: Uncomment to enabled debugger in vscode #         try:
+# NOTE: Uncomment to enabled debugger in vscode #             ptvsd.enable_attach()
+# NOTE: Uncomment to enabled debugger in vscode #         except Exception:
+# NOTE: Uncomment to enabled debugger in vscode #             print("WARNING - ptvsd is not installed, can't run ptvsd.enable_attach()")
+# NOTE: Uncomment to enabled debugger in vscode #             pass
 
 
 import logging
@@ -535,28 +541,9 @@ app = get_application()
 print(" [app] ran get_application")
 
 if __name__ == "__main__":
-    import os
-
-    # if os.getenv("ULTRON_ENVIRONMENT", "production") == "development":
-
-    #     # SOURCE: https://github.com/microsoft/ptvsd/blob/master/TROUBLESHOOTING.md#1-multiprocessing-on-linuxmac
-    #     # Multiprocess debugging on a Linux machine requires the spawn setting. We are working on improving this experience, see #943. Meanwhile do this to improve your debugging experience:
-    #     import multiprocessing
-    #     multiprocessing.set_start_method('spawn', True)
-    #     parent_pid, pids = start_debugger()
-    #     if str(parent_pid) in pids:
-    #         print('Starting debugger')
-    #         # ptvsd.enable_attach(address=('0.0.0.0', 3000))
-    #         # ptvsd.enable_attach(address=('localhost', 3000))
-    #         ptvsd.enable_attach()
-    #         ptvsd.wait_for_attach()
-    #     import pystuck
-    #     pystuck.run_server()
-
-    # HOST = os.environ.get("HOST", "0.0.0.0")
+    # import os
     HOST = "localhost"
     PORT = int(os.environ.get("PORT", 11267))
-    # uvicorn.run(app, host=HOST, port=PORT)
 
     # uvicorn.run(app, host=HOST, port=PORT, log_level=settings._USER_LOG_LEVEL.lower(), reload=True, workers=settings.WORKERS)
     # uvicorn.run(app, host=HOST, port=PORT, log_level=settings._USER_LOG_LEVEL.lower(), reload=True)

@@ -47,6 +47,35 @@ rm -f .coverage
     ctx.run(_cmd)
 
 
+@task(incrementable=["verbose"])
+def coverage_clean(ctx, loc="local", verbose=0, cleanup=False):
+    """
+    clean coverage files
+    Usage: inv ci.coverage-clean
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    _cmd = r"""
+find . -name '*.pyc' -exec rm -fv {} +
+find . -name '*.pyo' -exec rm -fv {} +
+find . -name '__pycache__' -exec rm -frv {} +
+rm -f .coverage
+rm -rf htmlcov/*
+rm -rf cov_annotate/*
+rm -f cov.xml
+    """
+
+    if verbose >= 1:
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    ctx.run(_cmd)
+
+
 @task
 def pylint(ctx, loc="local"):
     """
