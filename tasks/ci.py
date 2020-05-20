@@ -403,7 +403,9 @@ def editable(ctx, loc="local"):
     ],
     incrementable=["verbose"],
 )
-def monkeytype(ctx, loc="local", verbose=0, cleanup=False, apply=False, dry_run=False):
+def monkeytype(
+    ctx, loc="local", verbose=0, cleanup=False, apply=False, stub=False, dry_run=False
+):
     """
     Use monkeytype to collect runtime types of function arguments and return values, and automatically generate stub files
     or even add draft type annotations directly to python code. Uses pytest to access all lines of code that have testing setup.
@@ -411,9 +413,9 @@ def monkeytype(ctx, loc="local", verbose=0, cleanup=False, apply=False, dry_run=
     To generate stubs:
         Usage: inv ci.monkeytype -vvv
     To apply stubs to existing code base:
-        Usage: inv ci.monkeytype --apply -vvv
+        Usage: inv ci.monkeytype --apply --stub -vvv
     To apply stubs to existing code base(dry run):
-        Usage: inv ci.monkeytype --apply -vvv --dry-run
+        Usage: inv ci.monkeytype --apply --stub -vvv --dry-run
     """
     env = get_compose_env(ctx, loc=loc)
 
@@ -439,7 +441,7 @@ def monkeytype(ctx, loc="local", verbose=0, cleanup=False, apply=False, dry_run=
     else:
         ctx.run(_cmd)
 
-    _cmd_apply = r"""
+    _cmd_stub = r"""
 modules_array=()
 while IFS= read -r line; do
     modules_array+=( "$line" )
@@ -448,8 +450,32 @@ done < <( monkeytype list-modules | grep -v "pytestipdb" )
 echo "Stub all modules using monkeytype"
 for element in "${modules_array[@]}"
 do
-    monkeytype stub ${element}
+    filename=$(echo $element | sed 's,\.,\/,g')
+    _basedir=$(dirname "$filename")
+    mkdir -p stubs/$_basedir || true
+    touch stubs/$_basedir/__init__.pyi
+    echo " [run] monkeytype stub ${element} > stubs/$filename.pyi"
+    monkeytype -v stub ${element} > stubs/$filename.pyi
 done
+
+    """
+
+    if stub:
+        if dry_run:
+            click.secho(
+                "[monkeytype] DRY RUN mode enabled, not executing command: \n\n{}".format(
+                    _cmd_stub
+                ),
+                fg=COLOR_CAUTION,
+            )
+        else:
+            ctx.run(_cmd_stub)
+
+    _cmd_apply = r"""
+modules_array=()
+while IFS= read -r line; do
+    modules_array+=( "$line" )
+done < <( monkeytype list-modules | grep -v "pytestipdb" )
 
 echo "apply all modules using monkeytype"
 for element in "${modules_array[@]}"

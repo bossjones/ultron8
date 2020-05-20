@@ -25,13 +25,13 @@ stdin, stdout = sys.stdin, sys.stdout
 
 CONTEXT_SETTINGS = dict(auto_envvar_prefix="ULTRON8_CLI")
 
-import sys
-from IPython.core.debugger import Tracer  # noqa
-from IPython.core import ultratb
+# import sys
+# from IPython.core.debugger import Tracer  # noqa
+# from IPython.core import ultratb
 
-sys.excepthook = ultratb.FormattedTB(
-    mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
-)
+# sys.excepthook = ultratb.FormattedTB(
+#     mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
+# )
 
 
 def set_trace():
