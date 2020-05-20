@@ -420,7 +420,8 @@ def monkeytype(ctx, loc="local", verbose=0, cleanup=False, apply=False, dry_run=
     for k, v in env.items():
         ctx.config["run"]["env"][k] = v
 
-    _cmd = r"""monkeytype run "`command -v pytest`" --cov-config=setup.cfg --verbose --cov-append --cov-report=term-missing --cov-report=xml:cov.xml --cov-report=html:htmlcov --cov-report=annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"""
+    # NOTE: https://monkeytype.readthedocs.io/en/stable/faq.html#why-did-my-test-coverage-measurement-stop-working
+    _cmd = r"""monkeytype run "`command -v pytest`" --no-cov --verbose --mypy --showlocals --tb=short tests"""
 
     if verbose >= 1:
         msg = "{}".format(_cmd)
