@@ -86,3 +86,4 @@ invoke
 betamax
 betamax_matchers
 sqlalchemy-stubs
+rope
