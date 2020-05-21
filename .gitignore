@@ -95,7 +95,10 @@ venv.bak/
 .spyproject
 
 # Rope project settings
-.ropeproject
+# you can skip this first one if it is not already excluded by prior patterns
+!ropeproject/
+.ropeproject/*
+!.ropeproject/config.py
 
 # mkdocs documentation
 /site
@@ -205,9 +208,6 @@ ENV/
 # Spyder project settings
 .spyderproject
 
-# Rope project settings
-.ropeproject
-
 # =========================
 # Operating System Files
 # =========================
@@ -273,7 +273,6 @@ $RECYCLE.BIN/
 .vagrant
 .DS_Store
 **/.*.swp
-**/.ropeproject
 **/.cache
 *.pyc
 
@@ -347,3 +346,4 @@ ultron8-pipenv.*
 temp.json
 freeze.before.txt
 freeze.after.txt
+stubs
