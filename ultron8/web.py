@@ -3,7 +3,7 @@
 # NOTE: Uncomment to enabled debugger in vscode # except Exception:
 # NOTE: Uncomment to enabled debugger in vscode #     print("WARNING - ptvsd is not installed, can't use to debug in vscode")
 # NOTE: Uncomment to enabled debugger in vscode #     pass
-
+import threading
 import os
 
 # NOTE: Uncomment to enabled debugger in vscode #     # SOURCE: https://github.com/microsoft/ptvsd/blob/master/TROUBLESHOOTING.md#1-multiprocessing-on-linuxmac
@@ -424,12 +424,22 @@ class DbSessionMiddleware(BaseHTTPMiddleware):
             logger.debug(
                 "[DbSessionMiddleware] dispatch - Creating new Sqlalchemy Session()"
             )
+            logger.debug(
+                "[DbSessionMiddleware] dispatch - current thread {}".format(
+                    threading.current_thread().name
+                )
+            )
             request.state.db = Session()
             logger.debug("[DbSessionMiddleware] dispatch - await call_next(request)")
             response = await call_next(request)
         finally:
             logger.debug(
                 "[DbSessionMiddleware] dispatch - closing ... request.state.db.close()"
+            )
+            logger.debug(
+                "[DbSessionMiddleware] dispatch - current thread {}".format(
+                    threading.current_thread().name
+                )
             )
             request.state.db.close()
         return response

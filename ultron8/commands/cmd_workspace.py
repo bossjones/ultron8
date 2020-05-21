@@ -20,7 +20,7 @@ stdin, stdout = sys.stdin, sys.stdout
 @click.pass_context
 def cli(ctx):
     """Interact with workspace for ultron8."""
-    if do_get_flag("cli.flags.debug"):
+    if ctx.obj["debug"]:
         click.echo("Debug mode initiated")
         set_trace()
 
@@ -32,7 +32,7 @@ def cli(ctx):
 @click.pass_context
 def tree(ctx):
     """Tree command for Workspace"""
-    if do_get_flag("cli.flags.debug"):
+    if ctx.obj["debug"]:
         click.echo("Debug mode initiated")
         set_trace()
 
@@ -45,7 +45,7 @@ def tree(ctx):
 @click.pass_context
 def info(ctx):
     """Info on workspace"""
-    if do_get_flag("cli.flags.debug"):
+    if ctx.obj["debug"]:
         click.echo("Debug mode initiated")
         set_trace()
 
@@ -65,7 +65,7 @@ def info(ctx):
 # @click.pass_context
 # def cli(ctx):
 #     """cluster cmds for ultron8."""
-#     if do_get_flag("cli.flags.debug"):
+#     if ctx.obj["debug"]:
 #         click.echo("Debug mode initiated")
 #         set_trace()
 
@@ -77,7 +77,7 @@ def info(ctx):
 # @click.pass_context
 # def setup(ctx, cluster_url):
 #     """Cmd to setup workspace etc for ultron8."""
-#     if do_get_flag("cli.flags.debug"):
+#     if ctx.obj["debug"]:
 #         click.echo("Debug mode initiated")
 #         set_trace()
 

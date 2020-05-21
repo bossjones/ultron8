@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from sqlalchemy import Column
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
@@ -5,6 +6,10 @@ from sqlalchemy import String
 from sqlalchemy.orm import relationship
 
 from ultron8.api.db.u_sqlite.base_class import Base
+
+
+if TYPE_CHECKING:
+    from ultron8.api.db_models.user import User  # noqa: F401
 
 
 class Item(Base):

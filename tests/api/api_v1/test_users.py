@@ -198,13 +198,13 @@ class TestUserApiEndpoint:
         )
         assert r.status_code == 400
 
-    @pytest.mark.skip(
-        reason="Something is wrong with the db session we are using, it doesnt update in real time"
-    )
+    # @pytest.mark.xfail(
+    #     reason="Something is wrong with the db session we are using, it doesnt update in real time"
+    # )
     @pytest.mark.datainconsistent
     @pytest.mark.usersonly
     @pytest.mark.unittest
-    def test_update_user_me_by_normal_user(self, db, mocker, fastapi_client) -> None:
+    def test_update_user_me_by_normal_user(self, mocker, fastapi_client) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
 
@@ -213,7 +213,7 @@ class TestUserApiEndpoint:
         logger.debug("data : {}".format(data))
         user_in = UserCreate(email=data.email, password=data.password)
         logger.debug("user_in : {}".format(user_in))
-        user_create_crud = crud.user.create(db, user_in=user_in)
+        user_create_crud = crud.user.create(db_session, user_in=user_in)
         logger.debug("user_create_crud : {}".format(jsonable_encoder(user_create_crud)))
 
         # get normal user token for update request
@@ -238,7 +238,7 @@ class TestUserApiEndpoint:
         api_user = r.json()
 
         # FIXME: Ok, so the put request is working, but for some reason it is not returning an updated value for full_name from the db_session, even though it is inside the database already.
-        user_by_email = crud.user.get_by_email(db, email=data.email)
+        user_by_email = crud.user.get_by_email(db_session, email=data.email)
         logger.debug("user_by_email : {}".format(jsonable_encoder(user_by_email)))
         assert user_by_email.full_name == api_user["full_name"]
 
