@@ -2,6 +2,8 @@
 # pylint: disable=unnecessary-pass
 from __future__ import absolute_import
 from ultron8.exceptions import UltronBaseException
+from requests.models import Response
+from typing import Any, List
 
 
 class UltronClientException(Exception):
@@ -102,7 +104,7 @@ class UltronClientError(UltronClientException):
         The list of errors (if present) returned by UltronClient's API
     """
 
-    def __init__(self, resp):
+    def __init__(self, resp: Response) -> None:
         """Initialize our exception class."""
         super(UltronClientError, self).__init__(resp)
         #: Response code that triggered the error
@@ -210,7 +212,7 @@ class UnexpectedResponse(ResponseError):
 class UnprocessableResponseBody(ResponseError):
     """Exception class for response objects that cannot be handled."""
 
-    def __init__(self, message, body):
+    def __init__(self, message: str, body: List[Any]) -> None:
         """Initialize UnprocessableResponseBody."""
         Exception.__init__(self, message)
         self.body = body
@@ -319,7 +321,7 @@ error_classes = {
 }
 
 
-def error_for(response):
+def error_for(response: Response) -> ServerError:
     """Return the appropriate initialized exception class for a response."""
     klass = error_classes.get(response.status_code)
     if klass is None:

@@ -11,6 +11,7 @@ import logging.config
 from ultron8.api import settings
 from ultron8.yaml import yaml
 from ultron8.yaml import yaml_load
+from collections import OrderedDict
 
 # import daiquiri
 # import daiquiri.formatter
@@ -67,7 +68,7 @@ LOGSEVERITY = {
 # logger.info("It works with a custom format!")
 
 
-def get_yaml_config():
+def get_yaml_config() -> OrderedDict:
     HERE = os.path.abspath(os.path.dirname(__file__))
     config_file = "log_config.yml"
     config_path = os.path.join(HERE, config_file)
@@ -75,7 +76,7 @@ def get_yaml_config():
     return config
 
 
-def setup_logging():
+def setup_logging() -> None:
     """Configure logging."""
     log_config = get_yaml_config()
 

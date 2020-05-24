@@ -31,6 +31,7 @@ import json
 
 from pydantic.json import pydantic_encoder
 from typing import Optional
+from sqlalchemy.orm.session import Session
 
 
 def pretty_lenient_json(data):
@@ -40,7 +41,7 @@ def pretty_lenient_json(data):
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.sensorsonly
 @pytest.mark.unittest
-def test_create_sensors(db) -> None:
+def test_create_sensors(db: Session) -> None:
     # Step 1 - create pack
     packs = create_random_packs(db)
 

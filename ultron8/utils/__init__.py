@@ -53,7 +53,7 @@ def maybe_decode(maybe_string):
     return maybe_string
 
 
-def maybe_encode(maybe_bytes):
+def maybe_encode(maybe_bytes: str) -> bytes:
     if type(maybe_bytes) is not bytes:
         return maybe_bytes.encode()
     return maybe_bytes

@@ -12,6 +12,9 @@ import pytest
 # from tests import helper
 from ultron8.api.settings import getenv_boolean
 from ultron8.api.settings import SettingsConfig
+from _pytest.monkeypatch import MonkeyPatch
+from pytest_mock.plugin import MockFixture
+from typing import Dict, Iterator, Union
 
 
 # SOURCE: https://github.com/ansible/ansible/blob/370a7ace4b3c8ffb6187900f37499990f1b976a2/test/units/module_utils/basic/test_atomic_move.py
@@ -53,7 +56,9 @@ def atomic_mocks(mocker, monkeypatch):
 
 
 @pytest.fixture(scope="function")
-def fake_environ(mocker, monkeypatch):
+def fake_environ(
+    mocker: MockFixture, monkeypatch: MonkeyPatch
+) -> Iterator[Dict[str, Dict[str, Union[str, int]]]]:
     orig_environ = os.environ
     environ = dict()
     environ["DEBUG"] = "True"
@@ -100,7 +105,7 @@ def fake_environ(mocker, monkeypatch):
 
 @pytest.mark.settingsonly
 @pytest.mark.unittest
-def test_getenv_boolean(fake_environ):
+def test_getenv_boolean(fake_environ: Dict[str, Dict[str, Union[str, int]]]) -> None:
     assert getenv_boolean("SMTP_TLS") is True
 
 

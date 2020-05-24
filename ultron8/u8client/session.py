@@ -42,12 +42,15 @@ from ultron8.exceptions.client import (
 )
 
 from ultron8.u8client.utils import get_api_endpoint
+from requests.models import PreparedRequest, Response
+from typing import Callable, Dict, Iterator, Optional, Tuple, Union, Any
+from unittest.mock import MagicMock, Mock, _ANY
 
 __url_cache__ = {}
 logger = logging.getLogger(__name__)
 
 
-def requires_2fa(response):
+def requires_2fa(response: Union[Mock, Response]) -> bool:
     """Determine whether a response requires us to prompt the user for 2FA."""
     if (
         response.status_code == 401
@@ -62,7 +65,7 @@ def requires_2fa(response):
 class BasicAuth(requests.auth.HTTPBasicAuth):
     """Sub-class requests's class so we have a nice repr."""
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Use the username as the representation."""
         return "basic {}".format(self.username)
 
@@ -73,23 +76,29 @@ class TokenAuth(requests.auth.AuthBase):
 
     header_format_str = "Bearer {}"
 
-    def __init__(self, token):
+    def __init__(self, token: str) -> None:
         """Store our token."""
         self.token = token
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return a nice view of the token in use."""
         return "token {}...".format(self.token[:4])
 
-    def __ne__(self, other):
+    # FIXME: This is a dynamic type, use to be
+    # def __ne__(self, other: Union[Tuple[str, str], TokenAuth]) -> bool:
+    # https://mypy.readthedocs.io/en/stable/dynamic_typing.html
+    def __ne__(self, other: Union[Tuple[str, str], Any]) -> bool:
         """Test for equality, or the lack thereof."""
         return not self == other
 
-    def __eq__(self, other):
+    # FIXME: This is a dynamic type, use to be
+    # def __ne__(self, other: Union[Tuple[str, str], TokenAuth]) -> bool
+    # https://mypy.readthedocs.io/en/stable/dynamic_typing.html
+    def __eq__(self, other: Union[Tuple[str, str], Any]) -> bool:
         """Test for equality, or the lack thereof."""
         return self.token == getattr(other, "token", None)
 
-    def __call__(self, request):
+    def __call__(self, request: PreparedRequest) -> PreparedRequest:
         """Add the authorization header and format it."""
         request.headers["Authorization"] = self.header_format_str.format(self.token)
         return request
@@ -128,7 +137,9 @@ class UltronSession(requests.Session):
         "request_counter",
     ]
 
-    def __init__(self, default_connect_timeout=4, default_read_timeout=10):
+    def __init__(
+        self, default_connect_timeout: int = 4, default_read_timeout: int = 10
+    ) -> None:
         """Slightly modify how we initialize our session."""
         super(UltronSession, self).__init__()
         self.default_connect_timeout = default_connect_timeout
@@ -149,15 +160,15 @@ class UltronSession(requests.Session):
         self.two_factor_auth_cb = None
         self.request_counter = 0
 
-    def get_api_endpoint(self):
+    def get_api_endpoint(self) -> str:
         return get_api_endpoint()
 
     @property
-    def timeout(self):
+    def timeout(self) -> Tuple[int, int]:
         """Return the timeout tuple as expected by Requests"""
         return (self.default_connect_timeout, self.default_read_timeout)
 
-    def basic_auth(self, username, password):
+    def basic_auth(self, username: Optional[str], password: Optional[str]) -> None:
         """Set the Basic Auth credentials on this Session.
 
         :param str username: Your UltronAPI username
@@ -168,7 +179,7 @@ class UltronSession(requests.Session):
 
         self.auth = BasicAuth(username, password)
 
-    def build_url(self, *args, **kwargs):
+    def build_url(self, *args, **kwargs) -> str:
         """Build a new API url from scratch."""
         parts = [kwargs.get("base_url") or self.base_url]
         parts.extend(args)
@@ -180,7 +191,11 @@ class UltronSession(requests.Session):
             __url_cache__[key] = "/".join(parts)
         return __url_cache__[key]
 
-    def handle_two_factor_auth(self, args, kwargs):
+    def handle_two_factor_auth(
+        self,
+        args: Union[Tuple[_ANY, str, str], Tuple[str, str]],
+        kwargs: Dict[str, Union[bool, Tuple[int, int]]],
+    ) -> Union[Mock, MagicMock]:
         """Handler for when the user has 2FA turned on."""
         headers = kwargs.pop("headers", {})
         headers.update({"X-UltronAPI-OTP": str(self.two_factor_auth_cb())})
@@ -201,7 +216,7 @@ class UltronSession(requests.Session):
     #     """
     #     raise NotImplementedError("These features are not implemented yet")
 
-    def request(self, *args, **kwargs):
+    def request(self, *args, **kwargs) -> Union[Mock, Response]:
         """Make a request, count it, and handle 2FA if necessary."""
         kwargs.setdefault("timeout", self.timeout)
         response = super(UltronSession, self).request(*args, **kwargs)
@@ -214,7 +229,7 @@ class UltronSession(requests.Session):
             response = new_response
         return response
 
-    def retrieve_client_credentials(self):
+    def retrieve_client_credentials(self) -> Union[Tuple[None, None], Tuple[str, str]]:
         """Return the client credentials.
 
         :returns: tuple(client_id, client_secret)
@@ -223,7 +238,9 @@ class UltronSession(requests.Session):
         client_secret = self.params.get("client_secret")
         return (client_id, client_secret)
 
-    def two_factor_auth_callback(self, callback):
+    def two_factor_auth_callback(
+        self, callback: Optional[Union[Callable, int]]
+    ) -> None:
         """Register our 2FA callback specified by the user."""
         if not callback:
             return
@@ -233,7 +250,7 @@ class UltronSession(requests.Session):
 
         self.two_factor_auth_cb = callback
 
-    def token_auth(self, token):
+    def token_auth(self, token: Optional[str]) -> None:
         """Use an application token for authentication.
 
         :param str token: Application token retrieved from UltronAPI's
@@ -259,7 +276,7 @@ class UltronSession(requests.Session):
         self.auth = AppInstallationTokenAuth(json["token"], json["expires_at"])
 
     @contextmanager
-    def temporary_basic_auth(self, *auth):
+    def temporary_basic_auth(self, *auth) -> Iterator[None]:
         """Allow us to temporarily swap out basic auth credentials."""
         old_basic_auth = self.auth
         old_token_auth = self.headers.get("Authorization")
@@ -272,7 +289,7 @@ class UltronSession(requests.Session):
             self.headers["Authorization"] = old_token_auth
 
     @contextmanager
-    def no_auth(self):
+    def no_auth(self) -> Iterator[None]:
         """Unset authentication temporarily as a context manager."""
         old_basic_auth, self.auth = self.auth, None
         old_token_auth = self.headers.pop("Authorization", None)

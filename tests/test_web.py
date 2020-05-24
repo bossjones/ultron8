@@ -10,6 +10,9 @@ import ultron8
 # from ultron8 import client
 from ultron8.api import settings
 from tests.utils.utils import get_server_api_with_version
+from fastapi.applications import FastAPI
+from pytest_mock.plugin import MockFixture
+from starlette.testclient import TestClient
 
 
 logger = logging.getLogger(__name__)
@@ -23,13 +26,17 @@ def username_and_password_first_superuser_fixtures():
 @pytest.mark.fastapionly
 @pytest.mark.unittest
 class TestFastAPIWeb:
-    def test_fastapi_instance(self, mocker, fastapi_client):
+    def test_fastapi_instance(
+        self, mocker: MockFixture, fastapi_client: TestClient
+    ) -> None:
         # username, password = username_and_password_first_superuser_fixtures
         url = "{base}/logs".format(base=get_server_api_with_version())
         response = fastapi_client.get(url)
         assert response.status_code == 200
 
-    def test_fastapi_app_instance(self, mocker, fastapi_app, fastapi_client):
+    def test_fastapi_app_instance(
+        self, mocker: MockFixture, fastapi_app: FastAPI, fastapi_client: TestClient
+    ) -> None:
         # username, password = username_and_password_first_superuser_fixtures
         assert fastapi_app.title == "Ultron-8 Web Server"
         assert fastapi_app.debug
@@ -38,7 +45,9 @@ class TestFastAPIWeb:
         response = fastapi_client.get(url)
         assert response.status_code == 200
 
-    def test_fastapi_app_routes(self, mocker, fastapi_app, fastapi_client):
+    def test_fastapi_app_routes(
+        self, mocker: MockFixture, fastapi_app: FastAPI, fastapi_client: TestClient
+    ) -> None:
         routes = {}
         for r in fastapi_app.router.routes:
             routes[r.path] = r

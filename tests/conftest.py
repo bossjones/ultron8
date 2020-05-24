@@ -35,7 +35,7 @@ from ultron8.api.db.u_sqlite.session import SessionLocal
 # from ultron8.api import settings
 # from ultron8.web import app
 
-from typing import Dict
+from typing import Any, Generator, Iterator, Tuple, Dict
 import betamax
 from betamax_matchers import json_body
 
@@ -57,6 +57,9 @@ from ultron8.web import get_application
 from ultron8.api import settings
 
 from tests.utils.user import authentication_token_from_email
+from _pytest.fixtures import SubRequest
+from _pytest.monkeypatch import MonkeyPatch
+from fastapi.applications import FastAPI
 
 # from tests.utils.user import get_superuser_token_headers
 
@@ -123,7 +126,7 @@ betamax.Betamax.register_request_matcher(IfNoneMatchMatcher)
 
 
 @pytest.fixture(scope="module")
-def server_api():
+def server_api() -> str:
     return get_server_api()
 
 
@@ -236,7 +239,7 @@ def fastapi_app() -> typing.Generator[FastAPI, typing.Any, None]:
 # SOURCE: https://github.com/gvbgduh/starlette-cbge/blob/c1c7b99b07f4cf21537a12b82526b9a34ff3100b/tests/conftest.py
 # @pytest.fixture(scope="session")
 @pytest.fixture(scope="function")
-def fastapi_client(request, fastapi_app) -> typing.Generator:
+def fastapi_client(request: SubRequest, fastapi_app: FastAPI) -> typing.Generator:
     """
     Sync test client.
 
@@ -317,7 +320,7 @@ def db() -> typing.Generator:
 
 
 @pytest.fixture(scope="function")
-def first_superuser_username_and_password_fixtures():
+def first_superuser_username_and_password_fixtures() -> Iterator[Tuple[str, str]]:
     yield settings.FIRST_SUPERUSER, settings.FIRST_SUPERUSER_PASSWORD
 
 
@@ -404,7 +407,7 @@ def create_mocked_ultron_session(request, mocker):
 
 # https://docs.pytest.org/en/latest/tmpdir.html
 @pytest.fixture(name="linux_systems_fixture")
-def linux_systems_fixture(request, monkeypatch):
+def linux_systems_fixture(request: SubRequest, monkeypatch: MonkeyPatch) -> None:
     request.cls.systems = {
         "Linux": [{"HOME": "/home/test", "XDG_CONFIG_HOME": "~/.config"}, posixpath],
     }
@@ -453,12 +456,12 @@ def linux_systems_fixture(request, monkeypatch):
 
 
 @pytest.fixture(name="posixpath_fixture")
-def posixpath_fixture(monkeypatch):
+def posixpath_fixture(monkeypatch: MonkeyPatch) -> None:
     monkeypatch.setattr(os, "path", posixpath)
 
 
 @pytest.fixture(name="platform_system_fixture")
-def platform_system_fixture(monkeypatch):
+def platform_system_fixture(monkeypatch: MonkeyPatch) -> None:
     monkeypatch.setattr(os, "system", lambda: "Linux")
 
 
@@ -497,7 +500,7 @@ clusters:
 
 
 @pytest.fixture(name="mock_expand_user")
-def mock_expand_user(request, monkeypatch):
+def mock_expand_user(request: SubRequest, monkeypatch: MonkeyPatch) -> None:
     def mockreturn(path):
         return request.cls.home
 

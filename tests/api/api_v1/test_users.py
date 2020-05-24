@@ -16,13 +16,20 @@ from ultron8.api.api_v1.endpoints import users
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
-from typing import Dict
+from typing import Callable, Iterator, Dict
+from _pytest.fixtures import SubRequest
+from _pytest.monkeypatch import MonkeyPatch
+from pytest_mock.plugin import MockFixture
+from sqlalchemy.orm.session import Session
+from starlette.testclient import TestClient
 
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture
-def mock_email(request, monkeypatch, mocker):
+def mock_email(
+    request: SubRequest, monkeypatch: MonkeyPatch, mocker: MockFixture
+) -> Iterator[Callable]:
     monkeypatch.setenv("EMAILS_ENABLED", True)
     monkeypatch.setenv("SMTP_HOST", "ultronfakemailserver.com")
     monkeypatch.setenv("SMTP_PORT", 587)
@@ -46,8 +53,8 @@ class TestUserApiEndpoint:
     def test_create_user_new_email_with_starlette_client(
         self,
         superuser_token_headers: Dict[str, str],
-        mocker,
-        fastapi_client,
+        mocker: MockFixture,
+        fastapi_client: TestClient,
         db: Session,
     ) -> None:
         # SOURCE: https://github.com/tiangolo/fastapi/issues/300
@@ -68,8 +75,8 @@ class TestUserApiEndpoint:
     def test_get_users_superuser_me(
         self,
         superuser_token_headers: Dict[str, str],
-        mocker,
-        fastapi_client,
+        mocker: MockFixture,
+        fastapi_client: TestClient,
         db: Session,
     ) -> None:
         server_api = get_server_api()
@@ -89,8 +96,8 @@ class TestUserApiEndpoint:
     def test_create_user_new_email(
         self,
         superuser_token_headers: Dict[str, str],
-        mocker,
-        fastapi_client,
+        mocker: MockFixture,
+        fastapi_client: TestClient,
         db: Session,
     ) -> None:
         server_api = get_server_api()
@@ -116,10 +123,10 @@ class TestUserApiEndpoint:
     def test_create_user_new_email_with_emails_enabled(
         self,
         superuser_token_headers: Dict[str, str],
-        mocker,
-        monkeypatch,
-        mock_email,
-        fastapi_client,
+        mocker: MockFixture,
+        monkeypatch: MonkeyPatch,
+        mock_email: Callable,
+        fastapi_client: TestClient,
         db: Session,
     ) -> None:
         server_api = get_server_api()
@@ -148,8 +155,8 @@ class TestUserApiEndpoint:
     def test_get_existing_user(
         self,
         superuser_token_headers: Dict[str, str],
-        mocker,
-        fastapi_client,
+        mocker: MockFixture,
+        fastapi_client: TestClient,
         db: Session,
     ) -> None:
         server_api = get_server_api()
@@ -176,8 +183,8 @@ class TestUserApiEndpoint:
     def test_create_user_existing_username(
         self,
         superuser_token_headers: Dict[str, str],
-        mocker,
-        fastapi_client,
+        mocker: MockFixture,
+        fastapi_client: TestClient,
         db: Session,
     ) -> None:
         server_api = get_server_api()
@@ -202,7 +209,7 @@ class TestUserApiEndpoint:
     @pytest.mark.usersonly
     @pytest.mark.unittest
     def test_create_user_by_normal_user(
-        self, mocker, fastapi_client, db: Session
+        self, mocker: MockFixture, fastapi_client: TestClient, db: Session
     ) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
@@ -229,7 +236,7 @@ class TestUserApiEndpoint:
     @pytest.mark.usersonly
     @pytest.mark.unittest
     def test_update_user_me_by_normal_user(
-        self, mocker, fastapi_client, db: Session
+        self, mocker: MockFixture, fastapi_client: TestClient, db: Session
     ) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
@@ -273,8 +280,8 @@ class TestUserApiEndpoint:
     def test_retrieve_users(
         self,
         superuser_token_headers: Dict[str, str],
-        mocker,
-        fastapi_client,
+        mocker: MockFixture,
+        fastapi_client: TestClient,
         db: Session,
     ) -> None:
         server_api = get_server_api()

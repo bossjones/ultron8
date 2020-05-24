@@ -19,14 +19,14 @@ class ClusterConfig:
     ultron_acs_token: str
     ultron_uuid: str = field(init=False, repr=False)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.ultron_uuid = str(
             uuid.uuid5(
                 uuid.NAMESPACE_DNS, get_domain_from_fqdn(self.ultron_cluster_url)
             )
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.ultron_cluster_url}{self.ultron_acs_token}"
 
     @classmethod

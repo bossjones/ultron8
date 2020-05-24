@@ -14,6 +14,8 @@ from collections import OrderedDict
 from ultron8.consts import CONF_FILE
 from ultron8.consts import DEBUG_MODE_FLAG
 from ultron8.consts import YAML_FILE
+from ruamel.yaml.loader import SafeLoader
+from typing import Type
 
 LOGGER = logging.getLogger(__name__)
 
@@ -87,7 +89,9 @@ def convert_linenumber(s, occ=1):
     return s
 
 
-def yaml_load(filename, ordered=False, ignore_notfound=False):
+def yaml_load(
+    filename: str, ordered: bool = False, ignore_notfound: bool = False
+) -> OrderedDict:
     """
     Load contents of a configuration file into an dict/OrderedDict structure. The configuration file has to be a valid yaml file
 
@@ -250,7 +254,11 @@ def _format_yaml_load(data):
     return data
 
 
-def _ordered_load(stream, Loader=yaml.Loader, object_pairs_hook=OrderedDict):
+def _ordered_load(
+    stream: str,
+    Loader: Type[SafeLoader] = yaml.Loader,
+    object_pairs_hook: Type[OrderedDict] = OrderedDict,
+) -> OrderedDict:
     """
     Ordered yaml loader
     Use this instead ot yaml.loader/yaml.saveloader to get an Ordereddict

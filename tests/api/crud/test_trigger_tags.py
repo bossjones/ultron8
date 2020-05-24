@@ -26,6 +26,7 @@ from ultron8.api.db_models.trigger import TriggerDB
 from ultron8.api.models.packs import PacksCreate
 
 from freezegun import freeze_time
+from sqlalchemy.orm.session import Session
 
 
 TRIGGER_0 = {
@@ -77,7 +78,7 @@ TRIGGERTYPE_2 = {
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_create_trigger_tags(db):
+def test_create_trigger_tags(db: Session) -> None:
     packs_shared_name = random_lower_string()
     packs_name = packs_shared_name
     packs_description = random_lower_string()
@@ -133,7 +134,7 @@ def test_create_trigger_tags(db):
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_trigger_tags(db):
+def test_get_trigger_tags(db: Session) -> None:
     packs_shared_name = random_lower_string()
     packs_name = packs_shared_name
     packs_description = random_lower_string()
@@ -185,7 +186,7 @@ def test_get_trigger_tags(db):
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_by_ref_trigger_tags(db):
+def test_get_by_ref_trigger_tags(db: Session) -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -238,7 +239,7 @@ def test_get_by_ref_trigger_tags(db):
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_by_name_trigger_tags(db):
+def test_get_by_name_trigger_tags(db: Session) -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -290,7 +291,7 @@ def test_get_by_name_trigger_tags(db):
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_multi_trigger_tags(db):
+def test_get_multi_trigger_tags(db: Session) -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -359,7 +360,7 @@ def test_get_multi_trigger_tags(db):
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_multi_by_packs_id_trigger_tags(db):
+def test_get_multi_by_packs_id_trigger_tags(db: Session) -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -430,7 +431,7 @@ def test_get_multi_by_packs_id_trigger_tags(db):
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_update_trigger_tags(db):
+def test_update_trigger_tags(db: Session) -> None:
     packs_shared_name = random_lower_string()
     packs_name = packs_shared_name
     packs_description = random_lower_string()
@@ -491,7 +492,7 @@ def test_update_trigger_tags(db):
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_delete_trigger_tags(db):
+def test_delete_trigger_tags(db: Session) -> None:
     packs_shared_name = random_lower_string()
     packs_name = packs_shared_name
     packs_description = random_lower_string()

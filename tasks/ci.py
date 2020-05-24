@@ -101,8 +101,8 @@ def pylint(ctx, loc="local", tests=False):
         )
 
 
-@task
-def mypy(ctx, loc="local"):
+@task(incrementable=["verbose"])
+def mypy(ctx, loc="local", verbose=0):
     """
     mypy ultron8 folder
     Usage: inv ci.mypy
@@ -409,18 +409,25 @@ def editable(ctx, loc="local"):
     incrementable=["verbose"],
 )
 def monkeytype(
-    ctx, loc="local", verbose=0, cleanup=False, apply=False, stub=False, dry_run=False
+    ctx,
+    loc="local",
+    verbose=0,
+    cleanup=False,
+    test=False,
+    apply=False,
+    stub=False,
+    dry_run=False,
 ):
     """
     Use monkeytype to collect runtime types of function arguments and return values, and automatically generate stub files
     or even add draft type annotations directly to python code. Uses pytest to access all lines of code that have testing setup.
 
     To generate stubs:
-        Usage: inv ci.monkeytype -vvv
+        Usage: inv ci.monkeytype --test -vvv
     To apply stubs to existing code base:
-        Usage: inv ci.monkeytype --apply --stub -vvv
+        Usage: inv ci.monkeytype --test --apply --stub -vvv
     To apply stubs to existing code base(dry run):
-        Usage: inv ci.monkeytype --apply --stub -vvv --dry-run
+        Usage: inv ci.monkeytype --test --apply --stub -vvv --dry-run
     """
     env = get_compose_env(ctx, loc=loc)
 
@@ -434,17 +441,20 @@ def monkeytype(
     # NOTE: https://monkeytype.readthedocs.io/en/stable/faq.html#why-did-my-test-coverage-measurement-stop-working
     _cmd = r"""monkeytype run "`command -v pytest`" --no-cov --verbose --mypy --showlocals --tb=short tests"""
 
-    if verbose >= 1:
-        msg = "{}".format(_cmd)
-        click.secho(msg, fg=COLOR_SUCCESS)
+    if test:
+        if verbose >= 1:
+            msg = "{}".format(_cmd)
+            click.secho(msg, fg=COLOR_SUCCESS)
 
-    if dry_run:
-        click.secho(
-            "[monkeytype] DRY RUN mode enabled, not executing command: {}".format(_cmd),
-            fg=COLOR_CAUTION,
-        )
-    else:
-        ctx.run(_cmd)
+        if dry_run:
+            click.secho(
+                "[monkeytype] DRY RUN mode enabled, not executing command: {}".format(
+                    _cmd
+                ),
+                fg=COLOR_CAUTION,
+            )
+        else:
+            ctx.run(_cmd)
 
     _cmd_stub = r"""
 modules_array=()
@@ -476,21 +486,21 @@ done
         else:
             ctx.run(_cmd_stub)
 
-    #     _cmd_apply = r"""
-    # modules_array=()
-    # while IFS= read -r line; do
-    #     modules_array+=( "$line" )
-    # done < <( monkeytype list-modules | grep -v "pytestipdb" )
-
-    # echo "apply all modules using monkeytype"
-    # for element in "${modules_array[@]}"
-    # do
-    #     monkeytype apply ${element}
-    # done
-    #     """
     _cmd_apply = r"""
-find stubs -type f -name '*.pyi' ! -name '*.venv' -print0 | xargs -I FILE -t -0 -n1 monkeytype -v apply FILE
+modules_array=()
+while IFS= read -r line; do
+    modules_array+=( "$line" )
+done < <( monkeytype list-modules | grep -v "pytestipdb" )
+
+echo "apply all modules using monkeytype"
+for element in "${modules_array[@]}"
+do
+    monkeytype apply ${element}
+done
     """
+    #     _cmd_apply = r"""
+    # find stubs -type f -name '*.pyi' ! -name '*.venv' -print0 | xargs -I FILE -t -0 -n1 monkeytype -v apply FILE
+    #     """
 
     # find stubs -type f -name '*.pyi' ! -name '*.venv' -print0 | xargs -I FILE -t -0 -n1 monkeytype -v apply FILE
 

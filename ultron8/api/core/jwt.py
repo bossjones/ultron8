@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 from datetime import timedelta
-from typing import Any, Union
+from typing import Optional, Any, Union
 
 # import jwt
 

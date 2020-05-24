@@ -15,6 +15,7 @@ import factory
 
 import random
 import string
+from sqlalchemy.orm.session import Session
 
 
 def user_authentication_headers(

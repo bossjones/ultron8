@@ -9,6 +9,7 @@ from ultron8.api import settings
 from typing import Dict
 from starlette.testclient import TestClient
 from sqlalchemy.orm import Session
+from requests.models import Response
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +39,7 @@ def get_server_api_with_version() -> str:
     return server_name
 
 
-def get_superuser_jwt_request():
+def get_superuser_jwt_request() -> Response:
     server_api = get_server_api()
     login_data = {
         "username": settings.FIRST_SUPERUSER,

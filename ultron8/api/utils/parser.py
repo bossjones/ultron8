@@ -6,7 +6,7 @@
 # "http://stackoverflow.com/some/folder?test=/questions/9626535/get-domain-name-from-url",
 # "https://StackOverflow.com:8080?test=/questions/9626535/get-domain-name-from-url",
 # "stackoverflow.com?test=questions&v=get-domain-name-from-url"]
-def get_domain_from_fqdn(url):
+def get_domain_from_fqdn(url: str) -> str:
     """Input a fqdn and get only the domain name back
 
     Arguments:

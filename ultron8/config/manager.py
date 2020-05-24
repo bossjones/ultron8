@@ -20,6 +20,7 @@ from ultron8.yaml import yaml
 from ultron8.yaml import yaml_load
 from ultron8.yaml import yaml_save
 from ultron8.yaml import YAMLError
+from typing import Dict, Union, Any
 
 # import ultron8.utils as utils
 
@@ -28,36 +29,40 @@ log = logging.getLogger(__name__)
 # from ultron8.validation import run_moonbeam_service_schema_validation
 
 
-def hash_digest(content):
+def hash_digest(content: str) -> str:
     return hashlib.sha1(maybe_encode(content)).hexdigest()
 
 
+# FIXME: This is a dynamic type, use to be
+# def __getattr__(self, name: str) -> NullConfig:
+# https://mypy.readthedocs.io/en/stable/dynamic_typing.html
 class NullConfig(object):
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         return self
 
-    def __call__(self):
+    def __call__(self) -> None:
         return None
 
-    def exists(self):
+    def exists(self) -> bool:
         return False
 
 
 class ConfigProxy(object):
     """A container around configuration fragments"""
 
-    def __init__(self, data):
+    def __init__(self, data: Union[str, Dict[str, str]]) -> None:
         self.__data = data
 
-    def __getattr__(self, name):
+    # NOTE: https://stackoverflow.com/questions/33837918/type-hints-solve-circular-dependency
+    def __getattr__(self, name: str) -> Union["ConfigProxy", NullConfig]:
         if name in self.__data:
             return ConfigProxy(self.__data[name])
         return NullConfig()
 
-    def __call__(self):
+    def __call__(self) -> str:
         return self.__data
 
-    def exists(self):
+    def exists(self) -> bool:
         return True
 
 

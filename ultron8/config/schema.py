@@ -6,13 +6,18 @@ from __future__ import unicode_literals
 
 from collections import namedtuple
 from enum import Enum
+from typing import Any, List, Optional
 
 MASTER_NAMESPACE = "MASTER"
 
 CLEANUP_ACTION_NAME = "cleanup"
 
 
-def config_object_factory(name, required=None, optional=None):
+def config_object_factory(
+    name: str,
+    required: Optional[List[str]] = None,
+    optional: Optional[List[str]] = None,
+) -> Any:
     """
     Creates a namedtuple which has two additional attributes:
         required_keys:

@@ -13,6 +13,7 @@ from ultron8.api.models.sensors import SensorsUpdate
 
 from ultron8.constants.packs import SYSTEM_PACK_NAME
 from ultron8.constants.sensors import MINIMUM_POLL_INTERVAL
+from sqlalchemy.orm.session import Session
 
 
 def get(db_session: Session, *, sensors_id: int) -> Optional[Sensors]:

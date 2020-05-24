@@ -2,9 +2,10 @@ import random
 import string
 import factory
 from ultron8.api.models.user import UserCreate
+from typing import Tuple
 
 
-def randomStringwithDigitsAndSymbols(stringLength=10):
+def randomStringwithDigitsAndSymbols(stringLength: int = 10) -> str:
     """Generate a random password string with Special characters, letters, and digits.
 
     Keyword Arguments:
@@ -17,7 +18,7 @@ def randomStringwithDigitsAndSymbols(stringLength=10):
     return "".join(random.choice(password_characters) for i in range(stringLength))
 
 
-def random_full_name(male_or_female="male"):
+def random_full_name(male_or_female: str = "male") -> Tuple[str, str]:
     if male_or_female == "male":
         first_name = factory.Faker("first_name_male")
         last_name = factory.Faker("last_name_male")
@@ -39,7 +40,7 @@ class RandomUserFactory(factory.Factory):
     password = factory.Faker("password")
 
 
-def _MakeRandomNormalUserFactory():
+def _MakeRandomNormalUserFactory() -> UserCreate:
     _first_name, _last_name = random_full_name()
     _email = "{}.{}@example.org".format(_first_name, _last_name)
     _full_name = "{} {}".format(_first_name, _last_name)
