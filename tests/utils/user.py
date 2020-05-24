@@ -3,7 +3,7 @@ import requests
 from tests.utils.utils import random_lower_string, random_email
 from ultron8.api import crud
 from ultron8.api import settings
-from ultron8.api.db.u_sqlite.session import db_session
+
 from ultron8.api.models.user import UserCreate, UserUpdate
 
 from sqlalchemy.orm import Session
@@ -55,29 +55,29 @@ def user_authentication_headers2(
 
 
 # def create_random_user(db_session: Session) -> User:
-def create_random_user() -> User:
+def create_random_user(db: Session) -> User:
     email = random_email()
     password = random_lower_string()
     user_in = UserCreate(username=email, email=email, password=password)
-    user = crud.user.create(db_session=db_session, user_in=user_in)
+    user = crud.user.create(db_session=db, user_in=user_in)
     return user
 
 
 def authentication_token_from_email(
-    *, client: TestClient, email: str, db_session: Session
+    *, client: TestClient, email: str, db: Session
 ) -> Dict[str, str]:
     """
     Return a valid token for the user with given email.
     If the user doesn't exist it is created first.
     """
     password = random_lower_string()
-    user = crud.user.get_by_email(db_session, email=email)
+    user = crud.user.get_by_email(db, email=email)
     if not user:
         user_in_create = UserCreate(username=email, email=email, password=password)
-        user = crud.user.create(db_session, user_in=user_in_create)
+        user = crud.user.create(db, user_in=user_in_create)
     else:
         user_in_update = UserUpdate(password=password)
-        user = crud.user.update(db_session, user=user, user_in=user_in_update)
+        user = crud.user.update(db, user=user, user_in=user_in_update)
 
     return user_authentication_headers2(client=client, email=email, password=password)
 

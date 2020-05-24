@@ -7,13 +7,14 @@ from tests.utils.utils import get_server_api
 from tests.utils.utils import random_lower_string, random_email
 from ultron8.api import crud
 from ultron8.api import settings
-from ultron8.api.db.u_sqlite.session import db_session
+
 from ultron8.api.models.user import UserCreate
 from ultron8.api.models.user import UserUpdate
 import pytest
 from ultron8.api.factories.users import _MakeRandomNormalUserFactory
 from ultron8.api.api_v1.endpoints import users
 from fastapi.encoders import jsonable_encoder
+from sqlalchemy.orm import Session
 
 from typing import Dict
 
@@ -43,7 +44,11 @@ def mock_email(request, monkeypatch, mocker):
 @pytest.mark.unittest
 class TestUserApiEndpoint:
     def test_create_user_new_email_with_starlette_client(
-        self, superuser_token_headers: Dict[str, str], mocker, fastapi_client
+        self,
+        superuser_token_headers: Dict[str, str],
+        mocker,
+        fastapi_client,
+        db: Session,
     ) -> None:
         # SOURCE: https://github.com/tiangolo/fastapi/issues/300
         server_api = get_server_api()
@@ -57,11 +62,15 @@ class TestUserApiEndpoint:
         )
         assert 200 <= r.status_code < 300
         created_user = r.json()
-        user = crud.user.get_by_email(db_session, email=data.email)
+        user = crud.user.get_by_email(db, email=data.email)
         assert user.email == created_user["email"]
 
     def test_get_users_superuser_me(
-        self, superuser_token_headers: Dict[str, str], mocker, fastapi_client
+        self,
+        superuser_token_headers: Dict[str, str],
+        mocker,
+        fastapi_client,
+        db: Session,
     ) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
@@ -78,7 +87,11 @@ class TestUserApiEndpoint:
     @pytest.mark.usersonly
     @pytest.mark.unittest
     def test_create_user_new_email(
-        self, superuser_token_headers: Dict[str, str], mocker, fastapi_client
+        self,
+        superuser_token_headers: Dict[str, str],
+        mocker,
+        fastapi_client,
+        db: Session,
     ) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
@@ -95,7 +108,7 @@ class TestUserApiEndpoint:
         )
         assert 200 <= r.status_code < 300
         created_user = r.json()
-        user = crud.user.get_by_email(db_session, email=data.email)
+        user = crud.user.get_by_email(db, email=data.email)
         assert user.email == created_user["email"]
 
     @pytest.mark.usersonly
@@ -107,6 +120,7 @@ class TestUserApiEndpoint:
         monkeypatch,
         mock_email,
         fastapi_client,
+        db: Session,
     ) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
@@ -123,7 +137,7 @@ class TestUserApiEndpoint:
         )
         assert 200 <= r.status_code < 300
         created_user = r.json()
-        user = crud.user.get_by_email(db_session, email=data.email)
+        user = crud.user.get_by_email(db, email=data.email)
         assert user.email == created_user["email"]
         mock_email.assert_called_once_with(
             email_to=data.email, username=data.email, password=data.password
@@ -132,7 +146,11 @@ class TestUserApiEndpoint:
     @pytest.mark.usersonly
     @pytest.mark.unittest
     def test_get_existing_user(
-        self, superuser_token_headers: Dict[str, str], mocker, fastapi_client
+        self,
+        superuser_token_headers: Dict[str, str],
+        mocker,
+        fastapi_client,
+        db: Session,
     ) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
@@ -142,7 +160,7 @@ class TestUserApiEndpoint:
         data = _MakeRandomNormalUserFactory()
 
         user_in = UserCreate(email=data.email, password=data.password)
-        user = crud.user.create(db_session, user_in=user_in)
+        user = crud.user.create(db, user_in=user_in)
         user_id = user.id
         r = fastapi_client.get(
             f"{server_api}{settings.API_V1_STR}/users/{user_id}",
@@ -150,13 +168,17 @@ class TestUserApiEndpoint:
         )
         assert 200 <= r.status_code < 300
         api_user = r.json()
-        user = crud.user.get_by_email(db_session, email=data.email)
+        user = crud.user.get_by_email(db, email=data.email)
         assert user.email == api_user["email"]
 
     @pytest.mark.usersonly
     @pytest.mark.unittest
     def test_create_user_existing_username(
-        self, superuser_token_headers: Dict[str, str], mocker, fastapi_client
+        self,
+        superuser_token_headers: Dict[str, str],
+        mocker,
+        fastapi_client,
+        db: Session,
     ) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
@@ -166,7 +188,7 @@ class TestUserApiEndpoint:
         data = _MakeRandomNormalUserFactory()
 
         user_in = UserCreate(email=data.email, password=data.password)
-        user = crud.user.create(db_session, user_in=user_in)
+        user = crud.user.create(db, user_in=user_in)
         # data = {"email": username, "password": password}
         r = fastapi_client.post(
             f"{server_api}{settings.API_V1_STR}/users/",
@@ -179,14 +201,16 @@ class TestUserApiEndpoint:
 
     @pytest.mark.usersonly
     @pytest.mark.unittest
-    def test_create_user_by_normal_user(self, mocker, fastapi_client) -> None:
+    def test_create_user_by_normal_user(
+        self, mocker, fastapi_client, db: Session
+    ) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
         # username = random_lower_string()
         # password = random_lower_string()
         data = _MakeRandomNormalUserFactory()
         user_in = UserCreate(email=data.email, password=data.password)
-        user = crud.user.create(db_session, user_in=user_in)
+        user = crud.user.create(db, user_in=user_in)
         user_token_headers = user_authentication_headers(
             server_api, data.email, data.password
         )
@@ -198,13 +222,15 @@ class TestUserApiEndpoint:
         )
         assert r.status_code == 400
 
-    # @pytest.mark.xfail(
-    #     reason="Something is wrong with the db session we are using, it doesnt update in real time"
-    # )
+    @pytest.mark.xfail(
+        reason="Something is wrong with the db session we are using, it doesnt update in real time"
+    )
     @pytest.mark.datainconsistent
     @pytest.mark.usersonly
     @pytest.mark.unittest
-    def test_update_user_me_by_normal_user(self, mocker, fastapi_client) -> None:
+    def test_update_user_me_by_normal_user(
+        self, mocker, fastapi_client, db: Session
+    ) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
 
@@ -213,7 +239,7 @@ class TestUserApiEndpoint:
         logger.debug("data : {}".format(data))
         user_in = UserCreate(email=data.email, password=data.password)
         logger.debug("user_in : {}".format(user_in))
-        user_create_crud = crud.user.create(db_session, user_in=user_in)
+        user_create_crud = crud.user.create(db, user_in=user_in)
         logger.debug("user_create_crud : {}".format(jsonable_encoder(user_create_crud)))
 
         # get normal user token for update request
@@ -238,14 +264,18 @@ class TestUserApiEndpoint:
         api_user = r.json()
 
         # FIXME: Ok, so the put request is working, but for some reason it is not returning an updated value for full_name from the db_session, even though it is inside the database already.
-        user_by_email = crud.user.get_by_email(db_session, email=data.email)
+        user_by_email = crud.user.get_by_email(db, email=data.email)
         logger.debug("user_by_email : {}".format(jsonable_encoder(user_by_email)))
         assert user_by_email.full_name == api_user["full_name"]
 
     @pytest.mark.usersonly
     @pytest.mark.unittest
     def test_retrieve_users(
-        self, superuser_token_headers: Dict[str, str], mocker, fastapi_client
+        self,
+        superuser_token_headers: Dict[str, str],
+        mocker,
+        fastapi_client,
+        db: Session,
     ) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
@@ -253,12 +283,12 @@ class TestUserApiEndpoint:
         # password = random_lower_string()
         data = _MakeRandomNormalUserFactory()
         user_in = UserCreate(email=data.email, password=data.password)
-        user = crud.user.create(db_session, user_in=user_in)
+        user = crud.user.create(db, user_in=user_in)
         # username2 = random_lower_string()
         # password2 = random_lower_string()
         data2 = _MakeRandomNormalUserFactory()
         user_in2 = UserCreate(email=data2.email, password=data2.password)
-        user2 = crud.user.create(db_session, user_in=user_in2)
+        user2 = crud.user.create(db, user_in=user_in2)
 
         r = fastapi_client.get(
             f"{server_api}{settings.API_V1_STR}/users/", headers=superuser_token_headers

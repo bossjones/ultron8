@@ -2,12 +2,13 @@ import requests
 
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud
-from ultron8.api.db.u_sqlite.session import db_session
+
 from ultron8.api.models.trigger import TriggerInstanceCreate
 from tests.utils.user import create_random_user
 
 import random
 import string
+from sqlalchemy.orm import Session
 
 
 def create_random_trigger_instance_name():

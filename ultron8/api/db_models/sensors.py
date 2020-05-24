@@ -320,7 +320,7 @@ if "__main__" == __name__:
     from ultron8.api.db.u_sqlite.init_db import init_db
     from ultron8.api.db.u_sqlite.session import engine
 
-    # from ultron8.api.db.u_sqlite.session import Session
+    # from ultron8.api.db.u_sqlite.session import SessionLocal
 
     #     # make sure all SQL Alchemy models are imported before initializing DB
     #     # otherwise, SQL Alchemy might fail to initialize properly relationships

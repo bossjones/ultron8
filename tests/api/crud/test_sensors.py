@@ -3,7 +3,6 @@ from fastapi.encoders import jsonable_encoder
 
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud
-from ultron8.api.db.u_sqlite.session import db_session
 
 
 from ultron8.api.models.sensors import SensorsBase
@@ -41,15 +40,15 @@ def pretty_lenient_json(data):
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.sensorsonly
 @pytest.mark.unittest
-def test_create_sensors() -> None:
+def test_create_sensors(db) -> None:
     # Step 1 - create pack
-    packs = create_random_packs()
+    packs = create_random_packs(db)
 
     # FIXME: Something about this still doesn't work!
     # Step 2 - create trigger_type
-    trigger_type1_orm = create_random_trigger_type(packs=packs)
-    trigger_type2_orm = create_random_trigger_type(packs=packs)
-    trigger_type3_orm = create_random_trigger_type(packs=packs)
+    trigger_type1_orm = create_random_trigger_type(db, packs=packs)
+    trigger_type2_orm = create_random_trigger_type(db, packs=packs)
+    trigger_type3_orm = create_random_trigger_type(db, packs=packs)
 
     # trigger_type1_orm_data = jsonable_encoder(trigger_type1_orm)
 
@@ -70,12 +69,12 @@ def test_create_sensors() -> None:
     #   value is not none (type=type_error.none.allowed)
 
     # Step 3 - create trigger
-    trigger1 = create_random_trigger(packs=packs, trigger_type=trigger_type1)
-    trigger2 = create_random_trigger(packs=packs, trigger_type=trigger_type2)
-    trigger3 = create_random_trigger(packs=packs, trigger_type=trigger_type3)
+    trigger1 = create_random_trigger(db, packs=packs, trigger_type=trigger_type1)
+    trigger2 = create_random_trigger(db, packs=packs, trigger_type=trigger_type2)
+    trigger3 = create_random_trigger(db, packs=packs, trigger_type=trigger_type3)
 
     trigger_type_list = crud.trigger_types.get_multi_by_packs_id(
-        db_session, packs_id=packs.id, limit=3
+        db, packs_id=packs.id, limit=3
     )
 
     # Step 4 - sensors arguments
@@ -134,9 +133,9 @@ def test_create_sensors() -> None:
 
     # import pdb;pdb.set_trace()
 
-    sensors = crud.sensors.create(db_session, sensors_in=sensors_in, packs_id=packs.id)
+    sensors = crud.sensors.create(db, sensors_in=sensors_in, packs_id=packs.id)
 
-    sensors_get = crud.sensors.get(db_session=db_session, sensors_id=sensors.id)
+    sensors_get = crud.sensors.get(db_session=db, sensors_id=sensors.id)
 
     # Step 6 - validate sensors values in DB
     assert sensors_get.class_name == sensors_class_name
@@ -155,13 +154,13 @@ def test_create_sensors() -> None:
 # @pytest.mark.unittest
 # def test_get_sensors():
 #     # Step 1 - create pack
-#     packs = create_random_packs()
+#     packs = create_random_packs(db)
 
 #     # Step 2 - create trigger_type
-#     trigger_type = create_random_trigger_type(packs=packs)
+#     trigger_type = create_random_trigger_type(db, packs=packs)
 
 #     # Step 3 - create trigger
-#     trigger = create_random_trigger(packs=packs, trigger_type=trigger_type)
+#     trigger = create_random_trigger(db, packs=packs, trigger_type=trigger_type)
 
 #     # Step 4 - sensors arguments
 #     sensors_payload = {"foo": "bar", "name": "Joe"}
@@ -191,13 +190,13 @@ def test_create_sensors() -> None:
 # @pytest.mark.unittest
 # def test_get_by_trigger_sensors():
 #     # Step 1 - create pack
-#     packs = create_random_packs()
+#     packs = create_random_packs(db)
 
 #     # Step 2 - create trigger_type
-#     trigger_type = create_random_trigger_type(packs=packs)
+#     trigger_type = create_random_trigger_type(db, packs=packs)
 
 #     # Step 3 - create trigger
-#     trigger = create_random_trigger(packs=packs, trigger_type=trigger_type)
+#     trigger = create_random_trigger(db, packs=packs, trigger_type=trigger_type)
 
 #     # Step 4 - sensors arguments
 #     sensors_payload = {"foo": "bar", "name": "Joe"}
@@ -227,13 +226,13 @@ def test_create_sensors() -> None:
 # @pytest.mark.unittest
 # def test_get_multi_sensors():
 #     # Step 1 - create pack
-#     packs = create_random_packs()
+#     packs = create_random_packs(db)
 
 #     # Step 2 - create trigger_type
-#     trigger_type = create_random_trigger_type(packs=packs)
+#     trigger_type = create_random_trigger_type(db, packs=packs)
 
 #     # Step 3 - create trigger
-#     trigger = create_random_trigger(packs=packs, trigger_type=trigger_type)
+#     trigger = create_random_trigger(db, packs=packs, trigger_type=trigger_type)
 
 #     # Step 4 - sensors arguments
 #     sensors_payload0 = {"foo": "bar", "name": "Joe"}
@@ -281,13 +280,13 @@ def test_create_sensors() -> None:
 # @pytest.mark.unittest
 # def test_update_sensors():
 #     # Step 1 - create pack
-#     packs = create_random_packs()
+#     packs = create_random_packs(db)
 
 #     # Step 2 - create trigger_type
-#     trigger_type = create_random_trigger_type(packs=packs)
+#     trigger_type = create_random_trigger_type(db, packs=packs)
 
 #     # Step 3 - create trigger
-#     trigger = create_random_trigger(packs=packs, trigger_type=trigger_type)
+#     trigger = create_random_trigger(db, packs=packs, trigger_type=trigger_type)
 
 #     # Step 4 - sensors arguments
 #     sensors_payload = {"foo": "bar", "name": "Joe"}
@@ -309,7 +308,7 @@ def test_create_sensors() -> None:
 
 #     sensors_update = TriggerInstanceUpdate(payload=sensors_payload2)
 #     sensors2 = crud.sensors.update(
-#         db_session=db_session,
+#         db_session=db,
 #         sensors=sensors,
 #         sensors_in=sensors_update,
 #     )
@@ -325,13 +324,13 @@ def test_create_sensors() -> None:
 # @pytest.mark.unittest
 # def test_delete_sensors():
 #     # Step 1 - create pack
-#     packs = create_random_packs()
+#     packs = create_random_packs(db)
 
 #     # Step 2 - create trigger_type
-#     trigger_type = create_random_trigger_type(packs=packs)
+#     trigger_type = create_random_trigger_type(db, packs=packs)
 
 #     # Step 3 - create trigger
-#     trigger = create_random_trigger(packs=packs, trigger_type=trigger_type)
+#     trigger = create_random_trigger(db, packs=packs, trigger_type=trigger_type)
 
 #     # Step 4 - sensors arguments
 #     sensors_payload = {"foo": "bar", "name": "Joe"}
@@ -351,11 +350,11 @@ def test_create_sensors() -> None:
 #     )
 
 #     sensors2 = crud.sensors.remove(
-#         db_session=db_session, sensors_id=sensors.id
+#         db_session=db, sensors_id=sensors.id
 #     )
 
 #     sensors3 = crud.sensors.get(
-#         db_session=db_session, sensors_id=sensors.id
+#         db_session=db, sensors_id=sensors.id
 #     )
 
 #     assert sensors3 is None

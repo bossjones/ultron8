@@ -3,7 +3,7 @@ from fastapi.encoders import jsonable_encoder
 
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud
-from ultron8.api.db.u_sqlite.session import db_session
+
 
 from ultron8.api.models.trigger import TriggerTagsBase
 from ultron8.api.models.trigger import TriggerTagsBaseInDB
@@ -37,15 +37,15 @@ from typing import Optional
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggerinstanceonly
 @pytest.mark.unittest
-def test_create_trigger_instance() -> None:
+def test_create_trigger_instance(db) -> None:
     # Step 1 - create pack
-    packs = create_random_packs()
+    packs = create_random_packs(db)
 
     # Step 2 - create trigger_type
-    trigger_type = create_random_trigger_type(packs=packs)
+    trigger_type = create_random_trigger_type(db, packs=packs)
 
     # Step 3 - create trigger
-    trigger = create_random_trigger(packs=packs, trigger_type=trigger_type)
+    trigger = create_random_trigger(db, packs=packs, trigger_type=trigger_type)
 
     # Step 4 - trigger_instance arguments
     trigger_instance_payload = {"foo": "bar", "name": "Joe"}
@@ -61,7 +61,7 @@ def test_create_trigger_instance() -> None:
         status=trigger_instance_status,
     )
     trigger_instance = crud.trigger_instance.create(
-        db_session, trigger_instance_in=trigger_instance_in
+        db, trigger_instance_in=trigger_instance_in
     )
 
     # Step 6 - validate trigger_instance values in DB
@@ -74,15 +74,15 @@ def test_create_trigger_instance() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggerinstanceonly
 @pytest.mark.unittest
-def test_get_trigger_instance() -> None:
+def test_get_trigger_instance(db) -> None:
     # Step 1 - create pack
-    packs = create_random_packs()
+    packs = create_random_packs(db)
 
     # Step 2 - create trigger_type
-    trigger_type = create_random_trigger_type(packs=packs)
+    trigger_type = create_random_trigger_type(db, packs=packs)
 
     # Step 3 - create trigger
-    trigger = create_random_trigger(packs=packs, trigger_type=trigger_type)
+    trigger = create_random_trigger(db, packs=packs, trigger_type=trigger_type)
 
     # Step 4 - trigger_instance arguments
     trigger_instance_payload = {"foo": "bar", "name": "Joe"}
@@ -98,11 +98,11 @@ def test_get_trigger_instance() -> None:
         status=trigger_instance_status,
     )
     trigger_instance = crud.trigger_instance.create(
-        db_session, trigger_instance_in=trigger_instance_in
+        db, trigger_instance_in=trigger_instance_in
     )
 
     trigger_instance_2 = crud.trigger_instance.get(
-        db_session, trigger_instance_id=trigger_instance.id
+        db, trigger_instance_id=trigger_instance.id
     )
     assert jsonable_encoder(trigger_instance) == jsonable_encoder(trigger_instance_2)
 
@@ -110,15 +110,15 @@ def test_get_trigger_instance() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggerinstanceonly
 @pytest.mark.unittest
-def test_get_by_trigger_trigger_instance() -> None:
+def test_get_by_trigger_trigger_instance(db) -> None:
     # Step 1 - create pack
-    packs = create_random_packs()
+    packs = create_random_packs(db)
 
     # Step 2 - create trigger_type
-    trigger_type = create_random_trigger_type(packs=packs)
+    trigger_type = create_random_trigger_type(db, packs=packs)
 
     # Step 3 - create trigger
-    trigger = create_random_trigger(packs=packs, trigger_type=trigger_type)
+    trigger = create_random_trigger(db, packs=packs, trigger_type=trigger_type)
 
     # Step 4 - trigger_instance arguments
     trigger_instance_payload = {"foo": "bar", "name": "Joe"}
@@ -134,11 +134,11 @@ def test_get_by_trigger_trigger_instance() -> None:
         status=trigger_instance_status,
     )
     trigger_instance = crud.trigger_instance.create(
-        db_session, trigger_instance_in=trigger_instance_in
+        db, trigger_instance_in=trigger_instance_in
     )
 
     trigger_instance_2 = crud.trigger_instance.get_by_trigger(
-        db_session, trigger_instance_trigger=trigger_instance.trigger
+        db, trigger_instance_trigger=trigger_instance.trigger
     )
     assert jsonable_encoder(trigger_instance) == jsonable_encoder(trigger_instance_2)
 
@@ -146,15 +146,15 @@ def test_get_by_trigger_trigger_instance() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggerinstanceonly
 @pytest.mark.unittest
-def test_get_multi_trigger_instance() -> None:
+def test_get_multi_trigger_instance(db) -> None:
     # Step 1 - create pack
-    packs = create_random_packs()
+    packs = create_random_packs(db)
 
     # Step 2 - create trigger_type
-    trigger_type = create_random_trigger_type(packs=packs)
+    trigger_type = create_random_trigger_type(db, packs=packs)
 
     # Step 3 - create trigger
-    trigger = create_random_trigger(packs=packs, trigger_type=trigger_type)
+    trigger = create_random_trigger(db, packs=packs, trigger_type=trigger_type)
 
     # Step 4 - trigger_instance arguments
     trigger_instance_payload0 = {"foo": "bar", "name": "Joe"}
@@ -170,7 +170,7 @@ def test_get_multi_trigger_instance() -> None:
         status=trigger_instance_status0,
     )
     trigger_instance0 = crud.trigger_instance.create(
-        db_session, trigger_instance_in=trigger_instance_in0
+        db, trigger_instance_in=trigger_instance_in0
     )
 
     # --------------------------------------------
@@ -189,10 +189,10 @@ def test_get_multi_trigger_instance() -> None:
         status=trigger_instance_status1,
     )
     trigger_instance1 = crud.trigger_instance.create(
-        db_session, trigger_instance_in=trigger_instance_in1
+        db, trigger_instance_in=trigger_instance_in1
     )
 
-    trigger_instance_2 = crud.trigger_instance.get_multi(db_session)
+    trigger_instance_2 = crud.trigger_instance.get_multi(db)
     for t in trigger_instance_2:
         assert type(t) == TriggerInstanceDB
 
@@ -200,15 +200,15 @@ def test_get_multi_trigger_instance() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggerinstanceonly
 @pytest.mark.unittest
-def test_update_trigger_instance() -> None:
+def test_update_trigger_instance(db) -> None:
     # Step 1 - create pack
-    packs = create_random_packs()
+    packs = create_random_packs(db)
 
     # Step 2 - create trigger_type
-    trigger_type = create_random_trigger_type(packs=packs)
+    trigger_type = create_random_trigger_type(db, packs=packs)
 
     # Step 3 - create trigger
-    trigger = create_random_trigger(packs=packs, trigger_type=trigger_type)
+    trigger = create_random_trigger(db, packs=packs, trigger_type=trigger_type)
 
     # Step 4 - trigger_instance arguments
     trigger_instance_payload = {"foo": "bar", "name": "Joe"}
@@ -224,13 +224,13 @@ def test_update_trigger_instance() -> None:
         status=trigger_instance_status,
     )
     trigger_instance = crud.trigger_instance.create(
-        db_session, trigger_instance_in=trigger_instance_in
+        db, trigger_instance_in=trigger_instance_in
     )
     trigger_instance_payload2 = {"foo": "bar1", "name": "Joe1"}
 
     trigger_instance_update = TriggerInstanceUpdate(payload=trigger_instance_payload2)
     trigger_instance2 = crud.trigger_instance.update(
-        db_session=db_session,
+        db_session=db,
         trigger_instance=trigger_instance,
         trigger_instance_in=trigger_instance_update,
     )
@@ -244,15 +244,15 @@ def test_update_trigger_instance() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggerinstanceonly
 @pytest.mark.unittest
-def test_delete_trigger_instance() -> None:
+def test_delete_trigger_instance(db) -> None:
     # Step 1 - create pack
-    packs = create_random_packs()
+    packs = create_random_packs(db)
 
     # Step 2 - create trigger_type
-    trigger_type = create_random_trigger_type(packs=packs)
+    trigger_type = create_random_trigger_type(db, packs=packs)
 
     # Step 3 - create trigger
-    trigger = create_random_trigger(packs=packs, trigger_type=trigger_type)
+    trigger = create_random_trigger(db, packs=packs, trigger_type=trigger_type)
 
     # Step 4 - trigger_instance arguments
     trigger_instance_payload = {"foo": "bar", "name": "Joe"}
@@ -268,15 +268,15 @@ def test_delete_trigger_instance() -> None:
         status=trigger_instance_status,
     )
     trigger_instance = crud.trigger_instance.create(
-        db_session, trigger_instance_in=trigger_instance_in
+        db, trigger_instance_in=trigger_instance_in
     )
 
     trigger_instance2 = crud.trigger_instance.remove(
-        db_session=db_session, trigger_instance_id=trigger_instance.id
+        db_session=db, trigger_instance_id=trigger_instance.id
     )
 
     trigger_instance3 = crud.trigger_instance.get(
-        db_session=db_session, trigger_instance_id=trigger_instance.id
+        db_session=db, trigger_instance_id=trigger_instance.id
     )
 
     assert trigger_instance3 is None

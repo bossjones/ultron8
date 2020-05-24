@@ -1,14 +1,15 @@
 import logging
 
 from ultron8.api.db.u_sqlite.init_db import init_db
-from ultron8.api.db.u_sqlite.session import db_session
+from ultron8.api.db.u_sqlite.session import SessionLocal
 
 # logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 def init():
-    init_db(db_session)
+    db = SessionLocal()
+    init_db(db)
 
 
 def main():

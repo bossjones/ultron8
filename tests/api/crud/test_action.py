@@ -3,7 +3,7 @@ from fastapi.encoders import jsonable_encoder
 
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud
-from ultron8.api.db.u_sqlite.session import db_session
+
 from ultron8.api.models.action import RunnerTypeModel
 from ultron8.api.models.action import ActionBase
 from ultron8.api.models.action import ActionBaseInDB
@@ -18,11 +18,14 @@ from ultron8.api.models.packs import PacksUpdate
 from freezegun import freeze_time
 
 
+from sqlalchemy.orm import Session
+
+
 # def test_create_action():
 #     email = random_lower_string()
 #     password = random_lower_string()
 #     action_in = UserCreate(email=email, password=password)
-#     action = crud.action.create(db_session, action_in=action_in)
+#     action = crud.action.create(db, action_in=action_in)
 #     assert action.email == email
 #     assert hasattr(action, "hashed_password")
 
@@ -31,7 +34,7 @@ from freezegun import freeze_time
 #     email = random_lower_string()
 #     password = random_lower_string()
 #     action_in = UserCreate(email=email, password=password)
-#     action = crud.action.create(db_session, action_in=action_in)
+#     action = crud.action.create(db, action_in=action_in)
 #     authenticated_action = crud.action.authenticate(
 #         db_session, email=email, password=password
 #     )
@@ -42,7 +45,7 @@ from freezegun import freeze_time
 # def test_not_authenticate_action():
 #     email = random_lower_string()
 #     password = random_lower_string()
-#     action = crud.action.authenticate(db_session, email=email, password=password)
+#     action = crud.action.authenticate(db, email=email, password=password)
 #     assert action is None
 
 
@@ -50,7 +53,7 @@ from freezegun import freeze_time
 #     email = random_lower_string()
 #     password = random_lower_string()
 #     action_in = UserCreate(email=email, password=password)
-#     action = crud.action.create(db_session, action_in=action_in)
+#     action = crud.action.create(db, action_in=action_in)
 #     is_active = crud.action.is_active(action)
 #     assert is_active is True
 
@@ -60,7 +63,7 @@ from freezegun import freeze_time
 #     password = random_lower_string()
 #     action_in = UserCreate(email=email, password=password, disabled=True)
 #     print(action_in)
-#     action = crud.action.create(db_session, action_in=action_in)
+#     action = crud.action.create(db, action_in=action_in)
 #     print(action)
 #     is_active = crud.action.is_active(action)
 #     print(is_active)
@@ -71,7 +74,7 @@ from freezegun import freeze_time
 #     email = random_lower_string()
 #     password = random_lower_string()
 #     action_in = UserCreate(email=email, password=password, is_superaction=True)
-#     action = crud.action.create(db_session, action_in=action_in)
+#     action = crud.action.create(db, action_in=action_in)
 #     is_superaction = crud.action.is_superaction(action)
 #     assert is_superaction is True
 
@@ -80,7 +83,7 @@ from freezegun import freeze_time
 #     actionname = random_lower_string()
 #     password = random_lower_string()
 #     action_in = UserCreate(email=actionname, password=password)
-#     action = crud.action.create(db_session, action_in=action_in)
+#     action = crud.action.create(db, action_in=action_in)
 #     is_superaction = crud.action.is_superaction(action)
 #     assert is_superaction is False
 
@@ -89,8 +92,8 @@ from freezegun import freeze_time
 #     password = random_lower_string()
 #     actionname = random_lower_string()
 #     action_in = UserCreate(email=actionname, password=password, is_superaction=True)
-#     action = crud.action.create(db_session, action_in=action_in)
-#     action_2 = crud.action.get(db_session, action_id=action.id)
+#     action = crud.action.create(db, action_in=action_in)
+#     action_2 = crud.action.get(db, action_id=action.id)
 #     assert action.email == action_2.email
 #     assert jsonable_encoder(action) == jsonable_encoder(action_2)
 
@@ -98,7 +101,7 @@ from freezegun import freeze_time
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.actiononly
 @pytest.mark.unittest
-def test_create_action() -> None:
+def test_create_action(db: Session) -> None:
     packs_name = random_lower_string()
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -140,7 +143,7 @@ def test_create_action() -> None:
         ref=packs_ref,
     )
 
-    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs = crud.packs.create(db, packs_in=packs_in)
 
     action_in = ActionCreate(
         name=action_name,
@@ -152,7 +155,7 @@ def test_create_action() -> None:
         packs_name=packs_name,
     )
 
-    action = crud.action.create(db_session, action_in=action_in, packs_id=packs.id)
+    action = crud.action.create(db, action_in=action_in, packs_id=packs.id)
 
     assert action.name == action_name
     assert action.runner_type == action_runner_type
@@ -167,7 +170,7 @@ def test_create_action() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.actiononly
 @pytest.mark.unittest
-def test_get_action() -> None:
+def test_get_action(db: Session) -> None:
     packs_name = random_lower_string()
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -209,7 +212,7 @@ def test_get_action() -> None:
         ref=packs_ref,
     )
 
-    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs = crud.packs.create(db, packs_in=packs_in)
 
     action_in = ActionCreate(
         name=action_name,
@@ -221,15 +224,15 @@ def test_get_action() -> None:
         packs_name=packs_name,
     )
 
-    action = crud.action.create(db_session, action_in=action_in, packs_id=packs.id)
-    action_2 = crud.action.get(db_session, action_id=action.id)
+    action = crud.action.create(db, action_in=action_in, packs_id=packs.id)
+    action_2 = crud.action.get(db, action_id=action.id)
     assert jsonable_encoder(action) == jsonable_encoder(action_2)
 
 
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.actiononly
 @pytest.mark.unittest
-def test_update_action() -> None:
+def test_update_action(db: Session) -> None:
     packs_name = random_lower_string()
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -271,7 +274,7 @@ def test_update_action() -> None:
         ref=packs_ref,
     )
 
-    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs = crud.packs.create(db, packs_in=packs_in)
 
     action_in = ActionCreate(
         name=action_name,
@@ -283,12 +286,10 @@ def test_update_action() -> None:
         packs_name=packs_name,
     )
 
-    action = crud.action.create(db_session, action_in=action_in, packs_id=packs.id)
+    action = crud.action.create(db, action_in=action_in, packs_id=packs.id)
     description2 = random_lower_string()
     action_update = ActionUpdate(description=description2)
-    action2 = crud.action.update(
-        db_session=db_session, action=action, action_in=action_update
-    )
+    action2 = crud.action.update(db_session=db, action=action, action_in=action_update)
 
     assert action.name == action2.name
     assert action.runner_type == action2.runner_type
@@ -303,7 +304,7 @@ def test_update_action() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.actiononly
 @pytest.mark.unittest
-def test_delete_action() -> None:
+def test_delete_action(db: Session) -> None:
     packs_name = random_lower_string()
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -345,7 +346,7 @@ def test_delete_action() -> None:
         ref=packs_ref,
     )
 
-    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs = crud.packs.create(db, packs_in=packs_in)
 
     action_in = ActionCreate(
         name=action_name,
@@ -357,11 +358,11 @@ def test_delete_action() -> None:
         packs_name=packs_name,
     )
 
-    action = crud.action.create(db_session, action_in=action_in, packs_id=packs.id)
+    action = crud.action.create(db, action_in=action_in, packs_id=packs.id)
 
-    action2 = crud.action.remove(db_session=db_session, action_id=action.id)
+    action2 = crud.action.remove(db, action_id=action.id)
 
-    action3 = crud.action.get(db_session=db_session, action_id=action.id)
+    action3 = crud.action.get(db, action_id=action.id)
 
     assert action3 is None
 

@@ -92,7 +92,7 @@ from ultron8.api.api_v1.endpoints import version
 from ultron8.api.api_v1.endpoints import loggers as log_endpoint
 from ultron8.api.db.u_sqlite import close_database_connection_pool
 from ultron8.api.db.u_sqlite import open_database_connection_pool
-from ultron8.api.db.u_sqlite.session import Session
+from ultron8.api.db.u_sqlite.session import SessionLocal
 from ultron8.api.middleware.logging import log
 
 # import sys
@@ -429,7 +429,7 @@ class DbSessionMiddleware(BaseHTTPMiddleware):
                     threading.current_thread().name
                 )
             )
-            request.state.db = Session()
+            request.state.db = SessionLocal()
             logger.debug("[DbSessionMiddleware] dispatch - await call_next(request)")
             response = await call_next(request)
         finally:

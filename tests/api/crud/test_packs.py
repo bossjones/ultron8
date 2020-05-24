@@ -3,7 +3,7 @@ from fastapi.encoders import jsonable_encoder
 
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud
-from ultron8.api.db.u_sqlite.session import db_session
+
 from ultron8.api.models.packs import PacksBase
 from ultron8.api.models.packs import PacksBaseInDB
 from ultron8.api.models.packs import PacksCreate
@@ -31,7 +31,7 @@ from freezegun import freeze_time
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.packsonly
 @pytest.mark.unittest
-def test_create_packs() -> None:
+def test_create_packs(db) -> None:
     name = "linuxtest"
     description = "TEST Generic Linux actions"
     keywords = "linux"
@@ -57,7 +57,7 @@ def test_create_packs() -> None:
         path=path,
         ref=ref,
     )
-    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs = crud.packs.create(db, packs_in=packs_in)
     assert packs.name == name
     assert packs.description == description
     assert packs.keywords == keywords
@@ -77,7 +77,7 @@ def test_create_packs() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.packsonly
 @pytest.mark.unittest
-def test_get_packs() -> None:
+def test_get_packs(db) -> None:
     name = random_lower_string()
     description = random_lower_string()
     keywords = random_lower_string()
@@ -103,15 +103,15 @@ def test_get_packs() -> None:
         path=path,
         ref=ref,
     )
-    packs = crud.packs.create(db_session, packs_in=packs_in)
-    packs_2 = crud.packs.get(db_session, packs_id=packs.id)
+    packs = crud.packs.create(db, packs_in=packs_in)
+    packs_2 = crud.packs.get(db, packs_id=packs.id)
     assert jsonable_encoder(packs) == jsonable_encoder(packs_2)
 
 
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.packsonly
 @pytest.mark.unittest
-def test_update_packs() -> None:
+def test_update_packs(db) -> None:
     name = random_lower_string()
     description = random_lower_string()
     keywords = random_lower_string()
@@ -137,12 +137,10 @@ def test_update_packs() -> None:
         path=path,
         ref=ref,
     )
-    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs = crud.packs.create(db, packs_in=packs_in)
     description2 = random_lower_string()
     packs_update = PacksUpdate(description=description2, files=files, path=path)
-    packs2 = crud.packs.update(
-        db_session=db_session, packs=packs, packs_in=packs_update
-    )
+    packs2 = crud.packs.update(db_session=db, packs=packs, packs_in=packs_update)
 
     assert packs.name == packs2.name
     assert packs.description == description2
@@ -162,7 +160,7 @@ def test_update_packs() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.packsonly
 @pytest.mark.unittest
-def test_delete_packs() -> None:
+def test_delete_packs(db) -> None:
     name = random_lower_string()
     description = random_lower_string()
     keywords = random_lower_string()
@@ -188,11 +186,11 @@ def test_delete_packs() -> None:
         path=path,
         ref=ref,
     )
-    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs = crud.packs.create(db, packs_in=packs_in)
 
-    packs2 = crud.packs.remove(db_session=db_session, id=packs.id)
+    packs2 = crud.packs.remove(db_session=db, id=packs.id)
 
-    packs3 = crud.packs.get(db_session=db_session, packs_id=packs.id)
+    packs3 = crud.packs.get(db_session=db, packs_id=packs.id)
 
     assert packs3 is None
 

@@ -77,7 +77,7 @@ rm -f cov.xml
 
 
 @task
-def pylint(ctx, loc="local"):
+def pylint(ctx, loc="local", tests=False):
     """
     pylint ultron8 folder
     Usage: inv ci.pylint
@@ -91,9 +91,14 @@ def pylint(ctx, loc="local"):
     for k, v in env.items():
         ctx.config["run"]["env"][k] = v
 
-    ctx.run(
-        "pylint --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc ultron8"
-    )
+    if tests:
+        ctx.run(
+            "pylint --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc tests"
+        )
+    else:
+        ctx.run(
+            "pylint --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc ultron8"
+        )
 
 
 @task
@@ -511,10 +516,10 @@ done
         # call(pytest, loc="local", jwtonly=True),
         # call(pytest, loc="local", mockedfs=True),
         # call(pytest, loc="local", clionly=True),
-        call(pytest, loc="local", usersonly=True),
+        # call(pytest, loc="local", usersonly=True),
         # call(pytest, loc="local", convertingtotestclientstarlette=True),
         # call(pytest, loc="local", loggeronly=True),
-        # call(pytest, loc="local"),
+        call(pytest, loc="local"),
     ],
     incrementable=["verbose"],
 )

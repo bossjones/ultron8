@@ -2,13 +2,14 @@ import requests
 
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud
-from ultron8.api.db.u_sqlite.session import db_session
+
 from ultron8.api.models.packs import PacksCreate
 from ultron8.api.db_models.packs import Packs
 from typing import Optional
+from sqlalchemy.orm import Session
 
 
-def create_random_packs() -> Packs:
+def create_random_packs(db: Session) -> Packs:
     shared_name = random_lower_string()
     name = shared_name
     description = random_lower_string()
@@ -38,5 +39,5 @@ def create_random_packs() -> Packs:
         ref=ref,
     )
 
-    packs = crud.packs.create(db_session=db_session, packs_in=packs_in)
+    packs = crud.packs.create(db_session=db, packs_in=packs_in)
     return packs

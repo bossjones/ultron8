@@ -44,7 +44,7 @@ from ultron8.api.api_v1.endpoints import version
 from ultron8.api.api_v1.endpoints import loggers as log_endpoint
 from ultron8.api.db.u_sqlite import close_database_connection_pool
 from ultron8.api.db.u_sqlite import open_database_connection_pool
-from ultron8.api.db.u_sqlite.session import Session
+from ultron8.api.db.u_sqlite.session import SessionLocal
 
 # from ultron8.api.middleware.logging import log
 # # TODO: As soon as we merge web.py into the MCP, we will want to nuke this setup_logging line!!!
@@ -127,7 +127,7 @@ app.include_router(
 
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
-    request.state.db = Session()
+    request.state.db = SessionLocal()
     response = await call_next(request)
     request.state.db.close()
     return response
