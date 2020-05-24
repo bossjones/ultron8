@@ -1,30 +1,21 @@
 from __future__ import absolute_import
 
-import logging
+import datetime
 import hashlib
 import json
+import logging
 
-from sqlalchemy import Column
-from sqlalchemy import DateTime
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import JSON
-from sqlalchemy import orm
-from sqlalchemy.orm import backref
-from sqlalchemy.orm import relationship
+from sqlalchemy import JSON, Column, DateTime, ForeignKey, Integer, String, orm
+from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql import func
 
 from ultron8.api.db.u_sqlite.base_class import Base
-from ultron8.api.db_models.ultronbase import UIDFieldMixin, ContentPackResourceMixin
-from ultron8.consts import ResourceType
-
-from ultron8.api.models.system.common import ResourceReference
-import datetime
-
 from ultron8.api.db_models.sensors_trigger_types_association import (
     SENSORS_TRIGGER_TYPES_ASSOCIATION,
 )
+from ultron8.api.db_models.ultronbase import ContentPackResourceMixin, UIDFieldMixin
+from ultron8.api.models.system.common import ResourceReference
+from ultron8.consts import ResourceType
 
 # http://blog.benjamin-encz.de/post/sqlite-one-to-many-json1-extension/
 

@@ -1,19 +1,16 @@
 import os
-from typing import List
-from typing import Optional
+
+from typing import List, Optional
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.session import Session
 
-from ultron8.api.core.security import get_password_hash
-from ultron8.api.core.security import verify_password
+from ultron8.api.core.security import get_password_hash, verify_password
 from ultron8.api.db_models.sensors import Sensors
-from ultron8.api.models.sensors import SensorsCreate
-from ultron8.api.models.sensors import SensorsUpdate
-
+from ultron8.api.models.sensors import SensorsCreate, SensorsUpdate
 from ultron8.constants.packs import SYSTEM_PACK_NAME
 from ultron8.constants.sensors import MINIMUM_POLL_INTERVAL
-from sqlalchemy.orm.session import Session
 
 
 def get(db_session: Session, *, sensors_id: int) -> Optional[Sensors]:

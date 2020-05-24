@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+
 from ultron8.api.models.base import BaseDataModel
 
 

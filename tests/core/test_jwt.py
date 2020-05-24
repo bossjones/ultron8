@@ -3,18 +3,18 @@ from datetime import timedelta
 import logging
 import os
 
-from freezegun import freeze_time
+from typing import Tuple
 
 # import jwt as pyjwt
+from freezegun import freeze_time
 from jose import jwt as josejwt
 import pytest
+from sqlalchemy.orm.session import Session
 
 from tests.conftest import fixtures_path
 import ultron8
 from ultron8.api import crud, settings
 from ultron8.api.core import jwt
-from sqlalchemy.orm.session import Session
-from typing import Tuple
 
 logger = logging.getLogger(__name__)
 

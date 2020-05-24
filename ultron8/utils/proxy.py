@@ -1,6 +1,5 @@
 """Utilities for creating classes that proxy function calls."""
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 
 class CollectionProxy(object):

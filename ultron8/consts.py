@@ -4,8 +4,8 @@ ultron8.consts
 
 
 """
-import os
 from enum import Enum
+import os
 
 DEBUG_MODE_FLAG = os.environ.get("ULTRON_DEBUG", None)
 

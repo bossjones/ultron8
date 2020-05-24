@@ -1,27 +1,23 @@
 import logging
 
-import requests
+from typing import Callable, Dict, Iterator
 
-from tests.utils.user import user_authentication_headers
-from tests.utils.utils import get_server_api
-from tests.utils.utils import random_lower_string, random_email
-from ultron8.api import crud
-from ultron8.api import settings
-
-from ultron8.api.models.user import UserCreate
-from ultron8.api.models.user import UserUpdate
-import pytest
-from ultron8.api.factories.users import _MakeRandomNormalUserFactory
-from ultron8.api.api_v1.endpoints import users
-from fastapi.encoders import jsonable_encoder
-from sqlalchemy.orm import Session
-
-from typing import Callable, Iterator, Dict
 from _pytest.fixtures import SubRequest
 from _pytest.monkeypatch import MonkeyPatch
+from fastapi.encoders import jsonable_encoder
+import pytest
 from pytest_mock.plugin import MockFixture
+import requests
+from sqlalchemy.orm import Session
 from sqlalchemy.orm.session import Session
 from starlette.testclient import TestClient
+
+from tests.utils.user import user_authentication_headers
+from tests.utils.utils import get_server_api, random_email, random_lower_string
+from ultron8.api import crud, settings
+from ultron8.api.api_v1.endpoints import users
+from ultron8.api.factories.users import _MakeRandomNormalUserFactory
+from ultron8.api.models.user import UserCreate, UserUpdate
 
 logger = logging.getLogger(__name__)
 

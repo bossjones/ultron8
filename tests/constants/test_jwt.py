@@ -1,10 +1,11 @@
 """Test Constants for jwt."""
 # pylint: disable=protected-access
 import logging
+
 import pytest
+
 import ultron8
 from ultron8.constants import jwt
-
 
 logger = logging.getLogger(__name__)
 

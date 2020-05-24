@@ -1,38 +1,36 @@
-import pytest
-from fastapi.encoders import jsonable_encoder
+from typing import Optional
 
+from fastapi.encoders import jsonable_encoder
+from freezegun import freeze_time
+import pytest
+from sqlalchemy.orm.session import Session
+
+from tests.utils.packs import create_random_packs
+from tests.utils.trigger import create_random_trigger
+from tests.utils.trigger_instance import create_random_trigger_instance_name
+from tests.utils.trigger_type import create_random_trigger_type
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud
-
-
-from ultron8.api.models.trigger import TriggerTagsBase
-from ultron8.api.models.trigger import TriggerTagsBaseInDB
-from ultron8.api.models.trigger import TriggerTagsCreate
-from ultron8.api.models.trigger import TriggerTagsUpdate
-from ultron8.api.models.trigger import TriggerTypeBase
-from ultron8.api.models.trigger import TriggerTypeBaseInDB
-from ultron8.api.models.trigger import TriggerTypeCreate
-from ultron8.api.models.trigger import TriggerTypeUpdate
-from ultron8.api.models.trigger import TriggerBaseDB
-from ultron8.api.models.trigger import TriggerBaseInDB
-from ultron8.api.models.trigger import TriggerCreate
-from ultron8.api.models.trigger import TriggerUpdate
-from ultron8.api.models.trigger import TriggerInstanceBaseDB
-from ultron8.api.models.trigger import TriggerInstanceBaseInDB
-from ultron8.api.models.trigger import TriggerInstanceCreate
-from ultron8.api.models.trigger import TriggerInstanceUpdate
 from ultron8.api.db_models.trigger import TriggerInstanceDB
-
-from tests.utils.trigger_instance import create_random_trigger_instance_name
-from tests.utils.packs import create_random_packs
-from tests.utils.trigger_type import create_random_trigger_type
-from tests.utils.trigger import create_random_trigger
-
 from ultron8.api.models.packs import PacksCreate
-
-from freezegun import freeze_time
-from typing import Optional
-from sqlalchemy.orm.session import Session
+from ultron8.api.models.trigger import (
+    TriggerBaseDB,
+    TriggerBaseInDB,
+    TriggerCreate,
+    TriggerInstanceBaseDB,
+    TriggerInstanceBaseInDB,
+    TriggerInstanceCreate,
+    TriggerInstanceUpdate,
+    TriggerTagsBase,
+    TriggerTagsBaseInDB,
+    TriggerTagsCreate,
+    TriggerTagsUpdate,
+    TriggerTypeBase,
+    TriggerTypeBaseInDB,
+    TriggerTypeCreate,
+    TriggerTypeUpdate,
+    TriggerUpdate,
+)
 
 
 @freeze_time("2019-07-25 01:11:00.740428")

@@ -1,13 +1,11 @@
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.session import Session
 
 from ultron8.api.db_models.item import Item
-from ultron8.api.models.item import ItemCreate
-from ultron8.api.models.item import ItemUpdate
-from sqlalchemy.orm.session import Session
+from ultron8.api.models.item import ItemCreate, ItemUpdate
 
 
 def get(db_session: Session, *, id: int) -> Optional[Item]:

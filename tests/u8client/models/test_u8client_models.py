@@ -1,35 +1,37 @@
 """Test u8client models"""
 # pylint: disable=protected-access
-import logging
-import io
-import os
-import json
 from copy import copy
 from datetime import datetime, timedelta
+import io
+import json
+import logging
+import os
+
+import pytest
+import requests
+
+from tests.utils.user import user_authentication_headers
+from tests.utils.utils import (
+    get_server_api,
+    get_superuser_jwt_request,
+    random_email,
+    random_lower_string,
+)
+import ultron8
+from ultron8.api import settings
+from ultron8.exceptions.client import (
+    UltronClientError,
+    UnexpectedResponse,
+    UnprocessableResponseBody,
+)
+from ultron8.u8client import session
+from ultron8.u8client.models import UltronCore
 
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
 
-import pytest
-
-import requests
-
-import ultron8
-from ultron8.u8client.models import UltronCore
-
-from ultron8.api import settings
-from tests.utils.utils import get_superuser_jwt_request
-
-from tests.utils.user import user_authentication_headers
-from tests.utils.utils import get_server_api
-from tests.utils.utils import random_lower_string, random_email
-from ultron8.u8client import session
-
-from ultron8.exceptions.client import UltronClientError
-from ultron8.exceptions.client import UnprocessableResponseBody
-from ultron8.exceptions.client import UnexpectedResponse
 
 logger = logging.getLogger(__name__)
 

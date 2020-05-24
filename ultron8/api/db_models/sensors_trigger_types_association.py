@@ -1,17 +1,17 @@
-from sqlalchemy import Boolean
-from sqlalchemy import Column
-from sqlalchemy import DateTime
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import JSON
-from sqlalchemy.orm import backref
-from sqlalchemy.orm import relationship
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+)
+from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql import func
-from sqlalchemy import Table
 
 from ultron8.api.db.u_sqlite.base_class import Base
-
 from ultron8.debugger import debug_dump_exclude
 
 SENSORS_TRIGGER_TYPES_ASSOCIATION = Table(

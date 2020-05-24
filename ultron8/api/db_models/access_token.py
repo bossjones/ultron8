@@ -1,12 +1,9 @@
 import datetime
 from uuid import uuid4
-from sqlalchemy import Column
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import DateTime
-from sqlalchemy import String
-from ultron8.api.db.u_sqlite.base_class import Base
 
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+
+from ultron8.api.db.u_sqlite.base_class import Base
 from ultron8.api.db_models.types import ArrayType
 
 

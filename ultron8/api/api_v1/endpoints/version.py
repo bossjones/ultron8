@@ -1,6 +1,5 @@
 """Temporary router for user objects. Taken directly from FastApi Tutorial"""
-from fastapi import APIRouter
-from fastapi import HTTPException
+from fastapi import APIRouter, HTTPException
 from starlette.responses import UJSONResponse
 
 from ultron8 import __version__

@@ -1,6 +1,36 @@
 """Dev version of web.py, allows us to keep ipython inside of here and jump down into pdb when stuff breaks/happens"""
 
+import logging
+from pathlib import Path
 import sys
+
+from fastapi import Depends, FastAPI, Header, HTTPException
+from starlette.middleware.cors import CORSMiddleware
+from starlette.requests import Request
+from starlette.responses import PlainTextResponse, RedirectResponse, UJSONResponse
+from starlette.staticfiles import StaticFiles
+import starlette_prometheus
+import uvicorn
+
+# FIXME: 2/11/2020 Stop using the setup_logging function and use the one defined in "from ultron8.api.middleware.logging import log"
+from ultron8.api import settings
+from ultron8.api.api_v1.endpoints import (
+    alive,
+    guid,
+    home,
+    items,
+    loggers as log_endpoint,
+    login,
+    token,
+    users,
+    version,
+)
+from ultron8.api.applog import read_logging_config, setup_logging
+from ultron8.api.db.u_sqlite import (
+    close_database_connection_pool,
+    open_database_connection_pool,
+)
+from ultron8.api.db.u_sqlite.session import SessionLocal
 
 # FIXME: Don't forget to comment this out
 # import hunter
@@ -16,42 +46,10 @@ import sys
 # )
 
 
-import logging
-from pathlib import Path
-
-import starlette_prometheus
-import uvicorn
-from fastapi import Depends
-from fastapi import FastAPI
-from fastapi import Header
-from fastapi import HTTPException
-from starlette.middleware.cors import CORSMiddleware
-from starlette.requests import Request
-from starlette.responses import PlainTextResponse
-from starlette.responses import RedirectResponse
-from starlette.responses import UJSONResponse
-from starlette.staticfiles import StaticFiles
-
-from ultron8.api import settings
-from ultron8.api.api_v1.endpoints import alive
-from ultron8.api.api_v1.endpoints import guid
-from ultron8.api.api_v1.endpoints import home
-from ultron8.api.api_v1.endpoints import items
-from ultron8.api.api_v1.endpoints import login
-from ultron8.api.api_v1.endpoints import token
-from ultron8.api.api_v1.endpoints import users
-from ultron8.api.api_v1.endpoints import version
-from ultron8.api.api_v1.endpoints import loggers as log_endpoint
-from ultron8.api.db.u_sqlite import close_database_connection_pool
-from ultron8.api.db.u_sqlite import open_database_connection_pool
-from ultron8.api.db.u_sqlite.session import SessionLocal
-
 # from ultron8.api.middleware.logging import log
 # # TODO: As soon as we merge web.py into the MCP, we will want to nuke this setup_logging line!!!
 # log.setup_logging()
 
-# FIXME: 2/11/2020 Stop using the setup_logging function and use the one defined in "from ultron8.api.middleware.logging import log"
-from ultron8.api.applog import read_logging_config, setup_logging
 
 logconfig_dict = read_logging_config("logging.yml")
 

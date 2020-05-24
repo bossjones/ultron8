@@ -1,33 +1,30 @@
-import pytest
 from fastapi.encoders import jsonable_encoder
+from freezegun import freeze_time
+import pytest
+from sqlalchemy.orm.session import Session
 
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud
-
-
-from ultron8.api.models.trigger import TriggerTagsBase
-from ultron8.api.models.trigger import TriggerTagsBaseInDB
-from ultron8.api.models.trigger import TriggerTagsCreate
-from ultron8.api.models.trigger import TriggerTagsUpdate
-from ultron8.api.models.trigger import TriggerTypeBase
-from ultron8.api.models.trigger import TriggerTypeBaseInDB
-from ultron8.api.models.trigger import TriggerTypeCreate
-from ultron8.api.models.trigger import TriggerTypeUpdate
-from ultron8.api.models.trigger import TriggerBaseDB
-from ultron8.api.models.trigger import TriggerBaseInDB
-from ultron8.api.models.trigger import TriggerCreate
-from ultron8.api.models.trigger import TriggerUpdate
-from ultron8.api.models.trigger import TriggerInstanceBaseDB
-from ultron8.api.models.trigger import TriggerInstanceBaseInDB
-from ultron8.api.models.trigger import TriggerInstanceCreate
-from ultron8.api.models.trigger import TriggerInstanceUpdate
 from ultron8.api.db_models.trigger import TriggerDB
-
 from ultron8.api.models.packs import PacksCreate
-
-from freezegun import freeze_time
-from sqlalchemy.orm.session import Session
-
+from ultron8.api.models.trigger import (
+    TriggerBaseDB,
+    TriggerBaseInDB,
+    TriggerCreate,
+    TriggerInstanceBaseDB,
+    TriggerInstanceBaseInDB,
+    TriggerInstanceCreate,
+    TriggerInstanceUpdate,
+    TriggerTagsBase,
+    TriggerTagsBaseInDB,
+    TriggerTagsCreate,
+    TriggerTagsUpdate,
+    TriggerTypeBase,
+    TriggerTypeBaseInDB,
+    TriggerTypeCreate,
+    TriggerTypeUpdate,
+    TriggerUpdate,
+)
 
 TRIGGER_0 = {
     "name": "ultron8.test.trigger0",

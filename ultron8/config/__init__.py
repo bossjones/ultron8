@@ -1,27 +1,21 @@
-from __future__ import annotations
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, annotations, unicode_literals
 
+from collections import ChainMap
+from copy import deepcopy
+import inspect
+import logging
 import os
 import sys
-import logging
-import yaml
-import inspect
 
-from copy import deepcopy
-from collections import ChainMap
+from typing import Any, List, Tuple
 
 import pyconfig
-
-from typing import Any
-from typing import Tuple
-from typing import List
-
-from ultron8.paths import mkdir_if_does_not_exist
-from ultron8.process import fail
+import yaml
 
 from ultron8.config import smart
 from ultron8.exceptions.config import ConfigReadError
+from ultron8.paths import mkdir_if_does_not_exist
+from ultron8.process import fail
 
 logger = logging.getLogger(__name__)
 

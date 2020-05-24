@@ -1,10 +1,8 @@
 """init_db"""
 from sqlalchemy.orm import Session
 
-from ultron8.api import crud
-from ultron8.api import settings
-
 # from ultron8.api.db.u_sqlite.base import Base
+from ultron8.api import crud, settings
 from ultron8.api.models.user import UserCreate
 
 # make sure all SQL Alchemy models are imported before initializing DB

@@ -1,16 +1,11 @@
-import pytest
 from fastapi.encoders import jsonable_encoder
+from freezegun import freeze_time
+import pytest
+from sqlalchemy.orm.session import Session
 
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud
-
-from ultron8.api.models.packs import PacksBase
-from ultron8.api.models.packs import PacksBaseInDB
-from ultron8.api.models.packs import PacksCreate
-from ultron8.api.models.packs import PacksUpdate
-
-from freezegun import freeze_time
-from sqlalchemy.orm.session import Session
+from ultron8.api.models.packs import PacksBase, PacksBaseInDB, PacksCreate, PacksUpdate
 
 # pack_linux = Packs(
 #     name="linux",

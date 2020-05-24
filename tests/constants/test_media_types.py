@@ -1,7 +1,9 @@
 """Test Constants for media_types."""
 # pylint: disable=protected-access
 import logging
+
 import pytest
+
 import ultron8
 from ultron8.constants import media_types
 

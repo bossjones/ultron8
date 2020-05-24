@@ -1,6 +1,4 @@
-from sqlalchemy import Column
-from sqlalchemy import DateTime
-from sqlalchemy import String
+from sqlalchemy import Column, DateTime, String
 
 from ultron8.api.db.u_sqlite.base_class import Base
 

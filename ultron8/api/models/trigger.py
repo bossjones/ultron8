@@ -1,18 +1,10 @@
 from datetime import datetime
 from enum import Enum
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Sequence
-from typing import Set
-from typing import Tuple
-from typing import Union
-from typing import Any
 
-from pydantic import BaseModel
-from pydantic import Schema
+from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union
 
-from pydantic import Json
+from pydantic import BaseModel, Json, Schema
+
 from ultron8.api.models.base import BaseDataModel
 
 ######################################################################

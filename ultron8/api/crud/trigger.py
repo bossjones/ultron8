@@ -1,23 +1,16 @@
-from typing import List
-from typing import Optional
+import logging
+
+from typing import List, Optional
 
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy.orm import Session
 from sqlalchemy import and_
+from sqlalchemy.orm import Session
+from sqlalchemy.orm.session import Session
+import ujson
 
 from ultron8.api.db_models.trigger import TriggerDB
-
-from ultron8.api.models.trigger import TriggerCreate
-from ultron8.api.models.trigger import TriggerUpdate
-
-from ultron8.exceptions.db import (
-    UltronDBObjectNotFoundError,
-    UltronDBObjectNotFoundError,
-)
-
-import logging
-import ujson
-from sqlalchemy.orm.session import Session
+from ultron8.api.models.trigger import TriggerCreate, TriggerUpdate
+from ultron8.exceptions.db import UltronDBObjectNotFoundError
 
 LOG = logging.getLogger(__name__)
 

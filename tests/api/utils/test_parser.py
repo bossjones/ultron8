@@ -1,5 +1,7 @@
 import uuid
+
 import pytest
+
 from ultron8.api.utils.parser import get_domain_from_fqdn
 
 

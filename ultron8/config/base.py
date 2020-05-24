@@ -16,33 +16,34 @@
 
 from __future__ import annotations
 
+from collections import ChainMap, OrderedDict, abc
+from copy import deepcopy
 import logging
 import os
-import platform
-from collections import abc, OrderedDict
-import re
 from pathlib import Path
+import platform
+import re
 
-import pkg_resources
-import yaml
-
-from copy import deepcopy
-from collections import ChainMap
-
-# from devtest.core import exceptions
-
-from ultron8.exceptions.config import ConfigError
-from ultron8.exceptions.config import ConfigNotFoundError
-from ultron8.exceptions.config import ConfigValueError
-from ultron8.exceptions.config import ConfigTypeError
-from ultron8.exceptions.config import ConfigTemplateError
-from ultron8.exceptions.config import ConfigReadError
-from ultron8.exceptions.config import YAML_TAB_PROBLEM
 from typing import Any, Dict, Iterator, List, Optional, Set, Tuple, Type, Union
 
 # from ultron8.config import ConfigDict
 # from ultron8.config.smart import Configuration
+import pkg_resources
+import yaml
 from yaml.nodes import MappingNode, ScalarNode
+
+from ultron8.exceptions.config import (
+    YAML_TAB_PROBLEM,
+    ConfigError,
+    ConfigNotFoundError,
+    ConfigReadError,
+    ConfigTemplateError,
+    ConfigTypeError,
+    ConfigValueError,
+)
+
+# from devtest.core import exceptions
+
 
 logger = logging.getLogger(__name__)
 

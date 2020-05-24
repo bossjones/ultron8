@@ -1,29 +1,22 @@
 """Test config utils."""
 # pylint: disable=protected-access
-import logging
 import hashlib
+import logging
 import os
+from pathlib import Path
 import shutil
 import tempfile
+from tempfile import NamedTemporaryFile, mkdtemp
 import unittest
 import unittest.mock as mock
-from pathlib import Path
-from tempfile import mkdtemp
-from tempfile import NamedTemporaryFile
 
 import pytest
 
-import ultron8.config
 from tests import helper
-from ultron8.yaml import yaml
-from ultron8.yaml import yaml_load
-from ultron8.yaml import yaml_save
-
-from ultron8.utils import maybe_decode
-from ultron8.utils import maybe_encode
-from ultron8.config.manager import NullConfig
-from ultron8.config.manager import ConfigProxy
-from ultron8.config.manager import hash_digest
+import ultron8.config
+from ultron8.config.manager import ConfigProxy, NullConfig, hash_digest
+from ultron8.utils import maybe_decode, maybe_encode
+from ultron8.yaml import yaml, yaml_load, yaml_save
 
 # from . import helper
 # import helper

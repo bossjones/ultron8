@@ -1,10 +1,6 @@
 import logging
 
-from tenacity import after_log
-from tenacity import before_log
-from tenacity import retry
-from tenacity import stop_after_attempt
-from tenacity import wait_fixed
+from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
 
 from ultron8.api.db.u_sqlite.session import SessionLocal
 

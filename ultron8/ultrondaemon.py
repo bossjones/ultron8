@@ -11,9 +11,7 @@ import time
 import pkg_resources
 
 import ultron8
-from ultron8.utils import chdir
-from ultron8.utils import flock
-from ultron8.utils import signals
+from ultron8.utils import chdir, flock, signals
 
 # import ipdb
 

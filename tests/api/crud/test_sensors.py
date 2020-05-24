@@ -1,37 +1,32 @@
-import pytest
-from fastapi.encoders import jsonable_encoder
-
-from tests.utils.utils import random_lower_string
-from ultron8.api import crud
-
-
-from ultron8.api.models.sensors import SensorsBase
-from ultron8.api.models.sensors import SensorsBaseInDB
-from ultron8.api.models.sensors import SensorsCreate
-from ultron8.api.models.sensors import SensorsUpdate
-from ultron8.api.models.sensors import Sensor
-from ultron8.api.models.sensors import SensorInDB
-
-from ultron8.api.db_models.sensors import Sensors
-from ultron8.api.db_models.sensors import SENSORS_TRIGGER_TYPES_ASSOCIATION
-from ultron8.api.db_models.trigger import TriggerTypeDB
-from ultron8.api.models.trigger import TriggerTypeInDBModel
-
-from tests.utils.packs import create_random_packs
-from tests.utils.trigger_instance import create_random_trigger_instance_name
-from tests.utils.trigger_type import create_random_trigger_type
-from tests.utils.trigger import create_random_trigger
-
-from freezegun import freeze_time
-from ultron8.debugger import debug_dump_exclude
-
-from ultron8.api.models import orm_to_model
-
 import json
 
-from pydantic.json import pydantic_encoder
 from typing import Optional
+
+from fastapi.encoders import jsonable_encoder
+from freezegun import freeze_time
+from pydantic.json import pydantic_encoder
+import pytest
 from sqlalchemy.orm.session import Session
+
+from tests.utils.packs import create_random_packs
+from tests.utils.trigger import create_random_trigger
+from tests.utils.trigger_instance import create_random_trigger_instance_name
+from tests.utils.trigger_type import create_random_trigger_type
+from tests.utils.utils import random_lower_string
+from ultron8.api import crud
+from ultron8.api.db_models.sensors import SENSORS_TRIGGER_TYPES_ASSOCIATION, Sensors
+from ultron8.api.db_models.trigger import TriggerTypeDB
+from ultron8.api.models import orm_to_model
+from ultron8.api.models.sensors import (
+    Sensor,
+    SensorInDB,
+    SensorsBase,
+    SensorsBaseInDB,
+    SensorsCreate,
+    SensorsUpdate,
+)
+from ultron8.api.models.trigger import TriggerTypeInDBModel
+from ultron8.debugger import debug_dump_exclude
 
 
 def pretty_lenient_json(data):

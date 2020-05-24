@@ -5,8 +5,8 @@ Provides utility functions that are consumed internally by Ultron8
 which depend on extremely few external helpers (such as compat)
 """
 
-import locale
 import codecs
+import locale
 
 # from .compat import is_py2, builtin_str, str
 

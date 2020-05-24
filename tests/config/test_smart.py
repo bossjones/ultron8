@@ -2,10 +2,11 @@
 # pylint: disable=protected-access
 import logging
 import os
-import tempfile
 import shutil
-import pytest
+import tempfile
+
 import pyconfig
+import pytest
 
 import ultron8
 

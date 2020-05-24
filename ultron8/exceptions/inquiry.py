@@ -1,8 +1,8 @@
 from __future__ import absolute_import
 
-from ultron8 import exceptions as u8_exc
 import logging
 
+from ultron8 import exceptions as u8_exc
 
 LOG = logging.getLogger(__name__)
 

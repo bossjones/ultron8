@@ -3,19 +3,19 @@
 # pylint: disable=W1202
 # flake8: noqa
 import collections
+from collections import OrderedDict
 import functools
 import keyword
 import logging
 import os
 import shutil
 import sys
-from collections import OrderedDict
 
-from ultron8.consts import CONF_FILE
-from ultron8.consts import DEBUG_MODE_FLAG
-from ultron8.consts import YAML_FILE
-from ruamel.yaml.loader import SafeLoader
 from typing import Type
+
+from ruamel.yaml.loader import SafeLoader
+
+from ultron8.consts import CONF_FILE, DEBUG_MODE_FLAG, YAML_FILE
 
 LOGGER = logging.getLogger(__name__)
 

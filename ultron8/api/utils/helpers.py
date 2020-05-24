@@ -1,5 +1,6 @@
-from fastapi import HTTPException
 from os import environ
+
+from fastapi import HTTPException
 
 
 def only_values(l, grab):

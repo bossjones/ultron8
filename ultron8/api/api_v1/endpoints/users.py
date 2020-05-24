@@ -1,24 +1,19 @@
 from typing import List
 
-from fastapi import APIRouter
-from fastapi import Body
-from fastapi import Depends
-from fastapi import HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
-from ultron8.api import crud
-from ultron8.api import settings
+from ultron8.api import crud, settings
 from ultron8.api.db_models.user import User as DBUser
-from ultron8.api.models.user import User
-from ultron8.api.models.user import UserCreate
-from ultron8.api.models.user import UserInDB
-from ultron8.api.models.user import UserUpdate
+from ultron8.api.models.user import User, UserCreate, UserInDB, UserUpdate
 from ultron8.api.utils import send_new_account_email
 from ultron8.api.utils.db import get_db
-from ultron8.api.utils.security import get_current_active_superuser
-from ultron8.api.utils.security import get_current_active_user
+from ultron8.api.utils.security import (
+    get_current_active_superuser,
+    get_current_active_user,
+)
 
 router = APIRouter()
 

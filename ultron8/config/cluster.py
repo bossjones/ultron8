@@ -2,13 +2,11 @@
 # pylint: disable=line-too-long
 # pylint: disable=W1202
 
-import uuid
-import logging
-
-
 from dataclasses import dataclass, field
-from ultron8.api.utils.parser import get_domain_from_fqdn
+import logging
+import uuid
 
+from ultron8.api.utils.parser import get_domain_from_fqdn
 
 log = logging.getLogger(__name__)
 

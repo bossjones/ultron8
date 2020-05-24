@@ -1,9 +1,10 @@
 from __future__ import absolute_import
-import os
-import glob
-import yaml
-import six
 
+import glob
+import os
+
+import six
+import yaml
 
 PATH = os.path.dirname(os.path.realpath(__file__))
 FILES = glob.glob("%s/*.yaml" % PATH)

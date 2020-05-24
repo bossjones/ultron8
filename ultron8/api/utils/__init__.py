@@ -1,19 +1,17 @@
+from datetime import datetime, timedelta
 import logging
-from datetime import datetime
-from datetime import timedelta
 from pathlib import Path
+
 from typing import Optional
 
-import emails
-
 # import jwt
-from jose import jwt
+import emails
 from emails.template import JinjaTemplate
+from jose import jwt
 
 # from jwt.exceptions import InvalidTokenError
-from ultron8.exceptions.jwt import InvalidTokenError
-
 from ultron8.api import settings
+from ultron8.exceptions.jwt import InvalidTokenError
 
 password_reset_jwt_subject = "preset"
 

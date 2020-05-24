@@ -1,20 +1,18 @@
 """Gathers environment settings and loads them into global attributes for Api service."""
+from dataclasses import dataclass, field
+from datetime import timedelta
 import logging
 import os
 import sys
 import uuid
-from dataclasses import dataclass, field
+
 from typing import Any
 
+from pydantic import EmailStr
 from starlette.config import Config
-from starlette.datastructures import CommaSeparatedStrings
-from starlette.datastructures import Secret
+from starlette.datastructures import CommaSeparatedStrings, Secret
 
 from ultron8.api.utils.parser import get_domain_from_fqdn
-
-from pydantic import EmailStr
-
-from datetime import timedelta
 
 log = logging.getLogger(__name__)
 

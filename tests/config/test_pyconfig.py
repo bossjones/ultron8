@@ -1,12 +1,11 @@
 """Test Global Pyconfig setter/getters."""
 # pylint: disable=protected-access
 import logging
-import pytest
-import pyconfig
 
-from ultron8.config import do_set_flag
-from ultron8.config import do_get_flag
-from ultron8.config import do_set_multi_flag
+import pyconfig
+import pytest
+
+from ultron8.config import do_get_flag, do_set_flag, do_set_multi_flag
 
 logger = logging.getLogger(__name__)
 

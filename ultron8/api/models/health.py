@@ -3,9 +3,10 @@ Data Models for all things having to do with Health.
 """
 import logging
 
+from ultron8.api.models.base import BaseDataModel
+
 # from pydantic import BaseModel
 
-from ultron8.api.models.base import BaseDataModel
 
 logger = logging.getLogger(__name__)
 

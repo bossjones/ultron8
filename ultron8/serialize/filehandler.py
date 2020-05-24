@@ -1,18 +1,16 @@
 """
 Tools for managing and properly closing file handles.
 """
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
+from collections import OrderedDict
 import logging
 import os.path
 import shutil
+from subprocess import PIPE, Popen
 import sys
-import time
-from collections import OrderedDict
-from subprocess import PIPE
-from subprocess import Popen
 from threading import RLock
+import time
 
 from ultron8.utils import maybe_encode
 

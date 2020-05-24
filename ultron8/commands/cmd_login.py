@@ -1,22 +1,20 @@
 # Example usage:  ultronctl --debug login --cluster=local --email=admin@ultron8.com --password=password token
 
-from typing import Any
-from typing import Tuple
-
 import os
 import sys
 
+from typing import Any, Tuple
+
 import click
+
+# from ultron8.process import fail
+from ultron8.cli import set_fact_flags, set_trace
+from ultron8.config import do_get_flag, do_set_flag
+from ultron8.constants import colors
+from ultron8.logging_init import getLogger
 
 # import pyconfig
 
-from ultron8.logging_init import getLogger
-
-# from ultron8.process import fail
-from ultron8.cli import set_trace, set_fact_flags
-from ultron8.config import do_get_flag, do_set_flag
-
-from ultron8.constants import colors
 
 logger = getLogger(__name__)
 

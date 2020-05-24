@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import pytest
-from pytest import approx
-from pytest import raises
+from pytest import approx, raises
 
 
 def test() -> None:

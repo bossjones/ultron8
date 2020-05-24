@@ -1,26 +1,25 @@
+from contextlib import contextmanager
 import os
 import shutil
-from contextlib import contextmanager
 from uuid import uuid4
 
-import pytest
-import pyconfig
-from click.testing import CliRunner
+from typing import Iterator
 
-from tests.conftest import fixtures_path
-from ultron8.cli import cli
+from click.testing import CliRunner
+import pyconfig
+import pytest
 
 # from ultron8.cli import get_flag
 # from ultron8.cli import set_fact_flags
-from ultron8.config import do_set_flag
-from ultron8.config import do_get_flag
+from tests.conftest import fixtures_path
+from ultron8 import config
+from ultron8.cli import cli
+from ultron8.config import do_get_flag, do_set_flag
 
 # from ultron8.paths import Paths
 
 # from .conftest import fixtures_path
 
-from typing import Iterator
-from ultron8 import config
 
 # paths = Paths()
 

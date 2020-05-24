@@ -1,13 +1,11 @@
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.session import Session
 
 from ultron8.api.db_models.packs import Packs
-from ultron8.api.models.packs import PacksCreate
-from ultron8.api.models.packs import PacksUpdate
-from sqlalchemy.orm.session import Session
+from ultron8.api.models.packs import PacksCreate, PacksUpdate
 
 
 def get(db_session: Session, *, packs_id: int) -> Optional[Packs]:

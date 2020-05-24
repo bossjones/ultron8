@@ -5,6 +5,7 @@ Use `cache` to interact with the cache.
 Objects are pickled before getting sent into redis.
 """
 from aiocache import caches
+
 from ultron8.api import settings
 
 # RE: caching https://github.com/tiangolo/fastapi/issues/651

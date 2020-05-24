@@ -2,14 +2,14 @@ import logging
 import random
 import string
 
+from typing import Dict
+
 import requests
+from requests.models import Response
+from sqlalchemy.orm import Session
+from starlette.testclient import TestClient
 
 from ultron8.api import settings
-
-from typing import Dict
-from starlette.testclient import TestClient
-from sqlalchemy.orm import Session
-from requests.models import Response
 
 logger = logging.getLogger(__name__)
 

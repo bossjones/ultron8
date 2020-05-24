@@ -9,18 +9,11 @@ import logging
 import os
 import sys
 
-from ultron8.config import config_parse
-from ultron8.config import ConfigError
-from ultron8.config import schema
-from ultron8.utils import maybe_decode
-from ultron8.utils import maybe_encode
-from ultron8.utils import mkdir_if_does_not_exist
-from ultron8.utils import mkdir_p
-from ultron8.yaml import yaml
-from ultron8.yaml import yaml_load
-from ultron8.yaml import yaml_save
-from ultron8.yaml import YAMLError
-from typing import Dict, Union, Any
+from typing import Any, Dict, Union
+
+from ultron8.config import ConfigError, config_parse, schema
+from ultron8.utils import maybe_decode, maybe_encode, mkdir_if_does_not_exist, mkdir_p
+from ultron8.yaml import YAMLError, yaml, yaml_load, yaml_save
 
 # import ultron8.utils as utils
 
