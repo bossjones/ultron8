@@ -2,8 +2,9 @@ from __future__ import annotations
 
 # SOURCE: https://blog.bartab.fr/fastapi-logging-on-the-fly/
 import logging
-from fastapi import APIRouter
-from fastapi import HTTPException
+
+from fastapi import APIRouter, HTTPException
+
 from ultron8.api.models.loggers import LoggerModel, LoggerPatch
 
 LOG_LEVELS = {

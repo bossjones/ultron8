@@ -1,9 +1,8 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
+from io import StringIO
 import logging
 import os
-from io import StringIO
 from shlex import quote
 
 from ultron8.config import schema

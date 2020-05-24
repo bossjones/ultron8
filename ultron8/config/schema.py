@@ -1,11 +1,11 @@
 """
  Immutable config schema objects.
 """
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from collections import namedtuple
 from enum import Enum
+
 from typing import Any, List, Optional
 
 MASTER_NAMESPACE = "MASTER"

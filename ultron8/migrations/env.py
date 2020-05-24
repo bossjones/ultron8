@@ -1,19 +1,17 @@
 from __future__ import with_statement
 
 import logging
+from logging.config import fileConfig
 import os
 import sys
-from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 
 from ultron8.api import settings
 from ultron8.api.db.u_sqlite.base import Base
-from ultron8.web import app
-
 from ultron8.api.middleware.logging import log
+from ultron8.web import app
 
 log.setup_logging()
 

@@ -3,63 +3,57 @@ Global test fixtures definitions.
 """
 # Taken from tedi and guid_tracker
 
-# import asyncio
-import typing
 import base64
-import datetime
-import os
-from pathlib import Path
-from contextlib import contextmanager
-
-import tempfile
-import logging
-import platform
-import posixpath
-import os
-import shutil
-from pathlib import Path
 from collections import ChainMap
+from contextlib import contextmanager
 import copy
 from copy import deepcopy
+import datetime
+import logging
+import os
+from pathlib import Path
+import platform
+import posixpath
+import shutil
+import tempfile
 
+# import asyncio
+import typing
+from typing import Any, Dict, Generator, Iterator, Tuple
+
+from _pytest.fixtures import SubRequest
+from _pytest.monkeypatch import MonkeyPatch
+import betamax
+from betamax_matchers import json_body
+from fastapi import FastAPI
+from fastapi.applications import FastAPI
 import pytest
-from starlette.testclient import TestClient
+import requests
+from starlette.testclient import (
+    AuthType,
+    Cookies,
+    DataType,
+    FileType,
+    Params,
+    TestClient,
+    TimeOut,
+)
 
-from tests.utils.utils import get_server_api
-from tests.utils.utils import get_superuser_token_headers
-from tests.utils.utils import superuser_credentials
-from tests.utils.utils import get_superuser_jwt_request
-
+from tests.utils.user import authentication_token_from_email
+from tests.utils.utils import (
+    get_server_api,
+    get_server_api_with_version,
+    get_superuser_jwt_request,
+    get_superuser_token_headers,
+    superuser_credentials,
+)
+from ultron8.api import settings
 from ultron8.api.db.u_sqlite.session import SessionLocal
+from ultron8.web import get_application
 
 # from ultron8.api import settings
 # from ultron8.web import app
 
-from typing import Any, Generator, Iterator, Tuple, Dict
-import betamax
-from betamax_matchers import json_body
-
-from tests.utils.utils import get_server_api_with_version
-
-from fastapi import FastAPI
-
-
-import requests
-from starlette.testclient import AuthType
-from starlette.testclient import Cookies
-from starlette.testclient import DataType
-from starlette.testclient import FileType
-from starlette.testclient import Params
-from starlette.testclient import TestClient as PureClient
-from starlette.testclient import TimeOut
-
-from ultron8.web import get_application
-from ultron8.api import settings
-
-from tests.utils.user import authentication_token_from_email
-from _pytest.fixtures import SubRequest
-from _pytest.monkeypatch import MonkeyPatch
-from fastapi.applications import FastAPI
 
 # from tests.utils.user import get_superuser_token_headers
 

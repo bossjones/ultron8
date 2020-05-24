@@ -1,17 +1,14 @@
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.session import Session
 
 # from ultron8.api.core.security import get_password_hash
 # from ultron8.api.core.security import verify_password
-from ultron8.api.db_models.action import Action
-
 # from ultron8.api.db_models.packs import Packs
-from ultron8.api.models.action import ActionCreate
-from ultron8.api.models.action import ActionUpdate
-from sqlalchemy.orm.session import Session
+from ultron8.api.db_models.action import Action
+from ultron8.api.models.action import ActionCreate, ActionUpdate
 
 
 def get(db_session: Session, *, action_id: int) -> Optional[Action]:

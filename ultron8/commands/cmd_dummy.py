@@ -1,20 +1,18 @@
-from typing import Any
-from typing import Tuple
-
 import os
 import sys
 
+from typing import Any, Tuple
+
 import click
-
-# import pyconfig
-
-from ultron8.logging_init import getLogger
 
 # from ultron8.process import fail
 # from ultron8.cli import set_trace, get_flag
 from ultron8.cli import set_trace
-from ultron8.config import do_set_flag
-from ultron8.config import do_get_flag
+from ultron8.config import do_get_flag, do_set_flag
+from ultron8.logging_init import getLogger
+
+# import pyconfig
+
 
 logger = getLogger(__name__)
 

@@ -1,5 +1,5 @@
-from ultron8.constants.packs import SYSTEM_PACK_NAME
 from ultron8.api.models.system.common import ResourceReference
+from ultron8.constants.packs import SYSTEM_PACK_NAME
 
 __all__ = [
     "WEBHOOKS_PARAMETERS_SCHEMA",

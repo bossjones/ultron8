@@ -4,23 +4,22 @@
 
 # import pyconfig
 
+from gettext import gettext as _
+import logging
 import os
 import shutil
-import tempfile
 import stat
-
-# import unittest
-
-from gettext import gettext as _
+import tempfile
 
 import pytest
+from pytest_mock.plugin import MockFixture
 
 from tests.conftest import fixtures_path
 import ultron8
 from ultron8 import paths
 
-import logging
-from pytest_mock.plugin import MockFixture
+# import unittest
+
 
 logger = logging.getLogger(__name__)
 

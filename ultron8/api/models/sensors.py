@@ -3,15 +3,14 @@ Data Models for all things having to do with Sensors.
 """
 from datetime import datetime
 from enum import Enum
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Sequence
-from typing import Set
-from typing import Tuple
-from typing import Union
 
-from pydantic import BaseModel
+from typing import Dict, List, Optional, Sequence, Set, Tuple, Union
+
+from pydantic import BaseModel, Schema
+
+from ultron8.api.db_models.trigger import TriggerTypeDB
+from ultron8.api.models.base import BaseDataModel
+from ultron8.api.models.trigger import TriggerTypeInDBModel
 
 # SOURCE: https://github.com/tiangolo/fastapi/issues/634
 try:
@@ -19,11 +18,6 @@ try:
 except ImportError:
     from pydantic.networks import EmailStr
 
-from pydantic import Schema
-
-from ultron8.api.models.trigger import TriggerTypeInDBModel
-from ultron8.api.db_models.trigger import TriggerTypeDB
-from ultron8.api.models.base import BaseDataModel
 
 # The ellipsis ... just means "Required" same as annotation only declarations above.
 

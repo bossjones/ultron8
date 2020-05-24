@@ -1,17 +1,15 @@
+from gettext import gettext as _
+import logging
 import os
 import shutil
-import tempfile
 import stat
-
-from gettext import gettext as _
+import tempfile
 
 import pytest
 
 from tests.conftest import fixtures_path
 import ultron8
 from ultron8.core import workspace
-
-import logging
 
 logger = logging.getLogger(__name__)
 

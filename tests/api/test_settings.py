@@ -1,21 +1,20 @@
 """Test settings."""
 # pylint: disable=protected-access
+import errno
 import logging
 import os
-import errno
 import unittest
 import unittest.mock as mock
 
+from typing import Dict, Iterator, Union
+
+from _pytest.monkeypatch import MonkeyPatch
 import pytest
+from pytest_mock.plugin import MockFixture
 
 # import ultron8.config
 # from tests import helper
-from ultron8.api.settings import getenv_boolean
-from ultron8.api.settings import SettingsConfig
-from _pytest.monkeypatch import MonkeyPatch
-from pytest_mock.plugin import MockFixture
-from typing import Dict, Iterator, Union
-
+from ultron8.api.settings import SettingsConfig, getenv_boolean
 
 # SOURCE: https://github.com/ansible/ansible/blob/370a7ace4b3c8ffb6187900f37499990f1b976a2/test/units/module_utils/basic/test_atomic_move.py
 

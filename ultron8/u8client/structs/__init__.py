@@ -1,42 +1,19 @@
 import collections.abc as abc_collections
 import functools
 
-
-from requests.compat import urlparse, urlencode
+from requests.compat import urlencode, urlparse
 
 # from . import exceptions
-from ultron8.exceptions.client import (
+# from . import models
+from ultron8.exceptions.client import (  # AuthenticationFailed,; BadRequest,; CardHasNoContentUrl,; ClientError,; Conflict,; ConnectionError,; ForbiddenError,; GeneratedTokenExpired,; MethodNotAllowed,; MissingAppAuthentication,; MissingAppBearerAuthentication,; MissingAppInstallationAuthentication,; NotAcceptable,; NotFoundError,; NotRefreshable,; ResponseError,; ServerError,; UltronClientError,; UltronClientException,; UnavailableForLegalReasons,; UnprocessableEntity,
     AppInstallationTokenExpired,
     AppTokenExpired,
-    # AuthenticationFailed,
-    # BadRequest,
-    # CardHasNoContentUrl,
-    # ClientError,
-    # Conflict,
-    # ConnectionError,
-    # ForbiddenError,
-    # GeneratedTokenExpired,
     IncompleteResponse,
-    # MethodNotAllowed,
-    # MissingAppAuthentication,
-    # MissingAppBearerAuthentication,
-    # MissingAppInstallationAuthentication,
-    # NotAcceptable,
-    # NotFoundError,
-    # NotRefreshable,
-    # ResponseError,
-    # ServerError,
     TransportError,
-    # UltronClientError,
-    # UltronClientException,
-    # UnavailableForLegalReasons,
     UnexpectedResponse,
-    # UnprocessableEntity,
     UnprocessableResponseBody,
     error_for,
 )
-
-# from . import models
 from ultron8.u8client import models
 
 

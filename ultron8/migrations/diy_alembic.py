@@ -1,43 +1,36 @@
 #!/usr/bin/env python
 
+# import os
+import argparse
+from functools import wraps
+import inspect
+import logging
+from logging.config import fileConfig
+import os
+import sys
 import traceback
 
+from IPython.core import ultratb
+from IPython.core.debugger import Tracer  # noqa
+from alembic import __version__ as __alembic_version__, command, context
+from alembic.config import Config as AlembicConfig
+from alembic.util import CommandError
 import better_exceptions
+from sqlalchemy import engine_from_config, pool
+
+from ultron8.api import settings
+from ultron8.api.db.u_sqlite.base import Base
+from ultron8.api.middleware.logging import log
+from ultron8.debugger import debug_dump_exclude
+from ultron8.web import app
 
 better_exceptions.hook()
 
-import sys
-
-from IPython.core.debugger import Tracer  # noqa
-from IPython.core import ultratb
 
 sys.excepthook = ultratb.FormattedTB(
     mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
 )
 
-# import os
-import argparse
-from alembic import __version__ as __alembic_version__
-from alembic.config import Config as AlembicConfig
-from alembic import command
-from alembic.util import CommandError
-import inspect
-from functools import wraps
-
-import logging
-import os
-import sys
-from logging.config import fileConfig
-
-from alembic import context
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
-from ultron8.api import settings
-from ultron8.api.db.u_sqlite.base import Base
-from ultron8.web import app
-from ultron8.api.middleware.logging import log
-from ultron8.debugger import debug_dump_exclude
 
 log.setup_logging()
 

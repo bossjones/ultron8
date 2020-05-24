@@ -1,40 +1,36 @@
 """Ultron8 path module. Deals with all things at the file system level."""
 
+import bisect
+import errno
+from gettext import gettext as _
 import logging
 import os
-import stat
-import threading
-import bisect
+from pathlib import Path, PosixPath
+import queue
 import stat
 import sys
+import tempfile
+import threading
+import urllib  # noqa
+from urllib.parse import (
+    parse_qs,
+    quote,
+    quote_plus,
+    unquote,
+    unquote_plus,
+    urldefrag,
+    urlencode,
+    urljoin,
+    urlparse,
+    urlsplit,
+    urlunparse,
+    urlunsplit,
+)
+
+from typing import Dict, List, Union
 
 from ultron8 import exceptions
 from ultron8.utils import encoding
-
-from gettext import gettext as _
-
-from pathlib import PosixPath, Path
-
-import queue
-import tempfile
-import errno
-
-import urllib  # noqa
-from urllib.parse import (
-    urlparse,
-    urlunparse,
-    quote_plus,
-    unquote_plus,
-    urlsplit,
-    parse_qs,
-    urlencode,
-    quote,
-    unquote,
-    urljoin,
-    urldefrag,
-    urlunsplit,
-)
-from typing import Dict, List, Union
 
 logger = logging.getLogger(__name__)
 

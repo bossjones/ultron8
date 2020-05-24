@@ -12,22 +12,22 @@ from urllib.parse import urlparse
 import pytz
 
 from ultron8 import command_context
-from ultron8.config import config_utils
-from ultron8.config import ConfigError
-from ultron8.config import schema
-from ultron8.config.schema import CLEANUP_ACTION_NAME
-from ultron8.config.schema import ConfigAction
-from ultron8.config.schema import ConfigCleanupAction
-from ultron8.config.schema import ConfigConstraint
-from ultron8.config.schema import ConfigJob
-from ultron8.config.schema import ConfigMesos
-from ultron8.config.schema import ConfigParameter
-from ultron8.config.schema import ConfigSSHOptions
-from ultron8.config.schema import ConfigState
-from ultron8.config.schema import ConfigVolume
-from ultron8.config.schema import MASTER_NAMESPACE
-from ultron8.config.schema import NamedUltronConfig
-from ultron8.config.schema import UltronConfig
+from ultron8.config import ConfigError, config_utils, schema
+from ultron8.config.schema import (
+    CLEANUP_ACTION_NAME,
+    MASTER_NAMESPACE,
+    ConfigAction,
+    ConfigCleanupAction,
+    ConfigConstraint,
+    ConfigJob,
+    ConfigMesos,
+    ConfigParameter,
+    ConfigSSHOptions,
+    ConfigState,
+    ConfigVolume,
+    NamedUltronConfig,
+    UltronConfig,
+)
 
 # from task_processing.plugins.mesos.constraints import OPERATORS
 # from ultron8.config.config_utils import build_dict_name_validator

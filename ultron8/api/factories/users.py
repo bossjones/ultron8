@@ -1,8 +1,11 @@
 import random
 import string
-import factory
-from ultron8.api.models.user import UserCreate
+
 from typing import Tuple
+
+import factory
+
+from ultron8.api.models.user import UserCreate
 
 
 def randomStringwithDigitsAndSymbols(stringLength: int = 10) -> str:

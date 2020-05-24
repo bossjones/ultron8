@@ -2,16 +2,18 @@
 
 """New and improved access token data object, used with jwt to accurately record scopes and expirations in the database"""
 
-import logging
 import datetime
+import logging
 from uuid import uuid4
 
 # from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, ForeignKey, Integer, String
+
+from ultron8.api.db_models.types import ArrayType, DateTime
+from ultron8.api.models.base import BaseDataModel
 
 # from sqlalchemy.dialects.postgresql import ARRAY
 
-from ultron8.api.db_models.types import ArrayType, DateTime
 
 # from enum import Enum
 # from enum import IntEnum
@@ -33,7 +35,6 @@ from ultron8.api.db_models.types import ArrayType, DateTime
 
 # from pydantic import Schema
 
-from ultron8.api.models.base import BaseDataModel
 
 # from ultron8.api.models.packs import
 

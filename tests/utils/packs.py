@@ -1,13 +1,13 @@
+from typing import Optional
+
 import requests
+from sqlalchemy.orm import Session
+from sqlalchemy.orm.session import Session
 
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud
-
-from ultron8.api.models.packs import PacksCreate
 from ultron8.api.db_models.packs import Packs
-from typing import Optional
-from sqlalchemy.orm import Session
-from sqlalchemy.orm.session import Session
+from ultron8.api.models.packs import PacksCreate
 
 
 def create_random_packs(db: Session) -> Packs:

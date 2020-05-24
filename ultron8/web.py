@@ -3,8 +3,52 @@
 # NOTE: Uncomment to enabled debugger in vscode # except Exception:
 # NOTE: Uncomment to enabled debugger in vscode #     print("WARNING - ptvsd is not installed, can't use to debug in vscode")
 # NOTE: Uncomment to enabled debugger in vscode #     pass
-import threading
+import logging
 import os
+from pathlib import Path
+import subprocess
+import threading
+import time
+
+from typing import Callable
+
+from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi.applications import FastAPI
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
+from starlette import status
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.cors import CORSMiddleware
+from starlette.requests import Request
+from starlette.responses import (
+    JSONResponse,
+    PlainTextResponse,
+    RedirectResponse,
+    Response,
+    UJSONResponse,
+)
+from starlette.staticfiles import StaticFiles
+import starlette_prometheus
+import uvicorn
+
+from ultron8.api import settings
+from ultron8.api.api_v1.endpoints import (
+    alive,
+    guid,
+    home,
+    items,
+    loggers as log_endpoint,
+    login,
+    token,
+    users,
+    version,
+)
+from ultron8.api.db.u_sqlite import (
+    close_database_connection_pool,
+    open_database_connection_pool,
+)
+from ultron8.api.db.u_sqlite.session import SessionLocal
+from ultron8.api.middleware.logging import log
 
 # NOTE: Uncomment to enabled debugger in vscode #     # SOURCE: https://github.com/microsoft/ptvsd/blob/master/TROUBLESHOOTING.md#1-multiprocessing-on-linuxmac
 # NOTE: Uncomment to enabled debugger in vscode #     # Multiprocess debugging on a Linux machine requires the spawn setting. We are working on improving this experience, see # NOTE: Uncomment to enabled debugger in vscode #943. Meanwhile do this to improve your debugging experience:
@@ -16,7 +60,6 @@ import os
 # NOTE: Uncomment to enabled debugger in vscode
 # NOTE: Uncomment to enabled debugger in vscode #     multiprocessing.set_start_method("spawn", True)
 
-import subprocess
 
 # SOURCE: https://blog.hipolabs.com/remote-debugging-with-vscode-docker-and-pico-fde11f0e5f1c
 def start_debugger():
@@ -54,48 +97,6 @@ def start_debugger():
 # NOTE: Uncomment to enabled debugger in vscode #             print("WARNING - ptvsd is not installed, can't run ptvsd.enable_attach()")
 # NOTE: Uncomment to enabled debugger in vscode #             pass
 
-
-import logging
-from pathlib import Path
-
-import time
-
-import starlette_prometheus
-import uvicorn
-from fastapi import Depends
-from fastapi import FastAPI
-from fastapi import Header
-from fastapi import HTTPException
-from fastapi.exceptions import RequestValidationError
-from fastapi.encoders import jsonable_encoder
-from starlette.middleware.cors import CORSMiddleware
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request
-from starlette.responses import PlainTextResponse
-from starlette.responses import RedirectResponse
-from starlette.responses import UJSONResponse
-from starlette.responses import Response
-from starlette.staticfiles import StaticFiles
-from starlette import status
-from starlette.responses import JSONResponse
-
-
-from ultron8.api import settings
-from ultron8.api.api_v1.endpoints import alive
-from ultron8.api.api_v1.endpoints import guid
-from ultron8.api.api_v1.endpoints import home
-from ultron8.api.api_v1.endpoints import items
-from ultron8.api.api_v1.endpoints import login
-from ultron8.api.api_v1.endpoints import token
-from ultron8.api.api_v1.endpoints import users
-from ultron8.api.api_v1.endpoints import version
-from ultron8.api.api_v1.endpoints import loggers as log_endpoint
-from ultron8.api.db.u_sqlite import close_database_connection_pool
-from ultron8.api.db.u_sqlite import open_database_connection_pool
-from ultron8.api.db.u_sqlite.session import SessionLocal
-from ultron8.api.middleware.logging import log
-from fastapi.applications import FastAPI
-from typing import Callable
 
 # import sys
 # from IPython.core.debugger import Tracer  # noqa

@@ -3,24 +3,20 @@
 #     from unittest import mock
 # except ImportError:
 #     import mock
+from io import StringIO
 import json as jsonlib
 import logging
 import os
 import os.path
 import sys
 import unittest
-from io import StringIO
 from unittest import mock
 
 import pytest
 
 import ultron8
 from ultron8.consts import YAML_FILE
-from ultron8.yaml import yaml
-from ultron8.yaml import yaml_dump_roundtrip
-from ultron8.yaml import yaml_load
-from ultron8.yaml import yaml_save
-
+from ultron8.yaml import yaml, yaml_dump_roundtrip, yaml_load, yaml_save
 
 # ######################################################################################
 # #SOURCE: https://github.com/gvbgduh/starlette-cbge/blob/c1c7b99b07f4cf21537a12b82526b9a34ff3100b/starlette_cbge/test_client.py

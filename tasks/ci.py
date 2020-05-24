@@ -77,7 +77,7 @@ rm -f cov.xml
 
 
 @task
-def pylint(ctx, loc="local", tests=False):
+def pylint(ctx, loc="local", tests=False, everything=False):
     """
     pylint ultron8 folder
     Usage: inv ci.pylint
@@ -95,6 +95,8 @@ def pylint(ctx, loc="local", tests=False):
         ctx.run(
             "pylint --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc tests"
         )
+    elif everything:
+        ctx.run("pylint --rcfile ./lint-configs-python/python/pylintrc tests")
     else:
         ctx.run(
             "pylint --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc ultron8"
@@ -148,10 +150,17 @@ def black(ctx, loc="local", check=True, debug=False, verbose=0):
     ctx.run(_cmd)
 
 
-@task
-def isort(ctx, loc="local", check=True, debug=False):
+@task(incrementable=["verbose"])
+def isort(
+    ctx, loc="local", check=False, dry_run=False, verbose=0, apply=False, diff=False
+):
     """
-    isort ultron8 module
+    isort ultron8 module. Some of the arguments were taken from the starlette contrib scripts. Tries to align w/ black to prevent having to reformat multiple times.
+
+    To check mode only(does not make changes permenantly):
+        Usage: inv ci.isort --check -vvv
+    Simply display command we would run:
+        Usage: inv ci.isort --check --dry-run -vvv
     """
     env = get_compose_env(ctx, loc=loc)
 
@@ -162,14 +171,33 @@ def isort(ctx, loc="local", check=True, debug=False):
     for k, v in env.items():
         ctx.config["run"]["env"][k] = v
 
-    _cmd = ""
+    _cmd = "isort --recursive"
 
     if check:
-        _cmd = "isort --recursive --check-only --diff --verbose ultron8 tests"
-    else:
-        _cmd = "isort --recursive --diff --verbose ultron8 tests"
+        _cmd += " --check-only"
 
-    ctx.run(_cmd)
+    if diff:
+        _cmd += " --diff"
+
+    if verbose >= 2:
+        _cmd += " --verbose"
+
+    if apply:
+        _cmd += " --apply"
+
+    _cmd += " ultron8 tests"
+
+    if verbose >= 1:
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    if dry_run:
+        click.secho(
+            "[isort] DRY RUN mode enabled, not executing command: {}".format(_cmd),
+            fg=COLOR_CAUTION,
+        )
+    else:
+        ctx.run(_cmd)
 
 
 @task
@@ -514,6 +542,48 @@ done
             )
         else:
             ctx.run(_cmd_apply)
+
+
+def autoflake(
+    ctx, loc="local", verbose=0, check=False, dry_run=False,
+):
+    """
+    Use autoflake to remove unused imports, recursively, remove unused variables, and exclude __init__.py
+
+    To run autoflake in check only mode:
+        Usage: inv ci.autoflake --check -vvv
+    To run autoflake in check only mode(dry-run):
+        Usage: inv ci.autoflake --check -vvv --dry-run
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    _cmd = "autoflake"
+    _cmd += " --remove-all-unused-imports --recursive --remove-unused-variables"
+
+    if check:
+        _cmd += " --check"
+
+    _cmd += " ultron8"
+    _cmd += " --exclude=__init__.py"
+
+    if verbose >= 1:
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    if dry_run:
+        click.secho(
+            "[autoflake] DRY RUN mode enabled, not executing command: {}".format(_cmd),
+            fg=COLOR_CAUTION,
+        )
+    else:
+        ctx.run(_cmd)
 
 
 @task(

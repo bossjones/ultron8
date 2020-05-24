@@ -1,50 +1,26 @@
-import os
-import logging
-import time
-import datetime
-from contextlib import contextmanager
 import collections.abc as abc_collections
+from contextlib import contextmanager
+import datetime
+import logging
+import os
+import time
+from unittest.mock import _ANY, MagicMock, Mock
+
+from typing import Any, Callable, Dict, Iterator, Optional, Tuple, Union
+
 import dateutil.parser
 import requests
 from requests.adapters import HTTPAdapter
+from requests.models import PreparedRequest, Response
 from requests.packages.urllib3.util.retry import Retry  # pylint: disable=import-error
 
-from ultron8.api import settings
 from ultron8 import __version__
-from ultron8.exceptions.client import (
+from ultron8.api import settings
+from ultron8.exceptions.client import (  # AuthenticationFailed,; BadRequest,; CardHasNoContentUrl,; ClientError,; Conflict,; ConnectionError,; ForbiddenError,; GeneratedTokenExpired,; IncompleteResponse,; MethodNotAllowed,; MissingAppAuthentication,; MissingAppBearerAuthentication,; MissingAppInstallationAuthentication,; NotAcceptable,; NotFoundError,; NotRefreshable,; ResponseError,; ServerError,; TransportError,; UltronClientError,; UltronClientException,; UnavailableForLegalReasons,; UnexpectedResponse,; UnprocessableEntity,; UnprocessableResponseBody,
     AppInstallationTokenExpired,
     AppTokenExpired,
-    # AuthenticationFailed,
-    # BadRequest,
-    # CardHasNoContentUrl,
-    # ClientError,
-    # Conflict,
-    # ConnectionError,
-    # ForbiddenError,
-    # GeneratedTokenExpired,
-    # IncompleteResponse,
-    # MethodNotAllowed,
-    # MissingAppAuthentication,
-    # MissingAppBearerAuthentication,
-    # MissingAppInstallationAuthentication,
-    # NotAcceptable,
-    # NotFoundError,
-    # NotRefreshable,
-    # ResponseError,
-    # ServerError,
-    # TransportError,
-    # UltronClientError,
-    # UltronClientException,
-    # UnavailableForLegalReasons,
-    # UnexpectedResponse,
-    # UnprocessableEntity,
-    # UnprocessableResponseBody,
 )
-
 from ultron8.u8client.utils import get_api_endpoint
-from requests.models import PreparedRequest, Response
-from typing import Callable, Dict, Iterator, Optional, Tuple, Union, Any
-from unittest.mock import MagicMock, Mock, _ANY
 
 __url_cache__ = {}
 logger = logging.getLogger(__name__)

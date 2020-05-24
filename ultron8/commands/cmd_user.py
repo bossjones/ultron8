@@ -1,28 +1,22 @@
 # Example usage: ultronctl user --cluster=local list
 
-from typing import Any
-from typing import Tuple
-
 import json
-
 import os
-import sys
 import pprint
+import sys
+
+from typing import Any, Tuple
 
 import click
-
-from ultron8.logging_init import getLogger
+from fastapi.encoders import jsonable_encoder
+import termtables as tt
 
 # from ultron8.process import fail
-from ultron8.cli import set_trace, set_fact_flags
-from ultron8.config import do_get_flag, do_set_flag
-
-
-from ultron8.constants import colors
-
-import termtables as tt
 from ultron8.api.models.user import UserCreate
-from fastapi.encoders import jsonable_encoder
+from ultron8.cli import set_fact_flags, set_trace
+from ultron8.config import do_get_flag, do_set_flag
+from ultron8.constants import colors
+from ultron8.logging_init import getLogger
 
 logger = getLogger(__name__)
 

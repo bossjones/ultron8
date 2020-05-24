@@ -1,15 +1,13 @@
-from typing import Any
-from typing import Tuple
-
 import os
 import sys
 
+from typing import Any, Tuple
+
 import click
 
-from ultron8.logging_init import getLogger
-
-from ultron8.cli import set_trace, set_fact_flags
+from ultron8.cli import set_fact_flags, set_trace
 from ultron8.config import do_get_flag, do_set_flag
+from ultron8.logging_init import getLogger
 
 logger = getLogger(__name__)
 

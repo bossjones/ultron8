@@ -6,8 +6,8 @@ from starlette import status
 from starlette.requests import Request
 
 # from apps.token.constants.jwt import JWT_REGEX
-from ultron8.constants.jwt import JWT_REGEX
 from ultron8.api import settings
+from ultron8.constants.jwt import JWT_REGEX
 
 # it will regex always Authorization header with the header config that you set it or default JWT. If header does not exist or has not ^{header} [A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$ format then will raise HTTPException and response with status code 400.
 

@@ -5,7 +5,6 @@ from pathlib import Path
 # from .paths import env_dir
 from ultron8.api.middleware.logging.log import logger
 
-
 # def load_env(target):
 #     target_file = target + ".env"
 #     target_path = env_dir(target_file)

@@ -1,23 +1,24 @@
+import datetime
 import logging
-from sqlalchemy import Column
-from sqlalchemy import DateTime
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import JSON
-from sqlalchemy import Boolean
-from sqlalchemy import UniqueConstraint
-from sqlalchemy.orm import backref
-from sqlalchemy.orm import relationship
+
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    UniqueConstraint,
+)
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql import func
 
 from ultron8.api.db.u_sqlite.base_class import Base
-from ultron8.api.db_models.ultronbase import UIDFieldMixin, ContentPackResourceMixin
-from ultron8.consts import ResourceType
-
+from ultron8.api.db_models.ultronbase import ContentPackResourceMixin, UIDFieldMixin
 from ultron8.api.models.system.common import ResourceReference
-import datetime
-from sqlalchemy.ext.hybrid import hybrid_property
+from ultron8.consts import ResourceType
 
 LOGGER = logging.getLogger(__name__)
 

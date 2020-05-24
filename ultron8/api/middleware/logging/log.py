@@ -1,17 +1,14 @@
-from __future__ import division
-from __future__ import print_function
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
-import os
 import codecs
+from collections import OrderedDict
 import json
 import logging
 import logging.config
+import os
 
 from ultron8.api import settings
-from ultron8.yaml import yaml
-from ultron8.yaml import yaml_load
-from collections import OrderedDict
+from ultron8.yaml import yaml, yaml_load
 
 # import daiquiri
 # import daiquiri.formatter

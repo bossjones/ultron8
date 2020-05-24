@@ -12,8 +12,9 @@
 
 """All Config exceptions."""
 
-import yaml
 from typing import Optional
+
+import yaml
 from yaml.scanner import ScannerError
 
 YAML_TAB_PROBLEM = "found character '\\t' that cannot start any token"

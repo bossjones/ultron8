@@ -1,8 +1,7 @@
 """Temporary router for user objects. Taken directly from FastApi Tutorial"""
 import logging
 
-from fastapi import APIRouter
-from fastapi import HTTPException
+from fastapi import APIRouter, HTTPException
 
 from ultron8.api.models.health import HealthOut
 

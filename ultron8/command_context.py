@@ -1,11 +1,10 @@
 """Command Context is how we construct the command line for a command which may
 have variables that need to be rendered.
 """
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
-import operator
 from functools import reduce
+import operator
 
 from ultron8.utils import timeutils
 

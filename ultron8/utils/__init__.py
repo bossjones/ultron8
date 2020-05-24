@@ -1,8 +1,8 @@
 """Ultron8 utils. Deals with all things at the file system level."""
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import argparse
+import collections
 import contextlib
 import copy
 import errno
@@ -13,6 +13,7 @@ import itertools
 import logging
 import math
 import os
+from pathlib import Path
 import re
 import select
 import shutil
@@ -22,9 +23,6 @@ import subprocess
 import sys
 import time
 import traceback
-import collections
-
-from pathlib import Path
 from urllib.parse import urlparse
 
 from fastapi import HTTPException

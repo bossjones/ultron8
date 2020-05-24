@@ -1,7 +1,5 @@
 import sqlalchemy
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.ext.declarative import as_declarative
+from sqlalchemy.ext.declarative import as_declarative, declarative_base, declared_attr
 
 # pylint: disable=no-member
 # pylint: disable=no-self-argument

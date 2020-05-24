@@ -1,5 +1,5 @@
-import re
 from ipaddress import IPv4Address
+import re
 
 DOMAIN_RE = re.compile("^([a-zA-Z0-9][-a-zA-Z0-9]*[a-zA-Z0-9]\.)+([a-zA-Z0-9]{2,5})$")
 HOSTNAME_RE = re.compile("(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)

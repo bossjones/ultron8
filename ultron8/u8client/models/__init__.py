@@ -9,40 +9,17 @@ import requests
 import requests.compat
 
 # from . import exceptions
-from ultron8.exceptions.client import (
+# from . import session
+from ultron8.exceptions.client import (  # AuthenticationFailed,; BadRequest,; CardHasNoContentUrl,; ClientError,; Conflict,; ConnectionError,; ForbiddenError,; GeneratedTokenExpired,; MethodNotAllowed,; MissingAppAuthentication,; MissingAppBearerAuthentication,; MissingAppInstallationAuthentication,; NotAcceptable,; NotFoundError,; NotRefreshable,; ResponseError,; ServerError,; UltronClientError,; UltronClientException,; UnavailableForLegalReasons,; UnprocessableEntity,
     AppInstallationTokenExpired,
     AppTokenExpired,
-    # AuthenticationFailed,
-    # BadRequest,
-    # CardHasNoContentUrl,
-    # ClientError,
-    # Conflict,
-    # ConnectionError,
-    # ForbiddenError,
-    # GeneratedTokenExpired,
     IncompleteResponse,
-    # MethodNotAllowed,
-    # MissingAppAuthentication,
-    # MissingAppBearerAuthentication,
-    # MissingAppInstallationAuthentication,
-    # NotAcceptable,
-    # NotFoundError,
-    # NotRefreshable,
-    # ResponseError,
-    # ServerError,
     TransportError,
-    # UltronClientError,
-    # UltronClientException,
-    # UnavailableForLegalReasons,
     UnexpectedResponse,
-    # UnprocessableEntity,
     UnprocessableResponseBody,
     error_for,
 )
-
-# from . import session
 from ultron8.u8client import session
-
 from ultron8.u8client.utils import get_api_endpoint
 
 LOG = logging.getLogger(__package__)

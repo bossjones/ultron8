@@ -1,20 +1,23 @@
 """Test Global Config."""
 # pylint: disable=protected-access
-import logging
-import platform
-import posixpath
-import os
-import tempfile
-import shutil
-from pathlib import Path
 from collections import ChainMap
 import copy
 from copy import deepcopy
-import pytest
+import logging
+import os
+from pathlib import Path
+import platform
+import posixpath
+import shutil
+import tempfile
+
 import pyconfig
+import pytest
 
-
+from tests.utils.filesystem import helper_write_yaml_to_disk
 import ultron8
+from ultron8 import config
+from ultron8.config import get_config
 
 # from ultron8.config import do_set_flag
 # from ultron8.config import do_get_flag
@@ -29,9 +32,6 @@ import ultron8
 # from ultron8.config import ULTRON_LIBS_PATH
 # from ultron8.config import ULTRON_TEMPLATES_PATH
 
-from ultron8 import config
-from ultron8.config import get_config
-from tests.utils.filesystem import helper_write_yaml_to_disk
 
 logger = logging.getLogger(__name__)
 

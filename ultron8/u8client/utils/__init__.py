@@ -1,5 +1,6 @@
 # pylint: disable=logging-not-lazy
 import logging
+
 from ultron8.api import settings
 
 logger = logging.getLogger(__name__)

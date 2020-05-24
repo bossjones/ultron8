@@ -1,21 +1,18 @@
-import requests
-
-from tests.utils.utils import random_lower_string, random_email
-from ultron8.api import crud
-from ultron8.api import settings
-
-from ultron8.api.models.user import UserCreate, UserUpdate
-
-from sqlalchemy.orm import Session
-from typing import Dict
-from ultron8.api.db_models.user import User
-from typing import Optional
-from starlette.testclient import TestClient
-import factory
-
 import random
 import string
+
+from typing import Dict, Optional
+
+import factory
+import requests
+from sqlalchemy.orm import Session
 from sqlalchemy.orm.session import Session
+from starlette.testclient import TestClient
+
+from tests.utils.utils import random_email, random_lower_string
+from ultron8.api import crud, settings
+from ultron8.api.db_models.user import User
+from ultron8.api.models.user import UserCreate, UserUpdate
 
 
 def user_authentication_headers(

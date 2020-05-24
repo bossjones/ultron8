@@ -1,22 +1,24 @@
 # pylint: disable=logging-not-lazy
-import os
-import logging
-import time
-import datetime
-from contextlib import contextmanager
 import collections.abc as abc_collections
+from contextlib import contextmanager
+import datetime
+import logging
+import os
+import time
+
+from typing import Dict, List, Optional, Union
+
 import dateutil.parser
 import requests
 from requests.adapters import HTTPAdapter
+from requests.models import Response
 from requests.packages.urllib3.util.retry import Retry  # pylint: disable=import-error
 
-from ultron8.api import settings
 from ultron8 import __version__
-from ultron8.u8client.utils import get_api_endpoint
-from ultron8.constants import media_types
+from ultron8.api import settings
 from ultron8.api.models.user import UserCreate
-from requests.models import Response
-from typing import Dict, List, Optional, Union
+from ultron8.constants import media_types
+from ultron8.u8client.utils import get_api_endpoint
 
 logger = logging.getLogger(__name__)
 

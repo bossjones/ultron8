@@ -1,32 +1,29 @@
-from sqlalchemy import Boolean
-from sqlalchemy import Column
-from sqlalchemy import DateTime
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import JSON
-from sqlalchemy.orm import backref
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
-from sqlalchemy import Table
-
-from ultron8.api.db.u_sqlite.base_class import Base
-from ultron8.api.db_models.ultronbase import UIDFieldMixin, ContentPackResourceMixin
-from ultron8.consts import ResourceType
 import datetime
 
-from ultron8.api.models.system.common import ResourceReference
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    and_,
+    orm,
+)
+from sqlalchemy.orm import backref, relationship
+from sqlalchemy.sql import func
 
-from ultron8.api.db_models.trigger import TriggerTypeDB
-
-from sqlalchemy import and_
-from ultron8.debugger import debug_dump_exclude
-
-from sqlalchemy import orm
-
+from ultron8.api.db.u_sqlite.base_class import Base
 from ultron8.api.db_models.sensors_trigger_types_association import (
     SENSORS_TRIGGER_TYPES_ASSOCIATION,
 )
+from ultron8.api.db_models.trigger import TriggerTypeDB
+from ultron8.api.db_models.ultronbase import ContentPackResourceMixin, UIDFieldMixin
+from ultron8.api.models.system.common import ResourceReference
+from ultron8.consts import ResourceType
+from ultron8.debugger import debug_dump_exclude
 
 # assoc_table = db.Table('association',
 #    db.Column('ingredient_id', db.Integer, db.ForeignKey('ingredients.id')),

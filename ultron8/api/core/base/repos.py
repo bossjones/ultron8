@@ -1,27 +1,26 @@
 # Shamlessly borrowed from bountydns, trying to understand how to write better web applications
 # https://github.com/3lpsy/boucanpy
-from typing import Optional, List
-from fastapi import Depends
+import logging
 
-from sqlalchemy import or_, desc, func, cast, String
+from typing import List, Optional
+
+from fastapi import Depends
+from sqlalchemy import String, cast, desc, func, or_
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Session, joinedload, raiseload
 
-# from bountydns.core import logger, abort
-from ultron8.api.utils.helpers import abort
-
+# TODO: Move this model over to model folder
+# TODO: Move this model over to model folder
+# TODO: Move this model over to model folder
 # from bountydns.db.session import async_session
 # from bountydns.db.pagination import Pagination
+# from bountydns.core import logger, abort
+from ultron8.api.core.pagination.data import PaginationData
 from ultron8.api.db.pagination.pagination import Pagination
+from ultron8.api.utils.helpers import abort
 
 # from bountydns.core.pagination.data import PaginationData
 
-# TODO: Move this model over to model folder
-# TODO: Move this model over to model folder
-# TODO: Move this model over to model folder
-from ultron8.api.core.pagination.data import PaginationData
-
-import logging
 
 LOG = logging.getLogger(__name__)
 

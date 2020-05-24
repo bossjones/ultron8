@@ -1,13 +1,10 @@
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from ultron8.api.db_models.trigger import TriggerTagsDB
-
-from ultron8.api.models.trigger import TriggerTagsCreate
-from ultron8.api.models.trigger import TriggerTagsUpdate
+from ultron8.api.models.trigger import TriggerTagsCreate, TriggerTagsUpdate
 
 
 def get(db_session: Session, *, trigger_id: int) -> Optional[TriggerTagsDB]:

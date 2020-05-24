@@ -1,35 +1,30 @@
-import shutil
-import re
+from contextlib import contextmanager
 import json
 import os
+import pprint
+import re
+import shutil
 import sys
-from contextlib import contextmanager
 from uuid import uuid4
 
-import pytest
-import click
-import pprint
-from click.testing import CliRunner
-
-from tests.conftest import fixtures_path
-from ultron8.cli import cli
-
-from ultron8.config import do_set_flag
-from ultron8.config import do_get_flag
 from typing import Iterator
 
-from ultron8.core.workspace import CliWorkspace, prep_default_config
-from ultron8.core.files import load_json_file
-from ultron8.config.manager import NullConfig, ConfigProxy
-from ultron8.config import do_set_flag
-from ultron8.config import ConfigManager
-from ultron8.client import UltronAPI
+import click
+from click.testing import CliRunner
+from fastapi.encoders import jsonable_encoder
+import pytest
+
+from tests.conftest import fixtures_path
 from tests.utils.filesystem import helper_write_yaml_to_disk
 from tests.utils.utils import get_superuser_jwt_request
 from ultron8 import config
-
 from ultron8.api.factories.users import _MakeRandomNormalUserFactory
-from fastapi.encoders import jsonable_encoder
+from ultron8.cli import cli
+from ultron8.client import UltronAPI
+from ultron8.config import ConfigManager, do_get_flag, do_set_flag
+from ultron8.config.manager import ConfigProxy, NullConfig
+from ultron8.core.files import load_json_file
+from ultron8.core.workspace import CliWorkspace, prep_default_config
 
 # TODO: Mock or monkeypatch CliWorkspace ?
 # TODO: Mock or monkeypatch prep_default_config ?

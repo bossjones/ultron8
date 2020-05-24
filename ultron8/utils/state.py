@@ -1,5 +1,5 @@
-import logging
 from collections import defaultdict
+import logging
 
 log = logging.getLogger(__name__)
 

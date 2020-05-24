@@ -1,26 +1,19 @@
-import pytest
 from fastapi.encoders import jsonable_encoder
-
-from tests.utils.utils import random_lower_string
-from ultron8.api import crud
-
-from ultron8.api.models.action import RunnerTypeModel
-from ultron8.api.models.action import ActionBase
-from ultron8.api.models.action import ActionBaseInDB
-from ultron8.api.models.action import ActionCreate
-from ultron8.api.models.action import ActionUpdate
-
-from ultron8.api.models.packs import PacksBase
-from ultron8.api.models.packs import PacksBaseInDB
-from ultron8.api.models.packs import PacksCreate
-from ultron8.api.models.packs import PacksUpdate
-
 from freezegun import freeze_time
-
-
+import pytest
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.session import Session
 
+from tests.utils.utils import random_lower_string
+from ultron8.api import crud
+from ultron8.api.models.action import (
+    ActionBase,
+    ActionBaseInDB,
+    ActionCreate,
+    ActionUpdate,
+    RunnerTypeModel,
+)
+from ultron8.api.models.packs import PacksBase, PacksBaseInDB, PacksCreate, PacksUpdate
 
 # def test_create_action():
 #     email = random_lower_string()

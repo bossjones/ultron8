@@ -1,8 +1,6 @@
 from typing import TYPE_CHECKING
-from sqlalchemy import Boolean
-from sqlalchemy import Column
-from sqlalchemy import Integer
-from sqlalchemy import String
+
+from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from ultron8.api.db.u_sqlite.base_class import Base

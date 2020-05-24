@@ -1,21 +1,18 @@
-import sys
-import os
-import shutil
-import pathlib
-import stat
-from pathlib import PosixPath, Path
 from dataclasses import dataclass
-from typing import Optional, Union, Deque, Dict, List
+import os
+import pathlib
+from pathlib import Path, PosixPath
+import shutil
+import stat
+import sys
 
-from ultron8.logging_init import getLogger
+from typing import Deque, Dict, List, Optional, Union
+
+from ultron8.config import ConfigManager, get_config_dir_base_path
+from ultron8.config.base import CONFIG_FILENAME, config_dirs
 from ultron8.core.files import write_file
-
-from ultron8.config import get_config_dir_base_path
-from ultron8.paths import is_readable_dir, ensure_dir_exists, is_readable_file, tree
-
-from ultron8.config.base import config_dirs, CONFIG_FILENAME
-
-from ultron8.config import ConfigManager
+from ultron8.logging_init import getLogger
+from ultron8.paths import ensure_dir_exists, is_readable_dir, is_readable_file, tree
 
 logger = getLogger(__name__)
 

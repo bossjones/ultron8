@@ -1,12 +1,12 @@
 # SOURCE: # SOURCE: https://github.com/bergran/fast-api-project-template
-from jose import jwt
 from fastapi import Depends, HTTPException
+from jose import jwt
 from starlette import status
 from starlette.requests import Request
 
 # from apps.token.depends.get_jwt import get_jwt
-from ultron8.api.depends.get_jwt import get_jwt
 from ultron8.api import settings
+from ultron8.api.depends.get_jwt import get_jwt
 from ultron8.exceptions.jwt import InvalidSignatureError
 
 

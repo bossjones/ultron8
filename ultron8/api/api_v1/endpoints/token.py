@@ -1,13 +1,10 @@
 from datetime import timedelta
 
-from fastapi import APIRouter
-from fastapi import Depends
-from fastapi import HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from ultron8.api import crud
-from ultron8.api import settings
+from ultron8.api import crud, settings
 from ultron8.api.core.jwt import create_access_token
 from ultron8.api.core.security import get_password_hash
 from ultron8.api.models.token import Token

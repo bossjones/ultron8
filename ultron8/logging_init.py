@@ -1,21 +1,17 @@
 """Logging utilities."""
 import asyncio
-import inspect
-import logging
-import logging.config
-import threading
-import traceback
 from asyncio import run_coroutine_threadsafe
 from asyncio.events import AbstractEventLoop
-from functools import partial
-from functools import wraps
+from functools import partial, wraps
+import inspect
+import logging
 from logging import Logger
+import logging.config
 from os import environ
-from typing import Any
-from typing import Callable
-from typing import Coroutine
-from typing import List
-from typing import Optional
+import threading
+import traceback
+
+from typing import Any, Callable, Coroutine, List, Optional
 
 from better_exceptions.log import BetExcLogger
 

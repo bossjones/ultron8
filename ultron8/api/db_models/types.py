@@ -4,47 +4,39 @@
 # I solved implementing a SQLAlchemy TypeDecorator with a json serialization:
 # http://docs.sqlalchemy.org/en/latest/core/types.html#sqlalchemy.types.TypeDecorator
 # Here it is the self-explaining code:
-import json
-import logging
 import datetime
 from datetime import timedelta
-from dateutil.parser import parse as parse_date
-
-from sqlalchemy.schema import Column
-from sqlalchemy.types import (
-    Integer,
-    String,
-    TypeDecorator,
-)
-from sqlalchemy import Sequence
-
-# from pyramid_sqlalchemy import BaseObject as Base
-from sqlalchemy import Column
-
-# from sqlalchemy import DateTime
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-
-# from sqlalchemy import String
-from sqlalchemy import JSON
-from sqlalchemy import Boolean
-from sqlalchemy import UniqueConstraint
-from sqlalchemy import CHAR
-from sqlalchemy import VARCHAR
-from sqlalchemy.orm import backref
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
-from sqlalchemy.sql import operators
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import types
+import json
+import logging
 import uuid
 
-from ultron8.api.db.u_sqlite.base_class import Base
-from ultron8.api.db_models.ultronbase import UIDFieldMixin, ContentPackResourceMixin
-from ultron8.consts import ResourceType
-
-from ultron8.api.models.system.common import ResourceReference
+# from sqlalchemy import String
+# from sqlalchemy import DateTime
+# from pyramid_sqlalchemy import BaseObject as Base
+from dateutil.parser import parse as parse_date
+from sqlalchemy import (
+    CHAR,
+    JSON,
+    VARCHAR,
+    Boolean,
+    Column,
+    ForeignKey,
+    Integer,
+    Sequence,
+    UniqueConstraint,
+    types,
+)
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import backref, relationship
+from sqlalchemy.schema import Column
+from sqlalchemy.sql import func, operators
+from sqlalchemy.types import Integer, String, TypeDecorator
+
+from ultron8.api.db.u_sqlite.base_class import Base
+from ultron8.api.db_models.ultronbase import ContentPackResourceMixin, UIDFieldMixin
+from ultron8.api.models.system.common import ResourceReference
+from ultron8.consts import ResourceType
 
 LOGGER = logging.getLogger(__name__)
 

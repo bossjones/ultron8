@@ -1,10 +1,12 @@
-import logging
 from datetime import datetime
 from enum import Enum
-from typing import List
-from typing import Optional
+import logging
 
-from pydantic import BaseModel
+from typing import List, Optional
+
+from pydantic import BaseModel, Schema
+
+from ultron8.api.models.base import BaseDataModel
 
 # SOURCE: https://github.com/tiangolo/fastapi/issues/634
 try:
@@ -12,8 +14,6 @@ try:
 except ImportError:
     from pydantic.networks import EmailStr
 
-from pydantic import Schema
-from ultron8.api.models.base import BaseDataModel
 
 log = logging.getLogger(__name__)
 
