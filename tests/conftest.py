@@ -29,7 +29,8 @@ from tests.utils.utils import get_server_api
 from tests.utils.utils import get_superuser_token_headers
 from tests.utils.utils import superuser_credentials
 from tests.utils.utils import get_superuser_jwt_request
-from ultron8.api.db.u_sqlite.session import db_session, Session as SessionLocal
+
+from ultron8.api.db.u_sqlite.session import SessionLocal
 
 # from ultron8.api import settings
 # from ultron8.web import app
@@ -262,12 +263,12 @@ def fastapi_client(request, fastapi_app) -> typing.Generator:
 
 
 # SOURCE: https://github.com/KyriakosFrang/sandbox/blob/c98be415c6b7e01768c4ab2d086e147cdc86757c/fastAPI_sandbox/backend/app/app/tests/conftest.py
-@pytest.fixture(scope="module")
+# @pytest.fixture(scope="module")
 def normal_user_token_headers(
-    fastapi_client: TestClient, db_session: SessionLocal
+    fastapi_client: TestClient, db: SessionLocal
 ) -> Dict[str, str]:
     return authentication_token_from_email(
-        client=fastapi_client, email=settings.EMAIL_TEST_USER, db_session=db_session
+        client=fastapi_client, email=settings.EMAIL_TEST_USER, db=db
     )
 
 

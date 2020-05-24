@@ -3,7 +3,7 @@ from fastapi.encoders import jsonable_encoder
 
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud
-from ultron8.api.db.u_sqlite.session import db_session
+
 
 from ultron8.api.models.trigger import TriggerTagsBase
 from ultron8.api.models.trigger import TriggerTagsBaseInDB
@@ -22,6 +22,8 @@ from ultron8.api.models.trigger import TriggerInstanceBaseInDB
 from ultron8.api.models.trigger import TriggerInstanceCreate
 from ultron8.api.models.trigger import TriggerInstanceUpdate
 from ultron8.api.db_models.trigger import TriggerDB
+
+from sqlalchemy.orm import Session
 
 from ultron8.api.models.packs import PacksCreate
 
@@ -77,7 +79,7 @@ TRIGGERTYPE_2 = {
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_create_trigger() -> None:
+def test_create_trigger(db) -> None:
     packs_name = "dummy_pack_1"
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -110,7 +112,7 @@ def test_create_trigger() -> None:
         ref=packs_ref,
     )
 
-    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs = crud.packs.create(db, packs_in=packs_in)
 
     trigger_in = TriggerCreate(
         name=trigger_name,
@@ -120,7 +122,7 @@ def test_create_trigger() -> None:
         parameters=trigger_parameters,
     )
 
-    trigger = crud.trigger.create(db_session, trigger_in=trigger_in, packs_id=packs.id)
+    trigger = crud.trigger.create(db, trigger_in=trigger_in, packs_id=packs.id)
 
     assert trigger.name == trigger_name
     assert trigger.packs_name == trigger_packs_name
@@ -132,7 +134,7 @@ def test_create_trigger() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_trigger() -> None:
+def test_get_trigger(db) -> None:
     packs_name = "dummy_pack_1"
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -165,7 +167,7 @@ def test_get_trigger() -> None:
         ref=packs_ref,
     )
 
-    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs = crud.packs.create(db, packs_in=packs_in)
 
     trigger_in = TriggerCreate(
         name=trigger_name,
@@ -175,15 +177,15 @@ def test_get_trigger() -> None:
         parameters=trigger_parameters,
     )
 
-    trigger = crud.trigger.create(db_session, trigger_in=trigger_in, packs_id=packs.id)
-    trigger_2 = crud.trigger.get(db_session, trigger_id=trigger.id)
+    trigger = crud.trigger.create(db, trigger_in=trigger_in, packs_id=packs.id)
+    trigger_2 = crud.trigger.get(db, trigger_id=trigger.id)
     assert jsonable_encoder(trigger) == jsonable_encoder(trigger_2)
 
 
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_by_ref_trigger() -> None:
+def test_get_by_ref_trigger(db) -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -217,7 +219,7 @@ def test_get_by_ref_trigger() -> None:
         ref=packs_ref,
     )
 
-    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs = crud.packs.create(db, packs_in=packs_in)
 
     trigger_in = TriggerCreate(
         name=trigger_name,
@@ -227,16 +229,16 @@ def test_get_by_ref_trigger() -> None:
         parameters=trigger_parameters,
     )
 
-    trigger = crud.trigger.create(db_session, trigger_in=trigger_in, packs_id=packs.id)
+    trigger = crud.trigger.create(db, trigger_in=trigger_in, packs_id=packs.id)
     ref_lookup = "{}.{}".format(packs_name, trigger.name)
-    trigger_2 = crud.trigger.get_by_ref(db_session, ref=ref_lookup)
+    trigger_2 = crud.trigger.get_by_ref(db, ref=ref_lookup)
     assert jsonable_encoder(trigger) == jsonable_encoder(trigger_2)
 
 
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_by_name_trigger() -> None:
+def test_get_by_name_trigger(db) -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -270,7 +272,7 @@ def test_get_by_name_trigger() -> None:
         ref=packs_ref,
     )
 
-    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs = crud.packs.create(db, packs_in=packs_in)
 
     trigger_in = TriggerCreate(
         name=trigger_name,
@@ -280,15 +282,15 @@ def test_get_by_name_trigger() -> None:
         parameters=trigger_parameters,
     )
 
-    trigger = crud.trigger.create(db_session, trigger_in=trigger_in, packs_id=packs.id)
-    trigger_2 = crud.trigger.get_by_name(db_session, name=trigger_name)
+    trigger = crud.trigger.create(db, trigger_in=trigger_in, packs_id=packs.id)
+    trigger_2 = crud.trigger.get_by_name(db, name=trigger_name)
     assert jsonable_encoder(trigger) == jsonable_encoder(trigger_2)
 
 
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_multi_trigger() -> None:
+def test_get_multi_trigger(db) -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -328,7 +330,7 @@ def test_get_multi_trigger() -> None:
         ref=packs_ref,
     )
 
-    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs = crud.packs.create(db, packs_in=packs_in)
 
     trigger_in0 = TriggerCreate(
         name=trigger_name0,
@@ -346,14 +348,10 @@ def test_get_multi_trigger() -> None:
         parameters=trigger_parameters1,
     )
 
-    trigger0 = crud.trigger.create(
-        db_session, trigger_in=trigger_in0, packs_id=packs.id
-    )
-    trigger1 = crud.trigger.create(
-        db_session, trigger_in=trigger_in1, packs_id=packs.id
-    )
+    trigger0 = crud.trigger.create(db, trigger_in=trigger_in0, packs_id=packs.id)
+    trigger1 = crud.trigger.create(db, trigger_in=trigger_in1, packs_id=packs.id)
 
-    trigger_2 = crud.trigger.get_multi(db_session)
+    trigger_2 = crud.trigger.get_multi(db)
     for t in trigger_2:
         assert type(t) == TriggerDB
 
@@ -361,7 +359,7 @@ def test_get_multi_trigger() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_multi_by_packs_id_trigger() -> None:
+def test_get_multi_by_packs_id_trigger(db) -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -401,7 +399,7 @@ def test_get_multi_by_packs_id_trigger() -> None:
         ref=packs_ref,
     )
 
-    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs = crud.packs.create(db, packs_in=packs_in)
 
     trigger_in0 = TriggerCreate(
         name=trigger_name0,
@@ -419,16 +417,10 @@ def test_get_multi_by_packs_id_trigger() -> None:
         parameters=trigger_parameters1,
     )
 
-    trigger0 = crud.trigger.create(
-        db_session, trigger_in=trigger_in0, packs_id=packs.id
-    )
-    trigger1 = crud.trigger.create(
-        db_session, trigger_in=trigger_in1, packs_id=packs.id
-    )
+    trigger0 = crud.trigger.create(db, trigger_in=trigger_in0, packs_id=packs.id)
+    trigger1 = crud.trigger.create(db, trigger_in=trigger_in1, packs_id=packs.id)
 
-    trigger_2 = crud.trigger.get_multi_by_packs_id(
-        db_session, packs_id=packs.id, limit=2
-    )
+    trigger_2 = crud.trigger.get_multi_by_packs_id(db, packs_id=packs.id, limit=2)
 
     for t in trigger_2:
         assert type(t) == TriggerDB
@@ -438,7 +430,7 @@ def test_get_multi_by_packs_id_trigger() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_update_trigger() -> None:
+def test_update_trigger(db) -> None:
     packs_name = "dummy_pack_1"
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -471,7 +463,7 @@ def test_update_trigger() -> None:
         ref=packs_ref,
     )
 
-    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs = crud.packs.create(db, packs_in=packs_in)
 
     trigger_in = TriggerCreate(
         name=trigger_name,
@@ -481,11 +473,11 @@ def test_update_trigger() -> None:
         parameters=trigger_parameters,
     )
 
-    trigger = crud.trigger.create(db_session, trigger_in=trigger_in, packs_id=packs.id)
+    trigger = crud.trigger.create(db, trigger_in=trigger_in, packs_id=packs.id)
     description2 = random_lower_string()
     trigger_update = TriggerUpdate(description=description2)
     trigger2 = crud.trigger.update(
-        db_session=db_session, trigger=trigger, trigger_in=trigger_update
+        db_session=db, trigger=trigger, trigger_in=trigger_update
     )
 
     assert trigger.name == trigger2.name
@@ -498,7 +490,7 @@ def test_update_trigger() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_delete_trigger() -> None:
+def test_delete_trigger(db) -> None:
     packs_name = "dummy_pack_1"
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -531,7 +523,7 @@ def test_delete_trigger() -> None:
         ref=packs_ref,
     )
 
-    packs = crud.packs.create(db_session, packs_in=packs_in)
+    packs = crud.packs.create(db, packs_in=packs_in)
 
     trigger_in = TriggerCreate(
         name=trigger_name,
@@ -541,11 +533,11 @@ def test_delete_trigger() -> None:
         parameters=trigger_parameters,
     )
 
-    trigger = crud.trigger.create(db_session, trigger_in=trigger_in, packs_id=packs.id)
+    trigger = crud.trigger.create(db, trigger_in=trigger_in, packs_id=packs.id)
 
-    trigger2 = crud.trigger.remove(db_session=db_session, trigger_id=trigger.id)
+    trigger2 = crud.trigger.remove(db_session=db, trigger_id=trigger.id)
 
-    trigger3 = crud.trigger.get(db_session=db_session, trigger_id=trigger.id)
+    trigger3 = crud.trigger.get(db_session=db, trigger_id=trigger.id)
 
     assert trigger3 is None
 

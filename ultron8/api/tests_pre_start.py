@@ -7,7 +7,7 @@ from tenacity import stop_after_attempt
 from tenacity import wait_fixed
 
 from tests.api.api_v1.test_login import test_get_access_token
-from ultron8.api.db.u_sqlite.session import db_session
+from ultron8.api.db.u_sqlite.session import SessionLocal
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -25,7 +25,8 @@ wait_seconds = 1
 def init():
     try:
         # Try to create session to check if DB is awake
-        db_session.execute("SELECT 1")
+        db = SessionLocal()
+        db.execute("SELECT 1")
         # Wait for API to be awake, run one simple tests to authenticate
         test_get_access_token()
     except Exception as e:

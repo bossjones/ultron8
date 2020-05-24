@@ -3,7 +3,7 @@
 # NOTE: Uncomment to enabled debugger in vscode # except Exception:
 # NOTE: Uncomment to enabled debugger in vscode #     print("WARNING - ptvsd is not installed, can't use to debug in vscode")
 # NOTE: Uncomment to enabled debugger in vscode #     pass
-
+import threading
 import os
 
 # NOTE: Uncomment to enabled debugger in vscode #     # SOURCE: https://github.com/microsoft/ptvsd/blob/master/TROUBLESHOOTING.md#1-multiprocessing-on-linuxmac
@@ -92,7 +92,7 @@ from ultron8.api.api_v1.endpoints import version
 from ultron8.api.api_v1.endpoints import loggers as log_endpoint
 from ultron8.api.db.u_sqlite import close_database_connection_pool
 from ultron8.api.db.u_sqlite import open_database_connection_pool
-from ultron8.api.db.u_sqlite.session import Session
+from ultron8.api.db.u_sqlite.session import SessionLocal
 from ultron8.api.middleware.logging import log
 
 # import sys
@@ -424,12 +424,22 @@ class DbSessionMiddleware(BaseHTTPMiddleware):
             logger.debug(
                 "[DbSessionMiddleware] dispatch - Creating new Sqlalchemy Session()"
             )
-            request.state.db = Session()
+            logger.debug(
+                "[DbSessionMiddleware] dispatch - current thread {}".format(
+                    threading.current_thread().name
+                )
+            )
+            request.state.db = SessionLocal()
             logger.debug("[DbSessionMiddleware] dispatch - await call_next(request)")
             response = await call_next(request)
         finally:
             logger.debug(
                 "[DbSessionMiddleware] dispatch - closing ... request.state.db.close()"
+            )
+            logger.debug(
+                "[DbSessionMiddleware] dispatch - current thread {}".format(
+                    threading.current_thread().name
+                )
             )
             request.state.db.close()
         return response

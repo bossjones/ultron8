@@ -1,3 +1,4 @@
+from typing import Generator
 import logging
 
 # import jwt
@@ -19,11 +20,23 @@ from ultron8.api import settings
 from ultron8.api.core.jwt import ALGORITHM
 from ultron8.api.db_models.user import User
 from ultron8.api.models.token import TokenPayload
-from ultron8.api.utils.db import get_db
+
+# from ultron8.api.utils.db import get_db
+from ultron8.api.db.u_sqlite.session import SessionLocal
 
 logger = logging.getLogger(__name__)
 
-reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/v1/login/access-token")
+reusable_oauth2 = OAuth2PasswordBearer(
+    tokenUrl=f"{settings.API_V1_STR}/login/access-token"
+)
+
+
+def get_db() -> Generator:
+    try:
+        db = SessionLocal()
+        yield db
+    finally:
+        db.close()
 
 
 # def get_current_user(

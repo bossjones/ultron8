@@ -2,7 +2,7 @@ import requests
 
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud
-from ultron8.api.db.u_sqlite.session import db_session
+
 from ultron8.api.models.trigger import TriggerTypeCreate
 from tests.utils.user import create_random_user
 
@@ -14,6 +14,7 @@ import ujson
 from typing import Optional
 from ultron8.api.db_models.packs import Packs
 from ultron8.api.db_models.trigger import TriggerTypeDB
+from sqlalchemy.orm import Session
 
 
 def create_random_trigger_type_name() -> str:
@@ -23,7 +24,7 @@ def create_random_trigger_type_name() -> str:
 
 
 def build_random_trigger_type_create_model(
-    packs: Optional[Packs] = None
+    packs: Optional[Packs] = None,
 ) -> TriggerTypeCreate:
     """Produces a pydantic model for TriggerTypeCreate
 
@@ -70,7 +71,9 @@ def build_random_trigger_type_create_model(
     return trigger_type_in
 
 
-def create_random_trigger_type(packs: Optional[Packs] = None) -> TriggerTypeDB:
+def create_random_trigger_type(
+    db: Session, packs: Optional[Packs] = None
+) -> TriggerTypeDB:
     """Creates a pydantic TriggerTypeCreate then commits it to the database
 
     Keyword Arguments:
@@ -82,7 +85,7 @@ def create_random_trigger_type(packs: Optional[Packs] = None) -> TriggerTypeDB:
     trigger_type_in = build_random_trigger_type_create_model(packs=packs)
 
     trigger_type = crud.trigger_types.create(
-        db_session, trigger_type_in=trigger_type_in, packs_id=packs.id
+        db, trigger_type_in=trigger_type_in, packs_id=packs.id
     )
 
     return trigger_type

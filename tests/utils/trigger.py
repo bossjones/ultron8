@@ -2,7 +2,7 @@ import requests
 
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud
-from ultron8.api.db.u_sqlite.session import db_session
+
 from ultron8.api.models.trigger import TriggerCreate
 from tests.utils.user import create_random_user
 
@@ -14,6 +14,7 @@ from typing import Union
 from ultron8.api.db_models.packs import Packs
 from ultron8.api.db_models.trigger import TriggerDB, TriggerTypeDB
 from ultron8.api.models.trigger import TriggerTypeInDBModel
+from sqlalchemy.orm import Session
 
 
 def create_random_trigger_name():
@@ -62,6 +63,7 @@ def create_trigger_type_from_name(pack_name="", trigger_name=""):
 
 
 def create_random_trigger(
+    db: Session,
     packs: Optional[Packs] = None,
     trigger_type: Optional[Union[TriggerTypeDB, TriggerTypeInDBModel]] = None,
 ) -> TriggerDB:
@@ -92,6 +94,6 @@ def create_random_trigger(
         parameters=trigger_parameters,
     )
 
-    trigger = crud.trigger.create(db_session, trigger_in=trigger_in, packs_id=packs.id)
+    trigger = crud.trigger.create(db, trigger_in=trigger_in, packs_id=packs.id)
 
     return trigger

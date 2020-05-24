@@ -50,4 +50,4 @@ db_session = scoped_session(
 )
 
 # FIXME: We name it SessionLocal to distinguish it from the Session we are importing from SQLAlchemy.
-Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

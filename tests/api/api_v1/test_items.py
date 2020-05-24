@@ -30,8 +30,8 @@ class TestLoginApiEndpoint:
         assert "id" in content
         assert "owner_id" in content
 
-    def test_read_item(self, superuser_token_headers, fastapi_client):
-        item = create_random_item()
+    def test_read_item(self, db, superuser_token_headers, fastapi_client):
+        item = create_random_item(db)
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
         response = requests.get(

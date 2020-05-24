@@ -77,7 +77,7 @@ rm -f cov.xml
 
 
 @task
-def pylint(ctx, loc="local"):
+def pylint(ctx, loc="local", tests=False):
     """
     pylint ultron8 folder
     Usage: inv ci.pylint
@@ -91,9 +91,14 @@ def pylint(ctx, loc="local"):
     for k, v in env.items():
         ctx.config["run"]["env"][k] = v
 
-    ctx.run(
-        "pylint --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc ultron8"
-    )
+    if tests:
+        ctx.run(
+            "pylint --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc tests"
+        )
+    else:
+        ctx.run(
+            "pylint --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc ultron8"
+        )
 
 
 @task
@@ -471,18 +476,23 @@ done
         else:
             ctx.run(_cmd_stub)
 
-    _cmd_apply = r"""
-modules_array=()
-while IFS= read -r line; do
-    modules_array+=( "$line" )
-done < <( monkeytype list-modules | grep -v "pytestipdb" )
+    #     _cmd_apply = r"""
+    # modules_array=()
+    # while IFS= read -r line; do
+    #     modules_array+=( "$line" )
+    # done < <( monkeytype list-modules | grep -v "pytestipdb" )
 
-echo "apply all modules using monkeytype"
-for element in "${modules_array[@]}"
-do
-    monkeytype apply ${element}
-done
+    # echo "apply all modules using monkeytype"
+    # for element in "${modules_array[@]}"
+    # do
+    #     monkeytype apply ${element}
+    # done
+    #     """
+    _cmd_apply = r"""
+find stubs -type f -name '*.pyi' ! -name '*.venv' -print0 | xargs -I FILE -t -0 -n1 monkeytype -v apply FILE
     """
+
+    # find stubs -type f -name '*.pyi' ! -name '*.venv' -print0 | xargs -I FILE -t -0 -n1 monkeytype -v apply FILE
 
     if apply:
         if dry_run:
@@ -494,6 +504,45 @@ done
             )
         else:
             ctx.run(_cmd_apply)
+
+
+@task(
+    pre=[call(clean, loc="local"), call(verify_python_version, loc="local"),],
+    incrementable=["verbose"],
+    aliases=["clean_stubs", "clean_monkeytype"],
+)
+def clean_pyi(ctx, loc="local", verbose=0, dry_run=False):
+    """
+    Clean all stub files
+
+    To clean stubs:
+        Usage: inv ci.clean-pyi -vvv
+    To clean stubs(dry run):
+        Usage: inv ci.clean-pyi -vvv --dry-run
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    # NOTE: https://monkeytype.readthedocs.io/en/stable/faq.html#why-did-my-test-coverage-measurement-stop-working
+    _cmd = r"""find . -name '*.pyi' -exec rm -fv {} +"""
+
+    if verbose >= 1:
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    if dry_run:
+        click.secho(
+            "[monkeytype] DRY RUN mode enabled, not executing command: {}".format(_cmd),
+            fg=COLOR_CAUTION,
+        )
+    else:
+        ctx.run(_cmd)
 
 
 @task(

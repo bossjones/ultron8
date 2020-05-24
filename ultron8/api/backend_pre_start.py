@@ -6,7 +6,7 @@ from tenacity import retry
 from tenacity import stop_after_attempt
 from tenacity import wait_fixed
 
-from ultron8.api.db.u_sqlite.session import db_session
+from ultron8.api.db.u_sqlite.session import SessionLocal
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -23,8 +23,9 @@ wait_seconds = 1
 )
 def init():
     try:
+        db = SessionLocal()
         # Try to create session to check if DB is awake
-        db_session.execute("SELECT 1")
+        db.execute("SELECT 1")
     except Exception as e:
         logger.error(e)
         raise e

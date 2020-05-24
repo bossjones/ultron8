@@ -8,6 +8,7 @@ from ultron8.api import settings
 
 from typing import Dict
 from starlette.testclient import TestClient
+from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
 

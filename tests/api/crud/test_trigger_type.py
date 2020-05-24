@@ -3,7 +3,7 @@ from fastapi.encoders import jsonable_encoder
 
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud
-from ultron8.api.db.u_sqlite.session import db_session
+
 
 from ultron8.api.models.trigger import TriggerTagsBase
 from ultron8.api.models.trigger import TriggerTagsBaseInDB
@@ -36,8 +36,8 @@ from typing import Optional
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_create_trigger_type() -> None:
-    packs = create_random_packs()
+def test_create_trigger_type(db) -> None:
+    packs = create_random_packs(db)
 
     trigger_type_name = create_random_trigger_type_name()
     trigger_type_packs_name = packs.name
@@ -66,7 +66,7 @@ def test_create_trigger_type() -> None:
     )
 
     trigger_type = crud.trigger_types.create(
-        db_session, trigger_type_in=trigger_type_in, packs_id=packs.id
+        db, trigger_type_in=trigger_type_in, packs_id=packs.id
     )
 
     assert trigger_type.name == trigger_type_name
@@ -79,8 +79,8 @@ def test_create_trigger_type() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_get_trigger_type() -> None:
-    packs = create_random_packs()
+def test_get_trigger_type(db) -> None:
+    packs = create_random_packs(db)
 
     trigger_type_name = create_random_trigger_type_name()
     trigger_type_packs_name = packs.name
@@ -109,18 +109,18 @@ def test_get_trigger_type() -> None:
     )
 
     trigger_type = crud.trigger_types.create(
-        db_session, trigger_type_in=trigger_type_in, packs_id=packs.id
+        db, trigger_type_in=trigger_type_in, packs_id=packs.id
     )
 
-    trigger_type_2 = crud.trigger_types.get(db_session, trigger_type_id=trigger_type.id)
+    trigger_type_2 = crud.trigger_types.get(db, trigger_type_id=trigger_type.id)
     assert jsonable_encoder(trigger_type) == jsonable_encoder(trigger_type_2)
 
 
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_get_by_ref_trigger_type() -> None:
-    packs = create_random_packs()
+def test_get_by_ref_trigger_type(db) -> None:
+    packs = create_random_packs(db)
 
     trigger_type_name = create_random_trigger_type_name()
     trigger_type_packs_name = packs.name
@@ -149,19 +149,19 @@ def test_get_by_ref_trigger_type() -> None:
     )
 
     trigger_type = crud.trigger_types.create(
-        db_session, trigger_type_in=trigger_type_in, packs_id=packs.id
+        db, trigger_type_in=trigger_type_in, packs_id=packs.id
     )
 
     ref_lookup = "{}.{}".format(trigger_type_packs_name, trigger_type.name)
-    trigger_type_2 = crud.trigger_types.get_by_ref(db_session, ref=ref_lookup)
+    trigger_type_2 = crud.trigger_types.get_by_ref(db, ref=ref_lookup)
     assert jsonable_encoder(trigger_type) == jsonable_encoder(trigger_type_2)
 
 
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_get_by_name_trigger_type() -> None:
-    packs = create_random_packs()
+def test_get_by_name_trigger_type(db) -> None:
+    packs = create_random_packs(db)
 
     trigger_type_name = create_random_trigger_type_name()
     trigger_type_packs_name = packs.name
@@ -190,17 +190,17 @@ def test_get_by_name_trigger_type() -> None:
     )
 
     trigger_type = crud.trigger_types.create(
-        db_session, trigger_type_in=trigger_type_in, packs_id=packs.id
+        db, trigger_type_in=trigger_type_in, packs_id=packs.id
     )
-    trigger_type_2 = crud.trigger_types.get_by_name(db_session, name=trigger_type_name)
+    trigger_type_2 = crud.trigger_types.get_by_name(db, name=trigger_type_name)
     assert jsonable_encoder(trigger_type) == jsonable_encoder(trigger_type_2)
 
 
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_get_multi_trigger_type() -> None:
-    packs = create_random_packs()
+def test_get_multi_trigger_type(db) -> None:
+    packs = create_random_packs(db)
 
     trigger_type_name0 = create_random_trigger_type_name()
     trigger_type_packs_name0 = packs.name
@@ -229,7 +229,7 @@ def test_get_multi_trigger_type() -> None:
     )
 
     trigger_type0 = crud.trigger_types.create(
-        db_session, trigger_type_in=trigger_type_in0, packs_id=packs.id
+        db, trigger_type_in=trigger_type_in0, packs_id=packs.id
     )
 
     trigger_type_name1 = create_random_trigger_type_name()
@@ -259,10 +259,10 @@ def test_get_multi_trigger_type() -> None:
     )
 
     trigger_type1 = crud.trigger_types.create(
-        db_session, trigger_type_in=trigger_type_in1, packs_id=packs.id
+        db, trigger_type_in=trigger_type_in1, packs_id=packs.id
     )
 
-    trigger_type_2 = crud.trigger_types.get_multi(db_session)
+    trigger_type_2 = crud.trigger_types.get_multi(db)
     for t in trigger_type_2:
         assert type(t) == TriggerTypeDB
 
@@ -270,8 +270,8 @@ def test_get_multi_trigger_type() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_get_multi_by_packs_id_trigger_type() -> None:
-    packs = create_random_packs()
+def test_get_multi_by_packs_id_trigger_type(db) -> None:
+    packs = create_random_packs(db)
 
     trigger_type_name0 = create_random_trigger_type_name()
     trigger_type_packs_name0 = packs.name
@@ -300,7 +300,7 @@ def test_get_multi_by_packs_id_trigger_type() -> None:
     )
 
     trigger_type0 = crud.trigger_types.create(
-        db_session, trigger_type_in=trigger_type_in0, packs_id=packs.id
+        db, trigger_type_in=trigger_type_in0, packs_id=packs.id
     )
 
     trigger_type_name1 = create_random_trigger_type_name()
@@ -330,11 +330,11 @@ def test_get_multi_by_packs_id_trigger_type() -> None:
     )
 
     trigger_type1 = crud.trigger_types.create(
-        db_session, trigger_type_in=trigger_type_in1, packs_id=packs.id
+        db, trigger_type_in=trigger_type_in1, packs_id=packs.id
     )
 
     trigger_type_2 = crud.trigger_types.get_multi_by_packs_id(
-        db_session, packs_id=packs.id, limit=2
+        db, packs_id=packs.id, limit=2
     )
 
     for t in trigger_type_2:
@@ -345,8 +345,8 @@ def test_get_multi_by_packs_id_trigger_type() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_update_trigger_type() -> None:
-    packs = create_random_packs()
+def test_update_trigger_type(db) -> None:
+    packs = create_random_packs(db)
 
     trigger_type_name = create_random_trigger_type_name()
     trigger_type_packs_name = packs.name
@@ -375,15 +375,13 @@ def test_update_trigger_type() -> None:
     )
 
     trigger_type = crud.trigger_types.create(
-        db_session, trigger_type_in=trigger_type_in, packs_id=packs.id
+        db, trigger_type_in=trigger_type_in, packs_id=packs.id
     )
     description2 = random_lower_string()
 
     trigger_type_update = TriggerUpdate(description=description2)
     trigger_type2 = crud.trigger_types.update(
-        db_session=db_session,
-        trigger_type=trigger_type,
-        trigger_type_in=trigger_type_update,
+        db_session=db, trigger_type=trigger_type, trigger_type_in=trigger_type_update,
     )
 
     assert trigger_type.name == trigger_type2.name
@@ -396,8 +394,8 @@ def test_update_trigger_type() -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_delete_trigger_type() -> None:
-    packs = create_random_packs()
+def test_delete_trigger_type(db) -> None:
+    packs = create_random_packs(db)
 
     trigger_type_name = create_random_trigger_type_name()
     trigger_type_packs_name = packs.name
@@ -434,15 +432,15 @@ def test_delete_trigger_type() -> None:
     )
 
     trigger_type = crud.trigger_types.create(
-        db_session, trigger_type_in=trigger_type_in, packs_id=packs.id
+        db, trigger_type_in=trigger_type_in, packs_id=packs.id
     )
 
     trigger_type2 = crud.trigger_types.remove(
-        db_session=db_session, trigger_type_id=trigger_type.id
+        db_session=db, trigger_type_id=trigger_type.id
     )
 
     trigger_type3 = crud.trigger_types.get(
-        db_session=db_session, trigger_type_id=trigger_type.id
+        db_session=db, trigger_type_id=trigger_type.id
     )
 
     assert trigger_type3 is None
