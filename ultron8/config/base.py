@@ -14,6 +14,8 @@
 """Worry-free YAML configuration files.
 """
 
+from __future__ import annotations
+
 import logging
 import os
 import platform
@@ -36,6 +38,11 @@ from ultron8.exceptions.config import ConfigTypeError
 from ultron8.exceptions.config import ConfigTemplateError
 from ultron8.exceptions.config import ConfigReadError
 from ultron8.exceptions.config import YAML_TAB_PROBLEM
+from typing import Any, Dict, Iterator, List, Optional, Set, Tuple, Type, Union
+
+# from ultron8.config import ConfigDict
+# from ultron8.config.smart import Configuration
+from yaml.nodes import MappingNode, ScalarNode
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +64,7 @@ REDACTED_TOMBSTONE = "REDACTED"
 UNIX_SYSTEM_DIR = "/etc/ultron8"
 
 
-def iter_first(sequence):
+def iter_first(sequence: Iterator[Any]) -> Any:
     """Get the first element from an iterable or raise a ValueError if
     the iterator generates no values.
     """
@@ -99,20 +106,27 @@ class ConfigSource(dict):
     configuration.
     """
 
-    def __init__(self, value, filename=None, default=False):
+    def __init__(
+        self,
+        value: Any,
+        filename: Optional[Union[int, str]] = None,
+        default: bool = False,
+    ) -> None:
         super().__init__(value)
         if filename is not None and not isinstance(filename, str):
             raise TypeError("filename must be a string or None")
         self.filename = filename
         self.default = default
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "ConfigSource({0}, {1}, {2})".format(
             super().__repr__(), repr(self.filename), repr(self.default)
         )
 
     @classmethod
-    def of(self, value):
+    def of(
+        self, value: Union[str, Dict[str, str], ConfigSource, Dict[int, bool]]
+    ) -> ConfigSource:
         """Given either a dictionary or a `ConfigSource` object, return
         a `ConfigSource` object. This lets a function accept either type
         of object as an argument.
@@ -147,7 +161,7 @@ class ConfigView(object):
         """
         raise NotImplementedError
 
-    def first(self):
+    def first(self) -> Any:
         """Return a (value, source) pair for the first object found for
         this view. This amounts to the first element returned by
         `resolve`. If no values are available, a ConfigNotFoundError is
@@ -159,7 +173,7 @@ class ConfigView(object):
         except ValueError:
             raise ConfigNotFoundError("{0} not found".format(self.name))
 
-    def exists(self):
+    def exists(self) -> bool:
         """Determine whether the view has a setting in any source.
         """
         try:
@@ -197,17 +211,17 @@ class ConfigView(object):
             "{!r} object is not " "iterable".format(self.__class__.__name__)
         )
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: Union[str, int]) -> Any:
         """Get a subview of this view."""
         return Subview(self, key)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: int, value: bool) -> None:
         """Create an overlay source to assign a given key under this
         view.
         """
         self.set({key: value})
 
-    def __contains__(self, key):
+    def __contains__(self, key: int) -> bool:
         return self[key].exists()
 
     def set_args(self, namespace):
@@ -225,19 +239,19 @@ class ConfigView(object):
     # example, rather than using ``view.get(bool)``, it's possible to
     # just say ``bool(view)`` or use ``view`` in a conditional.
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Get the value for this view as a string.
         """
         return str(self.get())
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         """Gets the value for this view as a boolean.
         """
         return bool(self.get())
 
     # Dictionary emulation methods.
 
-    def keys(self):
+    def keys(self) -> Union[List[Union[str, int]], List[int], List[str]]:
         """Returns a list containing all the keys available as subviews
         of the current views. This enumerates all the keys in *all*
         dictionaries matching the current view, in contrast to
@@ -262,7 +276,7 @@ class ConfigView(object):
 
         return keys
 
-    def items(self):
+    def items(self) -> Iterator[Union[Tuple[str, Subview], Tuple[int, Subview]]]:
         """Iterates over (key, subview) pairs contained in dictionaries
         from *all* sources at this view. If the object for this view in
         any source is not a dict, then a ConfigTypeError is raised.
@@ -270,7 +284,7 @@ class ConfigView(object):
         for key in self.keys():
             yield key, self[key]
 
-    def values(self):
+    def values(self) -> Iterator[Subview]:
         """Iterates over all the subviews contained in dictionaries from
         *all* sources at this view. If the object for this view in any
         source is not a dict, then a ConfigTypeError is raised.
@@ -280,7 +294,7 @@ class ConfigView(object):
 
     # List/sequence emulation.
 
-    def all_contents(self):
+    def all_contents(self) -> Iterator[int]:
         """Iterates over all subviews from collections at this view from
         *all* sources. If the object for this view in any source is not
         iterable, then a ConfigTypeError is raised. This method is
@@ -301,7 +315,11 @@ class ConfigView(object):
 
     # Validation and conversion.
 
-    def flatten(self, redact=False, dclass=OrderedDict):
+    def flatten(
+        self,
+        redact: bool = False,
+        dclass: Union[Type["ConfigDict"], Type[OrderedDict]] = OrderedDict,
+    ) -> Union[OrderedDict, "ConfigDict"]:
         """Create a hierarchy of dclass containing the data from
         this view, recursively reifying all views to get their
         represented values.
@@ -320,7 +338,7 @@ class ConfigView(object):
                     od[key] = view.get()
         return od
 
-    def get(self, template=None):
+    def get(self, template: None = None) -> Any:
         """Retrieve the value for this view according to the template.
 
         The `template` against which the values are checked can be
@@ -379,7 +397,7 @@ class RootView(ConfigView):
     sources that may be accessed by subviews.
     """
 
-    def __init__(self, sources):
+    def __init__(self, sources: List[ConfigSource]) -> None:
         """Create a configuration hierarchy for a list of sources. At
         least one source must be provided. The first source in the list
         has the highest priority.
@@ -388,39 +406,45 @@ class RootView(ConfigView):
         self.name = ROOT_NAME
         self.redactions = set()
 
-    def add(self, obj):
+    def add(self, obj: Union[Dict[str, str], ConfigSource]) -> None:
         self.sources.append(ConfigSource.of(obj))
 
-    def set(self, value):
+    def set(self, value: Union[Dict[str, str], Dict[int, bool], ConfigSource]) -> None:
         self.sources.insert(0, ConfigSource.of(value))
 
-    def resolve(self):
+    def resolve(self) -> Iterator[Any]:
         return ((dict(s), s) for s in self.sources)
 
-    def clear(self):
+    def clear(self) -> None:
         """Remove all sources (and redactions) from this
         configuration.
         """
         del self.sources[:]
         self.redactions.clear()
 
-    def root(self):
+    # https://mypy.readthedocs.io/en/stable/dynamic_typing.html
+    def root(self) -> "RootView":
         return self
 
-    def set_redaction(self, path, flag):
+    def set_redaction(self, path: int, flag: str) -> None:
         if flag:
             self.redactions.add(path)
         elif path in self.redactions:
             self.redactions.remove(path)
 
-    def get_redactions(self):
+    def get_redactions(self) -> Set[int]:
         return self.redactions
 
 
 class Subview(ConfigView):
     """A subview accessed via a subscript of a parent view."""
 
-    def __init__(self, parent, key):
+    # NOTE: https://stackoverflow.com/questions/33837918/type-hints-solve-circular-dependency
+    def __init__(
+        self,
+        parent: Union[BaseConfiguration, "Configuration", Subview, RootView],
+        key: Union[str, int],
+    ) -> None:
         """Make a subview of a parent view for a given subscript key.
         """
         self.parent = parent
@@ -443,7 +467,9 @@ class Subview(ConfigView):
         else:
             self.name += repr(self.key)
 
-    def resolve(self):
+    def resolve(
+        self,
+    ) -> Iterator[Union[Tuple[OrderedDict, ConfigSource], Tuple[int, ConfigSource]]]:
         for collection, source in self.parent.resolve():
             try:
                 value = collection[self.key]
@@ -468,7 +494,7 @@ class Subview(ConfigView):
     def add(self, value):
         self.parent.add({self.key: value})
 
-    def root(self):
+    def root(self) -> RootView:
         return self.parent.root()
 
     def set_redaction(self, path, flag):
@@ -485,7 +511,7 @@ class Subview(ConfigView):
 # defaults.
 
 
-def config_dirs(domain="user", override=None):
+def config_dirs(domain: str = "user", override: Optional[str] = None) -> List[str]:
     """Return a platform-specific list of candidates for user
     configuration directories on the system.
 
@@ -545,18 +571,18 @@ class Loader(yaml.SafeLoader):
     """
 
     # All strings should be Unicode objects, regardless of contents.
-    def _construct_unicode(self, node):
+    def _construct_unicode(self, node: ScalarNode) -> str:
         return self.construct_scalar(node)
 
     # Use ordered dictionaries for every YAML map.
     # From https://gist.github.com/844388
-    def construct_yaml_map(self, node):
+    def construct_yaml_map(self, node: MappingNode) -> Iterator[OrderedDict]:
         data = OrderedDict()
         yield data
         value = self.construct_mapping(node)
         data.update(value)
 
-    def construct_mapping(self, node, deep=False):
+    def construct_mapping(self, node: MappingNode, deep: bool = False) -> OrderedDict:
         if isinstance(node, yaml.MappingNode):
             self.flatten_mapping(node)
         else:
@@ -584,7 +610,7 @@ class Loader(yaml.SafeLoader):
         return mapping
 
     # Allow bare strings to begin with %. Directives are still detected.
-    def check_plain(self):
+    def check_plain(self) -> bool:
         plain = super().check_plain()
         return plain or self.peek() == "%"
 
@@ -654,7 +680,9 @@ class Dumper(yaml.SafeDumper):
     """
 
     # From http://pyyaml.org/attachment/ticket/161/use_ordered_dict.py
-    def represent_mapping(self, tag, mapping, flow_style=None):
+    def represent_mapping(
+        self, tag: str, mapping: OrderedDict, flow_style: None = None
+    ) -> MappingNode:
         value = []
         node = yaml.MappingNode(tag, value, flow_style=flow_style)
         if self.alias_key is not None:
@@ -710,7 +738,7 @@ Dumper.add_representer(type(None), Dumper.represent_none)
 Dumper.add_representer(list, Dumper.represent_list)
 
 
-def restore_yaml_comments(data, default_data):
+def restore_yaml_comments(data: str, default_data: str) -> str:
     """Scan default_data for comments (we include empty lines in our
     definition of comments) and place them before the same keys in data.
     Only works with comments that are on one or more own lines, i.e.
@@ -746,7 +774,9 @@ def restore_yaml_comments(data, default_data):
 
 ############################################################################################################
 class BaseConfiguration(RootView):
-    def __init__(self, appname, modname=None, read=True):
+    def __init__(
+        self, appname: str, modname: Optional[str] = None, read: bool = True
+    ) -> None:
         """Create a configuration object by reading the
         automatically-discovered config files for the application for a
         given name. If `modname` is specified, it should be the import
@@ -771,7 +801,7 @@ class BaseConfiguration(RootView):
             self.read()
 
     # TODO: rename this config_path instead of config_path. Then implement where that values lies in templated/subclasses
-    def config_path(self):
+    def config_path(self) -> str:
         """Points to the location of the user configuration.
 
         The file may not exist.
@@ -779,7 +809,7 @@ class BaseConfiguration(RootView):
         return os.path.join(self.config_dir(), self.config_filename)
 
     # TODO: rename this _add_source instead of _add_source. Then implement where that values lies in templated/subclasses
-    def _add_source(self):
+    def _add_source(self) -> None:
         """Add the configuration options from the YAML file in the
         user's configuration directory (given by `config_dir`) if it
         exists.
@@ -789,7 +819,7 @@ class BaseConfiguration(RootView):
             self.add(ConfigSource(load_yaml(filename) or {}, filename))
 
     # TODO: Maybe change this to not implemented or create a BaseClass that everything can adhere to. Else, simply template the other classes and make sure the code to pull this value is different and appropiate ( eg. packs, actions, etc )
-    def _add_default_source(self):
+    def _add_default_source(self) -> None:
         """Add the package's default configuration settings. This looks
         for a YAML file located inside the package for the module
         `modname` if it was given.
@@ -800,7 +830,7 @@ class BaseConfiguration(RootView):
                 self.add(ConfigSource(load_yaml(filename), filename, True))
 
     # TODO: rename arguments? instead of user, switch it to source? Defaults keep the same, maybe add one more value to allow us to override? (do we need that) ?
-    def read(self, source=True, defaults=True):
+    def read(self, source: bool = True, defaults: bool = True) -> None:
         """Find and read the files for this configuration and set them
         as the sources for this configuration. To disable either
         discovered source configuration files or the in-package defaults,
@@ -823,7 +853,7 @@ class BaseConfiguration(RootView):
             return False
 
     # TODO: Need to make this interchangeable so that we can use this class to load yaml files for packs, actions, etc etc
-    def config_dir(self):
+    def config_dir(self) -> str:
         """Get the path to the user configuration directory. The
         directory is guaranteed to exist as a postcondition (one may be
         created if none exist).
@@ -867,14 +897,14 @@ class BaseConfiguration(RootView):
             os.makedirs(appdir)
         return appdir
 
-    def set_file(self, filename):
+    def set_file(self, filename: str) -> None:
         """Parses the file as YAML and inserts it into the configuration
         sources with highest priority.
         """
         filename = os.path.abspath(filename)
         self.set(ConfigSource(load_yaml(filename), filename))
 
-    def dump(self, full=True, redact=False):
+    def dump(self, full: bool = True, redact: bool = False) -> str:
         """Dump the Configuration object to a YAML file.
 
         The order of the keys is determined from the default
@@ -931,7 +961,7 @@ class Template(object):
     filepath type might expand tildes and check that the file exists.
     """
 
-    def __init__(self, default=REQUIRED):
+    def __init__(self, default: object = REQUIRED) -> None:
         """Create a template with a given default value.
 
         If `default` is the sentinel `REQUIRED` (as it is by default),
@@ -946,7 +976,9 @@ class Template(object):
         """
         return self.value(view, self)
 
-    def value(self, view, template=None):
+    def value(
+        self, view: Union[BaseConfiguration, Subview, RootView], template: None = None
+    ) -> Any:
         """Get the value for a `ConfigView`.
 
         May raise a `ConfigNotFoundError` if the value is missing (and the
@@ -962,7 +994,9 @@ class Template(object):
             # Missing value, but not required.
             return self.default
 
-    def convert(self, value, view):
+    def convert(
+        self, value: Any, view: Union[RootView, Subview, BaseConfiguration]
+    ) -> Any:
         """Convert the YAML-deserialized value to a value of the desired
         type.
 
@@ -1368,7 +1402,7 @@ class AttrDict(dict):
             raise AttributeError(key)
 
 
-def as_template(value):
+def as_template(value: None) -> Template:
     """Convert a simple "shorthand" Python value to a `Template`.
     """
     if isinstance(value, Template):

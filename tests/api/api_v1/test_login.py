@@ -7,6 +7,7 @@ from ultron8.api import settings
 import pytest
 
 from typing import Dict
+from starlette.testclient import TestClient
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ logger = logging.getLogger(__name__)
 @pytest.mark.loginonly
 @pytest.mark.integration
 class TestLoginApiEndpoint:
-    def test_get_access_token(self, fastapi_client) -> None:
+    def test_get_access_token(self, fastapi_client: TestClient) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
         login_data = {
@@ -33,7 +34,7 @@ class TestLoginApiEndpoint:
     @pytest.mark.loginonly
     @pytest.mark.unittest
     def test_use_access_token(
-        self, superuser_token_headers: Dict[str, str], fastapi_client
+        self, superuser_token_headers: Dict[str, str], fastapi_client: TestClient
     ) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)

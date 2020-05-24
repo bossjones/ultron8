@@ -7,6 +7,7 @@ from ultron8.api.models.packs import PacksCreate
 from ultron8.api.db_models.packs import Packs
 from typing import Optional
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.session import Session
 
 
 def create_random_packs(db: Session) -> Packs:

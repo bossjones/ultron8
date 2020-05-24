@@ -13,6 +13,8 @@ from tests.conftest import fixtures_path
 import ultron8
 from ultron8.api import crud, settings
 from ultron8.api.core import jwt
+from sqlalchemy.orm.session import Session
+from typing import Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -59,8 +61,10 @@ class TestCreateAccessToken(object):
     #     assert a_token == expected_token
 
     def test_create_access_token2(
-        self, first_superuser_username_and_password_fixtures, db
-    ):
+        self,
+        first_superuser_username_and_password_fixtures: Tuple[str, str],
+        db: Session,
+    ) -> None:
         username, password = first_superuser_username_and_password_fixtures
 
         FIXTURE_ACCESS_TOKEN_EXPIRE_MINUTES = (
@@ -83,8 +87,10 @@ class TestCreateAccessToken(object):
         assert a_token == expected_token
 
     def test_create_access_token_without_timedelta2(
-        self, first_superuser_username_and_password_fixtures, db
-    ):
+        self,
+        first_superuser_username_and_password_fixtures: Tuple[str, str],
+        db: Session,
+    ) -> None:
         username, password = first_superuser_username_and_password_fixtures
 
         user = crud.user.authenticate(db, email=username, password=password)

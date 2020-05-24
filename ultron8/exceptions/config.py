@@ -13,6 +13,8 @@
 """All Config exceptions."""
 
 import yaml
+from typing import Optional
+from yaml.scanner import ScannerError
 
 YAML_TAB_PROBLEM = "found character '\\t' that cannot start any token"
 
@@ -44,7 +46,7 @@ class ConfigTemplateError(ConfigError):
 class ConfigReadError(ConfigError):
     """A configuration file could not be read."""
 
-    def __init__(self, filename, reason=None):
+    def __init__(self, filename: str, reason: Optional[ScannerError] = None) -> None:
         self.filename = filename
         self.reason = reason
 

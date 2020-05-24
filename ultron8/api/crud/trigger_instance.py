@@ -8,6 +8,7 @@ from ultron8.api.db_models.trigger import TriggerInstanceDB
 
 from ultron8.api.models.trigger import TriggerInstanceCreate
 from ultron8.api.models.trigger import TriggerInstanceUpdate
+from sqlalchemy.orm.session import Session
 
 
 def get(
@@ -64,7 +65,7 @@ def get_by_trigger(
 
 
 def get_multi(
-    db_session: Session, *, skip=0, limit=100
+    db_session: Session, *, skip: int = 0, limit: int = 100
 ) -> List[Optional[TriggerInstanceDB]]:
     """Return list on TriggerInstanceDB objects
 
@@ -119,7 +120,7 @@ def update(
         TriggerInstanceDB -- Returns a TriggerInstanceDB object
     """
     trigger_instance_data = jsonable_encoder(trigger_instance)
-    update_data = trigger_instance_in.dict(skip_defaults=True)
+    update_data = trigger_instance_in.dict(exclude_unset=True)
     for field in trigger_instance_data:
         if field in update_data:
             setattr(trigger_instance, field, update_data[field])

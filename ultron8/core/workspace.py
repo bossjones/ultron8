@@ -3,9 +3,9 @@ import os
 import shutil
 import pathlib
 import stat
-from pathlib import Path
+from pathlib import PosixPath, Path
 from dataclasses import dataclass
-from typing import Deque, Dict, List
+from typing import Optional, Union, Deque, Dict, List
 
 from ultron8.logging_init import getLogger
 from ultron8.core.files import write_file
@@ -24,24 +24,24 @@ def _touch(path):
     open(path, "a").close()
 
 
-def app_home():
+def app_home() -> str:
     app_base_dir = config_dirs()[0]
     return os.path.join(app_base_dir, "ultron8")
 
 
-def cluster_home():
+def cluster_home() -> str:
     return os.path.join(app_home(), "clusters")
 
 
-def workspace_home():
+def workspace_home() -> str:
     return os.path.join(app_home(), "workspace")
 
 
-def libs_home():
+def libs_home() -> str:
     return os.path.join(app_home(), "libs")
 
 
-def mkdir_if_dne(target):
+def mkdir_if_dne(target: str) -> None:
     res = is_readable_dir(target)
     if not res["result"]:
         logger.debug(
@@ -52,12 +52,12 @@ def mkdir_if_dne(target):
         ensure_dir_exists(target)
 
 
-def str_to_path(path):
+def str_to_path(path: str) -> PosixPath:
     path = pathlib.Path(path).resolve()
     return path
 
 
-def prep_default_config():
+def prep_default_config() -> str:
     cm = ConfigManager()
     home = app_home()
     res = is_readable_dir(home)
@@ -91,8 +91,13 @@ def prep_default_config():
 
 class CliWorkspace:
     def __init__(
-        self, wdir=None, libdir=None, setup=False, ignore_errors=False, create=True
-    ):
+        self,
+        wdir: None = None,
+        libdir: None = None,
+        setup: bool = False,
+        ignore_errors: bool = False,
+        create: bool = True,
+    ) -> None:
         self._wdir = wdir
         self._lib_dir = libdir
         self._template_dir = None
@@ -106,16 +111,16 @@ class CliWorkspace:
         if setup:
             self.setup(ignore_errors, create)
 
-    def setup(self, ignore_errors=False, create=True):
+    def setup(self, ignore_errors: bool = False, create: bool = True) -> None:
         self.configure()
         self.verify(ignore_errors, create)
         self._setup = True
 
-    def _setup_api(self):
+    def _setup_api(self) -> None:
         self.api = str_to_path(self._root)
 
     # initialize all values
-    def configure(self):
+    def configure(self) -> None:
         if self._wdir is None:
             self._wdir = self._default_workspace()
         if self._lib_dir is None:
@@ -125,13 +130,13 @@ class CliWorkspace:
         if self._clusters_dir is None:
             self._clusters_dir = self._default_clusters()
 
-    def tree(self):
+    def tree(self) -> None:
         tree(self.api)
 
-    def create_default_config(self):
+    def create_default_config(self) -> None:
         prep_default_config()
 
-    def verify(self, ignore_errors=False, create=True):
+    def verify(self, ignore_errors: bool = False, create: bool = True) -> None:
         list_to_verify = self.check()
         if create:
             for i in list_to_verify:
@@ -148,7 +153,7 @@ class CliWorkspace:
         for i in list_to_verify:
             assert i["value"]
 
-    def build_whitelist_dirs(self):
+    def build_whitelist_dirs(self) -> Dict[str, PosixPath]:
         whitelist_dirs = dict()
         # whitelist_dirs["root"] = self.api
         whitelist_dirs["workspace"] = self.api.joinpath("workspace")
@@ -157,12 +162,12 @@ class CliWorkspace:
         whitelist_dirs["clusters"] = self.api.joinpath("clusters")
         return whitelist_dirs
 
-    def build_whitelist_files(self):
+    def build_whitelist_files(self) -> Dict[str, PosixPath]:
         whitelist_files = dict()
         whitelist_files["cfg_file"] = self.api.joinpath("smart.yaml")
         return whitelist_files
 
-    def check(self):
+    def check(self) -> List[Dict[str, Union[str, bool]]]:
         whitelist_dirs = self.build_whitelist_dirs()
         checked = []
         for k, v in whitelist_dirs.items():
@@ -172,25 +177,25 @@ class CliWorkspace:
             checked.append({"key": str(k), "value": self._check_file(v), "kind": "f"})
         return checked
 
-    def _check_dir(self, p):
+    def _check_dir(self, p: PosixPath) -> bool:
         return p.is_dir()
 
-    def _check_file(self, f):
+    def _check_file(self, f: PosixPath) -> bool:
         return f.is_file()
 
-    def _default_clusters(self):
+    def _default_clusters(self) -> str:
         return os.path.join(app_home(), "clusters")
 
-    def _default_templates(self):
+    def _default_templates(self) -> str:
         return os.path.join(app_home(), "templates")
 
-    def _default_workspace(self):
+    def _default_workspace(self) -> str:
         return workspace_home()
 
-    def _default_libdir(self):
+    def _default_libdir(self) -> str:
         return libs_home()
 
-    def _default_root(self):
+    def _default_root(self) -> str:
         return app_home()
 
     # TODO: #41 Finish implementig active cluster in Workspace class

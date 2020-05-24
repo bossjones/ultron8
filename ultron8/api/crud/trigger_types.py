@@ -8,6 +8,7 @@ from ultron8.api.db_models.trigger import TriggerTypeDB
 
 from ultron8.api.models.trigger import TriggerTypeCreate
 from ultron8.api.models.trigger import TriggerTypeUpdate
+from sqlalchemy.orm.session import Session
 
 # from ultron8.api.models.system.common import ResourceReference
 
@@ -56,7 +57,7 @@ def get_by_name(db_session: Session, *, name: str) -> Optional[TriggerTypeDB]:
 
 
 def get_multi(
-    db_session: Session, *, skip=0, limit=100
+    db_session: Session, *, skip: int = 0, limit: int = 100
 ) -> List[Optional[TriggerTypeDB]]:
     """Return list on TriggerTypeDB objects
 
@@ -74,7 +75,7 @@ def get_multi(
 
 
 def get_multi_by_packs_id(
-    db_session: Session, *, packs_id: int, skip=0, limit=100
+    db_session: Session, *, packs_id: int, skip: int = 0, limit: int = 100
 ) -> List[Optional[TriggerTypeDB]]:
     """Get multiple TriggerTypeDB objects by packs_id
 
@@ -153,7 +154,7 @@ def update(
         TriggerTypeDB -- Returns a TriggerTypeDB object
     """
     trigger_data = jsonable_encoder(trigger_type)
-    update_data = trigger_type_in.dict(skip_defaults=True)
+    update_data = trigger_type_in.dict(exclude_unset=True)
     for field in trigger_data:
         if field in update_data:
             setattr(trigger_type, field, update_data[field])

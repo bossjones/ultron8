@@ -10,6 +10,7 @@ from ultron8.api.models.packs import PacksCreate
 from ultron8.api.models.packs import PacksUpdate
 
 from freezegun import freeze_time
+from sqlalchemy.orm.session import Session
 
 # pack_linux = Packs(
 #     name="linux",
@@ -31,7 +32,7 @@ from freezegun import freeze_time
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.packsonly
 @pytest.mark.unittest
-def test_create_packs(db) -> None:
+def test_create_packs(db: Session) -> None:
     name = "linuxtest"
     description = "TEST Generic Linux actions"
     keywords = "linux"
@@ -77,7 +78,7 @@ def test_create_packs(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.packsonly
 @pytest.mark.unittest
-def test_get_packs(db) -> None:
+def test_get_packs(db: Session) -> None:
     name = random_lower_string()
     description = random_lower_string()
     keywords = random_lower_string()
@@ -111,7 +112,7 @@ def test_get_packs(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.packsonly
 @pytest.mark.unittest
-def test_update_packs(db) -> None:
+def test_update_packs(db: Session) -> None:
     name = random_lower_string()
     description = random_lower_string()
     keywords = random_lower_string()
@@ -160,7 +161,7 @@ def test_update_packs(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.packsonly
 @pytest.mark.unittest
-def test_delete_packs(db) -> None:
+def test_delete_packs(db: Session) -> None:
     name = random_lower_string()
     description = random_lower_string()
     keywords = random_lower_string()

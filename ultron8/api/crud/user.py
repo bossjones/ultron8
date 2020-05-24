@@ -9,6 +9,7 @@ from ultron8.api.core.security import verify_password
 from ultron8.api.db_models.user import User
 from ultron8.api.models.user import UserCreate
 from ultron8.api.models.user import UserUpdate
+from sqlalchemy.orm.session import Session
 
 
 def get(db_session: Session, *, user_id: int) -> Optional[User]:
@@ -55,7 +56,7 @@ def create(db_session: Session, *, user_in: UserCreate) -> User:
 
 def update(db_session: Session, *, user: User, user_in: UserUpdate) -> User:
     user_data = jsonable_encoder(user)
-    update_data = user_in.dict(skip_defaults=True)
+    update_data = user_in.dict(exclude_unset=True)
     for field in user_data:
         if field in update_data:
             setattr(user, field, update_data[field])

@@ -19,6 +19,7 @@ from freezegun import freeze_time
 
 
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.session import Session
 
 
 # def test_create_action():

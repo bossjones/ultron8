@@ -14,6 +14,8 @@
 """Worry-free YAML configuration files.
 """
 
+from __future__ import annotations
+
 # import os
 # import platform
 # from collections import abc, OrderedDict
@@ -34,6 +36,7 @@
 # from ultron8.exceptions.config import ConfigTemplateError
 
 from ultron8.config.base import BaseConfiguration
+from typing import Optional
 
 # from ultron8.config.base import ConfigSource
 # from ultron8.config.base import RootView
@@ -58,7 +61,9 @@ from ultron8.config.base import BaseConfiguration
 
 ############################################################################################################
 class Configuration(BaseConfiguration):
-    def __init__(self, appname, modname=None, read=True):
+    def __init__(
+        self, appname: str, modname: Optional[str] = None, read: bool = True
+    ) -> None:
         """Create a configuration object by reading the
         automatically-discovered config files for the application for a
         given name. If `modname` is specified, it should be the import

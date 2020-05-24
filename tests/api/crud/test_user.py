@@ -4,9 +4,10 @@ from tests.utils.utils import random_lower_string
 from ultron8.api import crud
 
 from ultron8.api.models.user import UserCreate
+from sqlalchemy.orm.session import Session
 
 
-def test_create_user(db) -> None:
+def test_create_user(db: Session) -> None:
     email = random_lower_string()
     password = random_lower_string()
     user_in = UserCreate(email=email, password=password)
@@ -15,7 +16,7 @@ def test_create_user(db) -> None:
     assert hasattr(user, "hashed_password")
 
 
-def test_authenticate_user(db) -> None:
+def test_authenticate_user(db: Session) -> None:
     email = random_lower_string()
     password = random_lower_string()
     user_in = UserCreate(email=email, password=password)
@@ -25,14 +26,14 @@ def test_authenticate_user(db) -> None:
     assert user.email == authenticated_user.email
 
 
-def test_not_authenticate_user(db) -> None:
+def test_not_authenticate_user(db: Session) -> None:
     email = random_lower_string()
     password = random_lower_string()
     user = crud.user.authenticate(db, email=email, password=password)
     assert user is None
 
 
-def test_check_if_user_is_active(db) -> None:
+def test_check_if_user_is_active(db: Session) -> None:
     email = random_lower_string()
     password = random_lower_string()
     user_in = UserCreate(email=email, password=password)
@@ -41,7 +42,7 @@ def test_check_if_user_is_active(db) -> None:
     assert is_active is True
 
 
-def test_check_if_user_is_active_inactive(db) -> None:
+def test_check_if_user_is_active_inactive(db: Session) -> None:
     email = random_lower_string()
     password = random_lower_string()
     user_in = UserCreate(email=email, password=password, disabled=True)
@@ -53,7 +54,7 @@ def test_check_if_user_is_active_inactive(db) -> None:
     assert is_active
 
 
-def test_check_if_user_is_superuser(db) -> None:
+def test_check_if_user_is_superuser(db: Session) -> None:
     email = random_lower_string()
     password = random_lower_string()
     user_in = UserCreate(email=email, password=password, is_superuser=True)
@@ -62,7 +63,7 @@ def test_check_if_user_is_superuser(db) -> None:
     assert is_superuser is True
 
 
-def test_check_if_user_is_superuser_normal_user(db) -> None:
+def test_check_if_user_is_superuser_normal_user(db: Session) -> None:
     username = random_lower_string()
     password = random_lower_string()
     user_in = UserCreate(email=username, password=password)
@@ -71,7 +72,7 @@ def test_check_if_user_is_superuser_normal_user(db) -> None:
     assert is_superuser is False
 
 
-def test_get_user(db) -> None:
+def test_get_user(db: Session) -> None:
     password = random_lower_string()
     username = random_lower_string()
     user_in = UserCreate(email=username, password=password, is_superuser=True)

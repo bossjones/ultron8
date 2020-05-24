@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 @pytest.mark.constantsonly
 @pytest.mark.unittest
 class TestConstantsMediaTypes(object):
-    def test_constant_media_types(self):
+    def test_constant_media_types(self) -> None:
         assert media_types.JSON_TYPE == "application/json"
         assert media_types.TEXT_TYPE == "text/plain; charset=utf-8"
         assert media_types.HTML_TYPE == "text/html; charset=utf-8"

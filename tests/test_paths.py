@@ -20,6 +20,7 @@ import ultron8
 from ultron8 import paths
 
 import logging
+from pytest_mock.plugin import MockFixture
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +62,7 @@ def bad_read():
 @pytest.mark.pathsonly
 @pytest.mark.unittest
 class TestPathToFileURI(object):
-    def test_get_parent_dir(self, mocker):
+    def test_get_parent_dir(self, mocker: MockFixture) -> None:
         path = "/opt/ultron8/fakefile.log"
 
         # run test
@@ -69,7 +70,7 @@ class TestPathToFileURI(object):
 
         assert result == "/opt/ultron8"
 
-    def test_mkdir_p(self, mocker):
+    def test_mkdir_p(self, mocker: MockFixture) -> None:
         # mock
         # mock_logger_info = mocker.MagicMock(name="mock_logger_info")
         mock_dir_exists = mocker.MagicMock(name="mock_dir_exists")
@@ -91,7 +92,7 @@ class TestPathToFileURI(object):
 
         mock_path().mkdir.assert_any_call(parents=True, exist_ok=True)
 
-    def test_dir_exists_false(self, mocker):
+    def test_dir_exists_false(self, mocker: MockFixture) -> None:
         # mock
         # mock_logger_error = mocker.MagicMock(name="mock_logger_error")
         mock_path = mocker.MagicMock(name="mock_path")
@@ -115,7 +116,7 @@ class TestPathToFileURI(object):
         assert mock_path_instance.is_dir.call_count == 2
         # mock_logger_error.assert_any_call("This is not a dir: {}".format(path))
 
-    def test_dir_exists_true(self, mocker):
+    def test_dir_exists_true(self, mocker: MockFixture) -> None:
         # mock
         # mock_logger_error = mocker.MagicMock(name="mock_logger_error")
         mock_path = mocker.MagicMock(name="mock_path")
@@ -139,7 +140,7 @@ class TestPathToFileURI(object):
         assert mock_path_instance.is_dir.call_count == 2
         # mock_logger_error.assert_not_called()
 
-    def test_mkdir_if_does_not_exist_false(self, mocker):
+    def test_mkdir_if_does_not_exist_false(self, mocker: MockFixture) -> None:
         # mock
         mock_mkdir_p = mocker.MagicMock(name="mock_mkdir_p")
         mock_dir_exists = mocker.MagicMock(name="mock_dir_exists", return_value=False)
@@ -157,7 +158,7 @@ class TestPathToFileURI(object):
         assert mock_dir_exists.call_count == 1
         assert result == True
 
-    def test_mkdir_if_does_not_exist_true(self, mocker):
+    def test_mkdir_if_does_not_exist_true(self, mocker: MockFixture) -> None:
         # mock
         mock_mkdir_p = mocker.MagicMock(name="mock_mkdir_p")
         mock_dir_exists = mocker.MagicMock(name="mock_dir_exists", return_value=True)
@@ -175,7 +176,7 @@ class TestPathToFileURI(object):
         assert mock_dir_exists.call_count == 1
         assert result == False
 
-    def test_fname_exists_true(self, mocker):
+    def test_fname_exists_true(self, mocker: MockFixture) -> None:
         # mock
         mock_path = mocker.MagicMock(name="mock_path")
         # patch
@@ -243,7 +244,7 @@ class TestPathToFileURI(object):
     #     os.unlink(path)
     #     shutil.rmtree(base, ignore_errors=True)
 
-    def test_fname_exists_false(self, mocker):
+    def test_fname_exists_false(self, mocker: MockFixture) -> None:
         # mock
         mock_path = mocker.MagicMock(name="mock_path")
         # patch
@@ -263,7 +264,7 @@ class TestPathToFileURI(object):
         mock_path.assert_any_call(path)
         assert result == False
 
-    def test_dir_isWritable(self, mocker):
+    def test_dir_isWritable(self, mocker: MockFixture) -> None:
         # mock
         mock_os_access = mocker.MagicMock(name="mock_os_access")
 
@@ -289,7 +290,7 @@ class TestPathToFileURI(object):
         mock_os_access.assert_called_once_with("file:///tmp", os.W_OK)
         assert result == True
 
-    def test_file_isWritable(self, mocker):
+    def test_file_isWritable(self, mocker: MockFixture) -> None:
         # mock
         mock_os_access = mocker.MagicMock(name="mock_os_access")
         # patch
@@ -317,7 +318,7 @@ class TestPathToFileURI(object):
         mock_os_access.assert_called_once_with("file:///tmp", os.W_OK)
         assert result == True
 
-    def test_is_readable_dir_does_not_exist(self, mocker):
+    def test_is_readable_dir_does_not_exist(self, mocker: MockFixture) -> None:
         base = tempfile.mkdtemp()
         fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
         full_file_name = "fake"
@@ -327,7 +328,7 @@ class TestPathToFileURI(object):
         assert res["result"] == False
         assert res["message"] == "Path does not exist"
 
-    def test_is_readable_dir_does_exist_but_not_dir(self, mocker):
+    def test_is_readable_dir_does_exist_but_not_dir(self, mocker: MockFixture) -> None:
         base = tempfile.mkdtemp()
         fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
         full_file_name = "fake"
@@ -349,7 +350,9 @@ class TestPathToFileURI(object):
         assert res["result"] == False
         assert res["message"] == "Path is not a directory"
 
-    def test_is_readable_dir_exists_is_dir_but_not_readable(self, mocker):
+    def test_is_readable_dir_exists_is_dir_but_not_readable(
+        self, mocker: MockFixture
+    ) -> None:
         # SOURCE: https://docs.openstack.org/ironic/6.2.1/_modules/ironic/tests/unit/common/test_image_service.html
         mock_os_link = mocker.patch.object(ultron8.paths.os, "link", autospec=True)
         mock_os_remove = mocker.patch.object(ultron8.paths.os, "remove", autospec=True)
@@ -383,7 +386,7 @@ class TestPathToFileURI(object):
         assert res["message"] == "Directory is not readable"
         mock_os_access.assert_called_once_with(path, os.R_OK)
 
-    def test_is_readable_dir(self, mocker):
+    def test_is_readable_dir(self, mocker: MockFixture) -> None:
         base = tempfile.mkdtemp()
         fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
         path = fake_dir
@@ -407,7 +410,7 @@ class TestPathToFileURI(object):
         #     finally:
         #         os.remove(path)
 
-    def test_is_readable_file_does_not_exist(self, mocker):
+    def test_is_readable_file_does_not_exist(self, mocker: MockFixture) -> None:
         base = tempfile.mkdtemp()
         fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
         full_file_name = "fake"
@@ -417,7 +420,9 @@ class TestPathToFileURI(object):
         assert res["result"] == False
         assert res["message"] == "Path does not exist"
 
-    def test_is_readable_file_does_exist_but_not_file(self, mocker):
+    def test_is_readable_file_does_exist_but_not_file(
+        self, mocker: MockFixture
+    ) -> None:
         base = tempfile.mkdtemp()
         fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
         path = fake_dir
@@ -434,7 +439,9 @@ class TestPathToFileURI(object):
         assert res["result"] == False
         assert res["message"] == "Path is not a file"
 
-    def test_is_readable_file_exists_is_file_but_not_readable(self, mocker):
+    def test_is_readable_file_exists_is_file_but_not_readable(
+        self, mocker: MockFixture
+    ) -> None:
         # SOURCE: https://docs.openstack.org/ironic/6.2.1/_modules/ironic/tests/unit/common/test_image_service.html
         mock_os_link = mocker.patch.object(ultron8.paths.os, "link", autospec=True)
         mock_os_remove = mocker.patch.object(ultron8.paths.os, "remove", autospec=True)
@@ -472,7 +479,7 @@ class TestPathToFileURI(object):
         assert res["message"] == "File is not readable"
         mock_os_access.assert_called_once_with(path, os.R_OK)
 
-    def test_is_readable_file(self, mocker):
+    def test_is_readable_file(self, mocker: MockFixture) -> None:
         base = tempfile.mkdtemp()
         fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
         full_file_name = "fake"
@@ -490,7 +497,7 @@ class TestPathToFileURI(object):
             # shutil.rmtree(tmpdir, ignore_errors=True)
         assert res["result"] == True
 
-    def test_ensure_dir_exists(self, mocker):
+    def test_ensure_dir_exists(self, mocker: MockFixture) -> None:
         base = tempfile.mkdtemp()
         fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
         directory = os.path.join(fake_dir, "fake", "as", "heck")
@@ -515,7 +522,7 @@ class TestPathToFileURI(object):
         finally:
             shutil.rmtree(fake_dir, ignore_errors=True)
 
-    def test_ensure_dir_exists_raise_exception(self, mocker):
+    def test_ensure_dir_exists_raise_exception(self, mocker: MockFixture) -> None:
         mock_os_makedirs = mocker.patch.object(
             ultron8.paths.os, "makedirs", side_effect=OSError, autospec=True
         )
@@ -532,7 +539,7 @@ class TestPathToFileURI(object):
             assert "Cannot create directory " in str(excinfo.value)
             mock_os_makedirs.assert_called_once_with(directory, 0o775)
 
-    def test_ensure_file_exists(self, mocker):
+    def test_ensure_file_exists(self, mocker: MockFixture) -> None:
         base = tempfile.mkdtemp()
         fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
         path = os.path.join(fake_dir, "test.log")
@@ -549,7 +556,7 @@ class TestPathToFileURI(object):
             os.unlink(path)
             shutil.rmtree(base, ignore_errors=True)
 
-    def test_ensure_file_exists_raise_exception(self, mocker):
+    def test_ensure_file_exists_raise_exception(self, mocker: MockFixture) -> None:
         mock_os_chmod = mocker.patch.object(
             ultron8.paths.os, "chmod", side_effect=IOError, autospec=True
         )
@@ -566,7 +573,7 @@ class TestPathToFileURI(object):
             assert "Cannot create file " in str(excinfo.value)
             mock_os_chmod.assert_called_once_with(path, 0o600)
 
-    def test_get_permissions(self, mocker):
+    def test_get_permissions(self, mocker: MockFixture) -> None:
         base = tempfile.mkdtemp()
         fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
         path = os.path.join(fake_dir, "tester.log")
@@ -580,7 +587,7 @@ class TestPathToFileURI(object):
         os.unlink(path)
         shutil.rmtree(base, ignore_errors=True)
 
-    def test_enforce_file_permissions(self, mocker):
+    def test_enforce_file_permissions(self, mocker: MockFixture) -> None:
         # mock_os_chmod = mocker.patch.object(
         #     ultron8.paths.os, "chmod", side_effect=IOError, autospec=True
         # )
@@ -605,7 +612,9 @@ class TestPathToFileURI(object):
         os.unlink(path)
         shutil.rmtree(base, ignore_errors=True)
 
-    def test_enforce_file_permissions_file_does_not_exist(self, mocker):
+    def test_enforce_file_permissions_file_does_not_exist(
+        self, mocker: MockFixture
+    ) -> None:
         base = tempfile.mkdtemp()
         fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
         path = os.path.join(fake_dir, "tester.log")
@@ -672,7 +681,7 @@ class TestPathToFileURI(object):
 
     #     mock_logger_error.assert_any_call(_message)
 
-    def test_path_to_uri(self):
+    def test_path_to_uri(self) -> None:
         result = paths.path_to_uri("/etc/fstab")
         assert result == b"file:///etc/fstab"
         assert type(result) == bytes
@@ -698,66 +707,66 @@ class TestPathToFileURI(object):
     #         os.unlink(path)
     #         shutil.rmtree(base, ignore_errors=True)
 
-    def test_path_from_uri_bytes(self):
+    def test_path_from_uri_bytes(self) -> None:
         raw_uri = b"file:///etc/fstab"
         result = paths.path_from_uri(raw_uri)
         assert result == "/etc/fstab"
 
-    def test_filename_from_uri_bytes(self):
+    def test_filename_from_uri_bytes(self) -> None:
         uri = b"file:///etc/fstab"
         result = paths.filename_from_uri(uri)
         assert result == "fstab"
 
-    def test_filename_from_uri_str(self):
+    def test_filename_from_uri_str(self) -> None:
         uri = "file:///etc/fstab"
         result = paths.filename_from_uri(uri)
         assert result == "fstab"
 
-    def test_quote_uri_byte_to_str(self):
+    def test_quote_uri_byte_to_str(self) -> None:
         uri = b"file:///etc/fstab"
         result = paths.quote_uri(uri)
         assert result == "file:///etc/fstab"
         assert type(result) == str
 
-    def test_quantize(self):
+    def test_quantize(self) -> None:
         result = paths.quantize(100.00, 3.00)
         assert result == 99.0
 
-    def test_binary_search_EmptyList(self):
+    def test_binary_search_EmptyList(self) -> None:
         assert paths.binary_search([], 10) == -1
 
-    def test_binary_search_Existing(self):
+    def test_binary_search_Existing(self) -> None:
         A = [10, 20, 30]
         for index, element in enumerate(A):
             assert paths.binary_search([10, 20, 30], element) == index
 
-    def test_binary_search_MissingLeft(self):
+    def test_binary_search_MissingLeft(self) -> None:
         assert paths.binary_search([10, 20, 30], 1) == 0
         assert paths.binary_search([10, 20, 30], 16) == 1
         assert paths.binary_search([10, 20, 30], 29) == 2
 
-    def test_binary_search_MissingRight(self):
+    def test_binary_search_MissingRight(self) -> None:
         assert paths.binary_search([10, 20, 30], 11) == 0
         assert paths.binary_search([10, 20, 30], 24) == 1
         assert paths.binary_search([10, 20, 30], 40) == 2
 
-    def test_uri_to_path_str(self):
+    def test_uri_to_path_str(self) -> None:
         uri = "file:///etc/fstab"
         result = paths.uri_to_path(uri)
         assert result == "/etc/fstab"
 
-    def test_uri_to_path_bytes(self):
+    def test_uri_to_path_bytes(self) -> None:
         uri = b"file:///etc/fstab"
         result = paths.uri_to_path(uri)
         assert result == "/etc/fstab"
 
-    def test_is_pathname_valid(self, mocker):
+    def test_is_pathname_valid(self, mocker: MockFixture) -> None:
         assert paths.is_pathname_valid("foo.bar")
         # Long path valid?
         assert not paths.is_pathname_valid("a" * 256)
         assert not paths.is_pathname_valid(None)
 
-    def test_is_path_creatable(self, mocker):
+    def test_is_path_creatable(self, mocker: MockFixture) -> None:
         base = tempfile.mkdtemp()
         fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
         full_file_name = "fake"
@@ -768,7 +777,7 @@ class TestPathToFileURI(object):
 
         shutil.rmtree(base, ignore_errors=True)
 
-    def test_is_path_exists_or_creatable(self, mocker):
+    def test_is_path_exists_or_creatable(self, mocker: MockFixture) -> None:
         base = tempfile.mkdtemp()
         fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
         full_file_name = "fake"
@@ -780,7 +789,7 @@ class TestPathToFileURI(object):
 
         shutil.rmtree(base, ignore_errors=True)
 
-    def test_is_path_sibling_creatable(self, mocker):
+    def test_is_path_sibling_creatable(self, mocker: MockFixture) -> None:
         base = tempfile.mkdtemp()
         fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
         full_file_name = "fake"
@@ -792,7 +801,7 @@ class TestPathToFileURI(object):
 
         shutil.rmtree(base, ignore_errors=True)
 
-    def test_is_path_exists_or_creatable_portable(self, mocker):
+    def test_is_path_exists_or_creatable_portable(self, mocker: MockFixture) -> None:
         base = tempfile.mkdtemp()
         fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
         full_file_name = "fake"

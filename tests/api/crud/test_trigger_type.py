@@ -31,12 +31,13 @@ from ultron8.api.models.packs import PacksCreate
 from freezegun import freeze_time
 import ujson
 from typing import Optional
+from sqlalchemy.orm.session import Session
 
 
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_create_trigger_type(db) -> None:
+def test_create_trigger_type(db: Session) -> None:
     packs = create_random_packs(db)
 
     trigger_type_name = create_random_trigger_type_name()
@@ -79,7 +80,7 @@ def test_create_trigger_type(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_get_trigger_type(db) -> None:
+def test_get_trigger_type(db: Session) -> None:
     packs = create_random_packs(db)
 
     trigger_type_name = create_random_trigger_type_name()
@@ -119,7 +120,7 @@ def test_get_trigger_type(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_get_by_ref_trigger_type(db) -> None:
+def test_get_by_ref_trigger_type(db: Session) -> None:
     packs = create_random_packs(db)
 
     trigger_type_name = create_random_trigger_type_name()
@@ -160,7 +161,7 @@ def test_get_by_ref_trigger_type(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_get_by_name_trigger_type(db) -> None:
+def test_get_by_name_trigger_type(db: Session) -> None:
     packs = create_random_packs(db)
 
     trigger_type_name = create_random_trigger_type_name()
@@ -199,7 +200,7 @@ def test_get_by_name_trigger_type(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_get_multi_trigger_type(db) -> None:
+def test_get_multi_trigger_type(db: Session) -> None:
     packs = create_random_packs(db)
 
     trigger_type_name0 = create_random_trigger_type_name()
@@ -270,7 +271,7 @@ def test_get_multi_trigger_type(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_get_multi_by_packs_id_trigger_type(db) -> None:
+def test_get_multi_by_packs_id_trigger_type(db: Session) -> None:
     packs = create_random_packs(db)
 
     trigger_type_name0 = create_random_trigger_type_name()
@@ -345,7 +346,7 @@ def test_get_multi_by_packs_id_trigger_type(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_update_trigger_type(db) -> None:
+def test_update_trigger_type(db: Session) -> None:
     packs = create_random_packs(db)
 
     trigger_type_name = create_random_trigger_type_name()
@@ -394,7 +395,7 @@ def test_update_trigger_type(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggertypeonly
 @pytest.mark.unittest
-def test_delete_trigger_type(db) -> None:
+def test_delete_trigger_type(db: Session) -> None:
     packs = create_random_packs(db)
 
     trigger_type_name = create_random_trigger_type_name()

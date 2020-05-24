@@ -8,6 +8,7 @@ import pytest
 
 from typing import Dict
 from ultron8.api.models.loggers import LoggerModel
+from starlette.testclient import TestClient
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 @pytest.mark.loggeronly
 @pytest.mark.integration
 class TestLoginApiEndpoint:
-    def test_loggers_list(self, fastapi_client):
+    def test_loggers_list(self, fastapi_client: TestClient) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
 
@@ -24,7 +25,7 @@ class TestLoginApiEndpoint:
         resp_json = r.json()
         assert r.status_code == 200
 
-    def test_logger_get(self, fastapi_client):
+    def test_logger_get(self, fastapi_client: TestClient) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
         # url = app.url_path_for("logger_get", logger_name=logger.name)
@@ -33,13 +34,13 @@ class TestLoginApiEndpoint:
         assert r.status_code == 200
         assert r.json() == LoggerModel(name=logger.name, level=10, children=[])
 
-    def test_logger_get_not_existing(self, fastapi_client):
+    def test_logger_get_not_existing(self, fastapi_client: TestClient) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
         r = fastapi_client.get(f"{server_api}{settings.API_V1_STR}/logs/wrong")
         assert r.status_code == 404
 
-    def test_logger_patch(self, fastapi_client):
+    def test_logger_patch(self, fastapi_client: TestClient) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
         r = fastapi_client.patch(

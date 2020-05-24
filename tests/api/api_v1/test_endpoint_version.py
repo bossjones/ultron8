@@ -9,6 +9,7 @@ import pytest
 from typing import Dict
 
 from ultron8 import __version__
+from starlette.testclient import TestClient
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ logger = logging.getLogger(__name__)
 @pytest.mark.loginonly
 @pytest.mark.integration
 class TestVersionApiEndpoint:
-    def test_logger_get(self, fastapi_client):
+    def test_logger_get(self, fastapi_client: TestClient) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
         r = fastapi_client.get(f"{server_api}{settings.API_V1_STR}/version")

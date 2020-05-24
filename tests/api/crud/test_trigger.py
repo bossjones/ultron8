@@ -28,6 +28,7 @@ from sqlalchemy.orm import Session
 from ultron8.api.models.packs import PacksCreate
 
 from freezegun import freeze_time
+from sqlalchemy.orm.session import Session
 
 
 TRIGGER_0 = {
@@ -79,7 +80,7 @@ TRIGGERTYPE_2 = {
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_create_trigger(db) -> None:
+def test_create_trigger(db: Session) -> None:
     packs_name = "dummy_pack_1"
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -134,7 +135,7 @@ def test_create_trigger(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_trigger(db) -> None:
+def test_get_trigger(db: Session) -> None:
     packs_name = "dummy_pack_1"
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -185,7 +186,7 @@ def test_get_trigger(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_by_ref_trigger(db) -> None:
+def test_get_by_ref_trigger(db: Session) -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -238,7 +239,7 @@ def test_get_by_ref_trigger(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_by_name_trigger(db) -> None:
+def test_get_by_name_trigger(db: Session) -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -290,7 +291,7 @@ def test_get_by_name_trigger(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_multi_trigger(db) -> None:
+def test_get_multi_trigger(db: Session) -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -359,7 +360,7 @@ def test_get_multi_trigger(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_get_multi_by_packs_id_trigger(db) -> None:
+def test_get_multi_by_packs_id_trigger(db: Session) -> None:
     pack_shared_name = random_lower_string()
     packs_name = pack_shared_name
     packs_description = random_lower_string()
@@ -430,7 +431,7 @@ def test_get_multi_by_packs_id_trigger(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_update_trigger(db) -> None:
+def test_update_trigger(db: Session) -> None:
     packs_name = "dummy_pack_1"
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()
@@ -490,7 +491,7 @@ def test_update_trigger(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggeronly
 @pytest.mark.unittest
-def test_delete_trigger(db) -> None:
+def test_delete_trigger(db: Session) -> None:
     packs_name = "dummy_pack_1"
     packs_description = random_lower_string()
     packs_keywords = random_lower_string()

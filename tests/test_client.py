@@ -17,13 +17,15 @@ import ultron8
 from ultron8 import __version__
 from ultron8 import client
 from ultron8.api import settings
+from pytest_mock.plugin import MockFixture
+from typing import Iterator, Tuple
 
 
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope="function")
-def username_and_password_first_superuser_fixtures():
+def username_and_password_first_superuser_fixtures() -> Iterator[Tuple[str, str]]:
     yield settings.FIRST_SUPERUSER, settings.FIRST_SUPERUSER_PASSWORD
 
 
@@ -31,8 +33,10 @@ def username_and_password_first_superuser_fixtures():
 @pytest.mark.unittest
 class TestUltronAPI:
     def test_instance_ultron_api(
-        self, mocker, username_and_password_first_superuser_fixtures
-    ):
+        self,
+        mocker: MockFixture,
+        username_and_password_first_superuser_fixtures: Tuple[str, str],
+    ) -> None:
         username, password = username_and_password_first_superuser_fixtures
 
         u = client.UltronAPI()
@@ -61,7 +65,7 @@ class TestUltronAPI:
 
         assert r_logger == {"name": "asyncio", "level": 10, "children": []}
 
-    def test_instance_ultron_api_with_args(self, mocker):
+    def test_instance_ultron_api_with_args(self, mocker: MockFixture) -> None:
         api_endpoint = client.get_api_endpoint()
 
         u = client.UltronAPI(
@@ -84,8 +88,10 @@ class TestUltronAPI:
             assert "Failed to get new access token" in str(excinfo.value)
 
     def test_post_login_access_token(
-        self, mocker, username_and_password_first_superuser_fixtures
-    ):
+        self,
+        mocker: MockFixture,
+        username_and_password_first_superuser_fixtures: Tuple[str, str],
+    ) -> None:
         username, password = username_and_password_first_superuser_fixtures
 
         u = client.UltronAPI()
@@ -94,7 +100,11 @@ class TestUltronAPI:
         assert len(r["access_token"]) > 39
         assert r["token_type"] == "bearer"
 
-    def test_get_version(self, mocker, username_and_password_first_superuser_fixtures):
+    def test_get_version(
+        self,
+        mocker: MockFixture,
+        username_and_password_first_superuser_fixtures: Tuple[str, str],
+    ) -> None:
         username, password = username_and_password_first_superuser_fixtures
 
         u = client.UltronAPI()
@@ -105,7 +115,11 @@ class TestUltronAPI:
 
         assert r == content
 
-    def test_get_alive(self, mocker, username_and_password_first_superuser_fixtures):
+    def test_get_alive(
+        self,
+        mocker: MockFixture,
+        username_and_password_first_superuser_fixtures: Tuple[str, str],
+    ) -> None:
         username, password = username_and_password_first_superuser_fixtures
 
         u = client.UltronAPI()

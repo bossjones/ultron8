@@ -10,7 +10,7 @@ router = APIRouter()
 
 
 @router.get("/version", tags=["version"], response_model=VersionOut)
-async def read_version():
+async def read_version() -> VersionOut:
     cur_version = f"{__version__}"
     content = {"version": cur_version}
     # content_out = UJSONResponse(content)

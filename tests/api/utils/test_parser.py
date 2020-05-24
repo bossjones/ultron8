@@ -28,5 +28,5 @@ from ultron8.api.utils.parser import get_domain_from_fqdn
         ),
     ],
 )
-def test_get_domain_from_fqdn(test_input, expected):
+def test_get_domain_from_fqdn(test_input: str, expected: str) -> None:
     assert str(get_domain_from_fqdn(test_input)) == expected

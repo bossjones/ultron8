@@ -32,12 +32,13 @@ from ultron8.api.models.packs import PacksCreate
 
 from freezegun import freeze_time
 from typing import Optional
+from sqlalchemy.orm.session import Session
 
 
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggerinstanceonly
 @pytest.mark.unittest
-def test_create_trigger_instance(db) -> None:
+def test_create_trigger_instance(db: Session) -> None:
     # Step 1 - create pack
     packs = create_random_packs(db)
 
@@ -74,7 +75,7 @@ def test_create_trigger_instance(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggerinstanceonly
 @pytest.mark.unittest
-def test_get_trigger_instance(db) -> None:
+def test_get_trigger_instance(db: Session) -> None:
     # Step 1 - create pack
     packs = create_random_packs(db)
 
@@ -110,7 +111,7 @@ def test_get_trigger_instance(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggerinstanceonly
 @pytest.mark.unittest
-def test_get_by_trigger_trigger_instance(db) -> None:
+def test_get_by_trigger_trigger_instance(db: Session) -> None:
     # Step 1 - create pack
     packs = create_random_packs(db)
 
@@ -146,7 +147,7 @@ def test_get_by_trigger_trigger_instance(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggerinstanceonly
 @pytest.mark.unittest
-def test_get_multi_trigger_instance(db) -> None:
+def test_get_multi_trigger_instance(db: Session) -> None:
     # Step 1 - create pack
     packs = create_random_packs(db)
 
@@ -200,7 +201,7 @@ def test_get_multi_trigger_instance(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggerinstanceonly
 @pytest.mark.unittest
-def test_update_trigger_instance(db) -> None:
+def test_update_trigger_instance(db: Session) -> None:
     # Step 1 - create pack
     packs = create_random_packs(db)
 
@@ -244,7 +245,7 @@ def test_update_trigger_instance(db) -> None:
 @freeze_time("2019-07-25 01:11:00.740428")
 @pytest.mark.triggerinstanceonly
 @pytest.mark.unittest
-def test_delete_trigger_instance(db) -> None:
+def test_delete_trigger_instance(db: Session) -> None:
     # Step 1 - create pack
     packs = create_random_packs(db)
 

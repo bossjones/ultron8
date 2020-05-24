@@ -94,6 +94,8 @@ from ultron8.api.db.u_sqlite import close_database_connection_pool
 from ultron8.api.db.u_sqlite import open_database_connection_pool
 from ultron8.api.db.u_sqlite.session import SessionLocal
 from ultron8.api.middleware.logging import log
+from fastapi.applications import FastAPI
+from typing import Callable
 
 # import sys
 # from IPython.core.debugger import Tracer  # noqa
@@ -418,7 +420,7 @@ class DbSessionMiddleware(BaseHTTPMiddleware):
         BaseHTTPMiddleware {[type]} -- [description]
     """
 
-    async def dispatch(self, request: Request, call_next) -> Response:
+    async def dispatch(self, request: Request, call_next: Callable) -> Response:
         response = Response("Internal server error", status_code=500)
         try:
             logger.debug(

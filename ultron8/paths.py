@@ -13,7 +13,7 @@ from ultron8.utils import encoding
 
 from gettext import gettext as _
 
-from pathlib import Path
+from pathlib import PosixPath, Path
 
 import queue
 import tempfile
@@ -34,6 +34,7 @@ from urllib.parse import (
     urldefrag,
     urlunsplit,
 )
+from typing import Dict, List, Union
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +81,7 @@ logger = logging.getLogger(__name__)
 #     #     return self.base_path_dir / 'template'
 
 # SOURCE:  https://realpython.com/python-pathlib/
-def tree(directory):
+def tree(directory: PosixPath) -> None:
     print(f"+ {directory}")
     for path in sorted(directory.rglob("*")):
         depth = len(path.relative_to(directory).parts)
@@ -88,7 +89,7 @@ def tree(directory):
         print(f"{spacer}+ {path.name}")
 
 
-def is_readable_dir(path):
+def is_readable_dir(path: str) -> Dict[str, Union[str, bool]]:
     """Check whether a path references a readable directory."""
     if not os.path.exists(path):
         return {"result": False, "message": "Path does not exist", "path": path}
@@ -99,7 +100,7 @@ def is_readable_dir(path):
     return {"result": True}
 
 
-def is_readable_file(path):
+def is_readable_file(path: str) -> Dict[str, Union[str, bool]]:
     """Check whether a path references a readable file."""
     if not os.path.exists(path):
         return {"result": False, "message": "Path does not exist", "path": path}
@@ -124,7 +125,7 @@ def is_readable_file(path):
 ###############################################################################################################
 
 
-def ensure_dir_exists(directory):
+def ensure_dir_exists(directory: str) -> None:
     # source: dcos-cli
     """If `directory` does not exist, create it.
     :param directory: path to the directory
@@ -145,7 +146,7 @@ def ensure_dir_exists(directory):
             raise Exception("Cannot create directory [{}]: {}".format(directory, e))
 
 
-def ensure_file_exists(path, mode=0o600):
+def ensure_file_exists(path: str, mode: int = 0o600) -> None:
     # source: dcos-cli
     """ Create file if it doesn't exist
     :param path: path of file to create
@@ -165,7 +166,7 @@ def ensure_file_exists(path, mode=0o600):
             raise Exception("Cannot create file [{}]: {}".format(path, e))
 
 
-def get_permissions(path):
+def get_permissions(path: str) -> str:
     return oct(stat.S_IMODE(os.stat(path).st_mode))
 
 
@@ -195,7 +196,7 @@ def enforce_file_permissions(path):
         raise Exception(msg)
 
 
-def get_parent_dir(path):
+def get_parent_dir(path: str) -> str:
     logger.debug("get_parent_dir: {}".format(path))
     # In [13]: q.parent
     # Out[13]: PosixPath('/home/pi/dev/bossjones-github/scarlett_os/_debug')
@@ -203,14 +204,14 @@ def get_parent_dir(path):
     return p.parent.__str__()
 
 
-def mkdir_p(path):
+def mkdir_p(path: str) -> None:
     p = Path(path)
     p.mkdir(parents=True, exist_ok=True)
     d = dir_exists(path)
     logger.debug("Verify mkdir_p ran: {}".format(d))
 
 
-def dir_exists(path):
+def dir_exists(path: str) -> bool:
     p = Path(path)
     if not p.is_dir():
         logger.error("This is not a dir: {}".format(path))
@@ -218,14 +219,14 @@ def dir_exists(path):
     return p.is_dir()
 
 
-def mkdir_if_does_not_exist(path):
+def mkdir_if_does_not_exist(path: str) -> bool:
     if not dir_exists(path):
         mkdir_p(path)
         return True
     return False
 
 
-def fname_exists(path):
+def fname_exists(path: str) -> bool:
     p = Path(path)
     return p.exists()
 
@@ -235,7 +236,7 @@ def fname_exists(path):
 # SOURCE: https://raw.githubusercontent.com/GNOME/pitivi/b2bbe6eef6d1e6d0fa5471d60004c62f936b3146/pitivi/utils/misc.py
 
 
-def isWritable(path):
+def isWritable(path: str) -> bool:
     """Returns whether the file/path is writable."""
     try:
         res = is_readable_dir(path)
@@ -286,7 +287,7 @@ def unicode_error_dialog():
     logger.error(message)
 
 
-def path_from_uri(raw_uri):
+def path_from_uri(raw_uri: Union[str, bytes]) -> str:
     """Returns a path that can be used with Python's os.path.
     Args:
         raw_uri (str, byte): The location to check.
@@ -308,7 +309,7 @@ def path_from_uri(raw_uri):
     return unquote(uri.path)
 
 
-def filename_from_uri(uri):
+def filename_from_uri(uri: Union[str, bytes]) -> str:
     """Returns a filename for display.
     Excludes the path to the file.
     Can be used in UI elements or to shorten debug statements.
@@ -320,7 +321,7 @@ def filename_from_uri(uri):
     return os.path.basename(path_from_uri(uri))
 
 
-def quote_uri(uri):
+def quote_uri(uri: bytes) -> str:
     """Encodes a URI according to RFC 2396.
     Does not touch the file:/// part.
     Args:
@@ -352,12 +353,12 @@ def quote_uri(uri):
     # Out[48]: 'file:///etc/fstab'
 
 
-def quantize(input, interval):
+def quantize(input: float, interval: float) -> float:
     # In Python 3, they made the / operator do a floating-point division, and added the // operator to do integer division (i.e. quotient without remainder);
     return (input // interval) * interval
 
 
-def binary_search(elements, value):
+def binary_search(elements: List[int], value: int) -> int:
     """Returns the index of the element closest to value.
     Args:
         elements (List): A sorted list.
@@ -382,7 +383,7 @@ def binary_search(elements, value):
 # ------------------------------ URI helpers --------------------------------
 
 
-def path_to_uri(path):
+def path_to_uri(path: str) -> bytes:
     """
     Convert OS specific path to file:// URI.
     Accepts either unicode strings or bytestrings. The encoding of any
@@ -407,7 +408,7 @@ def path_to_uri(path):
     return urlunsplit((b"file", b"", path, b"", b""))
 
 
-def uri_to_path(uri):
+def uri_to_path(uri: Union[str, bytes]) -> str:
     """
     Convert an URI to a OS specific path.
     Returns a bytestring, since the file path can contain chars with other
@@ -749,7 +750,7 @@ def uri_is_valid(uri):  # pragma: no cover
 
 # FIXME replace with mock usage in tests.
 class Mtime(object):  # pragma: no cover
-    def __init__(self):
+    def __init__(self) -> None:
         self.fake = None
 
     def __call__(self, path):

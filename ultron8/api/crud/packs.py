@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from ultron8.api.db_models.packs import Packs
 from ultron8.api.models.packs import PacksCreate
 from ultron8.api.models.packs import PacksUpdate
+from sqlalchemy.orm.session import Session
 
 
 def get(db_session: Session, *, packs_id: int) -> Optional[Packs]:
@@ -72,7 +73,7 @@ def create(db_session: Session, *, packs_in: PacksCreate) -> Packs:
 
 def update(db_session: Session, *, packs: Packs, packs_in: PacksUpdate) -> Packs:
     packs_data = jsonable_encoder(packs)
-    update_data = packs_in.dict(skip_defaults=True)
+    update_data = packs_in.dict(exclude_unset=True)
     for field in packs_data:
         if field in update_data:
             setattr(packs, field, update_data[field])

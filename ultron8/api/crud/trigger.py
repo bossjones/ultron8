@@ -17,6 +17,7 @@ from ultron8.exceptions.db import (
 
 import logging
 import ujson
+from sqlalchemy.orm.session import Session
 
 LOG = logging.getLogger(__name__)
 
@@ -343,7 +344,9 @@ def get_trigger_type_db(db_session: Session, *, ref: str) -> Optional[TriggerDB]
 #     Trigger.delete_if_unreferenced(existing_trigger_db)
 
 
-def get_multi(db_session: Session, *, skip=0, limit=100) -> List[Optional[TriggerDB]]:
+def get_multi(
+    db_session: Session, *, skip: int = 0, limit: int = 100
+) -> List[Optional[TriggerDB]]:
     """Return list on TriggerDB objects
 
     Arguments:
@@ -360,7 +363,7 @@ def get_multi(db_session: Session, *, skip=0, limit=100) -> List[Optional[Trigge
 
 
 def get_multi_by_packs_id(
-    db_session: Session, *, packs_id: int, skip=0, limit=100
+    db_session: Session, *, packs_id: int, skip: int = 0, limit: int = 100
 ) -> List[Optional[TriggerDB]]:
     """Get multiple TriggerDB objects by packs_id
 
@@ -420,7 +423,7 @@ def update(
         TriggerDB -- Returns a TriggerDB object
     """
     trigger_data = jsonable_encoder(trigger)
-    update_data = trigger_in.dict(skip_defaults=True)
+    update_data = trigger_in.dict(exclude_unset=True)
     for field in trigger_data:
         if field in update_data:
             setattr(trigger, field, update_data[field])

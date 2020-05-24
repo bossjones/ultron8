@@ -15,6 +15,8 @@ from ultron8 import __version__
 from ultron8.u8client.utils import get_api_endpoint
 from ultron8.constants import media_types
 from ultron8.api.models.user import UserCreate
+from requests.models import Response
+from typing import Dict, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +29,9 @@ logger = logging.getLogger(__name__)
 class UltronAPI:
     # def __init__(self, base_url=None, auth_url=None, api_url=None, stream_url=None,
     # api_version=None, cacert=None, debug=False, token=None, api_key=None):
-    def __init__(self, api_endpoint=None, jwt_token=None):
+    def __init__(
+        self, api_endpoint: Optional[str] = None, jwt_token: Optional[str] = None
+    ) -> None:
         # assert len(jwt_token) > 39
 
         # Get CLI options. If not given, then try to get it from the environment.
@@ -58,7 +62,7 @@ class UltronAPI:
         else:
             self.jwt_token = None
 
-    def _update_endpoints(self):
+    def _update_endpoints(self) -> None:
         logger.debug("Refreshing client endpoints ....")
         self.endpoints["base"] = self.api_endpoint
         self.api_url = f"{self.api_endpoint}{settings.API_V1_STR}"
@@ -74,7 +78,7 @@ class UltronAPI:
         self.endpoints["metrics"] = f"{self.api_url}/metrics"
         logger.debug("Client endpoints refreshed....")
 
-    def set_api_endpoint(self, v):
+    def set_api_endpoint(self, v: str) -> None:
         logger.debug("Old api_endpoint: {}".format(self.api_endpoint))
         self.api_endpoint = v.rstrip("/")
         self._update_endpoints()
@@ -86,7 +90,9 @@ class UltronAPI:
             "Authorization": f"Bearer {self.jwt_token}",
         }
 
-    def _retry_requests(self, url, total=5, backoff=1, **kwargs):
+    def _retry_requests(
+        self, url: str, total: int = 5, backoff: int = 1, **kwargs
+    ) -> Response:
         s = requests.Session()
         retries = Retry(
             total=total, backoff_factor=backoff, status_forcelist=[502, 503, 504]
@@ -96,7 +102,7 @@ class UltronAPI:
         return s.get(url, **kwargs)
 
     # FYI, borrowed from k8s-migration-tooling
-    def _get_logger(self, logger_name: str):
+    def _get_logger(self, logger_name: str) -> Dict[str, Union[str, int]]:
         url = f"{self.endpoints['logs']}/{logger_name}"
         logger.debug("Ultron8 get envs API URL : " + url)
         header_debug = self._headers()
@@ -111,7 +117,7 @@ class UltronAPI:
         return r.json()
 
     # FYI, borrowed from k8s-migration-tooling
-    def _get_version(self):
+    def _get_version(self) -> Dict[str, str]:
         url = f"{self.endpoints['version']}"
         logger.debug("Ultron8 get version URL : " + url)
         header_debug = self._headers()
@@ -125,7 +131,7 @@ class UltronAPI:
 
         return r.json()
 
-    def _get_alive(self):
+    def _get_alive(self) -> Dict[str, str]:
         url = f"{self.endpoints['alive']}"
         logger.debug("Ultron8 get alive URL : " + url)
         header_debug = self._headers()
@@ -139,7 +145,7 @@ class UltronAPI:
 
         return r.json()
 
-    def _get_users(self):
+    def _get_users(self) -> List[Dict[str, Optional[Union[str, bool, int]]]]:
         url = f"{self.endpoints['users']}"
         logger.debug("Ultron8 get users URL : " + url)
         header_debug = self._headers()
@@ -154,7 +160,7 @@ class UltronAPI:
         return r.json()
 
     # FYI, borrowed from k8s-migration-tooling
-    def _post_login_access_token(self, username: str, password: str):
+    def _post_login_access_token(self, username: str, password: str) -> Dict[str, str]:
         url = f"{self.endpoints['login']}/access-token"
         print("Ultron8 post login accesss-token URL : " + url)
 
@@ -174,7 +180,7 @@ class UltronAPI:
         # headers = {"Authorization": f"Bearer {a_token}"}
         return tokens
 
-    def _get_metrics(self):
+    def _get_metrics(self) -> str:
         # Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
         url = f"{self.endpoints['metrics']}"
         logger.debug("Ultron8 get metrics URL : " + url)
@@ -193,7 +199,9 @@ class UltronAPI:
         return r.text
 
     # FYI, borrowed from k8s-migration-tooling
-    def _post_create_user(self, data: dict):
+    def _post_create_user(
+        self, data: dict
+    ) -> Dict[str, Optional[Union[str, bool, int]]]:
         url = f"{self.endpoints['users']}/"
 
         headers = self._headers()

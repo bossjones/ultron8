@@ -15,6 +15,7 @@ from ultron8.api.db_models.packs import Packs
 from ultron8.api.db_models.trigger import TriggerDB, TriggerTypeDB
 from ultron8.api.models.trigger import TriggerTypeInDBModel
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.session import Session
 
 
 def create_random_trigger_name():

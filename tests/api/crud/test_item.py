@@ -5,6 +5,7 @@ from ultron8.api import crud
 from ultron8.api.models.item import ItemCreate
 from ultron8.api.models.item import ItemUpdate
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.session import Session
 
 
 def test_create_item(db: Session) -> None:
@@ -18,7 +19,7 @@ def test_create_item(db: Session) -> None:
     assert item.owner_id == user.id
 
 
-def test_get_item(db) -> None:
+def test_get_item(db: Session) -> None:
     title = random_lower_string()
     description = random_lower_string()
     item_in = ItemCreate(title=title, description=description)
@@ -31,7 +32,7 @@ def test_get_item(db) -> None:
     assert item.owner_id == stored_item.owner_id
 
 
-def test_update_item(db) -> None:
+def test_update_item(db: Session) -> None:
     title = random_lower_string()
     description = random_lower_string()
     item_in = ItemCreate(title=title, description=description)
@@ -46,7 +47,7 @@ def test_update_item(db) -> None:
     assert item.owner_id == item2.owner_id
 
 
-def test_delete_item(db) -> None:
+def test_delete_item(db: Session) -> None:
     title = random_lower_string()
     description = random_lower_string()
     item_in = ItemCreate(title=title, description=description)

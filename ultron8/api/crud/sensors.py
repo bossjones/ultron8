@@ -13,6 +13,7 @@ from ultron8.api.models.sensors import SensorsUpdate
 
 from ultron8.constants.packs import SYSTEM_PACK_NAME
 from ultron8.constants.sensors import MINIMUM_POLL_INTERVAL
+from sqlalchemy.orm.session import Session
 
 
 def get(db_session: Session, *, sensors_id: int) -> Optional[Sensors]:
@@ -186,7 +187,7 @@ def update(
     db_session: Session, *, sensors: Sensors, sensors_in: SensorsUpdate
 ) -> Sensors:
     sensors_data = jsonable_encoder(sensors)
-    update_data = sensors_in.dict(skip_defaults=True)
+    update_data = sensors_in.dict(exclude_unset=True)
     for field in sensors_data:
         if field in update_data:
             setattr(sensors, field, update_data[field])

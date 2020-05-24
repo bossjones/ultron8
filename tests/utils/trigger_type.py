@@ -15,6 +15,7 @@ from typing import Optional
 from ultron8.api.db_models.packs import Packs
 from ultron8.api.db_models.trigger import TriggerTypeDB
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.session import Session
 
 
 def create_random_trigger_type_name() -> str:
