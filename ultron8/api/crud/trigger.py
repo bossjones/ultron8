@@ -5,7 +5,6 @@ from typing import List, Optional
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
-
 import ujson
 
 from ultron8.api.db_models.trigger import TriggerDB

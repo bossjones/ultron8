@@ -7,9 +7,10 @@ import tempfile
 
 import pytest
 
-from tests.conftest import fixtures_path
 import ultron8
 from ultron8.core import workspace
+
+from tests.conftest import fixtures_path
 
 logger = logging.getLogger(__name__)
 

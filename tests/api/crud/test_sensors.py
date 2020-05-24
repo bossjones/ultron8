@@ -6,13 +6,8 @@ from fastapi.encoders import jsonable_encoder
 from freezegun import freeze_time
 from pydantic.json import pydantic_encoder
 import pytest
+from sqlalchemy.orm import Session
 
-
-from tests.utils.packs import create_random_packs
-from tests.utils.trigger import create_random_trigger
-from tests.utils.trigger_instance import create_random_trigger_instance_name
-from tests.utils.trigger_type import create_random_trigger_type
-from tests.utils.utils import random_lower_string
 from ultron8.api import crud
 from ultron8.api.db_models.sensors import SENSORS_TRIGGER_TYPES_ASSOCIATION, Sensors
 from ultron8.api.db_models.trigger import TriggerTypeDB
@@ -27,7 +22,12 @@ from ultron8.api.models.sensors import (
 )
 from ultron8.api.models.trigger import TriggerTypeInDBModel
 from ultron8.debugger import debug_dump_exclude
-from sqlalchemy.orm import Session
+
+from tests.utils.packs import create_random_packs
+from tests.utils.trigger import create_random_trigger
+from tests.utils.trigger_instance import create_random_trigger_instance_name
+from tests.utils.trigger_type import create_random_trigger_type
+from tests.utils.utils import random_lower_string
 
 
 def pretty_lenient_json(data):

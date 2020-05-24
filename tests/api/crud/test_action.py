@@ -3,8 +3,6 @@ from freezegun import freeze_time
 import pytest
 from sqlalchemy.orm import Session
 
-
-from tests.utils.utils import random_lower_string
 from ultron8.api import crud
 from ultron8.api.models.action import (
     ActionBase,
@@ -14,6 +12,8 @@ from ultron8.api.models.action import (
     RunnerTypeModel,
 )
 from ultron8.api.models.packs import PacksBase, PacksBaseInDB, PacksCreate, PacksUpdate
+
+from tests.utils.utils import random_lower_string
 
 # def test_create_action():
 #     email = random_lower_string()

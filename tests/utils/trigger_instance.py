@@ -4,10 +4,11 @@ import string
 import requests
 from sqlalchemy.orm import Session
 
-from tests.utils.user import create_random_user
-from tests.utils.utils import random_lower_string
 from ultron8.api import crud
 from ultron8.api.models.trigger import TriggerInstanceCreate
+
+from tests.utils.user import create_random_user
+from tests.utils.utils import random_lower_string
 
 
 def create_random_trigger_instance_name():

@@ -548,9 +548,8 @@ done
             ctx.run(_cmd_apply)
 
 
-def autoflake(
-    ctx, loc="local", verbose=0, check=False, dry_run=False,
-):
+@task(incrementable=["verbose"])
+def autoflake(ctx, loc="local", verbose=0, check=False, dry_run=False, in_place=False):
     """
     Use autoflake to remove unused imports, recursively, remove unused variables, and exclude __init__.py
 
@@ -558,6 +557,8 @@ def autoflake(
         Usage: inv ci.autoflake --check -vvv
     To run autoflake in check only mode(dry-run):
         Usage: inv ci.autoflake --check -vvv --dry-run
+    To run autoflake inplace w/(dry-run):
+        Usage: inv ci.autoflake --in-place -vvv --dry-run
     """
     env = get_compose_env(ctx, loc=loc)
 
@@ -573,6 +574,9 @@ def autoflake(
 
     if check:
         _cmd += " --check"
+
+    if in_place:
+        _cmd += " --in-place"
 
     _cmd += " ultron8"
     _cmd += " --exclude=__init__.py"

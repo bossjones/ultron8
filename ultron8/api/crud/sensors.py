@@ -5,7 +5,6 @@ from typing import List, Optional
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
-
 from ultron8.api.core.security import get_password_hash, verify_password
 from ultron8.api.db_models.sensors import Sensors
 from ultron8.api.models.sensors import SensorsCreate, SensorsUpdate

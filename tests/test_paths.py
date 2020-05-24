@@ -14,9 +14,10 @@ import tempfile
 import pytest
 from pytest_mock.plugin import MockFixture
 
-from tests.conftest import fixtures_path
 import ultron8
 from ultron8 import paths
+
+from tests.conftest import fixtures_path
 
 # import unittest
 

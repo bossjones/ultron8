@@ -3,11 +3,11 @@ from typing import Optional
 import requests
 from sqlalchemy.orm import Session
 
-
-from tests.utils.utils import random_lower_string
 from ultron8.api import crud
 from ultron8.api.db_models.packs import Packs
 from ultron8.api.models.packs import PacksCreate
+
+from tests.utils.utils import random_lower_string
 
 
 def create_random_packs(db: Session) -> Packs:

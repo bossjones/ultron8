@@ -3,12 +3,9 @@ from typing import Optional
 from fastapi.encoders import jsonable_encoder
 from freezegun import freeze_time
 import pytest
-
+from sqlalchemy.orm import Session
 import ujson
 
-from tests.utils.packs import create_random_packs
-from tests.utils.trigger_type import create_random_trigger_type_name
-from tests.utils.utils import random_lower_string
 from ultron8.api import crud
 from ultron8.api.db_models.trigger import TriggerTypeDB
 from ultron8.api.models.packs import PacksCreate
@@ -30,7 +27,10 @@ from ultron8.api.models.trigger import (
     TriggerTypeUpdate,
     TriggerUpdate,
 )
-from sqlalchemy.orm import Session
+
+from tests.utils.packs import create_random_packs
+from tests.utils.trigger_type import create_random_trigger_type_name
+from tests.utils.utils import random_lower_string
 
 
 @freeze_time("2019-07-25 01:11:00.740428")

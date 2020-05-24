@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
 
+from ultron8.api import crud
+from ultron8.api.models.item import ItemCreate, ItemUpdate
 
 from tests.utils.user import create_random_user
 from tests.utils.utils import random_lower_string
-from ultron8.api import crud
-from ultron8.api.models.item import ItemCreate, ItemUpdate
 
 
 def test_create_item(db: Session) -> None:

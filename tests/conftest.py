@@ -38,6 +38,10 @@ from starlette.testclient import (
     TimeOut,
 )
 
+from ultron8.api import settings
+from ultron8.api.db.u_sqlite.session import SessionLocal
+from ultron8.web import get_application
+
 from tests.utils.user import authentication_token_from_email
 from tests.utils.utils import (
     get_server_api,
@@ -46,9 +50,6 @@ from tests.utils.utils import (
     get_superuser_token_headers,
     superuser_credentials,
 )
-from ultron8.api import settings
-from ultron8.api.db.u_sqlite.session import SessionLocal
-from ultron8.web import get_application
 
 # from ultron8.api import settings
 # from ultron8.web import app

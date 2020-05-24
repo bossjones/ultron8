@@ -7,12 +7,13 @@ import os
 import pytest
 import requests
 
-# from ultron8 import __version__
-# from ultron8 import client
-from tests.utils.utils import get_superuser_jwt_request
 import ultron8
 from ultron8.api import settings
 from ultron8.u8client import session
+
+# from ultron8 import __version__
+# from ultron8 import client
+from tests.utils.utils import get_superuser_jwt_request
 
 try:
     import cPickle as pickle

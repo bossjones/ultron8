@@ -9,12 +9,13 @@ from click.testing import CliRunner
 import pyconfig
 import pytest
 
-# from ultron8.cli import get_flag
-# from ultron8.cli import set_fact_flags
-from tests.conftest import fixtures_path
 from ultron8 import config
 from ultron8.cli import cli
 from ultron8.config import do_get_flag, do_set_flag
+
+# from ultron8.cli import get_flag
+# from ultron8.cli import set_fact_flags
+from tests.conftest import fixtures_path
 
 # from ultron8.paths import Paths
 

@@ -14,9 +14,6 @@ from click.testing import CliRunner
 from fastapi.encoders import jsonable_encoder
 import pytest
 
-from tests.conftest import fixtures_path
-from tests.utils.filesystem import helper_write_yaml_to_disk
-from tests.utils.utils import get_superuser_jwt_request
 from ultron8 import config
 from ultron8.api.factories.users import _MakeRandomNormalUserFactory
 from ultron8.cli import cli
@@ -25,6 +22,10 @@ from ultron8.config import ConfigManager, do_get_flag, do_set_flag
 from ultron8.config.manager import ConfigProxy, NullConfig
 from ultron8.core.files import load_json_file
 from ultron8.core.workspace import CliWorkspace, prep_default_config
+
+from tests.conftest import fixtures_path
+from tests.utils.filesystem import helper_write_yaml_to_disk
+from tests.utils.utils import get_superuser_jwt_request
 
 # TODO: Mock or monkeypatch CliWorkspace ?
 # TODO: Mock or monkeypatch prep_default_config ?

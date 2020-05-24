@@ -3,9 +3,10 @@ import logging
 import pytest
 import requests
 
+from ultron8.api import settings
+
 from tests.utils.item import create_random_item
 from tests.utils.utils import get_server_api
-from ultron8.api import settings
 
 logger = logging.getLogger(__name__)
 

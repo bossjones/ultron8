@@ -2,8 +2,9 @@ import logging
 
 from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
 
-from tests.api.api_v1.test_login import test_get_access_token
 from ultron8.api.db.u_sqlite.session import SessionLocal
+
+from tests.api.api_v1.test_login import test_get_access_token
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

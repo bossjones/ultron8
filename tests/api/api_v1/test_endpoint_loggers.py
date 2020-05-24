@@ -6,9 +6,10 @@ import pytest
 import requests
 from starlette.testclient import TestClient
 
-from tests.utils.utils import get_server_api
 from ultron8.api import settings
 from ultron8.api.models.loggers import LoggerModel
+
+from tests.utils.utils import get_server_api
 
 logger = logging.getLogger(__name__)
 

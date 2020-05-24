@@ -16,11 +16,12 @@ from requests.packages.urllib3.util.retry import Retry  # pylint: disable=import
 
 from ultron8 import __version__
 from ultron8.api import settings
+from ultron8.u8client.utils import get_api_endpoint
+
 from ultron8.exceptions.client import (  # AuthenticationFailed,; BadRequest,; CardHasNoContentUrl,; ClientError,; Conflict,; ConnectionError,; ForbiddenError,; GeneratedTokenExpired,; IncompleteResponse,; MethodNotAllowed,; MissingAppAuthentication,; MissingAppBearerAuthentication,; MissingAppInstallationAuthentication,; NotAcceptable,; NotFoundError,; NotRefreshable,; ResponseError,; ServerError,; TransportError,; UltronClientError,; UltronClientException,; UnavailableForLegalReasons,; UnexpectedResponse,; UnprocessableEntity,; UnprocessableResponseBody,
     AppInstallationTokenExpired,
     AppTokenExpired,
 )
-from ultron8.u8client.utils import get_api_endpoint
 
 __url_cache__ = {}
 logger = logging.getLogger(__name__)
