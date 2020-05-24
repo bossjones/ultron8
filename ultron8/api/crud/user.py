@@ -56,7 +56,7 @@ def create(db_session: Session, *, user_in: UserCreate) -> User:
 
 def update(db_session: Session, *, user: User, user_in: UserUpdate) -> User:
     user_data = jsonable_encoder(user)
-    update_data = user_in.dict(skip_defaults=True)
+    update_data = user_in.dict(exclude_unset=True)
     for field in user_data:
         if field in update_data:
             setattr(user, field, update_data[field])

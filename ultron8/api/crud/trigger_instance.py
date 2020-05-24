@@ -120,7 +120,7 @@ def update(
         TriggerInstanceDB -- Returns a TriggerInstanceDB object
     """
     trigger_instance_data = jsonable_encoder(trigger_instance)
-    update_data = trigger_instance_in.dict(skip_defaults=True)
+    update_data = trigger_instance_in.dict(exclude_unset=True)
     for field in trigger_instance_data:
         if field in update_data:
             setattr(trigger_instance, field, update_data[field])

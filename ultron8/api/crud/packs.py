@@ -73,7 +73,7 @@ def create(db_session: Session, *, packs_in: PacksCreate) -> Packs:
 
 def update(db_session: Session, *, packs: Packs, packs_in: PacksUpdate) -> Packs:
     packs_data = jsonable_encoder(packs)
-    update_data = packs_in.dict(skip_defaults=True)
+    update_data = packs_in.dict(exclude_unset=True)
     for field in packs_data:
         if field in update_data:
             setattr(packs, field, update_data[field])

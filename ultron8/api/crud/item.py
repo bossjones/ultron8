@@ -41,7 +41,7 @@ def create(db_session: Session, *, item_in: ItemCreate, owner_id: int) -> Item:
 
 def update(db_session: Session, *, item: Item, item_in: ItemUpdate) -> Item:
     item_data = jsonable_encoder(item)
-    update_data = item_in.dict(skip_defaults=True)
+    update_data = item_in.dict(exclude_unset=True)
     for field in item_data:
         if field in update_data:
             setattr(item, field, update_data[field])

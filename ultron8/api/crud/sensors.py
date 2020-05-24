@@ -187,7 +187,7 @@ def update(
     db_session: Session, *, sensors: Sensors, sensors_in: SensorsUpdate
 ) -> Sensors:
     sensors_data = jsonable_encoder(sensors)
-    update_data = sensors_in.dict(skip_defaults=True)
+    update_data = sensors_in.dict(exclude_unset=True)
     for field in sensors_data:
         if field in update_data:
             setattr(sensors, field, update_data[field])

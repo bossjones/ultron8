@@ -125,7 +125,7 @@ def update(db_session: Session, *, action: Action, action_in: ActionUpdate) -> A
         Action -- Returns a Action object
     """
     action_data = jsonable_encoder(action)
-    update_data = action_in.dict(skip_defaults=True)
+    update_data = action_in.dict(exclude_unset=True)
     for field in action_data:
         if field in update_data:
             setattr(action, field, update_data[field])

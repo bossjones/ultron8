@@ -423,7 +423,7 @@ def update(
         TriggerDB -- Returns a TriggerDB object
     """
     trigger_data = jsonable_encoder(trigger)
-    update_data = trigger_in.dict(skip_defaults=True)
+    update_data = trigger_in.dict(exclude_unset=True)
     for field in trigger_data:
         if field in update_data:
             setattr(trigger, field, update_data[field])
