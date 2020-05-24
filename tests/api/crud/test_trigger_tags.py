@@ -1,7 +1,7 @@
 from fastapi.encoders import jsonable_encoder
 from freezegun import freeze_time
 import pytest
-from sqlalchemy.orm.session import Session
+
 
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud
@@ -25,6 +25,7 @@ from ultron8.api.models.trigger import (
     TriggerTypeUpdate,
     TriggerUpdate,
 )
+from sqlalchemy.orm import Session
 
 TRIGGER_0 = {
     "name": "ultron8.test.trigger0",

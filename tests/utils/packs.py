@@ -2,7 +2,7 @@ from typing import Optional
 
 import requests
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.session import Session
+
 
 from tests.utils.utils import random_lower_string
 from ultron8.api import crud

@@ -13,7 +13,6 @@ import time
 from typing import Callable
 
 from fastapi import Depends, FastAPI, Header, HTTPException
-from fastapi.applications import FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from starlette import status

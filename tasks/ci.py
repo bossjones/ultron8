@@ -77,7 +77,7 @@ rm -f cov.xml
 
 
 @task
-def pylint(ctx, loc="local", tests=False, everything=False):
+def pylint(ctx, loc="local", tests=False, everything=False, specific=""):
     """
     pylint ultron8 folder
     Usage: inv ci.pylint
@@ -96,7 +96,11 @@ def pylint(ctx, loc="local", tests=False, everything=False):
             "pylint --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc tests"
         )
     elif everything:
-        ctx.run("pylint --rcfile ./lint-configs-python/python/pylintrc tests")
+        ctx.run("pylint --rcfile ./lint-configs-python/python/pylintrc tests ultron8")
+    elif specific:
+        ctx.run(
+            f"pylint --disable=all --enable={specific} --rcfile ./lint-configs-python/python/pylintrc tests ultron8"
+        )
     else:
         ctx.run(
             "pylint --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc ultron8"

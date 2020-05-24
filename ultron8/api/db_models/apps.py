@@ -5,7 +5,6 @@ from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.orm import relationship
 
 from ultron8.api.db.u_sqlite.base_class import Base
-from ultron8.api.db_models.types import DateTime
 
 
 class App(Base):

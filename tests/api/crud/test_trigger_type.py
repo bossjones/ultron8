@@ -3,7 +3,7 @@ from typing import Optional
 from fastapi.encoders import jsonable_encoder
 from freezegun import freeze_time
 import pytest
-from sqlalchemy.orm.session import Session
+
 import ujson
 
 from tests.utils.packs import create_random_packs
@@ -30,6 +30,7 @@ from ultron8.api.models.trigger import (
     TriggerTypeUpdate,
     TriggerUpdate,
 )
+from sqlalchemy.orm import Session
 
 
 @freeze_time("2019-07-25 01:11:00.740428")

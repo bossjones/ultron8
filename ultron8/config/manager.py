@@ -197,9 +197,10 @@ class ConfigManager(object):
 
 
 if __name__ == "__main__":
-    import logging
+    # import logging
 
-    # from ultron8.loggers import setup_logger
-    from ultron8.config import manager
-    from ultron8.yaml import yaml
-    import json as jsonlib
+    # # from ultron8.loggers import setup_logger
+    # from ultron8.config import manager
+    # from ultron8.yaml import yaml
+    # import json as jsonlib
+    print("manager")

@@ -142,13 +142,13 @@ def envvar_get_int(var_name, default):
 
 
 def get_sys_module():
-    import sys
+    import sys  # pylint:disable=reimported,import-outside-toplevel
 
     return sys
 
 
 def get_itertools_module():
-    import itertools
+    import itertools  # pylint:disable=reimported,import-outside-toplevel
 
     return itertools
 

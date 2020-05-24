@@ -6,7 +6,7 @@ from typing import Dict, Optional
 import factory
 import requests
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.session import Session
+
 from starlette.testclient import TestClient
 
 from tests.utils.utils import random_email, random_lower_string

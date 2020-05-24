@@ -26,7 +26,6 @@ from _pytest.monkeypatch import MonkeyPatch
 import betamax
 from betamax_matchers import json_body
 from fastapi import FastAPI
-from fastapi.applications import FastAPI
 import pytest
 import requests
 from starlette.testclient import (

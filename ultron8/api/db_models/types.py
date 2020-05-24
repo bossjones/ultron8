@@ -29,9 +29,8 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
-from sqlalchemy.schema import Column
 from sqlalchemy.sql import func, operators
-from sqlalchemy.types import Integer, String, TypeDecorator
+from sqlalchemy.types import String, TypeDecorator
 
 from ultron8.api.db.u_sqlite.base_class import Base
 from ultron8.api.db_models.ultronbase import ContentPackResourceMixin, UIDFieldMixin

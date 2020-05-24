@@ -9,7 +9,7 @@ import pytest
 from pytest_mock.plugin import MockFixture
 import requests
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.session import Session
+
 from starlette.testclient import TestClient
 
 from tests.utils.user import user_authentication_headers

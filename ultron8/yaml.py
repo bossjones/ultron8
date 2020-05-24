@@ -1288,7 +1288,8 @@ def parse_conf(filename, config=None):
 
 # smoke-tests
 if __name__ == "__main__":
-    import logging
+    # import logging
+    print("yaml")
 
     # conf_basename = "try"
     # doc = yaml_load_fromstring(fake_yaml, ordered=True)

@@ -6,7 +6,7 @@ from typing import Optional
 from fastapi.encoders import jsonable_encoder
 import requests
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.session import Session
+
 import ujson
 
 from tests.utils.user import create_random_user

@@ -9,7 +9,7 @@ from typing import Tuple
 from freezegun import freeze_time
 from jose import jwt as josejwt
 import pytest
-from sqlalchemy.orm.session import Session
+from sqlalchemy.orm import Session
 
 from tests.conftest import fixtures_path
 import ultron8

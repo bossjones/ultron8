@@ -5,7 +5,7 @@ from typing import Optional, Union
 
 import requests
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.session import Session
+
 
 from tests.utils.user import create_random_user
 from tests.utils.utils import random_lower_string
