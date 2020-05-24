@@ -33,11 +33,9 @@ def hash_digest(content: str) -> str:
     return hashlib.sha1(maybe_encode(content)).hexdigest()
 
 
-# FIXME: This is a dynamic type, use to be
-# def __getattr__(self, name: str) -> NullConfig:
 # https://mypy.readthedocs.io/en/stable/dynamic_typing.html
 class NullConfig(object):
-    def __getattr__(self, name: str) -> Any:
+    def __getattr__(self, name: str) -> "NullConfig":
         return self
 
     def __call__(self) -> None:

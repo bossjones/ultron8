@@ -84,17 +84,13 @@ class TokenAuth(requests.auth.AuthBase):
         """Return a nice view of the token in use."""
         return "token {}...".format(self.token[:4])
 
-    # FIXME: This is a dynamic type, use to be
-    # def __ne__(self, other: Union[Tuple[str, str], TokenAuth]) -> bool:
     # https://mypy.readthedocs.io/en/stable/dynamic_typing.html
-    def __ne__(self, other: Union[Tuple[str, str], Any]) -> bool:
+    def __ne__(self, other: Union[Tuple[str, str], "TokenAuth"]) -> bool:
         """Test for equality, or the lack thereof."""
         return not self == other
 
-    # FIXME: This is a dynamic type, use to be
-    # def __ne__(self, other: Union[Tuple[str, str], TokenAuth]) -> bool
     # https://mypy.readthedocs.io/en/stable/dynamic_typing.html
-    def __eq__(self, other: Union[Tuple[str, str], Any]) -> bool:
+    def __eq__(self, other: Union[Tuple[str, str], "TokenAuth"]) -> bool:
         """Test for equality, or the lack thereof."""
         return self.token == getattr(other, "token", None)
 

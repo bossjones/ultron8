@@ -422,9 +422,8 @@ class RootView(ConfigView):
         del self.sources[:]
         self.redactions.clear()
 
-    # NOTE: Dynamic typing, need to figure out better way to resolve this
     # https://mypy.readthedocs.io/en/stable/dynamic_typing.html
-    def root(self) -> Any:
+    def root(self) -> "RootView":
         return self
 
     def set_redaction(self, path: int, flag: str) -> None:
