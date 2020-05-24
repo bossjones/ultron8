@@ -578,8 +578,9 @@ def autoflake(ctx, loc="local", verbose=0, check=False, dry_run=False, in_place=
     if in_place:
         _cmd += " --in-place"
 
-    _cmd += " ultron8"
     _cmd += " --exclude=__init__.py"
+    _cmd += " ultron8"
+    _cmd += " tests"
 
     if verbose >= 1:
         msg = "{}".format(_cmd)
