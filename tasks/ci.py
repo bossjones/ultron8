@@ -549,7 +549,15 @@ done
 
 
 @task(incrementable=["verbose"])
-def autoflake(ctx, loc="local", verbose=0, check=False, dry_run=False, in_place=False):
+def autoflake(
+    ctx,
+    loc="local",
+    verbose=0,
+    check=False,
+    dry_run=False,
+    in_place=False,
+    remove_all_unused_imports=False,
+):
     """
     Use autoflake to remove unused imports, recursively, remove unused variables, and exclude __init__.py
 
@@ -569,8 +577,12 @@ def autoflake(ctx, loc="local", verbose=0, check=False, dry_run=False, in_place=
     for k, v in env.items():
         ctx.config["run"]["env"][k] = v
 
+    # To remove all unused imports (whether or not they are from the standard library), use the --remove-all-unused-imports option.
     _cmd = "autoflake"
-    _cmd += " --remove-all-unused-imports --recursive --remove-unused-variables"
+    _cmd += " --recursive --remove-unused-variables"
+
+    if remove_all_unused_imports:
+        _cmd += " --remove-all-unused-imports "
 
     if check:
         _cmd += " --check"
