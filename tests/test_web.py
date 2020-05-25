@@ -1,7 +1,6 @@
 """Test Web Module."""
 # pylint: disable=protected-access
 import logging
-import os
 
 from fastapi.applications import FastAPI
 import pytest

@@ -3,10 +3,6 @@
 """
 import contextlib
 import logging.config
-import os
-import signal
-import threading
-import time
 
 import pkg_resources
 

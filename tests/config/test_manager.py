@@ -1,14 +1,6 @@
 """Test config utils."""
 # pylint: disable=protected-access
 import hashlib
-import logging
-import os
-from pathlib import Path
-import shutil
-import tempfile
-from tempfile import NamedTemporaryFile, mkdtemp
-import unittest
-import unittest.mock as mock
 
 import pytest
 

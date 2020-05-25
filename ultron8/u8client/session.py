@@ -2,11 +2,9 @@ import collections.abc as abc_collections
 from contextlib import contextmanager
 import datetime
 import logging
-import os
-import time
 from unittest.mock import _ANY, MagicMock, Mock
 
-from typing import Any, Callable, Dict, Iterator, Optional, Tuple, Union
+from typing import Callable, Dict, Iterator, Optional, Tuple, Union
 
 import dateutil.parser
 import requests

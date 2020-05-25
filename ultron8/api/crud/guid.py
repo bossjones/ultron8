@@ -1,5 +1,4 @@
 # from ultron8.api.db.u_sqlite import database, guid_tracker
-from collections import namedtuple
 from datetime import datetime
 import logging
 

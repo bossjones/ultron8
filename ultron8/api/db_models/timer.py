@@ -1,7 +1,5 @@
 from __future__ import absolute_import
 
-import hashlib
-import json
 
 from sqlalchemy import JSON, Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship

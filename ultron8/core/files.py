@@ -1,5 +1,4 @@
 import json
-import sys
 
 from ultron8.logging_init import getLogger
 

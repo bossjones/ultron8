@@ -2,12 +2,8 @@
 # Parse a dictionary structure and return an immutable structure that
 # contain a validated configuration.
 # """
-import datetime
-import getpass
 import itertools
 import logging
-import os
-from urllib.parse import urlparse
 
 import pytz
 

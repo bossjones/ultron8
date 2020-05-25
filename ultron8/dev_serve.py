@@ -2,7 +2,6 @@
 
 import logging
 from pathlib import Path
-import sys
 
 from fastapi import Depends, FastAPI, Header, HTTPException
 from starlette.middleware.cors import CORSMiddleware

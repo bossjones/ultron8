@@ -1,7 +1,7 @@
 # SOURCE: https://blog.bartab.fr/fastapi-logging-on-the-fly/
 from __future__ import annotations
 
-from typing import Any, ForwardRef, List, Optional
+from typing import Any, List, Optional
 
 from pydantic import BaseModel
 

@@ -1,7 +1,7 @@
 import os
 import sys
 
-from typing import Any, Tuple
+from typing import Tuple
 
 # import pdb
 import click
@@ -37,7 +37,6 @@ def set_trace():
     """
     # SOURCE: https://github.com/pallets/click/issues/1121
     # pdb.Pdb(stdin=stdin, stdout=stdout).set_trace()
-    pass
 
 
 # http://click.palletsprojects.com/en/5.x/options/

@@ -1,6 +1,5 @@
 import json
 
-from typing import Optional
 
 from fastapi.encoders import jsonable_encoder
 from freezegun import freeze_time

@@ -1,7 +1,6 @@
 """Test u8client session"""
 # pylint: disable=protected-access
 import logging
-import os
 
 # import pyconfig
 import pytest
@@ -108,7 +107,7 @@ class TestUltronSession:
         url = "http://localhost:11267/v1/users"
 
         r = requests.Request("GET", url, auth=s)
-        prepped = r.prepare()
+        r.prepare()
         # prepped = s.prepare_request(r)
 
         assert isinstance(s, ultron8.u8client.session.TokenAuth)
@@ -165,8 +164,8 @@ class TestUltronSession:
     # @mock.patch.object(requests.Session, "request")
     def test_default_timeout(self, mocker):
         """Test that default timeout values are used"""
-        mock_init = mocker.spy(session.UltronSession, "__init__")
-        mock_call = mocker.spy(session.UltronSession, "__call__")
+        mocker.spy(session.UltronSession, "__init__")
+        mocker.spy(session.UltronSession, "__call__")
         # request_mock = mocker.patch.object(
         #     session.requests, "Session", autospec=True
         # )
@@ -178,7 +177,7 @@ class TestUltronSession:
         assert s.default_connect_timeout == 4
         assert s.default_read_timeout == 10
 
-        get_spy = mocker.spy(s, "get")
+        mocker.spy(s, "get")
         r = s.get("http://localhost:11267/v1/version")
         assert r.status_code == 200
         assert r.url == "http://localhost:11267/v1/version"

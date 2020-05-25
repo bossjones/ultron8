@@ -1,6 +1,5 @@
 import logging
 
-from typing import Dict
 
 import pytest
 import requests
@@ -23,7 +22,7 @@ class TestLoginApiEndpoint:
         logger.debug("server_api : %s", server_api)
 
         r = fastapi_client.get(f"{server_api}{settings.API_V1_STR}/logs")
-        resp_json = r.json()
+        r.json()
         assert r.status_code == 200
 
     def test_logger_get(self, fastapi_client: TestClient) -> None:

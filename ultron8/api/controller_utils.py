@@ -1,5 +1,4 @@
 """Basic utility module for Api service."""
-from datetime import datetime, timedelta
 import logging
 
 from starlette.exceptions import HTTPException

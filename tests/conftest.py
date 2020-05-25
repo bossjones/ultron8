@@ -4,22 +4,17 @@ Global test fixtures definitions.
 # Taken from tedi and guid_tracker
 
 import base64
-from collections import ChainMap
 from contextlib import contextmanager
-import copy
-from copy import deepcopy
 import datetime
-import logging
 import os
 from pathlib import Path
-import platform
 import posixpath
 import shutil
 import tempfile
 
 # import asyncio
 import typing
-from typing import Any, Dict, Generator, Iterator, Tuple
+from typing import Dict, Iterator, Tuple
 
 from _pytest.fixtures import SubRequest
 from _pytest.monkeypatch import MonkeyPatch

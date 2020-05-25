@@ -3,8 +3,6 @@
 import errno
 import logging
 import os
-import unittest
-import unittest.mock as mock
 
 from typing import Dict, Iterator, Union
 
@@ -58,7 +56,7 @@ def atomic_mocks(mocker, monkeypatch):
 def fake_environ(
     mocker: MockFixture, monkeypatch: MonkeyPatch
 ) -> Iterator[Dict[str, Dict[str, Union[str, int]]]]:
-    orig_environ = os.environ
+    os.environ
     environ = dict()
     environ["DEBUG"] = "True"
     environ["TESTING"] = "True"

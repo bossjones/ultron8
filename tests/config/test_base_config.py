@@ -1,9 +1,6 @@
 """Test Base Config."""
 # pylint: disable=protected-access
 import argparse
-from collections import ChainMap
-import copy
-from copy import deepcopy
 import logging
 import os
 import shutil

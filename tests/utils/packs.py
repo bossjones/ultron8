@@ -1,5 +1,3 @@
-from typing import Optional
-
 import requests
 from sqlalchemy.orm import Session
 

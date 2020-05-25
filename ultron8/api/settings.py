@@ -1,12 +1,9 @@
 """Gathers environment settings and loads them into global attributes for Api service."""
-from dataclasses import dataclass, field
 from datetime import timedelta
 import logging
 import os
-import sys
 import uuid
 
-from typing import Any
 
 from pydantic import EmailStr
 from starlette.config import Config

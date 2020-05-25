@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 import io
 import json
 import logging
-import os
 
 import pytest
 import requests
@@ -31,7 +30,7 @@ from tests.utils.utils import (
 try:
     import cPickle as pickle
 except ImportError:
-    import pickle
+    pass
 
 
 logger = logging.getLogger(__name__)

@@ -1,7 +1,4 @@
-import random
-import string
-
-from typing import Dict, Optional
+from typing import Dict
 
 import factory
 import requests

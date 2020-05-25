@@ -3,7 +3,6 @@ from __future__ import absolute_import
 import datetime
 import hashlib
 import json
-import logging
 
 from sqlalchemy import JSON, Column, DateTime, ForeignKey, Integer, String, orm
 from sqlalchemy.orm import backref, relationship

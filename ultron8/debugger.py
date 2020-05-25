@@ -111,11 +111,11 @@ def dump_vars(obj):
 
 def dump_all(obj):
     print("[run]--------------[dir(obj)]--------------")
-    l = dump_dir(obj)
+    dump_dir(obj)
     print("[run]--------------[obj.__dict__]--------------")
-    d = dump_dict(obj)
+    dump_dict(obj)
     print("[run]--------------[pp.pprint(vars(obj))]--------------")
-    v = dump_vars(obj)
+    dump_vars(obj)
 
 
 def enable_remote_debugging():

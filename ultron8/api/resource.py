@@ -24,7 +24,6 @@ class LogAdapter(object):
 
 def UltronSite():
     """Web server"""
-    pass
 
 
 class JSONEncoder(json.JSONEncoder):

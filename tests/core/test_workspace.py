@@ -1,8 +1,6 @@
-from gettext import gettext as _
 import logging
 import os
 import shutil
-import stat
 import tempfile
 
 import pytest
@@ -23,7 +21,7 @@ class TestCliWorkspace(object):
         base = tempfile.mkdtemp()
         fake_dir = tempfile.mkdtemp(prefix="config", dir=base)
         full_file_name = "smart.yaml"
-        path = os.path.join(fake_dir, full_file_name)
+        os.path.join(fake_dir, full_file_name)
 
         # create fake fixture data to be returned as list(<fake_dir>)
         default_path = os.path.abspath(os.path.expanduser(fake_dir))
@@ -264,7 +262,7 @@ class TestCliWorkspace(object):
             fake_dir_root, "ultron8"
         )  # eg. /home/developer/.config/ultron8
         full_file_name = "smart.yaml"
-        path = os.path.join(fake_dir, full_file_name)
+        os.path.join(fake_dir, full_file_name)
 
         mock_app_home = mocker.patch.object(
             workspace, "app_home", return_value=fake_dir, autospec=True,

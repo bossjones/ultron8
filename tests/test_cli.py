@@ -1,7 +1,6 @@
 from contextlib import contextmanager
 import os
 import shutil
-from uuid import uuid4
 
 from typing import Iterator
 

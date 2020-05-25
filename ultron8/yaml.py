@@ -4,7 +4,6 @@
 # flake8: noqa
 import collections
 from collections import OrderedDict
-import functools
 import keyword
 import logging
 import os
@@ -40,7 +39,7 @@ try:
             dump_vars,
             get_pprint,
         )
-except ImportError as exc:
+except ImportError:
     output = "WARNING: Ipython not imported, fatal error handler not initialized. If you don't want to automatically step into pdb on exception, then ignore this error message. Module= {}".format(
         __name__
     )
@@ -56,7 +55,7 @@ try:
 
     EDITING_ENABLED = True
 
-except Exception as e:
+except Exception:
     EDITING_ENABLED = False
     LOGGER.critical("ultron8.yaml: ruamel.yaml is not installed")
     exit(1)
@@ -465,7 +464,7 @@ def _format_yaml_dump2(sdata):
         if len(line.strip()) == 0:
             try:
                 nextline = ldata[index + 1]
-            except Exception as e:
+            except Exception:
                 nextline = ""
             indentprevline = len(ldata[index - 1]) - len(ldata[index - 1].lstrip(" "))
             indentnextline = len(nextline) - len(nextline.lstrip(" "))
@@ -524,7 +523,7 @@ def setInDict(dataDict, path, value):
         for k in mapList[:-1]:
             dataDict = dataDict[k]
         dataDict[mapList[-1]] = value
-    except Exception as e:
+    except Exception:
         return False
     return True
 
@@ -769,7 +768,7 @@ class yamlfile:
         try:
             for k in mapList:
                 dataDict = dataDict[k]
-        except Exception as e:
+        except Exception:
             nodetype = "none"
             dataDict = None
         else:
@@ -1020,7 +1019,7 @@ def merge(source, destination):
                 else:
                     # convert to string and remove newlines from multiline attributes
                     destination[key] = str(value).replace("\n", "")
-    except Exception as e:
+    except Exception:
         LOGGER.error("Problem merging subtrees, probably invalid YAML file")
 
     return destination

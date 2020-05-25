@@ -691,3 +691,38 @@ coverage combine
 """
 
     ctx.run(_cmd)
+
+
+@task(
+    pre=[
+        call(clean, loc="local"),
+        call(verify_python_version, loc="local"),
+        call(pre_start, loc="local"),
+        call(alembic_upgrade, loc="local"),
+        call(mypy, loc="local"),
+        call(autoflake, loc="local", in_place=True),
+        call(black, loc="local", check=False),
+        call(isort, loc="local", apply=True),
+        call(black, loc="local", check=False),
+        call(mypy, loc="local"),
+        call(pytest, loc="local"),
+    ],
+    incrementable=["verbose"],
+)
+def lint(ctx, loc="local", check=True, debug=False, verbose=0):
+    """
+    Run all static analysis[mypy,autoflake,black,isort,black,mypy,pytest]
+    Usage: inv ci.lint
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    if verbose >= 1:
+        msg = "[lint] check mode disabled"
+        click.secho(msg, fg="green")
