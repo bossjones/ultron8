@@ -3,7 +3,6 @@ git tasks
 """
 import logging
 from invoke import task
-import os
 import click
 from tasks.utils import get_compose_env, is_venv
 

@@ -1,7 +1,6 @@
 """
 ci tasks
 """
-import os
 import logging
 from invoke import task, call
 import click
@@ -593,6 +592,7 @@ def autoflake(
     _cmd += " --exclude=__init__.py"
     _cmd += " ultron8"
     _cmd += " tests"
+    _cmd += " tasks"
 
     if verbose >= 1:
         msg = "{}".format(_cmd)

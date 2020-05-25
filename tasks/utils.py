@@ -7,33 +7,17 @@ supporting task functions
 # string in this script, we don't import unicode_literals to avoid the issue.
 from __future__ import absolute_import, division, print_function
 
-import argparse
 import contextlib
 import copy
-from distutils import sysconfig
 import errno
-import getpass
-from getpass import getpass
-import hashlib
-import io
 import logging
-import multiprocessing
 import os
-import os.path as p
-import platform
-import re
 import select
-import shlex
 import shutil
-from shutil import rmtree
 from shutil import which
 import stat
 import subprocess
 import sys
-import tarfile
-import tempfile
-from tempfile import mkdtemp
-import time
 
 from invoke import Exit
 
