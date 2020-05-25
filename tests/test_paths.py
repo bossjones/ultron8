@@ -4,7 +4,6 @@
 
 # import pyconfig
 
-from gettext import gettext as _
 import logging
 import os
 import shutil
@@ -14,9 +13,10 @@ import tempfile
 import pytest
 from pytest_mock.plugin import MockFixture
 
-from tests.conftest import fixtures_path
 import ultron8
 from ultron8 import paths
+
+from tests.conftest import fixtures_path
 
 # import unittest
 

@@ -1,18 +1,18 @@
 """Test Web Module."""
 # pylint: disable=protected-access
 import logging
-import os
 
 from fastapi.applications import FastAPI
 import pytest
 from pytest_mock.plugin import MockFixture
 from starlette.testclient import TestClient
 
+import ultron8
+from ultron8.api import settings
+
 # from ultron8 import __version__
 # from ultron8 import client
 from tests.utils.utils import get_server_api_with_version
-import ultron8
-from ultron8.api import settings
 
 logger = logging.getLogger(__name__)
 

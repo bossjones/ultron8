@@ -1,9 +1,7 @@
 # Example usage:  ultronctl --debug login --cluster=local --email=admin@ultron8.com --password=password token
 
-import os
 import sys
 
-from typing import Any, Tuple
 
 import click
 

@@ -6,15 +6,15 @@ from typing import Optional
 from fastapi.encoders import jsonable_encoder
 import requests
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.session import Session
 import ujson
 
-from tests.utils.user import create_random_user
-from tests.utils.utils import random_lower_string
 from ultron8.api import crud
 from ultron8.api.db_models.packs import Packs
 from ultron8.api.db_models.trigger import TriggerTypeDB
 from ultron8.api.models.trigger import TriggerTypeCreate
+
+from tests.utils.user import create_random_user
+from tests.utils.utils import random_lower_string
 
 
 def create_random_trigger_type_name() -> str:

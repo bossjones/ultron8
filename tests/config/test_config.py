@@ -1,23 +1,20 @@
 """Test Global Config."""
 # pylint: disable=protected-access
-from collections import ChainMap
 import copy
-from copy import deepcopy
 import logging
 import os
 from pathlib import Path
-import platform
-import posixpath
 import shutil
 import tempfile
 
 import pyconfig
 import pytest
 
-from tests.utils.filesystem import helper_write_yaml_to_disk
 import ultron8
 from ultron8 import config
 from ultron8.config import get_config
+
+from tests.utils.filesystem import helper_write_yaml_to_disk
 
 # from ultron8.config import do_set_flag
 # from ultron8.config import do_get_flag
@@ -634,7 +631,7 @@ clusters:
 
         # create fake config directory
         base = request.cls.home
-        fake_dir_root = request.cls.xdg_config_home
+        request.cls.xdg_config_home
         fake_dir = request.cls.ultron_config_dir  # eg. /home/developer/.config/ultron8
 
         # create fake fixture data to be returned as list(<fake_dir>)

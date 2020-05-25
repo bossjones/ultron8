@@ -2,7 +2,6 @@
 # https://github.com/3lpsy/boucanpy
 import logging
 
-from typing import List, Optional
 
 from fastapi import Depends
 from sqlalchemy import String, cast, desc, func, or_

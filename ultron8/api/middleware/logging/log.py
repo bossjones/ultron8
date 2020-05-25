@@ -1,8 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
-import codecs
 from collections import OrderedDict
-import json
 import logging
 import logging.config
 import os

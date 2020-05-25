@@ -2,7 +2,6 @@ from typing import List, Optional
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.session import Session
 
 from ultron8.api.db_models.trigger import TriggerInstanceDB
 from ultron8.api.models.trigger import TriggerInstanceCreate, TriggerInstanceUpdate

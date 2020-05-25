@@ -1,7 +1,6 @@
 """
 ci tasks
 """
-import os
 import logging
 from invoke import task, call
 import click
@@ -77,7 +76,7 @@ rm -f cov.xml
 
 
 @task
-def pylint(ctx, loc="local", tests=False, everything=False):
+def pylint(ctx, loc="local", tests=False, everything=False, specific=""):
     """
     pylint ultron8 folder
     Usage: inv ci.pylint
@@ -96,7 +95,11 @@ def pylint(ctx, loc="local", tests=False, everything=False):
             "pylint --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc tests"
         )
     elif everything:
-        ctx.run("pylint --rcfile ./lint-configs-python/python/pylintrc tests")
+        ctx.run("pylint --rcfile ./lint-configs-python/python/pylintrc tests ultron8")
+    elif specific:
+        ctx.run(
+            f"pylint --disable=all --enable={specific} --rcfile ./lint-configs-python/python/pylintrc tests ultron8"
+        )
     else:
         ctx.run(
             "pylint --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc ultron8"
@@ -544,8 +547,15 @@ done
             ctx.run(_cmd_apply)
 
 
+@task(incrementable=["verbose"])
 def autoflake(
-    ctx, loc="local", verbose=0, check=False, dry_run=False,
+    ctx,
+    loc="local",
+    verbose=0,
+    check=False,
+    dry_run=False,
+    in_place=False,
+    remove_all_unused_imports=False,
 ):
     """
     Use autoflake to remove unused imports, recursively, remove unused variables, and exclude __init__.py
@@ -554,6 +564,8 @@ def autoflake(
         Usage: inv ci.autoflake --check -vvv
     To run autoflake in check only mode(dry-run):
         Usage: inv ci.autoflake --check -vvv --dry-run
+    To run autoflake inplace w/(dry-run):
+        Usage: inv ci.autoflake --in-place -vvv --dry-run
     """
     env = get_compose_env(ctx, loc=loc)
 
@@ -564,14 +576,23 @@ def autoflake(
     for k, v in env.items():
         ctx.config["run"]["env"][k] = v
 
+    # To remove all unused imports (whether or not they are from the standard library), use the --remove-all-unused-imports option.
     _cmd = "autoflake"
-    _cmd += " --remove-all-unused-imports --recursive --remove-unused-variables"
+    _cmd += " --recursive --remove-unused-variables"
+
+    if remove_all_unused_imports:
+        _cmd += " --remove-all-unused-imports "
 
     if check:
         _cmd += " --check"
 
-    _cmd += " ultron8"
+    if in_place:
+        _cmd += " --in-place"
+
     _cmd += " --exclude=__init__.py"
+    _cmd += " ultron8"
+    _cmd += " tests"
+    _cmd += " tasks"
 
     if verbose >= 1:
         msg = "{}".format(_cmd)
@@ -670,3 +691,38 @@ coverage combine
 """
 
     ctx.run(_cmd)
+
+
+@task(
+    pre=[
+        call(clean, loc="local"),
+        call(verify_python_version, loc="local"),
+        call(pre_start, loc="local"),
+        call(alembic_upgrade, loc="local"),
+        call(mypy, loc="local"),
+        call(autoflake, loc="local", in_place=True),
+        call(black, loc="local", check=False),
+        call(isort, loc="local", apply=True),
+        call(black, loc="local", check=False),
+        call(mypy, loc="local"),
+        call(pytest, loc="local"),
+    ],
+    incrementable=["verbose"],
+)
+def lint(ctx, loc="local", check=True, debug=False, verbose=0):
+    """
+    Run all static analysis[mypy,autoflake,black,isort,black,mypy,pytest]
+    Usage: inv ci.lint
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    if verbose >= 1:
+        msg = "[lint] check mode disabled"
+        click.secho(msg, fg="green")

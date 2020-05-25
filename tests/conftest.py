@@ -4,29 +4,23 @@ Global test fixtures definitions.
 # Taken from tedi and guid_tracker
 
 import base64
-from collections import ChainMap
 from contextlib import contextmanager
-import copy
-from copy import deepcopy
 import datetime
-import logging
 import os
 from pathlib import Path
-import platform
 import posixpath
 import shutil
 import tempfile
 
 # import asyncio
 import typing
-from typing import Any, Dict, Generator, Iterator, Tuple
+from typing import Dict, Iterator, Tuple
 
 from _pytest.fixtures import SubRequest
 from _pytest.monkeypatch import MonkeyPatch
 import betamax
 from betamax_matchers import json_body
 from fastapi import FastAPI
-from fastapi.applications import FastAPI
 import pytest
 import requests
 from starlette.testclient import (
@@ -39,6 +33,10 @@ from starlette.testclient import (
     TimeOut,
 )
 
+from ultron8.api import settings
+from ultron8.api.db.u_sqlite.session import SessionLocal
+from ultron8.web import get_application
+
 from tests.utils.user import authentication_token_from_email
 from tests.utils.utils import (
     get_server_api,
@@ -47,9 +45,6 @@ from tests.utils.utils import (
     get_superuser_token_headers,
     superuser_credentials,
 )
-from ultron8.api import settings
-from ultron8.api.db.u_sqlite.session import SessionLocal
-from ultron8.web import get_application
 
 # from ultron8.api import settings
 # from ultron8.web import app

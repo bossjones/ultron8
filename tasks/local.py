@@ -4,7 +4,6 @@ local tasks
 import logging
 from invoke import task, call
 from invoke.exceptions import Exit
-import os
 
 # from sqlalchemy.engine.url import make_url
 import click

@@ -259,8 +259,6 @@ if "__main__" == __name__:
 
     # from ultron8.api.models import orm_to_model
 
-    import json
-
     from pydantic.json import pydantic_encoder
 
     #     # Initial - Setup environment vars before testing anything
@@ -268,8 +266,6 @@ if "__main__" == __name__:
     from sqlalchemy import inspect
 
     #     # import better_exceptions; better_exceptions.hook()
-
-    import sys
 
     # from IPython.core.debugger import Tracer  # noqa
     # from IPython.core import ultratb

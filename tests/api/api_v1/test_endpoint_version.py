@@ -1,14 +1,14 @@
 import logging
 
-from typing import Dict
 
 import pytest
 import requests
 from starlette.testclient import TestClient
 
-from tests.utils.utils import get_server_api
 from ultron8 import __version__
 from ultron8.api import settings
+
+from tests.utils.utils import get_server_api
 
 logger = logging.getLogger(__name__)
 

@@ -1,11 +1,9 @@
 # Example usage: ultronctl user --cluster=local list
 
 import json
-import os
 import pprint
 import sys
 
-from typing import Any, Tuple
 
 import click
 from fastapi.encoders import jsonable_encoder

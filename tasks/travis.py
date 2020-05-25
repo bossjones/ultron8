@@ -1,7 +1,6 @@
 """
 travis tasks
 """
-import os
 import logging
 from invoke import task, call
 import click

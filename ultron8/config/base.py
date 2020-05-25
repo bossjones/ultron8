@@ -16,8 +16,7 @@
 
 from __future__ import annotations
 
-from collections import ChainMap, OrderedDict, abc
-from copy import deepcopy
+from collections import OrderedDict, abc
 import logging
 import os
 from pathlib import Path

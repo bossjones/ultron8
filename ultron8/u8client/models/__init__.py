@@ -8,6 +8,9 @@ import dateutil.parser
 import requests
 import requests.compat
 
+from ultron8.u8client import session
+from ultron8.u8client.utils import get_api_endpoint
+
 # from . import exceptions
 # from . import session
 from ultron8.exceptions.client import (  # AuthenticationFailed,; BadRequest,; CardHasNoContentUrl,; ClientError,; Conflict,; ConnectionError,; ForbiddenError,; GeneratedTokenExpired,; MethodNotAllowed,; MissingAppAuthentication,; MissingAppBearerAuthentication,; MissingAppInstallationAuthentication,; NotAcceptable,; NotFoundError,; NotRefreshable,; ResponseError,; ServerError,; UltronClientError,; UltronClientException,; UnavailableForLegalReasons,; UnprocessableEntity,
@@ -19,8 +22,6 @@ from ultron8.exceptions.client import (  # AuthenticationFailed,; BadRequest,; C
     UnprocessableResponseBody,
     error_for,
 )
-from ultron8.u8client import session
-from ultron8.u8client.utils import get_api_endpoint
 
 LOG = logging.getLogger(__package__)
 

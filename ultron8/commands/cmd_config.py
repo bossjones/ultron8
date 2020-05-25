@@ -1,7 +1,5 @@
-import os
 import sys
 
-from typing import Any, Tuple
 
 import click
 

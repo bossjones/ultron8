@@ -1,10 +1,8 @@
 """
 Data Models for all things having to do with Sensors.
 """
-from datetime import datetime
-from enum import Enum
 
-from typing import Dict, List, Optional, Sequence, Set, Tuple, Union
+from typing import List, Optional
 
 from pydantic import BaseModel, Schema
 

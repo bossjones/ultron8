@@ -2,14 +2,11 @@
 """Config, yaml based config object using the ruamel python module"""
 # pylint: disable=line-too-long
 # pylint: disable=W1202
-import codecs
 import hashlib
-import json as jsonlib
 import logging
 import os
-import sys
 
-from typing import Any, Dict, Union
+from typing import Dict, Union
 
 from ultron8.config import ConfigError, config_parse, schema
 from ultron8.utils import maybe_decode, maybe_encode, mkdir_if_does_not_exist, mkdir_p
@@ -197,9 +194,10 @@ class ConfigManager(object):
 
 
 if __name__ == "__main__":
-    import logging
+    # import logging
 
-    # from ultron8.loggers import setup_logger
-    from ultron8.config import manager
-    from ultron8.yaml import yaml
-    import json as jsonlib
+    # # from ultron8.loggers import setup_logger
+    # from ultron8.config import manager
+    # from ultron8.yaml import yaml
+    # import json as jsonlib
+    print("manager")

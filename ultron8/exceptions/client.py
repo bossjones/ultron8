@@ -18,16 +18,12 @@ class UltronClientException(Exception):
 
     """
 
-    pass
-
 
 class GeneratedTokenExpired(UltronClientException):
     """This exception is used to prevent an expired token from being used.
 
     .. versionadded:: 1.2.0
     """
-
-    pass
 
 
 class AppInstallationTokenExpired(GeneratedTokenExpired):
@@ -36,16 +32,12 @@ class AppInstallationTokenExpired(GeneratedTokenExpired):
     .. versionadded:: 1.2.0
     """
 
-    pass
-
 
 class AppTokenExpired(GeneratedTokenExpired):
     """This exception is used to prevent an expired token from being used.
 
     .. versionadded:: 1.2.0
     """
-
-    pass
 
 
 class MissingAppAuthentication(UltronClientException):
@@ -54,8 +46,6 @@ class MissingAppAuthentication(UltronClientException):
     .. versionadded:: 1.2.0
     """
 
-    pass
-
 
 class MissingAppBearerAuthentication(MissingAppAuthentication):
     """Raised when user tries to call a method that requires app auth.
@@ -63,16 +53,12 @@ class MissingAppBearerAuthentication(MissingAppAuthentication):
     .. versionadded:: 1.2.0
     """
 
-    pass
-
 
 class MissingAppInstallationAuthentication(MissingAppAuthentication):
     """Raised when user tries to call a method that requires app installation.
 
     .. versionadded:: 1.2.0
     """
-
-    pass
 
 
 class CardHasNoContentUrl(UltronClientException):
@@ -83,8 +69,6 @@ class CardHasNoContentUrl(UltronClientException):
 
     .. versionadded:: 1.3.0
     """
-
-    pass
 
 
 class UltronClientError(UltronClientException):
@@ -177,8 +161,6 @@ class NotRefreshable(UltronClientException):
 class ResponseError(UltronClientError):
     """The base exception for errors stemming from UltronClient responses."""
 
-    pass
-
 
 class TransportError(UltronClientException):
     """Catch-all exception for errors coming from Requests.
@@ -209,8 +191,6 @@ class ConnectionError(TransportError):
 class UnexpectedResponse(ResponseError):
     """Exception class for responses that were unexpected."""
 
-    pass
-
 
 class UnprocessableResponseBody(ResponseError):
     """Exception class for response objects that cannot be handled."""
@@ -231,8 +211,6 @@ class UnprocessableResponseBody(ResponseError):
 class BadRequest(ResponseError):
     """Exception class for 400 responses."""
 
-    pass
-
 
 class AuthenticationFailed(ResponseError):
     """Exception class for 401 responses.
@@ -242,8 +220,6 @@ class AuthenticationFailed(ResponseError):
     - Need one time password (for two-factor authentication)
     - You are not authorized to access the resource
     """
-
-    pass
 
 
 class ForbiddenError(ResponseError):
@@ -255,25 +231,17 @@ class ForbiddenError(ResponseError):
     - Too many login failures
     """
 
-    pass
-
 
 class NotFoundError(ResponseError):
     """Exception class for 404 responses."""
-
-    pass
 
 
 class MethodNotAllowed(ResponseError):
     """Exception class for 405 responses."""
 
-    pass
-
 
 class NotAcceptable(ResponseError):
     """Exception class for 406 responses."""
-
-    pass
 
 
 class Conflict(ResponseError):
@@ -284,31 +252,21 @@ class Conflict(ResponseError):
     - Head branch was modified (SHA sums do not match)
     """
 
-    pass
-
 
 class UnprocessableEntity(ResponseError):
     """Exception class for 422 responses."""
-
-    pass
 
 
 class ClientError(ResponseError):
     """Catch-all for 400 responses that aren't specific errors."""
 
-    pass
-
 
 class ServerError(ResponseError):
     """Exception class for 5xx responses."""
 
-    pass
-
 
 class UnavailableForLegalReasons(ResponseError):
     """Exception class for 451 responses."""
-
-    pass
 
 
 error_classes = {

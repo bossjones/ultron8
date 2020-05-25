@@ -21,5 +21,5 @@ def is_valid_ipv4address(ip):
     try:
         ip_obj = IPv4Address(ip)
         return ip_obj
-    except ValueError as e:
+    except ValueError:
         return False

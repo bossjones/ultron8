@@ -1,9 +1,10 @@
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy.orm.session import Session
+from sqlalchemy.orm import Session
 
-from tests.utils.utils import random_lower_string
 from ultron8.api import crud
 from ultron8.api.models.user import UserCreate
+
+from tests.utils.utils import random_lower_string
 
 
 def test_create_user(db: Session) -> None:

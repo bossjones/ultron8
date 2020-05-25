@@ -1,7 +1,6 @@
 import datetime
 from datetime import timedelta
 import logging
-import os
 
 from typing import Tuple
 
@@ -9,12 +8,13 @@ from typing import Tuple
 from freezegun import freeze_time
 from jose import jwt as josejwt
 import pytest
-from sqlalchemy.orm.session import Session
+from sqlalchemy.orm import Session
 
-from tests.conftest import fixtures_path
 import ultron8
 from ultron8.api import crud, settings
 from ultron8.api.core import jwt
+
+from tests.conftest import fixtures_path
 
 logger = logging.getLogger(__name__)
 

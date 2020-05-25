@@ -1,7 +1,6 @@
 """Test Global Config."""
 # pylint: disable=protected-access
 import logging
-import os
 
 from typing import Iterator, Tuple
 

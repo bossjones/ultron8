@@ -1,9 +1,5 @@
 """Test Smart Config."""
 # pylint: disable=protected-access
-import logging
-import os
-import shutil
-import tempfile
 
 import pyconfig
 import pytest

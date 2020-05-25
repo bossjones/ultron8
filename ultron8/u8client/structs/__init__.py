@@ -3,6 +3,8 @@ import functools
 
 from requests.compat import urlencode, urlparse
 
+from ultron8.u8client import models
+
 # from . import exceptions
 # from . import models
 from ultron8.exceptions.client import (  # AuthenticationFailed,; BadRequest,; CardHasNoContentUrl,; ClientError,; Conflict,; ConnectionError,; ForbiddenError,; GeneratedTokenExpired,; MethodNotAllowed,; MissingAppAuthentication,; MissingAppBearerAuthentication,; MissingAppInstallationAuthentication,; NotAcceptable,; NotFoundError,; NotRefreshable,; ResponseError,; ServerError,; UltronClientError,; UltronClientException,; UnavailableForLegalReasons,; UnprocessableEntity,
@@ -14,7 +16,6 @@ from ultron8.exceptions.client import (  # AuthenticationFailed,; BadRequest,; C
     UnprocessableResponseBody,
     error_for,
 )
-from ultron8.u8client import models
 
 
 class UltronIterator(models.UltronCore, abc_collections.Iterator):

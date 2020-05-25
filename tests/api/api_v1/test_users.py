@@ -9,15 +9,15 @@ import pytest
 from pytest_mock.plugin import MockFixture
 import requests
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.session import Session
 from starlette.testclient import TestClient
 
-from tests.utils.user import user_authentication_headers
-from tests.utils.utils import get_server_api, random_email, random_lower_string
 from ultron8.api import crud, settings
 from ultron8.api.api_v1.endpoints import users
 from ultron8.api.factories.users import _MakeRandomNormalUserFactory
 from ultron8.api.models.user import UserCreate, UserUpdate
+
+from tests.utils.user import user_authentication_headers
+from tests.utils.utils import get_server_api, random_email, random_lower_string
 
 logger = logging.getLogger(__name__)
 

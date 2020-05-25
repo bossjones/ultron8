@@ -4,7 +4,7 @@
 # number of processors available to use.
 # NOTE: Use a conservative default here; 2 should speed up most setups and not hurt
 # NOTE: any too bad. Override on command line as appropriate.
-jobs=2
+# jobs=2
 
 # List of plugins (as comma separated values of python modules names) to load,
 # usually to register additional checkers.

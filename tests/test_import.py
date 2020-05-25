@@ -6,8 +6,6 @@ from pytest import approx, raises
 def test() -> None:
     import ultron8
 
-    pass
-
 
 if __name__ == "__main__":
     import os

@@ -1,9 +1,7 @@
 # Example usage:  ultronctl --debug metrics --cluster=local --email=admin@ultron8.com --password=password show
 
-import os
 import sys
 
-from typing import Any, Tuple
 
 import click
 

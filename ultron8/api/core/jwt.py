@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import logging
 
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from jose import jwt
 

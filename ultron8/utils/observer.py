@@ -72,7 +72,6 @@ class Observer(object):
 
     def handler(self, observable, event):
         """Override this method to call a method to handle events."""
-        pass
 
     def stop_watching(self, observable):
         observable.remove_observer(self)
