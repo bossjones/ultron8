@@ -23,11 +23,11 @@ def cli(ctx):
     """
     Dummy command, doesn't do anything.
     """
-    if do_get_flag("cli.flags.debug"):
+    if ctx.obj["debug"]:
         click.echo("Debug mode initiated")
         set_trace()
 
-    if do_get_flag("cli.flags.debug"):
+    if ctx.obj["debug"]:
         click.echo("[DUMP ctx]: ")
         for k, v in ctx.obj.items():
             click.echo(f"  {k} -> {v}")
