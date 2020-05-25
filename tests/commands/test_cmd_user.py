@@ -3,7 +3,6 @@ import os
 import shutil
 import sys
 
-
 import click
 from click.testing import CliRunner
 from fastapi.encoders import jsonable_encoder

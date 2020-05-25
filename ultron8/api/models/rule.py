@@ -3,7 +3,6 @@ Data Models for all things having to do with Rule.
 """
 from datetime import datetime
 
-
 from pydantic import BaseModel, EmailStr, Schema
 
 from ultron8.api.models.base import BaseDataModel

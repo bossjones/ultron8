@@ -3,7 +3,6 @@ Data Models for all things having to do with Version.
 """
 import logging
 
-
 from pydantic import BaseModel, Schema
 
 from ultron8.api.models.base import BaseDataModel

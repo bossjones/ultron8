@@ -5,10 +5,7 @@ import logging
 import pytest
 
 import ultron8
-from ultron8.utils import dict_merge
-from ultron8.utils import maybe_decode
-from ultron8.utils import maybe_encode
-from ultron8.utils import next_or_none
+from ultron8.utils import dict_merge, maybe_decode, maybe_encode, next_or_none
 
 logger = logging.getLogger(__name__)
 

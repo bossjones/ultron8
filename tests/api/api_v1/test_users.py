@@ -261,7 +261,7 @@ class TestUserApiEndpoint:
         )
 
         assert 200 == r.status_code
-        api_user = r.json()
+        r.json()
 
         # # FIXME: Ok, so the put request is working, but for some reason it is not returning an updated value for full_name from the db_session, even though it is inside the database already.
         # user_by_email = crud.user.get_by_email(db, email=data.email)

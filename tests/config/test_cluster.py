@@ -2,9 +2,9 @@
 # pylint: disable=protected-access
 import logging
 
-
 import pytest
 import requests
+from starlette.testclient import TestClient
 
 from ultron8.api import settings
 import ultron8.config
@@ -18,21 +18,21 @@ from tests.utils.utils import get_server_api
 
 ################################
 
-
+# self, mocker: MockFixture, fastapi_client: TestClient, db: Session
 logger = logging.getLogger(__name__)
 
 
 @pytest.mark.configonly
 @pytest.mark.unittest
 class TestClusterConfig:
-    def test_valid_ClusterConfig(self) -> None:
+    def test_valid_ClusterConfig(self, fastapi_client: TestClient) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
         login_data = {
             "username": settings.FIRST_SUPERUSER,
             "password": settings.FIRST_SUPERUSER_PASSWORD,
         }
-        r = requests.post(
+        r = fastapi_client.post(
             f"{server_api}{settings.API_V1_STR}/login/access-token", data=login_data
         )
         tokens = r.json()

@@ -1,7 +1,5 @@
 import logging
 
-from typing import Generator
-
 # from fastapi import Security
 # import jwt
 # TODO: Look into security scopes https://github.com/tiangolo/fastapi/issues/840 # from fastapi.security import OAuth2AuthorizationCodeBearer, SecurityScopes
@@ -13,12 +11,12 @@ from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_403_FORBIDDEN
 
-from ultron8.api.utils.db import get_db
 from ultron8.api import crud, settings
 from ultron8.api.core.jwt import ALGORITHM
 from ultron8.api.db.u_sqlite.session import SessionLocal
 from ultron8.api.db_models.user import User
 from ultron8.api.models.token import TokenPayload
+from ultron8.api.utils.db import get_db
 
 logger = logging.getLogger(__name__)
 

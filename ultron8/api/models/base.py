@@ -1,6 +1,5 @@
 import logging
 
-
 from pydantic import BaseModel as PydanticBaseModel
 
 log = logging.getLogger(__name__)

@@ -4,7 +4,6 @@ import json
 import pprint
 import sys
 
-
 import click
 from fastapi.encoders import jsonable_encoder
 import termtables as tt
