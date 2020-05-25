@@ -64,74 +64,74 @@ def next_or_none(iterable):
         pass
 
 
-@contextlib.contextmanager
-def flock(fd):
-    close = False
-    if isinstance(fd, str):
-        fd = open(fd, "a")
-        close = True
+# @contextlib.contextmanager
+# def flock(fd):
+#     close = False
+#     if isinstance(fd, str):
+#         fd = open(fd, "a")
+#         close = True
 
-    try:
-        fcntl.lockf(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except BlockingIOError as e:  # locked by someone else
-        LOGGER.debug(f"Locked by another process: {fd}")
-        raise e
+#     try:
+#         fcntl.lockf(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+#     except BlockingIOError as e:  # locked by someone else
+#         LOGGER.debug(f"Locked by another process: {fd}")
+#         raise e
 
-    try:
-        yield
-    finally:
-        fcntl.lockf(fd, fcntl.LOCK_UN)
-        if close:
-            fd.close()
-
-
-@contextlib.contextmanager
-def chdir(path):
-    cwd = os.getcwd()
-    os.chdir(path)
-    try:
-        yield
-    finally:
-        os.chdir(cwd)
+#     try:
+#         yield
+#     finally:
+#         fcntl.lockf(fd, fcntl.LOCK_UN)
+#         if close:
+#             fd.close()
 
 
-@contextlib.contextmanager
-def signals(signal_map):
-    orig_map = {}
-    for signum, handler in signal_map.items():
-        orig_map[signum] = signal.signal(signum, handler)
+# @contextlib.contextmanager
+# def chdir(path):
+#     cwd = os.getcwd()
+#     os.chdir(path)
+#     try:
+#         yield
+#     finally:
+#         os.chdir(cwd)
 
-    try:
-        yield
-    finally:
-        for signum, handler in orig_map.items():
-            signal.signal(signum, handler)
+
+# @contextlib.contextmanager
+# def signals(signal_map):
+#     orig_map = {}
+#     for signum, handler in signal_map.items():
+#         orig_map[signum] = signal.signal(signum, handler)
+
+#     try:
+#         yield
+#     finally:
+#         for signum, handler in orig_map.items():
+#             signal.signal(signum, handler)
 
 
 # ------------------------------------------------
 
 
-def mkdir_p(path):
-    p = Path(path)
-    p.mkdir(parents=True, exist_ok=True)
-    d = dir_exists(path)
-    LOGGER.info("Verify mkdir_p ran: {}".format(d))
+# def mkdir_p(path):
+#     p = Path(path)
+#     p.mkdir(parents=True, exist_ok=True)
+#     d = dir_exists(path)
+#     LOGGER.info("Verify mkdir_p ran: {}".format(d))
 
 
-def dir_exists(path):
-    p = Path(path)
-    if not p.is_dir():
-        LOGGER.error("This is not a dir: {}".format(path))
-        return False
-    return True
+# def dir_exists(path):
+#     p = Path(path)
+#     if not p.is_dir():
+#         LOGGER.error("This is not a dir: {}".format(path))
+#         return False
+#     return True
 
 
-def mkdir_if_does_not_exist(path):
-    if not dir_exists(path):
-        LOGGER.error("Dir does not exist, creating ... : {}".format(path))
-        mkdir_p(path)
-        return True
-    return False
+# def mkdir_if_does_not_exist(path):
+#     if not dir_exists(path):
+#         LOGGER.error("Dir does not exist, creating ... : {}".format(path))
+#         mkdir_p(path)
+#         return True
+#     return False
 
 
 # SOURCE: https://github.com/edx/tubular/blob/2dcb3f7f420afbf6bd85fda91911e90eab668e52/tubular/utils/__init__.py

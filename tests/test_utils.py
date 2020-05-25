@@ -6,6 +6,9 @@ import pytest
 
 import ultron8
 from ultron8.utils import dict_merge
+from ultron8.utils import maybe_decode
+from ultron8.utils import maybe_encode
+from ultron8.utils import next_or_none
 
 logger = logging.getLogger(__name__)
 
@@ -73,3 +76,19 @@ class DictMergeTestCase:
             pass
         else:
             raise Exception("New keys added when they should not be")
+
+
+@pytest.mark.utilsonly
+@pytest.mark.unittest
+class TestStringsUtils:
+    def test_maybe_decode(self):
+        a_maybe_string = b"file:///etc/fstab"
+        assert maybe_decode(a_maybe_string) == "file:///etc/fstab"
+
+    def test_maybe_encode(self):
+        a_maybe_string = "file:///etc/fstab"
+        assert maybe_encode(a_maybe_string) == b"file:///etc/fstab"
+
+    def test_next_or_none(self):
+        a = [1, 2, 3, 4]
+        assert next_or_none(r for r in a if a != 0) == 1

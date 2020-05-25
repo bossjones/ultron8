@@ -1,13 +1,14 @@
 """
  Daemonize ultron8d.
 """
-import contextlib
-import logging.config
+# import contextlib
+# import logging.config
+import logging
 
-import pkg_resources
+# import pkg_resources
 
-import ultron8
-from ultron8.utils import chdir, flock, signals
+# import ultron8
+# from ultron8.utils import chdir, flock, signals
 
 # import ipdb
 
@@ -17,7 +18,7 @@ from ultron8.utils import chdir, flock, signals
 # from ultron8.manhole import make_manhole
 # from ultron8.mesos import MesosClusterRepository
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 # SOURCE: https://docs.python.org/3.6/library/asyncio-dev.html#asyncio-dev
 # SOURCE: https://docs.python.org/3.6/library/asyncio.html
@@ -26,42 +27,42 @@ log = logging.getLogger(__name__)
 # AbstractEventLoop.set_debug()
 
 
-def setup_logging(options):
-    default = pkg_resources.resource_filename(ultron8.__name__, "logging.conf")
-    logfile = options.log_conf or default
+# def setup_logging(options):
+#     default = pkg_resources.resource_filename(ultron8.__name__, "logging.conf")
+#     logfile = options.log_conf or default
 
-    level = asyncio_level = None
-    # level = None
-    if options.verbose > 0:
-        level = logging.INFO
-        asyncio_level = logging.WARNING
-    if options.verbose > 1:
-        level = logging.DEBUG
-        asyncio_level = logging.INFO
-    if options.verbose > 2:
-        asyncio_level = logging.DEBUG
+#     level = asyncio_level = None
+#     # level = None
+#     if options.verbose > 0:
+#         level = logging.INFO
+#         asyncio_level = logging.WARNING
+#     if options.verbose > 1:
+#         level = logging.DEBUG
+#         asyncio_level = logging.INFO
+#     if options.verbose > 2:
+#         asyncio_level = logging.DEBUG
 
-    ultron8_logger = logging.getLogger("ultron8")
-    asyncio_logger = logging.getLogger("asyncio")
+#     ultron8_logger = logging.getLogger("ultron8")
+#     asyncio_logger = logging.getLogger("asyncio")
 
-    logging.config.fileConfig(logfile)
-    if level is not None:
-        ultron8_logger.setLevel(level)
-    if asyncio_level is not None:
-        asyncio_logger.setLevel(asyncio_level)
+#     logging.config.fileConfig(logfile)
+#     if level is not None:
+#         ultron8_logger.setLevel(level)
+#     if asyncio_level is not None:
+#         asyncio_logger.setLevel(asyncio_level)
 
-    # Hookup twisted to standard logging
-    # twisted_log.PythonLoggingObserver().start()
+#     # Hookup twisted to standard logging
+#     # twisted_log.PythonLoggingObserver().start()
 
-    # Show stack traces for errors in twisted deferreds.
-    # if options.debug:
-    #     defer.setDebugging(True)
+#     # Show stack traces for errors in twisted deferreds.
+#     # if options.debug:
+#     #     defer.setDebugging(True)
 
 
-@contextlib.contextmanager
-def no_daemon_context(workdir, lockfile=None, signal_map={}):
-    with chdir(workdir), flock(lockfile), signals(signal_map):
-        yield
+# @contextlib.contextmanager
+# def no_daemon_context(workdir, lockfile=None, signal_map={}):
+#     with chdir(workdir), flock(lockfile), signals(signal_map):
+#         yield
 
 
 # class TronDaemon(object):
@@ -104,12 +105,12 @@ def no_daemon_context(workdir, lockfile=None, signal_map={}):
 #         # is running. If there is one, the following code could potentially
 #         # cause problems for the other daemon by removing its socket.
 #         if os.path.exists(self.manhole_sock):
-#             log.info('Removing orphaned manhole socket')
+#             logger.info('Removing orphaned manhole socket')
 #             os.remove(self.manhole_sock)
 
 #         self.manhole = make_manhole(dict(ultron8d=self, mcp=self.mcp))
 #         reactor.listenUNIX(self.manhole_sock, self.manhole)
-#         log.info(f"manhole started on {self.manhole_sock}")
+#         logger.info(f"manhole started on {self.manhole_sock}")
 
 #     def _run_www_api(self):
 #         # Local import required because of reactor import in server and www
@@ -129,7 +130,7 @@ def no_daemon_context(workdir, lockfile=None, signal_map={}):
 #             self.mcp.initial_setup()
 #         except Exception as e:
 #             msg = "Error in configuration %s: %s"
-#             log.exception(msg % (config_path, e))
+#             logger.exception(msg % (config_path, e))
 #             raise
 
 #     def _run_reactor(self):
@@ -141,12 +142,12 @@ def no_daemon_context(workdir, lockfile=None, signal_map={}):
 #         ).start()
 
 #     def _handle_shutdown(self, sig_num, stack_frame):
-#         log.info(f"Shutdown requested via {str(sig_num)}")
+#         logger.info(f"Shutdown requested via {str(sig_num)}")
 #         reactor.callLater(0, reactor.stop)
 #         waited = 0
 #         while reactor.running:
 #             if waited > 5:
-#                 log.error("timed out waiting for reactor shutdown")
+#                 logger.error("timed out waiting for reactor shutdown")
 #                 break
 #             time.sleep(0.1)
 #             waited += 0.1
@@ -156,7 +157,7 @@ def no_daemon_context(workdir, lockfile=None, signal_map={}):
 #         raise SystemExit(f"Terminating on signal {str(sig_num)}")
 
 #     def _handle_reconfigure(self, _signal_number, _stack_frame):
-#         log.info("Reconfigure requested by SIGHUP.")
+#         logger.info("Reconfigure requested by SIGHUP.")
 #         reactor.callLater(0, self.mcp.reconfigure)
 
 #     def _handle_debug(self, _signal_number, _stack_frame):
