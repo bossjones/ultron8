@@ -260,6 +260,7 @@ def pytest(
     usersonly=False,
     convertingtotestclientstarlette=False,
     loggeronly=False,
+    utilsonly=False,
 ):
     """
     Run pytest
@@ -316,6 +317,9 @@ def pytest(
 
     if loggeronly:
         _cmd += r" -m loggeronly "
+
+    if utilsonly:
+        _cmd += r" -m utilsonly "
 
     if pdb:
         _cmd += r" --pdb "
@@ -658,6 +662,7 @@ def clean_pyi(ctx, loc="local", verbose=0, dry_run=False):
         # call(pytest, loc="local", workspaceonly=True),
         # call(pytest, loc="local", clientonly=True),
         # call(pytest, loc="local", fastapionly=True),
+        # call(pytest, loc="local", utilsonly=True),
         # call(pytest, loc="local", jwtonly=True),
         # call(pytest, loc="local", mockedfs=True),
         # call(pytest, loc="local", clionly=True),

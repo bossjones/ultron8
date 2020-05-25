@@ -27,7 +27,7 @@ def _info() -> None:
 @click.pass_context
 def cli(ctx, fact: Tuple[str]):
     """Get info on running Ultron8 process."""
-    if do_get_flag("cli.flags.debug"):
+    if ctx.obj["debug"]:
         click.echo("Debug mode initiated")
         set_trace()
 

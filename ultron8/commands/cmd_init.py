@@ -16,7 +16,7 @@ stdin, stdout = sys.stdin, sys.stdout
 @click.pass_context
 def cli(ctx):
     """init cmd to setup workspace etc for ultron8."""
-    if do_get_flag("cli.flags.debug"):
+    if ctx.obj["debug"]:
         click.echo("Debug mode initiated")
         set_trace()
 

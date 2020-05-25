@@ -127,11 +127,8 @@ class TestUserApiEndpoint:
     ) -> None:
         server_api = get_server_api()
         logger.debug("server_api : %s", server_api)
-        # username = random_lower_string()
-        # password = random_lower_string()
 
         data = _MakeRandomNormalUserFactory()
-        # data = {"email": data.email, "password": data.password}
 
         r = fastapi_client.post(
             f"{server_api}{settings.API_V1_STR}/users/",

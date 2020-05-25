@@ -30,7 +30,7 @@ stdin, stdout = sys.stdin, sys.stdout
 @click.pass_context
 def cli(ctx):
     """config cmds for ultron8."""
-    if do_get_flag("cli.flags.debug"):
+    if ctx.obj["debug"]:
         click.echo("Debug mode initiated")
         set_trace()
 
@@ -41,7 +41,7 @@ def cli(ctx):
 @click.pass_context
 def show(ctx):
     """Cmd to show config object for ultron8."""
-    if do_get_flag("cli.flags.debug"):
+    if ctx.obj["debug"]:
         click.echo("Debug mode initiated")
         set_trace()
 
