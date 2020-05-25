@@ -1,6 +1,5 @@
 import sys
 
-
 import click
 
 from ultron8.cli import set_fact_flags, set_trace

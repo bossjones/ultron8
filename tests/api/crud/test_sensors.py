@@ -1,6 +1,5 @@
 import json
 
-
 from fastapi.encoders import jsonable_encoder
 from freezegun import freeze_time
 from pydantic.json import pydantic_encoder

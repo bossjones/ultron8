@@ -9,10 +9,9 @@ import os
 from typing import Dict, Union
 
 from ultron8.config import ConfigError, config_parse, schema
+from ultron8.paths import mkdir_if_does_not_exist, mkdir_p
 from ultron8.utils import maybe_decode, maybe_encode
 from ultron8.yaml import YAMLError, yaml, yaml_load, yaml_save
-
-from ultron8.paths import mkdir_p, mkdir_if_does_not_exist
 
 # import ultron8.utils as utils
 

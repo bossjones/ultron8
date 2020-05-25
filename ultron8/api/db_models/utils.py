@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-
 import six
 
 # SOURCE: https://docs.sqlalchemy.org/en/13/_modules/examples/vertical/dictlike.html

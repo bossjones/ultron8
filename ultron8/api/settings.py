@@ -4,7 +4,6 @@ import logging
 import os
 import uuid
 
-
 from pydantic import EmailStr
 from starlette.config import Config
 from starlette.datastructures import CommaSeparatedStrings, Secret

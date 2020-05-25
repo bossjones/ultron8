@@ -1,6 +1,5 @@
 import sys
 
-
 import click
 
 from ultron8 import __version__
