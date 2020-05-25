@@ -44,9 +44,10 @@ class RandomUserFactory(factory.Factory):
 
 
 def _MakeRandomNormalUserFactory() -> UserCreate:
+    _rand_num = random.randrange(1000)
     _first_name, _last_name = random_full_name()
-    _email = "{}.{}@example.org".format(_first_name, _last_name)
+    _email = "{}.{}{}@example.org".format(_first_name, _last_name, _rand_num)
     _full_name = "{} {}".format(_first_name, _last_name)
     _password = randomStringwithDigitsAndSymbols()
 
-    return RandomUserFactory(full_name=_full_name, email=_email, password=_password,)
+    return RandomUserFactory(full_name=_full_name, email=_email, password=_password)
