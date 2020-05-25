@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
+from sqlalchemy import inspect
 
 from ultron8.api.core.security import get_password_hash, verify_password
 from ultron8.api.db_models.user import User
@@ -59,7 +60,30 @@ def update(db_session: Session, *, user: User, user_in: UserUpdate) -> User:
     if user_in.password:
         passwordhash = get_password_hash(user_in.password)
         user.hashed_password = passwordhash
+    # inspect user object to see its state
+    # SOURCE: https://www.pythoncentral.io/understanding-python-sqlalchemy-session/
+    ins = inspect(user)
+    print(
+        "Transient: {0}; Pending: {1}; Persistent: {2}; Detached: {3}".format(
+            ins.transient, ins.pending, ins.persistent, ins.detached
+        )
+    )
     db_session.add(user)
+    print(
+        "Transient: {0}; Pending: {1}; Persistent: {2}; Detached: {3}".format(
+            ins.transient, ins.pending, ins.persistent, ins.detached
+        )
+    )
     db_session.commit()
+    print(
+        "Transient: {0}; Pending: {1}; Persistent: {2}; Detached: {3}".format(
+            ins.transient, ins.pending, ins.persistent, ins.detached
+        )
+    )
     db_session.refresh(user)
+    print(
+        "Transient: {0}; Pending: {1}; Persistent: {2}; Detached: {3}".format(
+            ins.transient, ins.pending, ins.persistent, ins.detached
+        )
+    )
     return user

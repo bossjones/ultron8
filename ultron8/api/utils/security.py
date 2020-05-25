@@ -13,7 +13,7 @@ from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_403_FORBIDDEN
 
-# from ultron8.api.utils.db import get_db
+from ultron8.api.utils.db import get_db
 from ultron8.api import crud, settings
 from ultron8.api.core.jwt import ALGORITHM
 from ultron8.api.db.u_sqlite.session import SessionLocal
@@ -26,13 +26,13 @@ reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"
 )
 
-
-def get_db() -> Generator:
-    try:
-        db = SessionLocal()
-        yield db
-    finally:
-        db.close()
+# NOTE: Don't comment this in unless you're going to use it everywhere
+# def get_db() -> Generator:
+#     try:
+#         db = SessionLocal()
+#         yield db
+#     finally:
+#         db.close()
 
 
 # def get_current_user(
