@@ -374,7 +374,7 @@ def view_api_docs(ctx, loc="local"):
 
 @task(
     incrementable=["verbose"],
-    pre=[call(view_api_docs, loc="local"), call(view_coverage, loc="local"),],
+    pre=[call(view_api_docs, loc="local"), call(view_coverage, loc="local")],
 )
 def browser(ctx, loc="local"):
     """
@@ -612,7 +612,7 @@ def autoflake(
 
 
 @task(
-    pre=[call(clean, loc="local"), call(verify_python_version, loc="local"),],
+    pre=[call(clean, loc="local"), call(verify_python_version, loc="local")],
     incrementable=["verbose"],
     aliases=["clean_stubs", "clean_monkeytype"],
 )
@@ -663,13 +663,13 @@ def clean_pyi(ctx, loc="local", verbose=0, dry_run=False):
         # call(pytest, loc="local", clientonly=True),
         # call(pytest, loc="local", fastapionly=True),
         # call(pytest, loc="local", utilsonly=True),
-        # call(pytest, loc="local", jwtonly=True),
+        call(pytest, loc="local", jwtonly=True),
         # call(pytest, loc="local", mockedfs=True),
         # call(pytest, loc="local", clionly=True),
         # call(pytest, loc="local", usersonly=True),
         # call(pytest, loc="local", convertingtotestclientstarlette=True),
         # call(pytest, loc="local", loggeronly=True),
-        call(pytest, loc="local"),
+        # call(pytest, loc="local"),
     ],
     incrementable=["verbose"],
 )
