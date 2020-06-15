@@ -195,7 +195,7 @@ Project structure
     │   ├── config                     - ultronctl config functions
     │   ├── constants                  - project wide constants
     │   ├── core                       - click commands core
-    │   ├── docs                       -
+    │   ├── docs                       - (to be deleted) ????????????
     │   ├── exceptions                 - apllication exceptions
     │   ├── migrations                 - alembic migrations
     │   ├── serialize                  - functions and classes responsible for converting structured data to a format that allows sharing of data.
