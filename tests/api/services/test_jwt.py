@@ -5,7 +5,6 @@ import pytest
 
 # from app.models.domain.users import UserInDB
 from ultron8.api.models.user import UserInDB
-
 from ultron8.api.services.jwt import (
     ALGORITHM,
     create_access_token_for_user,

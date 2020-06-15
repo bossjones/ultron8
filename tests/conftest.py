@@ -33,8 +33,10 @@ from starlette.testclient import (
     TimeOut,
 )
 
-from ultron8.api import settings
+from ultron8.api import crud, settings
 from ultron8.api.db.u_sqlite.session import SessionLocal
+from ultron8.api.factories.users import _MakeRandomNormalUserFactory
+from ultron8.api.models.user import UserCreate, UserInDB
 from ultron8.web import get_application
 
 from tests.utils.user import authentication_token_from_email
@@ -45,10 +47,6 @@ from tests.utils.utils import (
     get_superuser_token_headers,
     superuser_credentials,
 )
-
-from ultron8.api.factories.users import _MakeRandomNormalUserFactory
-from ultron8.api.models.user import UserCreate, UserInDB
-from ultron8.api import crud
 
 # from ultron8.api import settings
 # from ultron8.web import app

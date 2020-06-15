@@ -1,14 +1,14 @@
 from datetime import datetime, timedelta
+
 from typing import Dict
 
 import jwt
 from pydantic import ValidationError
 
-# from app.models.domain.users import User
-from ultron8.api.models.user import User
-
 # from app.models.schemas.jwt import JWTMeta, JWTUser
+# from app.models.domain.users import User
 from ultron8.api.models.jwt import JWTMeta, JWTUser
+from ultron8.api.models.user import User
 
 JWT_SUBJECT = "access"
 ALGORITHM = "HS256"
