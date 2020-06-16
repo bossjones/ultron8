@@ -33,8 +33,10 @@ from starlette.testclient import (
     TimeOut,
 )
 
-from ultron8.api import settings
+from ultron8.api import crud, settings
 from ultron8.api.db.u_sqlite.session import SessionLocal
+from ultron8.api.factories.users import _MakeRandomNormalUserFactory
+from ultron8.api.models.user import UserCreate, UserInDB
 from ultron8.web import get_application
 
 from tests.utils.user import authentication_token_from_email
@@ -398,7 +400,7 @@ def create_mocked_ultron_session(request, mocker):
 @pytest.fixture(name="linux_systems_fixture")
 def linux_systems_fixture(request: SubRequest, monkeypatch: MonkeyPatch) -> None:
     request.cls.systems = {
-        "Linux": [{"HOME": "/home/test", "XDG_CONFIG_HOME": "~/.config"}, posixpath],
+        "Linux": [{"HOME": "/home/test", "XDG_CONFIG_HOME": "~/.config"}, posixpath]
     }
 
     request.cls.sys_name = "Linux"
@@ -494,3 +496,19 @@ def mock_expand_user(request: SubRequest, monkeypatch: MonkeyPatch) -> None:
         return request.cls.home
 
     monkeypatch.setattr(os.path, "expanduser", mockreturn)
+
+
+# def test_create_user(db: Session) -> None:
+#     email = random_lower_string()
+#     password = random_lower_string()
+#     user_in = UserCreate(email=email, password=password)
+#     user = crud.user.create(db, user_in=user_in)
+#     assert user.email == email
+#     assert hasattr(user, "hashed_password")
+
+
+@pytest.fixture
+def test_user(db: SessionLocal) -> UserInDB:
+    data: UserCreate = _MakeRandomNormalUserFactory()
+    user = crud.user.create(db, user_in=data)
+    return user

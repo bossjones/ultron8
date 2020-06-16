@@ -123,3 +123,87 @@ Resources
 ------------------------------------------------------------------------------
 
 https://www.reddit.com/r/PhotoshopRequest/comments/a7fzua/specific_photoshop_this_picture_of_ultron/
+
+
+Project structure
+-------------------------------------------------------------------------------
+
+.. code-block:: console
+
+    .
+    ├── bin                            - small utility executables
+    ├── contrib                        - user contributions
+    ├── docs                           - documentation
+    ├── example_notebooks              - notebooks to better understand how fastapi works
+    ├── git_hooks                      - git hookes for contributors
+    ├── hacking                        - local development scripts for manipulating project
+    ├── images                         - repo images
+    ├── lint-configs-python            - linter files
+    │   └── python                     - pylintrc, mypy, etc configs
+    ├── make                           - make tasks
+    ├── script                         - utility scripts, for ci etc
+    ├── tasks                          - pyinvoke python scripts
+    ├── tests                          - (tests) pytest
+    │   ├── api                        - (tests) web related stuff
+    │   │   ├── api_v1                 - (tests)
+    │   │   ├── crud                   - (tests)
+    │   │   └── utils                  - (tests)
+    │   ├── commands                   - (tests)
+    │   ├── config                     - (tests)
+    │   ├── constants                  - (tests)
+    │   ├── core                       - (tests)
+    │   ├── fixtures                   - (tests)
+    │   │   ├── isolated_config_dir    - (tests)
+    │   │   └── simple                 - (tests)
+    │   │       └── packs              - (tests)
+    │   │
+    │   ├── ssl                        - (tests)
+    │   ├── u8client                   - (tests)
+    │   │   └── models                 - (tests)
+    │   └── utils                      - (tests)
+    │
+    │
+    │
+    │
+    ├── ultron8                        - application folder
+    │   ├── api                        - web related stuff
+    │   │   ├── api_v1                 - v1 web api
+    │   │   │   └── endpoints          - web routes
+    │   │   ├── core                   - application configuration, statup events, logging
+    │   │   │   ├── base               -
+    │   │   │   ├── pagination         -
+    │   │   │   └── trigger            -
+    │   │   ├── crud                   - all crud stuff
+    │   │   ├── db                     - db related stuff
+    │   │   │   ├── pagination         -
+    │   │   │   └── u_sqlite           -
+    │   │   ├── db_models              - sqlalchemy database models
+    │   │   ├── depends                - dependencies for routes definition.
+    │   │   ├── email-templates        - email templates
+    │   │   │   └── src                -
+    │   │   ├── factories              - factories
+    │   │   ├── middleware             - fastapi custom middlewares
+    │   │   │   └── logging            -
+    │   │   ├── models                 - pydantic models for this application.
+    │   │   │   └── system             -
+    │   │   │
+    │   │   ├── templates              - fastapi templates
+    │   │   ├── utils                  - fastapi utils
+    │   │   └── views                  - fastapi views
+    │   │
+    │   ├── commands                   - click commands for ultronctl
+    │   ├── config                     - ultronctl config functions
+    │   ├── constants                  - project wide constants
+    │   ├── core                       - click commands core
+    │   ├── docs                       - (to be deleted) ????????????
+    │   ├── exceptions                 - apllication exceptions
+    │   ├── migrations                 - alembic migrations
+    │   ├── serialize                  - functions and classes responsible for converting structured data to a format that allows sharing of data.
+    │   │   └── runstate               -
+    │   ├── static                     - more images
+    │   ├── u8client                   - ultron8 client used for programatic api calls ( base on github3.py )
+    │   │   ├── models                 - ( base on github3.py )
+    │   │   ├── structs                - ( base on github3.py )
+    │   │   └── utils                  - ( base on github3.py )
+    │   └── utils                      - global utils
+    └── vagrant                        -

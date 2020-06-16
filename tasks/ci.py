@@ -374,7 +374,7 @@ def view_api_docs(ctx, loc="local"):
 
 @task(
     incrementable=["verbose"],
-    pre=[call(view_api_docs, loc="local"), call(view_coverage, loc="local"),],
+    pre=[call(view_api_docs, loc="local"), call(view_coverage, loc="local")],
 )
 def browser(ctx, loc="local"):
     """
@@ -612,7 +612,7 @@ def autoflake(
 
 
 @task(
-    pre=[call(clean, loc="local"), call(verify_python_version, loc="local"),],
+    pre=[call(clean, loc="local"), call(verify_python_version, loc="local")],
     incrementable=["verbose"],
     aliases=["clean_stubs", "clean_monkeytype"],
 )
