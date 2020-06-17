@@ -50,6 +50,7 @@ hiredis==1.0.1            # via aioredis
 httptools==0.0.13         # via uvicorn
 idna==2.8                 # via email-validator, requests, yarl
 importlib-metadata==1.5.0  # via argcomplete, kombu, termtables
+ipaddr==2.2.0             # via -r requirements.in
 janus==0.4.0              # via -r requirements.in
 jinja2-cli[yaml]==0.7.0   # via -r requirements.in
 jinja2==2.11.1            # via aiohttp-jinja2, jinja2-cli

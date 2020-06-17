@@ -124,3 +124,4 @@ python-jose
 termtables
 semver
 eventlet
+ipaddr
