@@ -122,3 +122,5 @@ Faker
 logging_tree
 python-jose
 termtables
+semver
+eventlet
