@@ -512,3 +512,30 @@ def test_user(db: SessionLocal) -> UserInDB:
     data: UserCreate = _MakeRandomNormalUserFactory()
     user = crud.user.create(db, user_in=data)
     return user
+
+
+# class EventletTestCase(TestCase):
+#     """
+#     Base test class which performs eventlet monkey patching before the tests run
+#     and un-patching after the tests have finished running.
+#     """
+
+#     @classmethod
+#     def setUpClass(cls):
+#         eventlet.monkey_patch(
+#             os=True,
+#             select=True,
+#             socket=True,
+#             thread=False if '--use-debugger' in sys.argv else True,
+#             time=True
+#         )
+
+#     @classmethod
+#     def tearDownClass(cls):
+#         eventlet.monkey_patch(
+#             os=False,
+#             select=False,
+#             socket=False,
+#             thread=False,
+#             time=False
+#         )
