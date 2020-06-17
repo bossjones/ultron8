@@ -17,14 +17,15 @@
 import logging
 
 import pytest
+import sys
 
 from ultron8.utils.pack import normalize_pack_version
-from ultron8.utils.versioning import complex_semver_match
+from ultron8.utils.versioning import complex_semver_match, get_python_version
 
 logger = logging.getLogger(__name__)
 
 
-@pytest.mark.packsonly
+@pytest.mark.utilsonly
 @pytest.mark.unittest
 class TestVersioningUtils:
     def test_complex_semver_match(self):
@@ -66,3 +67,11 @@ class TestVersioningUtils:
         assert normalize_pack_version("0.3") == "0.3.0"
         assert normalize_pack_version("1.3") == "1.3.0"
         assert normalize_pack_version("2.0") == "2.0.0"
+
+    def test_get_python_version(self):
+        version_info = sys.version_info
+        assert get_python_version() == "%s.%s.%s" % (
+            version_info.major,
+            version_info.minor,
+            version_info.micro,
+        )
