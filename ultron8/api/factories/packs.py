@@ -1,6 +1,7 @@
 # from factory import Faker, LazyFunction, Sequence, LazyAttribute
 # from ultron8.api.factories.base import BaseFactory, fake, pack_name_list
 # from ultron8.api.models.packs import PacksData
+from ultron8.api.factories.base import BaseFactory
 
 # def random_pack_name():
 #     return f"{fake.pack_name()}"
