@@ -24,12 +24,12 @@ Module containing pack management related functions.
 # from st2common.constants.pack import PACK_VERSION_SEPARATOR
 # from st2common.constants.pack import PACK_VERSION_REGEX
 # from st2common.services.packs import get_pack_from_index
-# from st2common.util.pack import get_pack_metadata
-# from st2common.util.pack import get_pack_ref_from_metadata
-# from st2common.util.green import shell
-# from st2common.util.versioning import complex_semver_match
-# from st2common.util.versioning import get_stackstorm_version
-# from st2common.util.versioning import get_python_version
+# from ultron8.utils.pack import get_pack_metadata
+# from ultron8.utils.pack import get_pack_ref_from_metadata
+# from ultron8.utils.green import shell
+# from ultron8.utils.versioning import complex_semver_match
+# from ultron8.utils.versioning import get_stackstorm_version
+# from ultron8.utils.versioning import get_python_version
 
 # __all__ = [
 #     'download_pack',

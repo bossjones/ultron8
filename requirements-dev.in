@@ -87,3 +87,4 @@ betamax
 betamax_matchers
 sqlalchemy-stubs
 rope
+unittest2pytest

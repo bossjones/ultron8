@@ -125,3 +125,4 @@ termtables
 semver
 eventlet
 ipaddr
+jsonpath_rw

@@ -84,7 +84,7 @@ def run_command(
 
     :rtype: ``tuple`` (exit_code, stdout, stderr, timed_out)
     """
-    LOG.debug("Entering st2common.util.green.run_command.")
+    LOG.debug("Entering ultron8.utils.green.run_command.")
 
     assert isinstance(cmd, (list, tuple) + six.string_types)
 
