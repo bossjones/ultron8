@@ -1,4 +1,4 @@
-# st2
+# st2common
 
 __all__ = [
     "ALLOWED_SCOPES",

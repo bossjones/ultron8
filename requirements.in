@@ -62,7 +62,7 @@ uvicorn
 gunicorn
 cryptography
 
-# SOURCE: https://github.com/esnme/ultrajson
+# SOURCE: https://github.com/ultrajson/ultrajson
 # Ultra fast JSON decoder and encoder written in C with Python binding
 ujson
 
@@ -126,3 +126,5 @@ semver
 eventlet
 ipaddr
 jsonpath_rw
+gitpython
+lockfile

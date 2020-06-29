@@ -1,8 +1,6 @@
-"""
-Module containing pack management related functions.
-"""
-
-# from __future__ import absolute_import
+# """
+# Module containing pack management related functions.
+# """
 
 # import os
 # import shutil
@@ -11,24 +9,25 @@ Module containing pack management related functions.
 # import re
 
 # import six
-# from oslo_config import cfg
+# # from oslo_config import cfg
 # from git.repo import Repo
 # from gitdb.exc import BadName, BadObject
 # from lockfile import LockFile
 # from distutils.spawn import find_executable
 
-# from st2common import log as logging
-# from st2common.content import utils
-# from st2common.constants.pack import MANIFEST_FILE_NAME
-# from st2common.constants.pack import PACK_RESERVED_CHARACTERS
-# from st2common.constants.pack import PACK_VERSION_SEPARATOR
-# from st2common.constants.pack import PACK_VERSION_REGEX
-# from st2common.services.packs import get_pack_from_index
+# import logging
+# # from st2common import log as logging
+# from ultron8.content import utils
+# from ultron8.constants.packs import MANIFEST_FILE_NAME
+# from ultron8.constants.packs import PACK_RESERVED_CHARACTERS
+# from ultron8.constants.packs import PACK_VERSION_SEPARATOR
+# from ultron8.constants.packs import PACK_VERSION_REGEX
+# from ultron8.api.services.pack import get_pack_from_index
 # from ultron8.utils.pack import get_pack_metadata
 # from ultron8.utils.pack import get_pack_ref_from_metadata
 # from ultron8.utils.green import shell
 # from ultron8.utils.versioning import complex_semver_match
-# from ultron8.utils.versioning import get_stackstorm_version
+# from ultron8.utils.versioning import get_ultron_version
 # from ultron8.utils.versioning import get_python_version
 
 # __all__ = [
@@ -46,7 +45,7 @@ Module containing pack management related functions.
 # LOG = logging.getLogger(__name__)
 
 # CONFIG_FILE = 'config.yaml'
-# CURRENT_STACKSTORM_VERSION = get_stackstorm_version()
+# CURRENT_STACKSTORM_VERSION = get_ultron_version()
 # CURRENT_PYTHON_VERSION = get_python_version()
 
 # SUDO_BINARY = find_executable('sudo')

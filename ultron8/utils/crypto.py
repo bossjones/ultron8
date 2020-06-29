@@ -1,4 +1,4 @@
-# st2
+# st2common
 
 """
 Module for handling symmetric encryption and decryption of short text values (mostly used for

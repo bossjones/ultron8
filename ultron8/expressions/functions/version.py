@@ -1,4 +1,4 @@
-# st2
+# st2common
 import semver
 
 __all__ = [
