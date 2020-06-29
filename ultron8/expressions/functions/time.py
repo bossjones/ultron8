@@ -1,8 +1,8 @@
-# st2
-
-import six
+# st2common
 
 import datetime
+
+import six
 
 __all__ = ["to_human_time_from_seconds"]
 

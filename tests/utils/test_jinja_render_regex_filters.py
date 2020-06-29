@@ -1,10 +1,11 @@
-# st2
+# st2common
 
-from ultron8.utils import jinja as jinja_utils
 import pytest
 
+from ultron8.utils import jinja as jinja_utils
 
-class JinjaUtilsRegexFilterTestCase:
+
+class TestJinjaUtilsRegexFilterTestCase:
     def test_filters_regex_match(self):
         env = jinja_utils.get_jinja_environment()
 

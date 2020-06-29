@@ -1,9 +1,9 @@
 import pytest
 
-from ultron8.utils.ip_utils import split_host_port
+from ultron8.utils.ip_utils import split_host_port, is_ipv6, is_ipv4
 
 
-class IPUtilsTests:
+class TestIPUtilsTests:
     def test_host_port_split(self):
 
         # Simple IPv4
@@ -77,3 +77,23 @@ class IPUtilsTests:
         # self.assertRaises(Exception, split_host_port, host_str)
         with pytest.raises(Exception):
             split_host_port(host_str)
+
+        # Validate ipv6 str
+        host_str = "fd9a:49c7:f8dd:5156:0:0:0:0"
+        res = is_ipv6(host_str)
+        assert res
+
+        # invalid ipv6 str
+        host_str = "fd9a:49c7:f8dd:5156:0:0:0:0:0"
+        res = is_ipv6(host_str)
+        assert not res
+
+        # Validate ipv4 str
+        host_str = "127.0.0.1"
+        res = is_ipv4(host_str)
+        assert res
+
+        # invalid ipv4 str
+        host_str = "127.0.0.1.1"
+        res = is_ipv4(host_str)
+        assert not res

@@ -1,9 +1,9 @@
-# st2
+# st2common
 
 from ultron8.utils import jinja as jinja_utils
 
 
-class JinjaUtilsVersionsFilterTestCase:
+class TestJinjaUtilsVersionsFilterTestCase:
     def test_version_compare(self):
         env = jinja_utils.get_jinja_environment()
 

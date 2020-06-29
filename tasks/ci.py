@@ -330,7 +330,7 @@ def pytest(
     if pdb:
         _cmd += r" --pdb "
 
-    _cmd += r" --cov-config=setup.cfg --verbose --cov-append --cov-report=term-missing --cov-report=xml:cov.xml --cov-report=html:htmlcov --cov-report=annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"
+    _cmd += r" --cov-config=setup.cfg -vv --cov-append --cov-report=term-missing --cov-report=xml:cov.xml --cov-report=html:htmlcov --cov-report=annotate:cov_annotate --mypy --showlocals --tb=short --cov=ultron8 tests"
 
     ctx.run(_cmd)
 
@@ -673,6 +673,7 @@ def clean_pyi(ctx, loc="local", verbose=0, dry_run=False):
         # call(pytest, loc="local", mockedfs=True),
         # call(pytest, loc="local", clionly=True),
         # call(pytest, loc="local", usersonly=True),
+        # call(pytest, loc="local", utilsonly=True),
         # call(pytest, loc="local", convertingtotestclientstarlette=True),
         # call(pytest, loc="local", loggeronly=True),
         call(pytest, loc="local"),

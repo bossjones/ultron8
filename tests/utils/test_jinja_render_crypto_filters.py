@@ -1,4 +1,4 @@
-# # st2
+# # st2common
 # from oslo_config import cfg
 
 # from st2tests.base import CleanDbTestCase

@@ -1,9 +1,9 @@
-# st2
+# st2common
 
 from ultron8.utils import jinja as jinja_utils
 
 
-class JinjaUtilsJsonEscapeTestCase:
+class TestJinjaUtilsJsonEscapeTestCase:
     def test_doublequotes(self):
         env = jinja_utils.get_jinja_environment()
         template = "{{ test_str | json_escape }}"

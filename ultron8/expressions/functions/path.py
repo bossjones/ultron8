@@ -1,4 +1,4 @@
-# st2
+# st2common
 import os
 
 __all__ = ["basename", "dirname"]

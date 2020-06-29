@@ -1,5 +1,6 @@
-# st2
+# st2common
 import re
+
 import six
 
 __all__ = ["regex_match", "regex_replace", "regex_search", "regex_substring"]
