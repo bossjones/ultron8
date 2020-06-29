@@ -3,7 +3,7 @@
 from ultron8.utils import jinja as jinja_utils
 
 
-class JinjaUtilsPathFilterTestCase:
+class TestJinjaUtilsPathFilterTestCase:
     def test_basename(self):
         env = jinja_utils.get_jinja_environment()
 

@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 @pytest.mark.utilsonly
 @pytest.mark.unittest
-class ShellUtilsTestCase:
+class TestShellUtilsTestCase:
     def test_quote_unix(self):
         arguments = ["foo", "foo bar", "foo1 bar1", '"foo"', '"foo" "bar"', "'foo bar'"]
         expected_values = [

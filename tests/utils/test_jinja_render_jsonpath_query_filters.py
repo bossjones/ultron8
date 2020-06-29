@@ -3,7 +3,7 @@
 from ultron8.utils import jinja as jinja_utils
 
 
-class JinjaUtilsJsonpathQueryTestCase:
+class TestJinjaUtilsJsonpathQueryTestCase:
     def test_jsonpath_query_static(self):
         env = jinja_utils.get_jinja_environment()
         obj = {

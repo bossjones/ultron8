@@ -1,7 +1,7 @@
 from ultron8.utils import jinja as jinja_utils
 
 
-class JinjaUtilsRenderTestCase:
+class TestJinjaUtilsRenderTestCase:
     def test_render_values(self):
         actual = jinja_utils.render_values(
             mapping={"k1": "{{a}}", "k2": "{{b}}"}, context={"a": "v1", "b": "v2"}

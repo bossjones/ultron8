@@ -11,7 +11,7 @@ from ultron8.utils.ujson import fast_deepcopy
 __all__ = ["MiscUtilTestCase"]
 
 
-class MiscUtilTestCase:
+class TestMiscUtilTestCase:
     def test_rstrip_last_char(self):
         assert rstrip_last_char(None, "\n") == None
         assert rstrip_last_char("stuff", None) == "stuff"

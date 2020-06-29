@@ -32,10 +32,6 @@ def get_ultron_version():
     """
     Return a valid semver version string for the currently running StackStorm version.
     """
-    # Special handling for dev versions which are not valid semver identifiers
-    if "dev" in ultron_version and ultron_version.count(".") == 1:
-        version = ultron_version.replace("dev", ".0")
-        return version
 
     return ultron_version
 
