@@ -1,9 +1,9 @@
 # st2
 import os
 
-from ultron8.content.loader import ContentPackLoader
-from ultron8.content.loader import LOG
 import pytest
+
+from ultron8.content.loader import LOG, ContentPackLoader
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 RESOURCES_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "../resources"))

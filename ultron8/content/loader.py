@@ -1,15 +1,13 @@
 # st2common
 
+import logging
 import os
 
-from yaml.parser import ParserError
 import six
-
-import logging
+from yaml.parser import ParserError
 
 # from st2common import log as logging
-from ultron8.constants.meta import ALLOWED_EXTS
-from ultron8.constants.meta import PARSER_FUNCS
+from ultron8.constants.meta import ALLOWED_EXTS, PARSER_FUNCS
 from ultron8.constants.packs import MANIFEST_FILE_NAME
 
 __all__ = ["ContentPackLoader", "MetaLoader"]

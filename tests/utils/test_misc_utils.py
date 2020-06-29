@@ -1,9 +1,11 @@
 # st2
 
-from ultron8.utils.misc import rstrip_last_char
-from ultron8.utils.misc import strip_shell_chars
-from ultron8.utils.misc import lowercase_value
-from ultron8.utils.misc import sanitize_output
+from ultron8.utils.misc import (
+    lowercase_value,
+    rstrip_last_char,
+    sanitize_output,
+    strip_shell_chars,
+)
 from ultron8.utils.ujson import fast_deepcopy
 
 __all__ = ["MiscUtilTestCase"]

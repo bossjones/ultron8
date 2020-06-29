@@ -3,17 +3,17 @@
 import os
 import os.path
 
-# from oslo_config import cfg
-
-from ultron8.constants.action import LIBS_DIR as ACTION_LIBS_DIR
-from ultron8.utils.types import OrderedSet
-from ultron8.utils.shell import quote_unix
-
 from ultron8.api.settings import (
     CONTENT_PACK_GROUP,
-    CONTENT_SYSTEM_PACKS_BASE_PATH,
     CONTENT_PACKS_BASE_PATHS,
+    CONTENT_SYSTEM_PACKS_BASE_PATH,
 )
+from ultron8.constants.action import LIBS_DIR as ACTION_LIBS_DIR
+from ultron8.utils.shell import quote_unix
+from ultron8.utils.types import OrderedSet
+
+# from oslo_config import cfg
+
 
 __all__ = [
     "get_pack_group",

@@ -2,8 +2,8 @@
 from datetime import timedelta
 import logging
 import os
-import uuid
 import platform
+import uuid
 
 from pydantic import EmailStr
 from starlette.config import Config

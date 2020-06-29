@@ -1,11 +1,10 @@
 # st2common
 
 import json
-import re
-import six
-
 import logging
+import re
 
+import six
 
 __all__ = ["get_jinja_environment", "render_values", "is_jinja_expression"]
 

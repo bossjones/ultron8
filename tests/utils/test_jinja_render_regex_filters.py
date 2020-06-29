@@ -1,7 +1,8 @@
 # st2common
 
-from ultron8.utils import jinja as jinja_utils
 import pytest
+
+from ultron8.utils import jinja as jinja_utils
 
 
 class JinjaUtilsRegexFilterTestCase:

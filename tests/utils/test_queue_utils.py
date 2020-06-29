@@ -1,8 +1,9 @@
 # st2common
 import re
 
-import ultron8.utils.queues as queue_utils
 import pytest
+
+import ultron8.utils.queues as queue_utils
 
 
 class TestQueueUtils:

@@ -1,27 +1,28 @@
 # st2common
 
+import binascii
+import json
 import os
 
-import six
-import json
-import binascii
-
-from six.moves import range
 from cryptography.exceptions import InvalidSignature
-
-from ultron8.utils.crypto import KEYCZAR_HEADER_SIZE
-from ultron8.utils.crypto import AESKey
-from ultron8.utils.crypto import read_crypto_key
-from ultron8.utils.crypto import symmetric_encrypt
-from ultron8.utils.crypto import symmetric_decrypt
-from ultron8.utils.crypto import cryptography_symmetric_encrypt
-from ultron8.utils.crypto import cryptography_symmetric_decrypt
-
 import pytest
+import six
+from six.moves import range
+
+from ultron8.utils.crypto import (
+    KEYCZAR_HEADER_SIZE,
+    AESKey,
+    cryptography_symmetric_decrypt,
+    cryptography_symmetric_encrypt,
+    read_crypto_key,
+    symmetric_decrypt,
+    symmetric_encrypt,
+)
+
+from tests.conftest import fixtures_path
 
 # from st2tests.fixturesloader import get_fixtures_base_path
 
-from tests.conftest import fixtures_path
 
 __all__ = ["CryptoUtilsTestCase", "CryptoUtilsKeyczarCompatibilityTestCase"]
 

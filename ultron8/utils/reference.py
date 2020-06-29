@@ -1,6 +1,6 @@
 # st2common
-from ultron8.exceptions import db
 from ultron8.api.models.system.common import ResourceReference
+from ultron8.exceptions import db
 
 
 def get_ref_from_model(model):

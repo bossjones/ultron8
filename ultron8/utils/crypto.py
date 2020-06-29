@@ -19,21 +19,16 @@ symmetric encryption / decryption, because it offers more robustness and safer d
 instead of SHA1, etc.).
 """
 
-import os
-import json
-import binascii
 import base64
-
+import binascii
 from hashlib import sha1
+import json
+import os
 
-import six
-
-from cryptography.hazmat.primitives.ciphers import Cipher
-from cryptography.hazmat.primitives.ciphers import algorithms
-from cryptography.hazmat.primitives.ciphers import modes
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives import hmac
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes, hmac
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+import six
 
 __all__ = [
     "KEYCZAR_HEADER_SIZE",

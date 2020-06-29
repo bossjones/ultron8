@@ -1,7 +1,8 @@
 # st2common
 
-from ultron8.expressions.functions import time
 import pytest
+
+from ultron8.expressions.functions import time
 
 
 class TestTimeJinjaFilters:
