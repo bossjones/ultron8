@@ -124,3 +124,5 @@ python-jose
 termtables
 semver
 eventlet
+ipaddr
+jsonpath_rw

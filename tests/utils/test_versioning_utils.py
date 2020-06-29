@@ -15,9 +15,9 @@
 """Test u8client session"""
 # pylint: disable=protected-access
 import logging
+import sys
 
 import pytest
-import sys
 
 from ultron8.utils.pack import normalize_pack_version
 from ultron8.utils.versioning import complex_semver_match, get_python_version

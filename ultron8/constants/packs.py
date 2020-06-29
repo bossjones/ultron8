@@ -1,3 +1,26 @@
+# st2
+
+__all__ = [
+    "PACKS_PACK_NAME",
+    "PACK_REF_WHITELIST_REGEX",
+    "PACK_RESERVED_CHARACTERS",
+    "PACK_VERSION_SEPARATOR",
+    "PACK_VERSION_REGEX",
+    "U8_VERSION_REGEX",
+    "SYSTEM_PACK_NAME",
+    "PACKS_PACK_NAME",
+    "LINUX_PACK_NAME",
+    "SYSTEM_PACK_NAMES",
+    "CHATOPS_PACK_NAME",
+    "USER_PACK_NAME_BLACKLIST",
+    "BASE_PACK_REQUIREMENTS",
+    "MANIFEST_FILE_NAME",
+    "CONFIG_SCHEMA_FILE_NAME",
+]
+
+# Prefix for render context w/ config
+PACK_CONFIG_CONTEXT_KV_PREFIX = "config_context"
+
 # A list of allowed characters for the pack name
 PACK_REF_WHITELIST_REGEX = r"^[a-z0-9_]+$"
 
@@ -10,6 +33,9 @@ PACK_RESERVED_CHARACTERS = ["."]
 # Version sperator when version is supplied in pack name
 # Example: libcloud@1.0.1
 PACK_VERSION_SEPARATOR = "="
+
+# Check for u8 version in engines
+U8_VERSION_REGEX = r"^((>?>|>=|=|<=|<?<)\s*[0-9]+\.[0-9]+\.[0-9]+?(\s*,)?\s*)+$"
 
 # Name used for system pack
 SYSTEM_PACK_NAME = "core"
@@ -43,7 +69,7 @@ BASE_PACK_REQUIREMENTS = ["six>=1.9.0,<2.0"]
 
 # Python requirements which are common to all the packs and need to be installed
 # for Python 3 pack virtual environments to work
-BASE_PACK_PYTHON3_REQUIREMENTS = ["pyyaml>=3.12,<4.0"]
+BASE_PACK_PYTHON3_REQUIREMENTS = ["pyyaml>=5.1,<5.2"]
 
 # Name of the pack manifest file
 MANIFEST_FILE_NAME = "pack.yaml"

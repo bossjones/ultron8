@@ -20,13 +20,13 @@
 
 # import six
 
-# from st2common.util import schema as util_schema
+# from ultron8.utils import schema as util_schema
 # from st2common.constants.pack import MANIFEST_FILE_NAME
 # from st2common.constants.pack import PACK_REF_WHITELIST_REGEX
 # from st2common.content.loader import MetaLoader
 # from st2common.persistence.pack import Pack
 # from st2common.exceptions.apivalidation import ValueValidationException
-# from st2common.util import jinja as jinja_utils
+# from ultron8.utils import jinja as jinja_utils
 
 # __all__ = [
 #     'get_pack_ref_from_metadata',
