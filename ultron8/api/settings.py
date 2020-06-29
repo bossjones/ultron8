@@ -170,6 +170,35 @@ CONTENT_RUNNERS_BASE_PATHS = os.getenv("ULTRON_CONTENT_RUNNERS_BASE_PATHS", None
 # Use a comma-separated list for multiple indexes if you  want to get other packs discovered with "st2 pack search".
 CONTENT_INDEX_URL = [f"{SERVER_HOST}/v1/index.json"]
 
+# ~~~~~ ACTIONRUNNER CONFIG OPTIONS ~~~~~
+# import sys;print(sys.executable)"
+
+# default_python_bin_path = sys.executable
+# default_python3_bin_path = find_executable('python3')
+# base_dir = os.path.dirname(os.path.realpath(default_python_bin_path))
+# default_virtualenv_bin_path = os.path.join(base_dir, 'virtualenv')
+
+# Python binary which will be used by Python actions.
+# PYTHON_BINARY =
+# Python 3 binary which will be used by Python actions for packs which use Python 3 virtual environment.
+# PYTHON3_BINARY =
+# Prefix for Python 3 installation (e.g. /opt/python3.6). If not specified, it tries to find Python 3 libraries in /usr/lib and /usr/local/lib.
+# PYTHON3_PREFIX =
+# Virtualenv binary which should be used to create pack virtualenvs.
+# VIRTUALENV_BINARY =
+# PYTHON_RUNNER_LOG_LEVEL =
+# VIRTUALENV_OPTS =
+# List of pip options to be passed to "pip install" command when installing pack dependencies into pack virtual environment.
+# PIP_OPTS =
+# True to store and stream action output (stdout and stderr) in real-time.
+# STREAM_OUTPUT =
+#
+# Buffer size to use for real time action output streaming. 0 means unbuffered
+# 1 means line buffered, -1 means system default, which usually means fully
+# buffered and any other positive value means use a buffer of (approximately)
+# that size
+# STREAM_OUTPUT_BUFFER_SIZE =
+
 # @dataclass
 # class SettingsConfigProxy:
 #     api_v1_str: str

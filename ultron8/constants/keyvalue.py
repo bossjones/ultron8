@@ -18,8 +18,8 @@ ALL_SCOPE = "all"
 # Parent namespace for all items in key-value store
 DATASTORE_PARENT_SCOPE = "u8kv"
 DATASTORE_SCOPE_SEPARATOR = (
-    "."
-)  # To separate scope from datastore namespace. E.g. u8kv.system
+    "."  # To separate scope from datastore namespace. E.g. u8kv.system
+)
 
 # Namespace to contain all system/global scoped variables in key-value store.
 SYSTEM_SCOPE = "system"
