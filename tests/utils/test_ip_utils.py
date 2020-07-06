@@ -1,6 +1,6 @@
 import pytest
 
-from ultron8.utils.ip_utils import split_host_port, is_ipv6, is_ipv4
+from ultron8.utils.ip_utils import is_ipv4, is_ipv6, split_host_port
 
 
 class TestIPUtilsTests:

@@ -159,6 +159,45 @@ def black(ctx, loc="local", check=True, debug=False, verbose=0):
     ctx.run(_cmd)
 
 
+# # TODO: Enable this version of the black task. from https://github.com/bossjones/fake-medium-fastapi/blob/master/tasks/ci.py
+# @task(
+#     pre=[call(clean, loc="local"),], incrementable=["verbose"],
+# )
+# def black(ctx, loc="local", check=False, debug=False, verbose=0, tests=False):
+#     """
+#     Run black code formatter
+#     Usage: inv ci.black
+#     """
+#     env = get_compose_env(ctx, loc=loc)
+
+#     # Only display result
+#     ctx.config["run"]["echo"] = True
+
+#     # Override run commands env variables one key at a time
+#     for k, v in env.items():
+#         ctx.config["run"]["env"][k] = v
+
+#     _cmd = "poetry run black "
+
+#     if check:
+#         _cmd += "--check "
+
+#     if verbose >= 3:
+#         _cmd += "--verbose "
+
+#     if tests:
+#         _cmd += "tests tasks "
+
+#     _cmd += "app"
+
+#     if verbose >= 1:
+#         msg = "[black] bout to run command: \n"
+#         click.secho(msg, fg="green")
+#         click.secho(_cmd, fg="green")
+
+#     ctx.run(_cmd)
+
+
 @task(incrementable=["verbose"])
 def isort(
     ctx, loc="local", check=False, dry_run=False, verbose=0, apply=False, diff=False
